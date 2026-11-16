@@ -1,6 +1,8 @@
 // 입력 처리: 파일 인식(CSV · 엑셀 시트) → 테이블 자동 대응 → 사전 점검 → 정규화(UTF-8 CSV 스테이징) → 양식 생성
 import fs from "node:fs";
 import path from "node:path";
+import os from "node:os";
+import { zipSync } from "fflate";
 import * as XLSX from "xlsx";
 import { parse } from "csv-parse/sync";
 import { csvCell } from "@engine/csv.js";
@@ -512,6 +514,19 @@ export function writeCsvTemplates(tables: string[], spec: Spec, dir: string): st
     "- 인코딩 UTF-8, 빈 값은 빈 칸, 날짜는 YYYY-MM-DD, 타임스탬프는 YYYY-MM-DD HH:MM:SS 입니다.",
     "- 컬럼 설명은 컬럼 명세서(xlsx)를 참고하세요.", ""].join("\n"), "utf-8");
   return out;
+}
+
+/** 표별 헤더 CSV 와 안내를 하나의 ZIP 파일로 저장한다. */
+export function writeCsvTemplateZip(tables: string[], spec: Spec, file: string): void {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kai-csv-template-"));
+  try {
+    writeCsvTemplates(tables, spec, dir);
+    const entries: Record<string, Uint8Array> = {};
+    for (const name of fs.readdirSync(dir)) entries[name] = fs.readFileSync(path.join(dir, name));
+    fs.writeFileSync(file, zipSync(entries));
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
 }
 
 /** 시트당 테이블 하나인 엑셀 양식 (+ 명세 시트) */

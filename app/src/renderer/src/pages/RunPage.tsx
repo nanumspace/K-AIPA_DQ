@@ -36,6 +36,7 @@ export function RunPage({ nav, onActivity }: { nav: Nav; onActivity: (activity: 
   const [preview, setPreview] = useState<{ c: SourceCandidate; data: PreviewData } | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [templateResult, setTemplateResult] = useState<{ text: string; path?: string; error?: boolean } | null>(null);
   const [drag, setDrag] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const operation = useRef(false);
@@ -89,9 +90,12 @@ export function RunPage({ nav, onActivity }: { nav: Nav; onActivity: (activity: 
   };
   const template = async (kind: TemplateKind) => {
     if (operation.current) return;
-    operation.current = true; setBusy("template"); setMsg(null);
-    try { const p = await api.exportTemplate(cohort, kind); if (p) setMsg(`저장됨: ${p}`); }
-    catch (e) { setErr(String((e as Error).message ?? e)); }
+    operation.current = true; setBusy("template"); setTemplateResult({ text: "저장 위치를 선택해 주세요…" });
+    try {
+      const p = await api.exportTemplate(cohort, kind);
+      setTemplateResult(p ? { text: `저장 완료: ${p}`, path: kind.startsWith("sample-") ? p : p.replace(/[\\/][^\\/]+$/, "") } : { text: "저장을 취소했습니다." });
+    }
+    catch (e) { setTemplateResult({ text: `저장 실패: ${String((e as Error).message ?? e)}`, error: true }); }
     finally { operation.current = false; setBusy(null); }
   };
 
@@ -173,12 +177,16 @@ export function RunPage({ nav, onActivity }: { nav: Nav; onActivity: (activity: 
             <summary>입력 양식 · 샘플 내려받기</summary>
             <div style={{ display: "grid", gap: 6 }}>
               <button className="btn sm" disabled={!!busy} onClick={() => template("xlsx")}>엑셀 양식 (시트당 테이블, 명세 포함)</button>
-              <button className="btn sm" disabled={!!busy} onClick={() => template("csv")}>CSV 양식 묶음 (헤더만)</button>
+              <button className="btn sm" disabled={!!busy} onClick={() => template("csv")}>CSV 양식 ZIP (헤더만)</button>
               <button className="btn sm" disabled={!!busy} onClick={() => template("spec")}>컬럼 명세서 (xlsx)</button>
               <button className="btn sm" disabled={!!busy} onClick={() => template("sample-clean")}>합성 견본 데이터 · clean (오류 없음, 100명)</button>
               <button className="btn sm" disabled={!!busy} onClick={() => template("sample-dirty")}>합성 견본 데이터 · dirty (오류 주입 + 정답표)</button>
               <button className="btn sm" disabled={!!busy} onClick={() => template("sample-good")}>합성 임상 사례 예제 · good (가상 환자 1명, 설명 포함)</button>
             </div>
+            {templateResult && <div className={`callout ${templateResult.error ? "err" : ""}`} role={templateResult.error ? "alert" : "status"} style={{ marginTop: 10, overflowWrap: "anywhere" }}>
+              {templateResult.text}
+              {templateResult.path && <div><button className="btn sm" onClick={() => void api.openPath(templateResult.path!).catch((e) => setTemplateResult({ text: String(e), error: true }))}>저장 위치 열기</button></div>}
+            </div>}
             <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 8, lineHeight: 1.5 }}>병원은 이 양식대로 내보내면 됩니다. 파일명과 컬럼명은 그대로 두고, 날짜는 YYYY-MM-DD, 빈 값은 빈 칸입니다.</div>
           </details>
         </div>

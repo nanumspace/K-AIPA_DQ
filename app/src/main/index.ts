@@ -153,14 +153,15 @@ function check(cohort: string, candidates: SourceCandidate[], mapping: Record<st
 
 async function exportTemplate(cohort: string, kind: TemplateKind): Promise<string | null> {
   const info = cohortOf(cohort); const s = spec();
-  if (kind === "csv" || kind.startsWith("sample-")) {
+  if (kind === "csv") {
+    const r = await dialog.showSaveDialog(win!, { title: "CSV 양식 ZIP 저장", defaultPath: `${cohort}_입력양식.zip`, filters: [{ name: "ZIP", extensions: ["zip"] }] });
+    if (r.canceled || !r.filePath) return null;
+    input.writeCsvTemplateZip(info.tables, s, r.filePath);
+    return r.filePath;
+  }
+  if (kind.startsWith("sample-")) {
     const r = await dialog.showOpenDialog(win!, { title: "저장할 폴더 선택", properties: ["openDirectory", "createDirectory"] });
-    if (r.canceled) return null;
-    if (kind === "csv") {
-      const dest = path.join(r.filePaths[0], `${cohort}_입력양식`);
-      input.writeCsvTemplates(info.tables, s, dest);
-      return dest;
-    }
+    if (r.canceled || !r.filePaths[0]) return null;
     const sk = kind.slice("sample-".length) as "clean" | "dirty" | "good";
     const src = sampleDir(cohort, sk);
     if (!src) throw new Error("견본 데이터가 없습니다");
