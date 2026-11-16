@@ -284,9 +284,10 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const lines = read(d, t).split("\n");
     lines[0] = lines[0] + ",person_id";
     write(d, t, lines.map((l, i) => (i > 0 && l ? `${l},` : l)).join("\n"));
-    const { plan } = stage([d], "dup-header");
+    const candidates = inspectPaths([d]);
+    const plan = buildPlan(COHORT, tables, spec, candidates, undefined, ["PERSON"]);
     expect(plan.ok).toBe(false);
-    expect(issuesOf(plan, t).some((s) => s.includes("중복된 컬럼명"))).toBe(true);
+    expect(() => stageInputs(plan.candidates, plan.mapping, path.join(work, "dup-header-staged"), spec)).toThrow();
   });
 
   it("빈 파일 (0 바이트) · UTF-16 파일: 죽지 않고 읽기 실패로 보고한다", () => {

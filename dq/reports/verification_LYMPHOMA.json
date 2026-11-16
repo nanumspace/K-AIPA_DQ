@@ -1,15 +1,15 @@
 {
  "cohort": "LYMPHOMA",
  "clean": {
-  "rules": 285,
+  "rules": 286,
   "violations": 0,
   "failed_rules": 0,
   "false_positive_rate": 0.0
  },
  "dirty": {
-  "rules": 285,
-  "violations": 1114,
-  "failed_rules": 244
+  "rules": 286,
+  "violations": 1115,
+  "failed_rules": 245
  },
  "faults_total": 265,
  "faults_detected": 265,

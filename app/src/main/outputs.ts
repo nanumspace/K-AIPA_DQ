@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { app } from "electron";
 import { writeCsv } from "@engine/csv.js";
+import { publicSummary } from "@engine/engine.js";
 import type { Summary, RuleStat } from "@engine/types.js";
 import type { OutputFile, RunOutputs } from "@shared/types";
 import type { NormReport } from "./input";
@@ -12,15 +13,16 @@ import type { RuleSetInfo } from "./ruleset";
 export const APP_VERSION = app.getVersion();
 
 const FILES: Omit<OutputFile, "path" | "size">[] = [
-  { key: "report", name: "report.md", label: "검증 보고서", desc: "요약, 분류별 집계, 실패 규칙과 예시(값은 가림). 사람이 읽는 결과.", shareable: true },
+  { key: "report", name: "report.md", label: "검증 보고서", desc: "요약, 분류별 집계와 실패 규칙별 건수. 입력 원문과 DB 오류 원문은 포함하지 않습니다.", shareable: true },
   { key: "findings", name: "findings.csv", label: "위반 행 목록 (CSV)", desc: "규칙, 테이블, 행 키, 환자 ID, 상세. 병원 내부에서 데이터를 고칠 때 씁니다.", shareable: false },
   { key: "rules", name: "rule_results.csv", label: "규칙별 결과 (CSV)", desc: "규칙 전체의 통과·실패·건너뜀·꺼짐과 위반 수, 검사 행 수, 규칙의 출처(표준·변경·사용자·관리자).", shareable: true },
   { key: "submission", name: "submission.json", label: "중앙 제출용 집계", desc: "환자 단위 정보를 뺀 규칙별 건수와 테이블 행 수, 규칙 설정(표준 여부). 병원 밖으로 보내는 유일한 파일.", shareable: true },
-  { key: "summary", name: "summary.json", label: "실행 요약 (JSON)", desc: "엔진의 규칙 단위 원본 요약. 프로그램 간 비교용.", shareable: true },
+  { key: "summary", name: "summary.json", label: "실행 요약 (JSON)", desc: "규칙 단위 요약. DB 오류 원문을 제외한 프로그램 간 비교용 결과.", shareable: true },
 ];
 
 /** 엔진 출력(report/findings/summary) 위에 rule_results.csv 와 submission.json 을 더한다 */
 export function writeExtraOutputs(runDir: string, summary: Summary, meta: { cohortKor: string; label: string; runId: string; ruleSet: RuleSetInfo }, norm: Record<string, NormReport> = {}): void {
+  summary = publicSummary(summary);
   const rules = summary.rules as RuleStat[];
   appendNormalization(path.join(runDir, "report.md"), norm);
   writeCsv(path.join(runDir, "rule_results.csv"),

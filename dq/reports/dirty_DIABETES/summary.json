@@ -12,9 +12,9 @@
   "DIABETES": 99,
   "ADVERSE_EVENT": 18
  },
- "rules_total": 252,
+ "rules_total": 253,
  "rules_failed": 188,
- "rules_skipped": 32,
+ "rules_skipped": 33,
  "rules_error": 0,
  "rules_disabled": 0,
  "violations_total": 868,
@@ -32,7 +32,7 @@
    "violations": 766
   },
   "Plausibility": {
-   "rules": 37,
+   "rules": 38,
    "failed": 30,
    "violations": 52
   }
@@ -3745,10 +3745,25 @@
   },
   {
    "rule_id": "SEM-SACT-001",
-   "name": "항암요법 기간 및 line 번호",
+   "name": "항암요법 종료일 >= 시작일",
    "category": "Plausibility",
    "subcategory": "temporal",
    "severity": "error",
+   "table": "SACT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "skipped",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": "필요 테이블 없음: ['SACT']"
+  },
+  {
+   "rule_id": "SEM-SACT-006",
+   "name": "항암요법 line 번호와 시작일 순서 확인",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
    "table": "SACT",
    "fields": "",
    "check": "sql",

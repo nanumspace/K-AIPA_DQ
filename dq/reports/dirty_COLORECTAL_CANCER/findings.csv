@@ -1176,16 +1176,16 @@ SEM-MEAS-001,검사일 없음,Completeness,warning,MEASUREMENT,,304518,300063,me
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,301584,300020,"value_as_number, value_as_concept_id 모두 없음"
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,302132,300028,"value_as_number, value_as_concept_id 모두 없음"
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,307229,300096,"value_as_number, value_as_concept_id 모두 없음"
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300006,300006,regimen_end_date < regimen_start_date
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300017,300019,regimen_end_date < regimen_start_date
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300024,300027,line_of_therapy=1200 이나 시작일 순서=2
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300040,300043,line_of_therapy=9 이나 시작일 순서=2
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300042,300045,line_of_therapy=1 이나 시작일 순서=2
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,None,300045,line_of_therapy=2 이나 시작일 순서=1
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300083,300089,line_of_therapy=2 이나 시작일 순서=3
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300084,300089,line_of_therapy=3 이나 시작일 순서=2
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300087,300091,line_of_therapy=2 이나 시작일 순서=1
-SEM-SACT-001,항암요법 기간 및 line 번호,Plausibility,error,SACT,,300041,,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-001,항암요법 종료일 >= 시작일,Plausibility,error,SACT,,300006,300006,regimen_end_date < regimen_start_date
+SEM-SACT-001,항암요법 종료일 >= 시작일,Plausibility,error,SACT,,300017,300019,regimen_end_date < regimen_start_date
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300024,300027,line_of_therapy=1200 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300040,300043,line_of_therapy=9 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300042,300045,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,None,300045,line_of_therapy=2 이나 시작일 순서=1
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300083,300089,line_of_therapy=2 이나 시작일 순서=3
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300084,300089,line_of_therapy=3 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300087,300091,line_of_therapy=2 이나 시작일 순서=1
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300041,,line_of_therapy=1 이나 시작일 순서=2
 SEM-SACT-002,항암요법 기간이 연결 약물 기간과 일치,Plausibility,warning,"DRUG_EXPOSURE,SACT",,300006,300006,regimen_start_date 2099-01-01 <> MIN(drug start) 2024-04-25
 SEM-SACT-002,항암요법 기간이 연결 약물 기간과 일치,Plausibility,warning,"DRUG_EXPOSURE,SACT",,300008,300009,regimen_end_date 2023-09-29 < MAX(drug end) 2099-01-01
 SEM-SACT-002,항암요법 기간이 연결 약물 기간과 일치,Plausibility,warning,"DRUG_EXPOSURE,SACT",,300017,300019,regimen_end_date 2023-07-14 < MAX(drug end) 2023-12-16

@@ -220,21 +220,33 @@ rules:
 # 항암요법 (SACT)
 # ---------------------------------------------------------------------------
 - id: SEM-SACT-001
-  name: 항암요법 기간 및 line 번호
+  name: 항암요법 종료일 >= 시작일
   category: Plausibility
   subcategory: temporal
   severity: error
   scope: all
   requires: [SACT]
-  desc: regimen_end_date >= regimen_start_date. 동일 환자의 line_of_therapy 는 1부터 빈틈없이 증가하고 시작일 순서와 일치해야 한다(값이 있을 때).
+  desc: regimen_end_date >= regimen_start_date (값이 있을 때).
+  sql: |
+    SELECT person_id, CAST(sact_id AS VARCHAR) AS row_key, 'regimen_end_date < regimen_start_date' AS detail
+    FROM SACT WHERE regimen_end_date < regimen_start_date
+    ORDER BY person_id, sact_id
+
+- id: SEM-SACT-006
+  name: 항암요법 line 번호와 시작일 순서 확인
+  category: Plausibility
+  subcategory: temporal
+  severity: warning
+  scope: all
+  requires: [SACT]
+  desc: 검토용 경고(휴리스틱)이며 매뉴얼 필드 규칙의 위반이 아니다. 매뉴얼은 line_of_therapy 가 1부터 시작하거나 빈틈없이 이어져야 한다고 요구하지 않고 선택 값이므로, 비어 있으면 검사하지 않는다. 값이 있는데 동일 환자의 시작일 순서(관찰된 SACT 행 기준)와 다르면 누락·순서 오기입 가능성을 확인하도록 안내한다.
   sql: |
     WITH o AS (
       SELECT *, ROW_NUMBER() OVER (PARTITION BY person_id ORDER BY regimen_start_date, sact_id) AS rn FROM SACT
     )
     SELECT person_id, CAST(sact_id AS VARCHAR) AS row_key,
-           CASE WHEN regimen_end_date < regimen_start_date THEN 'regimen_end_date < regimen_start_date'
-                ELSE 'line_of_therapy=' || line_of_therapy || ' 이나 시작일 순서=' || rn END AS detail
-    FROM o WHERE regimen_end_date < regimen_start_date OR (line_of_therapy IS NOT NULL AND line_of_therapy <> rn)
+           'line_of_therapy=' || line_of_therapy || ' 이나 시작일 순서=' || rn AS detail
+    FROM o WHERE line_of_therapy IS NOT NULL AND line_of_therapy <> rn
     ORDER BY person_id, sact_id
 
 - id: SEM-SACT-002

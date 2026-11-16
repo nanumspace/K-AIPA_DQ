@@ -1,6 +1,6 @@
 // 규칙 묶음 구성: 표준 규칙 + 사용자 조정(RuleOverrides) → 실제로 쓰는 규칙(effectiveRules)
 import { createHash } from "node:crypto";
-import { loadSpec, loadStructuralRules, loadSemanticRules } from "./load.js";
+import { loadSpec, loadStructuralRules, loadSemanticRules, loadCodelists, loadConcepts, loadProfiles } from "./load.js";
 import type { Spec, CustomRule, CustomSqlRule, RuleOrigin, RuleOverrides, SemanticRule, Severity, StructuralRule } from "./types.js";
 
 export const CUSTOM_ID_RE = /^USR-\d{3}$/;
@@ -155,11 +155,34 @@ function canonical(v: unknown): unknown {
   return v;
 }
 
-/** 실제로 쓰는 규칙 묶음(표준 + 조정)의 SHA-256. 같은 설정이면 언제나 같은 값이다. */
+/** 해시 형식 표지. 해시에 들어가는 입력의 구성이 바뀌면 올린다. */
+export const RULESET_HASH_FORMAT = "kai-ruleset-hash/2";
+
+/** 설명 문구(desc/description)는 동작에 영향이 없으므로 해시에서 뺀다 */
+function stripDesc(v: unknown): unknown {
+  if (Array.isArray(v)) return v.map(stripDesc);
+  if (v && typeof v === "object") {
+    return Object.fromEntries(Object.entries(v as Record<string, unknown>)
+      .filter(([k]) => k !== "desc" && k !== "description").map(([k, x]) => [k, stripDesc(x)]));
+  }
+  return v;
+}
+
+/** 판정 동작에 영향을 주는 모든 입력(실제 규칙 + 명세 + 코드표 값 + concept + 프로파일)의 SHA-256. 같은 설정이면 언제나 같은 값이다. */
 export function ruleSetHash(overrides?: RuleOverrides): string {
   const eff = effectiveRules(overrides);
   const strip = <T extends { paramText?: unknown; desc?: string }>({ paramText: _p, desc: _d, ...r }: T) => r;
-  const body = canonical({ structural: eff.structural.map(strip), semantic: eff.semantic.map(strip) });
+  const codelists = Object.fromEntries([...loadCodelists().entries()]
+    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+    .map(([name, set]) => [name, [...set].sort()]));
+  const body = canonical({
+    format: RULESET_HASH_FORMAT,
+    rules: { structural: eff.structural.map(strip), semantic: eff.semantic.map(strip) },
+    spec: stripDesc(loadSpec()),
+    codelists,
+    concepts: stripDesc(loadConcepts()),
+    profiles: stripDesc(loadProfiles()),
+  });
   return createHash("sha256").update(JSON.stringify(body)).digest("hex");
 }
 

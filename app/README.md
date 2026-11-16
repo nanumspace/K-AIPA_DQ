@@ -47,11 +47,11 @@ Electron + React + TypeScript 데스크톱 앱입니다. 검증 엔진은 `../dq
 
 | 파일 | 내용 | 외부 제출 |
 |---|---|---|
-| report.md | 검증 보고서 (요약, 분류별 집계, 실패 규칙과 예시, 규칙 설정이 표준과 다르면 `## 규칙 설정` 절) | 가능 |
+| report.md | 검증 보고서 (요약, 분류별 집계, 실패 규칙별 건수, 규칙 설정이 표준과 다르면 `## 규칙 설정` 절). 입력 원문 예시·DB 오류 원문 제외 | 가능 |
 | findings.csv | 위반 행 목록 (규칙, 테이블, 행 키, 환자 ID, 상세) | 금지 (환자 단위) |
 | rule_results.csv | 규칙 전체의 통과·실패·건너뜀·꺼짐과 위반 수. `origin` 컬럼(standard · modified · custom · admin) | 가능 |
 | submission.json | 중앙 제출용 집계 (환자 단위 정보 없음) + `rule_set` | 가능 · 중앙에 보내는 유일한 파일 |
-| summary.json | 엔진 원본 요약 (규칙마다 `origin`) | 가능 |
+| summary.json | 규칙 단위 요약 (규칙마다 `origin`, DB 오류 원문은 정해진 안내로 대체) | 가능 |
 
 "결과 폴더로 내보내기" 가 다섯 파일과 README 를 폴더 하나에 담습니다.
 

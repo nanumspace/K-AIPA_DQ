@@ -66,7 +66,7 @@ dq-ts/
 | `setRoot(dir)` / `getRoot()` | 명세·규칙 디렉터리 지정. 앱은 설정값 또는 내장 리소스 경로를 넣는다 |
 | `loadSpec()`, `loadProfiles()`, `loadStructuralRules()`, `loadSemanticRules()` | 명세와 표준 규칙 읽기 (규칙 관리 화면, 입력 사전 점검에 사용) |
 | `effectiveRules(overrides?)` | 표준 + 조정이 반영된 `{ structural, semantic }` (각 규칙에 `origin`, 끈 규칙은 `disabled`) |
-| `ruleSetHash(overrides?)` | 실제 규칙 묶음의 SHA-256. `ruleSetHash(undefined)` 가 표준 해시 |
+| `ruleSetHash(overrides?)` | 규칙·명세·허용 코드 값·보조 concept·코호트 구성의 SHA-256 (`kai-ruleset-hash/2`). `ruleSetHash(undefined)` 가 표준 해시 |
 | `describeOverrides(overrides)` | 변경 목록 `{ rule_id, origin, change }[]` (한국어) |
 | `readCsv(path)`, `writeCsv(...)`, `csvCell(v)` | CSV 읽기·쓰기 |
 | `verify(cohort, reportsDir)`, `compareRun(...)` | 검출 성능 평가와 Python 비교 (개발용) |
@@ -78,9 +78,11 @@ dq-ts/
 | 1 | `disabled` | 규칙 끄기. 통계에는 `status: "disabled"` 로 남고 실행하지 않는다 | modified |
 | 2 | `severity`, `params` | 심각도, range 의 min/max, pattern 의 regex, codelist 의 extraCodes | modified |
 | 3 | `customRules` | 서식으로 만드는 사용자 규칙 (`USR-000`). 구조 검사기가 그대로 실행 | custom |
-| 4 | `sql`, `customSql` | 표준 교차 규칙 SQL 교체, SQL 규칙 추가 (`ADM-000`). `adminMode: true` 필요 | admin |
+| 4 | `sql`, `customSql` | 표준 교차 규칙 SQL 교체, SQL 규칙 추가 (`ADM-000`). 앱에서 편집할 때만 관리자 모드 필요; 저장된 SQL 은 모드를 꺼도 실행 | admin |
 
 모르는 규칙 id, 맞지 않는 params, 잘못된 id 형식은 `Error` 로 알립니다. SQL 이 잘못되면 그 규칙만 `status: "error"` 와 note 로 남고 실행은 계속됩니다. 관리자 SQL 은 `SELECT`/`WITH` 조회문만 받고, 실행 중에는 외부 파일·네트워크 접근을 막습니다. 조정이 있거나 `adminMode` 이면 `report.md` 맨 위(제목 다음)에 `## 규칙 설정` 절이 들어갑니다.
+
+`adminMode` 는 실행 당시 편집 모드 상태를 기록하며 SQL 실행을 막지 않습니다. 비표준 SQL 은 0행이어도 `person_id`, `row_key`, `detail` 세 반환 열을 검사하고 이름으로 매핑합니다. `runEngine()` 의 반환 Summary 는 앱 내부 진단용으로 DB 오류 원문을 보존하지만, 파일 `summary.json` 및 `report.md` 는 원문을 제외합니다. 입력 원문 예시는 `findings.csv` 에만 남습니다.
 
 ## Electron 앱으로 갈 때
 

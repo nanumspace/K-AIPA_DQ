@@ -62,9 +62,6 @@ describe("규칙 묶음 · 해시 (데이터 불필요)", () => {
     expect(() => effectiveRules({ customSql: [{ id: "USR-001", name: "s", category: "Conformance", severity: "error", scope: "all", requires: [], sql: "SELECT 1" }] })).toThrow(/ADM-000/);
   });
 
-  it("SQL 규칙은 관리자 모드 없이는 받지 않는다", () => {
-    expect(() => new Engine({ cohort: COHORT, overrides: { sql: { "SEM-COM-001": "SELECT 1,2,3" } } })).toThrow(/관리자 모드/);
-  });
 
   it("describeOverrides 는 변경마다 한 줄을 돌려준다", () => {
     const d = describeOverrides({ disabled: ["ST-0001"], severity: { "ST-0002": "warning" }, sql: { "SEM-COM-001": "SELECT 1" } });

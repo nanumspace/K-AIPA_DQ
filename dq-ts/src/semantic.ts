@@ -110,18 +110,28 @@ export async function runSemantic(ctx: SemanticContext, rules: SemanticRule[], s
         st.status = "error"; st.note = "SQL 오류: SELECT 또는 WITH 로 시작하는 조회문만 쓸 수 있다"; continue;
       }
       let rows: unknown[][];
+      let cols: string[];
       try {
         const reader = await con.runAndReadAll(sql);
         rows = reader.getRows();
+        cols = reader.columnNames();
       } catch (e) {
         st.status = "error"; st.note = `SQL 오류: ${String((e as Error).message ?? e).slice(0, 200)}`; continue;
       }
-      if (rule.origin !== "standard" && rows.length && rows[0].length < 3) {
-        st.status = "error"; st.note = "SQL 오류: person_id, row_key, detail 세 열을 돌려줘야 한다"; continue;
+      // 열 순서: 표준 규칙은 위치 그대로, 그 외는 열 이름으로 person_id/row_key/detail 을 찾는다 (행이 0개여도 확인)
+      let pi = 0, ri = 1, di = 2;
+      if (rule.origin !== "standard") {
+        const names = cols.map((c) => c.toLowerCase());
+        const want = ["person_id", "row_key", "detail"];
+        const ok = names.length === 3 && want.every((w) => names.filter((n) => n === w).length === 1);
+        if (!ok) {
+          st.status = "error"; st.note = "SQL 오류: person_id, row_key, detail 세 열을 이름이 겹치지 않게 정확히 돌려줘야 한다"; continue;
+        }
+        pi = names.indexOf("person_id"); ri = names.indexOf("row_key"); di = names.indexOf("detail");
       }
-      for (const [personId, rowKey, detail] of rows) {
-        const rk = valStr(rowKey);
-        sink.add(rule, st.table, "", rk === null ? "None" : rk, valStr(personId), valStr(detail) ?? "");
+      for (const row of rows) {
+        const rk = valStr(row[ri]);
+        sink.add(rule, st.table, "", rk === null ? "None" : rk, valStr(row[pi]), valStr(row[di]) ?? "");
       }
       if (st.violations > 0) st.status = "fail";
     }

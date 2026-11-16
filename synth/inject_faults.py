@@ -8,7 +8,7 @@
 바로 그것을 어기는 값을 넣으므로 규칙을 늘려도 주입이 따라 늘고, 정답(expected_rules)이 어긋나지 않는다.
 적용 가능한 규칙마다 기본 1행씩 심는다(--k 로 늘림).
 의미 규칙(rules_semantic.yaml)은 여러 테이블이 얽혀 있어 손으로 적었다:
-  SEM-COM-001~012, SEM-MEAS-001·002, SEM-SACT-001~005, SEM-LC-001(폐암), SEM-LY-001(림프종) 를 모두 한 번 이상 어긴다.
+  SEM-COM-001~012, SEM-MEAS-001·002, SEM-SACT-001~006, SEM-LC-001(폐암), SEM-LY-001(림프종) 를 모두 한 번 이상 어긴다.
   파일째 뺀 테이블 때문에 건너뛰어지는 의미 규칙의 오류는 심지 않는다(엔진이 귀속할 수 없다).
 
 출력: synth/output/dirty/<COHORT>/<TABLE>.csv 와 fault_manifest.csv
@@ -297,11 +297,11 @@ class Injector:
 
         if "SACT" in d:
             S = d["SACT"]
-            # SACT-001 종료일 < 시작일, line 번호 불일치
+            # SACT-001 종료일 < 시작일 (오류), SACT-006 line 번호가 시작일 순서와 다름 (경고, 휴리스틱)
             for i in self.rows("SACT", mask=S["regimen_start_date"] != ""):
                 self.put("SACT_END_BEFORE_START", "Plausibility", "SACT", i, "regimen_end_date", day(S.at[i, "regimen_start_date"], -1), "SEM-SACT-001")
             for i in self.rows("SACT", mask=S["line_of_therapy"] != ""):
-                self.put("SACT_LINE_MISMATCH", "Plausibility", "SACT", i, "line_of_therapy", "9", "SEM-SACT-001")
+                self.put("SACT_LINE_MISMATCH", "Plausibility", "SACT", i, "line_of_therapy", "9", "SEM-SACT-006")
             # SACT-002 시작일이 연결 약물 최소 시작일과 다름 (1차 요법을 앞으로 당기면 line 순서는 그대로)
             for i in self.rows("SACT", mask=S["line_of_therapy"] == "1"):
                 self.put("SACT_START_NE_DRUG_MIN", "Plausibility", "SACT", i, "regimen_start_date", day(S.at[i, "regimen_start_date"], -3), "SEM-SACT-002")

@@ -46,7 +46,7 @@ export function columnNames(columns: string[], specCols: string[]): { map: Recor
   for (const c of columns) {
     if (exact.has(c)) { map[c] = c; continue; }
     const byCase = lower.get(c.toLowerCase());
-    if (byCase && !columns.includes(byCase)) { map[c] = byCase; caseFolded.push(c); continue; }
+    if (byCase) { map[c] = byCase; caseFolded.push(c); continue; }
     map[c] = c;
   }
   return { map, caseFolded };
@@ -140,15 +140,52 @@ export function cellToString(v: unknown): string {
   return String(v);
 }
 
+/** 전체 CSV 를 레코드로 읽는다. lines[i] 는 i번째 레코드가 끝나는 원본 줄 번호 (빈 줄은 건너뛰므로 레코드 번호와 다를 수 있다). */
+function parseCsvAll(text: string, delimiter: string): { rows: string[][]; lines: number[] } {
+  // csv-parse 의 info:true 반환형은 런타임에서 {record, info} 이지만 배열 오버로드에 반영되어 있지 않다.
+  const recs = parse(text, { relax_column_count: true, skip_empty_lines: true, delimiter, info: true }) as unknown as Array<{ record: string[]; info: { lines: number } }>;
+  return { rows: recs.map((r) => r.record), lines: recs.map((r) => r.info.lines) };
+}
+
+/**
+ * 값 행의 폭을 원래 헤더 기준으로 점검한다 (끝의 이름 없는 컬럼을 버리기 전에 한다).
+ * - 남긴(이름 있는) 컬럼 밖 자리에 값이 있으면 버려지는 데이터라 막는다. 값이 빈 끝 칸(엑셀 저장 흔적 ',,')은 괜찮다.
+ * - strictShort(CSV): 남긴 컬럼 수보다 짧은 행은 칸이 잘린 것이라 막는다. 엑셀은 끝의 빈 칸을 생략하는 것이 정상이라 짧아도 괜찮다.
+ * 첫 문제만 문장으로 돌려준다. rowNo(i): i번째 데이터 행(0부터)의 위치 설명.
+ */
+function rowShapeError(rows: string[][], keepLen: number, strictShort: boolean, rowNo: (i: number) => string): string | null {
+  for (let i = 0; i < rows.length; i++) {
+    const r = rows[i];
+    if (strictShort && r.length < keepLen) return `${rowNo(i)}의 칸이 ${r.length}개로 헤더(${keepLen}개)보다 적습니다`;
+    for (let k = keepLen; k < r.length; k++) {
+      if (String(r[k] ?? "").trim() !== "") return `${rowNo(i)}의 ${k + 1}번째 칸에 값('${String(r[k]).trim().slice(0, 20)}')이 있지만 헤더에 이름이 없어 버려집니다`;
+    }
+  }
+  return null;
+}
+
+/** 명세 이름으로 이은 뒤 같은 이름이 된 컬럼들 (예: PERSON_ID · Person_Id → person_id). 이어 붙인 뒤에 봐야 한다. */
+export function columnCollisions(columns: string[], specCols: string[]): Array<{ name: string; sources: string[] }> {
+  const map = columnNames(columns, specCols).map;
+  const by = new Map<string, string[]>();
+  for (const c of columns) { const n = map[c]; by.set(n, [...(by.get(n) ?? []), c]); }
+  return [...by].filter(([, s]) => s.length > 1).map(([name, sources]) => ({ name, sources }));
+}
+
+function csvRowNo(lines: number[]) { return (i: number) => `데이터 ${i + 1}번째 행(파일 ${lines[i + 1]}번째 줄)`; }
+
 function inspectCsv(p: string): SourceCandidate {
   const base = { id: p, kind: "csv" as const, path: p, name: path.basename(p), folder: path.dirname(p), sizeBytes: fs.statSync(p).size };
   try {
     const { text, encoding } = readText(p);
     if (!text.trim()) return { ...base, rows: 0, columns: [], sample: [], encoding: encoding.label, error: "빈 파일입니다" };
     const delimiter = sniffDelimiter(text, path.extname(p).toLowerCase());
-    const head: string[][] = parse(text, { to_line: SAMPLE_ROWS + 1, relax_column_count: true, skip_empty_lines: true, delimiter });
+    const all = parseCsvAll(text, delimiter);
+    const head = all.rows.slice(0, SAMPLE_ROWS + 1);
     const { columns, keep } = headerOf(head[0] ?? []);
     const sample = head.slice(1).map((r) => keep.map((k) => (r[k] ?? "").trim()));
+    const shape = rowShapeError(all.rows.slice(1), keep.length, true, csvRowNo(all.lines));
+    if (shape) return { ...base, rows: Math.max(0, all.rows.length - 1), columns, sample, encoding: encoding.label, delimiter: delimiter === "," ? undefined : delimiter, error: shape };
     return { ...base, rows: countCsvRows(text), columns, sample, encoding: encoding.label, delimiter: delimiter === "," ? undefined : delimiter };
   } catch (e) {
     return { ...base, rows: 0, columns: [], sample: [], encoding: "?", error: (e as Error).message };
@@ -180,7 +217,10 @@ function inspectXlsx(p: string): SourceCandidate[] {
     return wb.SheetNames.map((sheet) => {
       const rows = sheetRows(wb.Sheets[sheet]);
       const { columns, keep } = headerOf(rows[0] ?? []);
+      const shape = rowShapeError(rows.slice(1), keep.length, false, (i) => `시트 ${i + 2}번째 행(빈 행 제외)`);
       const sample = rows.slice(1, SAMPLE_ROWS + 1).map((r) => keep.map((k) => (r[k] ?? "").trim()));
+      if (shape) return { id: `${p}#${sheet}`, kind: "xlsx" as const, path: p, sheet, name: `${path.basename(p)} / ${sheet}`, folder: path.dirname(p),
+        rows: Math.max(0, rows.length - 1), columns, sample, encoding: "엑셀", sizeBytes: size, error: shape };
       return { id: `${p}#${sheet}`, kind: "xlsx" as const, path: p, sheet, name: `${path.basename(p)} / ${sheet}`, folder: path.dirname(p),
         rows: Math.max(0, rows.length - 1), columns, sample, encoding: "엑셀", sizeBytes: size };
     });
@@ -337,7 +377,9 @@ export function checkTables(tables: string[], spec: Spec, candidates: SourceCand
       if (marks.nullStrings) issues.push({ level: "info", text: `'NULL'·'NA' 같은 글자가 표본에 ${marks.nullStrings}개 있습니다. 빈 값으로 읽습니다.` });
       if (marks.intFloats) issues.push({ level: "info", text: `정수 컬럼에 '.0' 이 붙은 값이 표본에 ${marks.intFloats}개 있습니다 (예: 100001.0). 정수로 읽습니다.` });
       if (marks.zeroTimes) issues.push({ level: "info", text: `날짜 컬럼에 '00:00:00' 이 붙은 값이 표본에 ${marks.zeroTimes}개 있습니다. 날짜만 읽습니다.` });
-      if (c.columns.some((n, i) => c.columns.indexOf(n) !== i)) issues.push({ level: "error", text: `중복된 컬럼명이 있습니다 (${c.name}).` });
+      for (const x of columnCollisions(c.columns, specCols)) {
+        issues.push({ level: "error", text: `컬럼명이 겹칩니다 (${c.name}): ${x.sources.map((s) => `'${s}'`).join(", ")} → 같은 컬럼 '${x.name}'. 하나만 남기도록 원본을 고쳐 주세요.` });
+      }
       if (c.rows === 0) issues.push({ level: "warn", text: `데이터 행이 없습니다 (헤더만): ${c.name}` });
       // 날짜 형식 표본
       for (const f of st.fields) {
@@ -392,14 +434,14 @@ export function stageInputs(candidates: SourceCandidate[], mapping: Record<strin
   const byId = new Map(candidates.map((c) => [c.id, c]));
   const opened = new Map<string, XLSX.WorkBook>();
   const reports: Record<string, NormReport> = {};
-  const readRows = (c: SourceCandidate): string[][] => {
+  const readRows = (c: SourceCandidate): { rows: string[][]; lines?: number[] } => {
     if (c.kind === "xlsx" && c.sheet !== undefined) {
       let wb = opened.get(c.path);
       if (!wb) { wb = XLSX.readFile(c.path, { cellDates: true }); opened.set(c.path, wb); }
-      return sheetRows(wb.Sheets[c.sheet]);
+      return { rows: sheetRows(wb.Sheets[c.sheet]) };
     }
     const { text } = readText(c.path);
-    return parse(text, { relax_column_count: true, skip_empty_lines: true, delimiter: sniffDelimiter(text, path.extname(c.path).toLowerCase()) });
+    return parseCsvAll(text, sniffDelimiter(text, path.extname(c.path).toLowerCase()));
   };
   for (const [table, ids] of Object.entries(mapping)) {
     const cs = ids.map((id) => byId.get(id)).filter((c): c is SourceCandidate => !!c && !c.error);
@@ -411,8 +453,13 @@ export function stageInputs(candidates: SourceCandidate[], mapping: Record<strin
     const parts: Array<{ cols: string[]; keep: number[]; rows: string[][] }> = [];
     const columns: string[] = [];
     for (const c of cs) {
-      const rows = readRows(c);
+      const { rows, lines } = readRows(c);
       const { columns: rawCols, keep, dropped } = headerOf(rows[0] ?? []);
+      // 점검 뒤에 원본이 바뀌었을 수 있어 스테이징에서도 다시 본다: 버려질 데이터 · 같은 이름이 된 컬럼은 막는다.
+      const shape = rowShapeError(rows.slice(1), keep.length, !!lines, lines ? csvRowNo(lines) : (i) => `시트 ${i + 2}번째 행(빈 행 제외)`);
+      if (shape) throw new Error(`${table}: ${c.name}: ${shape}`);
+      const clash = columnCollisions(rawCols, specCols);
+      if (clash.length) throw new Error(`${table}: ${c.name}: ${clash.map((x) => `'${x.sources.join("', '")}' → ${x.name}`).join("; ")} 컬럼명이 정규화 후 겹칩니다`);
       report.droppedColumns += dropped;
       const al = columnNames(rawCols, specCols);
       report.caseFolded += al.caseFolded.length;

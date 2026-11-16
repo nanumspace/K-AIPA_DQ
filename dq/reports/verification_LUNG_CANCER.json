@@ -1,15 +1,15 @@
 {
  "cohort": "LUNG_CANCER",
  "clean": {
-  "rules": 284,
+  "rules": 285,
   "violations": 0,
   "failed_rules": 0,
   "false_positive_rate": 0.0
  },
  "dirty": {
-  "rules": 284,
+  "rules": 285,
   "violations": 895,
-  "failed_rules": 243
+  "failed_rules": 244
  },
  "faults_total": 265,
  "faults_detected": 265,

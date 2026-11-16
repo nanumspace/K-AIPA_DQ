@@ -14,7 +14,7 @@
   "ADVERSE_EVENT": 267,
   "SACT": 149
  },
- "rules_total": 285,
+ "rules_total": 286,
  "rules_failed": 0,
  "rules_skipped": 0,
  "rules_error": 0,
@@ -34,7 +34,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 45,
+   "rules": 46,
    "failed": 0,
    "violations": 0
   }
@@ -4227,10 +4227,25 @@
   },
   {
    "rule_id": "SEM-SACT-001",
-   "name": "항암요법 기간 및 line 번호",
+   "name": "항암요법 종료일 >= 시작일",
    "category": "Plausibility",
    "subcategory": "temporal",
    "severity": "error",
+   "table": "SACT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-SACT-006",
+   "name": "항암요법 line 번호와 시작일 순서 확인",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
    "table": "SACT",
    "fields": "",
    "check": "sql",

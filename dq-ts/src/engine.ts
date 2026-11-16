@@ -8,17 +8,16 @@ import { runSemantic } from "./semantic.js";
 import { effectiveRules, ruleSetHash, describeOverrides, isEmptyOverrides } from "./rules.js";
 import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides } from "./types.js";
 
-/**
- * 보고서에 싣는 예시에서 데이터 값을 가린다. report.md 는 병원 밖으로 나갈 수 있는 파일이라
- * 문장의 모양(어느 컬럼이 어떻게 어긋났는지)만 남기고 값(ID·날짜·수치·원천 문자열)은 '…' 로 바꾼다.
- * 규칙: 따옴표 안, '=' 뒤, 날짜, 그리고 식별자 밖의 숫자. dq/engine.py 의 mask_values 와 같아야 한다.
+/** 외부용 요약에는 DB 오류 원문(입력값·SQL을 포함할 수 있음)을 싣지 않는다.
+ * 앱 내부 진단은 원본 Summary 를 사용한다.
  */
-export function maskValues(detail: string): string {
-  return detail
-    .replace(/'[^']*'/g, "'…'")
-    .replace(/=\S+/g, "=…")
-    .replace(/\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2}(?::\d{2})?)?/g, "…")
-    .replace(/(?<![A-Za-z_\d.])\d+(?:\.\d+)?(?![A-Za-z_\d])/g, "…");
+export function publicSummary(summary: Summary): Summary {
+  return {
+    ...summary,
+    rules: summary.rules.map((r) => r.status === "error"
+      ? { ...r, note: "규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요." }
+      : r),
+  };
 }
 
 export const FINDING_COLUMNS = ["rule_id", "rule_name", "category", "severity", "table", "field", "row_key", "person_id", "detail"];
@@ -33,7 +32,7 @@ export interface EngineOptions {
   onProgress?: ProgressFn;
   /** 규칙 조정(끄기 · 심각도 · 범위 · 사용자 규칙 · SQL). 없으면 표준 규칙 그대로 돈다. */
   overrides?: RuleOverrides;
-  /** 관리자 모드. SQL 교체·SQL 규칙(overrides.sql, customSql)은 이 값이 true 일 때만 받는다. */
+  /** 실행 당시 관리자 편집 모드 상태. 저장된 SQL의 실행 권한과는 별개이며 결과에 기록한다. */
   adminMode?: boolean;
 }
 
@@ -61,9 +60,6 @@ export class Engine {
     this.todayIso = opt.today ?? new Date().toISOString().slice(0, 10);
     this.adminMode = opt.adminMode === true;
     this.overrides = isEmptyOverrides(opt.overrides) ? undefined : opt.overrides;
-    if (!this.adminMode && (Object.keys(this.overrides?.sql ?? {}).length || this.overrides?.customSql?.length)) {
-      throw new Error("규칙 설정 오류: SQL 교체와 SQL 규칙은 관리자 모드(adminMode)에서만 쓸 수 있다");
-    }
     this.concepts = loadConcepts();
     this.spec = loadSpec();
     this.codelists = loadCodelists();
@@ -155,7 +151,7 @@ export class Engine {
     fs.mkdirSync(outDir, { recursive: true });
     writeCsv(path.join(outDir, "findings.csv"), FINDING_COLUMNS, this.findings as unknown as Record<string, unknown>[]);
     const s = this.summary();
-    fs.writeFileSync(path.join(outDir, "summary.json"), JSON.stringify(s, null, 1), "utf-8");
+    fs.writeFileSync(path.join(outDir, "summary.json"), JSON.stringify(publicSummary(s), null, 1), "utf-8");
     fs.writeFileSync(path.join(outDir, "report.md"), this.reportMd(s), "utf-8");
     return s;
   }
@@ -165,7 +161,8 @@ export class Engine {
     const L = ["## 규칙 설정", "",
       `- 표준 규칙 묶음 해시: ${ruleSetHash(undefined)}`,
       `- 이번 실행 규칙 묶음 해시: ${ruleSetHash(this.overrides)}`,
-      `- 관리자 모드: ${this.adminMode ? "사용" : "사용 안 함"}`, ""];
+      `- 관리자 모드: ${this.adminMode ? "사용" : "사용 안 함"}`,
+      `- 관리자 변경 규칙 사용: ${Object.keys(this.overrides?.sql ?? {}).length || this.overrides?.customSql?.length ? "있음" : "없음"}`, ""];
     const changes = describeOverrides(this.overrides);
     if (changes.length) {
       L.push("| 규칙 | 구분 | 변경 내용 |", "|---|---|---|");
@@ -187,16 +184,11 @@ export class Engine {
       L.push(`| ${c} | ${b.rules} | ${b.failed} | ${b.violations} |`);
     }
     L.push("", "## 테이블 행수", "", ...Object.entries(s.tables).map(([t, n]) => `- ${t}: ${n}`));
-    L.push("", "## 실패 규칙", "", "| 규칙 | 분류 | 심각도 | 테이블 | 위반 | 예시 |", "|---|---|---|---|---|---|");
-    const ex = new Map<string, string[]>();
-    for (const f of this.findings) {
-      const a = ex.get(f.rule_id) ?? [];
-      if (a.length < 2) { a.push(maskValues(f.detail)); ex.set(f.rule_id, a); }
-    }
+    L.push("", "## 실패 규칙", "", "| 규칙 | 분류 | 심각도 | 테이블 | 위반 |", "|---|---|---|---|---|");
     for (const r of s.rules) if (r.status === "fail")
-      L.push(`| ${r.rule_id} ${r.name} | ${r.category} | ${r.severity} | ${r.table} | ${r.violations} | ${(ex.get(r.rule_id) ?? []).join(" / ").slice(0, 150)} |`);
+      L.push(`| ${r.rule_id} ${r.name} | ${r.category} | ${r.severity} | ${r.table} | ${r.violations} |`);
     const errs = s.rules.filter((r) => r.status === "error");
-    if (errs.length) L.push("", "## 규칙 실행 오류", "", ...errs.map((r) => `- ${r.rule_id}: ${maskValues(r.note ?? "")}`));
+    if (errs.length) L.push("", "## 규칙 실행 오류", "", ...errs.map((r) => `- ${r.rule_id}: 규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요.`));
     return L.join("\n") + "\n";
   }
 }

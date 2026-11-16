@@ -31,18 +31,6 @@ def load_yaml(p):
     return yaml.safe_load(open(os.path.join(ROOT, p), encoding="utf-8"))
 
 
-_MASK_QUOTED = re.compile(r"'[^']*'")
-_MASK_EQ = re.compile(r"=\S+")
-_MASK_DATE = re.compile(r"\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2}(?::\d{2})?)?")
-_MASK_NUM = re.compile(r"(?<![A-Za-z_\d.])\d+(?:\.\d+)?(?![A-Za-z_\d])")
-
-
-def mask_values(detail):
-    """보고서 예시에서 데이터 값을 가린다. dq-ts/src/engine.ts 의 maskValues 와 같아야 한다."""
-    s = _MASK_QUOTED.sub("'…'", detail)
-    s = _MASK_EQ.sub("=…", s)
-    s = _MASK_DATE.sub("…", s)
-    return _MASK_NUM.sub("…", s)
 
 
 class Engine:
@@ -335,7 +323,11 @@ class Engine:
         pd.DataFrame(self.findings, columns=cols).to_csv(
             os.path.join(out_dir, "findings.csv"), index=False, encoding="utf-8-sig")
         s = self.summary()
-        json.dump(s, open(os.path.join(out_dir, "summary.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+        public = {**s, "rules": [
+            {**r, "note": "규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요."} if r["status"] == "error" else r
+            for r in s["rules"]
+        ]}
+        json.dump(public, open(os.path.join(out_dir, "summary.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
         with open(os.path.join(out_dir, "report.md"), "w", encoding="utf-8") as fh:
             fh.write(f"# 데이터 품질 검증 보고서: {self.cohort} ({self.profile['kor']})\n\n")
             fh.write(f"검증일 {s['run_date']} / 테이블 {len(s['tables'])}개 / 규칙 {s['rules_total']}개 (실패 {s['rules_failed']}, 건너뜀 {s['rules_skipped']}, 오류 {s['rules_error']})\n\n")
@@ -345,17 +337,13 @@ class Engine:
                 b = s["by_category"].get(c, dict(rules=0, failed=0, violations=0))
                 fh.write(f"| {c} | {b['rules']} | {b['failed']} | {b['violations']} |\n")
             fh.write("\n## 테이블 행수\n\n" + "\n".join(f"- {t}: {n}" for t, n in s["tables"].items()) + "\n")
-            fh.write("\n## 실패 규칙\n\n| 규칙 | 분류 | 심각도 | 테이블 | 위반 | 예시 |\n|---|---|---|---|---|---|\n")
-            ex = defaultdict(list)
-            for f in self.findings:
-                if len(ex[f["rule_id"]]) < 2:
-                    ex[f["rule_id"]].append(mask_values(f["detail"]))
+            fh.write("\n## 실패 규칙\n\n| 규칙 | 분류 | 심각도 | 테이블 | 위반 |\n|---|---|---|---|---|\n")
             for r in s["rules"]:
                 if r["status"] == "fail":
-                    fh.write(f"| {r['rule_id']} {r['name']} | {r['category']} | {r['severity']} | {r['table']} | {r['violations']} | {' / '.join(ex[r['rule_id']])[:150]} |\n")
+                    fh.write(f"| {r['rule_id']} {r['name']} | {r['category']} | {r['severity']} | {r['table']} | {r['violations']} |\n")
             errs = [r for r in s["rules"] if r["status"] == "error"]
             if errs:
-                fh.write("\n## 규칙 실행 오류\n\n" + "\n".join(f"- {r['rule_id']}: {mask_values(r['note'] or '')}" for r in errs) + "\n")
+                fh.write("\n## 규칙 실행 오류\n\n" + "\n".join(f"- {r['rule_id']}: 규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요." for r in errs) + "\n")
         return s
 
 

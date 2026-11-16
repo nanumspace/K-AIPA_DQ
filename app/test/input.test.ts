@@ -6,6 +6,7 @@ import path from "node:path";
 import os from "node:os";
 import { setRoot, loadSpec } from "@engine/index.js";
 import type { Spec } from "@engine/types.js";
+import type { InputPlan } from "@shared/types";
 import { inspectPaths, buildPlan, stageInputs, normalizeCell } from "../src/main/input";
 
 const ROOT = path.resolve(__dirname, "../..");
@@ -67,5 +68,53 @@ describe("NA 글자 처리", () => {
     fs.writeFileSync(path.join(dir, "LYMPHOMA.csv"), "lymphoma_id,cell_of_origin\n1,NA\n2,GCB\n", "utf-8");
     const plan = buildPlan("LYMPHOMA", ["LYMPHOMA"], spec, inspectPaths([dir]), undefined, []);
     expect(plan.tables[0].issues.some((i) => i.text.includes("NULL"))).toBe(false);
+  });
+});
+
+describe("입력 무결성: 컬럼명 겹침 · 버려질 칸", () => {
+  const setup = (name: string, csv: string) => {
+    const dir = path.join(work, name);
+    fs.mkdirSync(dir, { recursive: true });
+    const file = path.join(dir, "PERSON.csv");
+    fs.writeFileSync(file, csv, "utf-8");
+    const plan = buildPlan("LYMPHOMA", ["PERSON"], spec, inspectPaths([dir]), undefined, []);
+    return { dir, file, plan, texts: plan.tables[0].issues.filter((i) => i.level === "error").map((i) => i.text) };
+  };
+  const stage = (plan: InputPlan, name: string) => stageInputs(plan.candidates, plan.mapping, path.join(work, `${name}-staged`), spec);
+
+  it("PERSON_ID 와 Person_Id 는 정규화 뒤 같은 person_id 라 점검에서 막고 스테이징도 거부한다", () => {
+    const { plan, texts } = setup("collide", "PERSON_ID,Person_Id\n1,2\n");
+    expect(plan.ok).toBe(false);
+    expect(texts.join("\n")).toMatch(/PERSON\.csv.*PERSON_ID.*Person_Id.*person_id/);
+    expect(() => stage(plan, "collide")).toThrow(/PERSON_ID.*Person_Id.*person_id/);
+  });
+
+  it("헤더에 이름 없는 칸에 값이 있으면 (표본 20행 밖이라도) 파일과 행 위치를 알리고 막는다", () => {
+    const rows = ["person_id"];
+    for (let i = 1; i <= 40; i++) rows.push(i === 35 ? `${i},oops` : `${i}`);
+    const { plan, texts } = setup("extra-cell", rows.join("\n") + "\n");
+    expect(plan.ok).toBe(false);
+    expect(texts.join("\n")).toMatch(/PERSON\.csv.*데이터 35번째 행\(파일 36번째 줄\).*oops/);
+  });
+
+  it("행이 헤더보다 짧으면 막는다", () => {
+    const { plan, texts } = setup("short-row", "person_id,sex\n1,M\n2\n3,F\n");
+    expect(plan.ok).toBe(false);
+    expect(texts.join("\n")).toMatch(/PERSON\.csv.*데이터 2번째 행\(파일 3번째 줄\)/);
+  });
+
+  it("끝의 빈 헤더 · 빈 값 흔적(',,')은 그대로 받는다", () => {
+    const { plan, lines } = stageOne("PERSON", "person_id,sex,,\n1,M,,\n2,F,,\n3,M,,,\n", "trailing-ok");
+    expect(plan.tables[0].issues.some((i) => i.level === "error")).toBe(false);
+    expect(lines).toEqual(["person_id,sex", "1,M", "2,F", "3,M"]);
+  });
+
+  it("점검 뒤 원본이 바뀌어도 스테이징이 다시 막는다", () => {
+    const { file, plan } = setup("changed-after", "person_id\n1\n2\n");
+    expect(plan.ok).toBe(true);
+    fs.writeFileSync(file, "person_id\n1\n2,lost\n", "utf-8");
+    expect(() => stage(plan, "changed-after")).toThrow(/PERSON\.csv.*데이터 2번째 행.*lost/);
+    fs.writeFileSync(file, "person_id,PERSON_ID\n1,2\n", "utf-8");
+    expect(() => stage(plan, "changed-after")).toThrow(/겹칩니다/);
   });
 });

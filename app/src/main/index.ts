@@ -530,6 +530,14 @@ async function smoke(): Promise<void> {
     // 되돌린 뒤에는 표준과 같아야 한다. 관리자 모드를 꺼도 SQL 변경은 남는다.
     await setAdminMode(false);
     expect(rules().find((r) => r.id === sem.id)?.origin === "admin", "관리자 모드를 껐더니 SQL 변경이 사라짐");
+    loadSavedOverrides();
+    if (cleanDir) {
+      const rec = await runFromDir("LUNG_CANCER", cleanDir, SAMPLE_TODAY, "관리자 모드 끈 뒤 저장된 규칙 실행");
+      const sub = JSON.parse(fs.readFileSync(path.join(runsDir(), rec.run_id, "submission.json"), "utf-8"));
+      expect(rec.rules_error === 0 && rec.admin_modified, "관리자 모드 OFF: 저장된 SQL 실행 실패");
+      expect(sub.rule_set.admin_mode === false && sub.rule_set.admin_modified === true, "관리자 모드와 관리자 변경 사용 기록이 구분되지 않음");
+      log(`관리자 OFF · 저장 설정 재적재: rules_error=${rec.rules_error}, admin_modified=${rec.admin_modified}`);
+    }
     changeRules({ op: "resetAll" });
     const reset = ruleSetState();
     expect(reset.standardHash === reset.effectiveHash && rs.isEmptyOverrides(reset.overrides), "표준으로 되돌린 뒤에도 해시가 다름");
