@@ -103,7 +103,8 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const { plan, staged } = stage([d], "euckr");
     expect(plan.ok).toBe(true);
     expect(plan.candidates.find((c) => c.name === "NOTE.csv")?.encoding).toContain("EUC-KR");
-    expect(parse(read(staged, "NOTE"), { columns: true })[0].note_text).toBe(koreanNote);
+    const stagedNotes = parse(read(staged, "NOTE")) as string[][];
+    expect(stagedNotes[1][stagedNotes[0].indexOf("note_text")]).toBe(koreanNote);
     expect((await validate(staged, "euckr")).summary.violations_total).toBe(0);
   });
 

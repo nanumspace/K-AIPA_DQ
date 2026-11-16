@@ -144,8 +144,10 @@ ensure_win_binding() {
 if [ "$PUBLISH_ONLY" = 0 ]; then
   log "의존성과 렌더러 빌드"
   [ -d node_modules ] || npm ci
-  npm run typecheck >/dev/null && ok "타입 검사"
-  npx electron-vite build >/dev/null && ok "electron-vite build"
+  npm run typecheck >/dev/null
+  ok "타입 검사"
+  npx electron-vite build >/dev/null
+  ok "electron-vite build"
   mkdir -p "$OUT"
   [ "$SKIP_MAC" = 0 ] && rm -rf "$OUT"/*.dmg "$OUT"/*.dmg.blockmap "$OUT"/mac-* 2>/dev/null || true
   [ "$SKIP_WIN" = 0 ] && rm -rf "$OUT"/*.exe "$OUT"/*.exe.blockmap "$OUT"/win-* 2>/dev/null || true
