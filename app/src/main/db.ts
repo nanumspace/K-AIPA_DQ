@@ -3,7 +3,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { DuckDBInstance, DuckDBConnection, type DuckDBValue } from "@duckdb/node-api";
 import type { Summary, RuleStat, RawTable } from "@engine/types.js";
-import type { RunRecord, RuleResultRow, FindingRow, FindingsQuery, FindingsPage, Dashboard, CohortStatus } from "@shared/types";
+import { csvCell } from "@engine/csv.js";
+import type { RunRecord, RuleResultRow, FindingRow, FindingsQuery, FindingsFilter, FindingsPage, Dashboard, CohortStatus } from "@shared/types";
 import { checkLabel } from "@shared/labels";
 
 let inst: DuckDBInstance | null = null;
@@ -119,16 +120,99 @@ export async function getRuleResults(runId: string): Promise<RuleResultRow[]> {
   return rs.map((r) => ({ ...r, violations: Number(r.violations), rows_checked: Number(r.rows_checked) }));
 }
 
-export async function getFindings(q: FindingsQuery): Promise<FindingsPage> {
-  const where: string[] = ["run_id = ?"]; const params: DuckDBValue[] = [q.runId];
-  if (q.ruleId) { where.push("rule_id = ?"); params.push(q.ruleId); }
-  if (q.table) { where.push("table_name = ?"); params.push(q.table); }
-  if (q.severity) { where.push("severity = ?"); params.push(q.severity); }
-  if (q.search) { where.push("(detail ILIKE ? OR rule_name ILIKE ? OR person_id = ? OR row_key = ?)"); params.push(`%${q.search}%`, `%${q.search}%`, q.search, q.search); }
-  const w = where.join(" AND ");
+const MAX_TEXT = 500;
+const MAX_PAGE_LIMIT = 1000;
+
+function optText(v: unknown, name: string): string | undefined {
+  if (v === undefined || v === null || v === "") return undefined;
+  if (typeof v !== "string") throw new Error(`조회 조건이 올바르지 않습니다 (${name})`);
+  if (v.length > MAX_TEXT) throw new Error(`조회 조건이 너무 깁니다 (${name})`);
+  return v;
+}
+
+/** 조회·내보내기가 함께 쓰는 조건 검증. 렌더러에서 온 값은 믿지 않는다. */
+export function parseFindingsFilter(q: unknown): FindingsFilter {
+  if (!q || typeof q !== "object") throw new Error("조회 조건이 올바르지 않습니다");
+  const o = q as Record<string, unknown>;
+  const runId = optText(o.runId, "runId");
+  if (!runId) throw new Error("실행 기록이 지정되지 않았습니다");
+  return { runId, ruleId: optText(o.ruleId, "ruleId"), table: optText(o.table, "table"), severity: optText(o.severity, "severity"), search: optText(o.search, "search") };
+}
+
+export function parseFindingsQuery(q: unknown): FindingsQuery {
+  const f = parseFindingsFilter(q);
+  const { offset, limit } = q as Record<string, unknown>;
+  if (!Number.isInteger(offset) || (offset as number) < 0) throw new Error("조회 조건이 올바르지 않습니다 (offset)");
+  if (!Number.isInteger(limit) || (limit as number) < 1 || (limit as number) > MAX_PAGE_LIMIT) throw new Error("조회 조건이 올바르지 않습니다 (limit)");
+  return { ...f, offset: offset as number, limit: limit as number };
+}
+
+/** 쪽 나누기 조회와 내보내기가 같은 WHERE 를 쓰도록 한 곳에서 만든다 */
+function findingsWhere(f: FindingsFilter): { w: string; params: DuckDBValue[] } {
+  const where: string[] = ["run_id = ?"]; const params: DuckDBValue[] = [f.runId];
+  if (f.ruleId) { where.push("rule_id = ?"); params.push(f.ruleId); }
+  if (f.table) { where.push("table_name = ?"); params.push(f.table); }
+  if (f.severity) { where.push("severity = ?"); params.push(f.severity); }
+  if (f.search) { where.push("(detail ILIKE ? OR rule_name ILIKE ? OR person_id = ? OR row_key = ?)"); params.push(`%${f.search}%`, `%${f.search}%`, f.search, f.search); }
+  return { w: where.join(" AND "), params };
+}
+
+export async function getFindings(query: FindingsQuery): Promise<FindingsPage> {
+  const q = parseFindingsQuery(query);
+  const { w, params } = findingsWhere(q);
   const total = (await rows<{ n: number }>(`SELECT count(*) AS n FROM findings WHERE ${w}`, params))[0].n;
   const page = await rows<FindingRow>(`SELECT * FROM findings WHERE ${w} ORDER BY seq LIMIT ? OFFSET ?`, [...params, q.limit, q.offset]);
   return { total: Number(total), rows: page.map((f) => ({ ...f, seq: Number(f.seq) })) };
+}
+
+export async function countFindings(filter: FindingsFilter): Promise<number> {
+  const { w, params } = findingsWhere(parseFindingsFilter(filter));
+  return Number((await rows<{ n: number }>(`SELECT count(*) AS n FROM findings WHERE ${w}`, params))[0].n);
+}
+
+const EXPORT_COLUMNS = ["rule_id", "rule_name", "category", "severity", "table_name", "field", "row_key", "person_id", "detail"] as const;
+/** findings.csv(엔진 출력) 와 같은 머리글 */
+const EXPORT_HEADER = ["rule_id", "rule_name", "category", "severity", "table", "field", "row_key", "person_id", "detail"];
+const EXPORT_BATCH = 5000;
+
+/** 엑셀이 수식으로 읽을 수 있는 시작 문자(= + - @ 탭 CR)는 앞에 ' 를 붙여 글자로 보이게 한다. 숫자 값은 그대로 둔다. */
+export function formulaSafeCsvCell(v: unknown): string {
+  let s = v === null || v === undefined ? "" : String(v);
+  if (/^[=+\-@\t\r]/.test(s) && !/^[+-]?\d+(\.\d+)?$/.test(s)) s = `'${s}`;
+  return csvCell(s);
+}
+
+/**
+ * 조건(쪽 나누기 제외)에 맞는 위반 행 전체를 CSV 로 쓴다. seq 를 기준으로 배치씩 읽어 메모리를 일정하게 쓰고,
+ * 임시 파일에 다 쓴 뒤에야 이름을 바꿔 두므로 도중에 실패해도 반쯤 쓴 파일이 남지 않는다. 쓴 행 수를 돌려준다.
+ */
+export async function exportFindingsCsv(filter: FindingsFilter, file: string, opts: { batchSize?: number } = {}): Promise<number> {
+  const f = parseFindingsFilter(filter);
+  const { w, params } = findingsWhere(f);
+  const batchSize = opts.batchSize ?? EXPORT_BATCH;
+  const tmp = `${file}.${process.pid}.tmp`;
+  let fd = fs.openSync(tmp, "w");
+  let n = 0;
+  try {
+    fs.writeFileSync(fd, "\uFEFF" + EXPORT_HEADER.map(csvCell).join(",") + "\n", "utf-8");
+    let after = 0;
+    for (;;) {
+      const batch = await rows<Record<string, unknown>>(
+        `SELECT seq, ${EXPORT_COLUMNS.join(", ")} FROM findings WHERE ${w} AND seq > ? ORDER BY seq LIMIT ?`, [...params, after, batchSize]);
+      if (!batch.length) break;
+      fs.writeFileSync(fd, batch.map((r) => EXPORT_COLUMNS.map((c) => formulaSafeCsvCell(r[c])).join(",") + "\n").join(""), "utf-8");
+      n += batch.length;
+      after = Number(batch[batch.length - 1].seq);
+      if (batch.length < batchSize) break;
+    }
+    fs.closeSync(fd); fd = -1;
+    fs.renameSync(tmp, file);
+  } catch (e) {
+    if (fd >= 0) try { fs.closeSync(fd); } catch { /* 이미 닫힘 */ }
+    fs.rmSync(tmp, { force: true });
+    throw e;
+  }
+  return n;
 }
 
 export async function deleteRun(runId: string): Promise<void> {

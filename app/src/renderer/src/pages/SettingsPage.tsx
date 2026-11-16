@@ -32,14 +32,14 @@ export function SettingsPage() {
     } catch (e) { setErr(String(e)); }
   };
   const saveToday = async () => {
-    try { setCfg(await api.setConfig({ defaultToday: today || null })); setMsg("검증 실행일 기본값을 저장했습니다."); } catch (e) { setErr(String(e)); }
+    try { setCfg(await api.setConfig({ defaultToday: today || null })); setMsg("검증 기준일 기본값을 저장했습니다."); } catch (e) { setErr(String(e)); }
   };
 
-  if (err) return <div className="callout err">{err}</div>;
-  if (!cfg) return null;
+  if (!cfg) return <><div className="page-title"><h1>설정</h1></div>{err ? <div className="callout err" role="alert">{err} <button className="btn" onClick={() => { setErr(null); refresh(); }}>다시 시도</button></div> : <div className="loading" role="status">설정을 불러오는 중…</div>}</>;
   return (
     <>
       <div className="page-title"><h1>설정</h1></div>
+      {err && <div className="callout err" role="alert">{err} <button className="btn sm" onClick={() => setErr(null)}>닫기</button></div>}
       {msg && <div className="callout" style={{ marginBottom: 12 }}>{msg}</div>}
       <div className="grid c2">
         <Card title="명세와 규칙" sub="검증 규칙은 이 위치의 spec/ 과 rules/ YAML 에서 읽습니다">
@@ -68,9 +68,9 @@ export function SettingsPage() {
             </p>
           </div>
         </Card>
-        <Card title="검증 실행일 기본값" sub="비우면 실행 당일. 미래 날짜 판정과 보고서의 검증일에 쓰입니다">
+        <Card title="검증 기준일 기본값" sub="비우면 실행 당일. 미래 날짜 판정에 사용하는 날짜이며 실제 실행 시각과 다릅니다.">
           <div className="form">
-            <div className="row"><input type="date" value={today} onChange={(e) => setToday(e.target.value)} /><button className="btn primary" onClick={saveToday}>저장</button><button className="btn" onClick={() => setToday("")}>비우기</button></div>
+            <div className="row"><label className="field-label">기본 검증 기준일<input type="date" value={today} onChange={(e) => setToday(e.target.value)} /></label><button className="btn primary" onClick={saveToday}>저장</button><button className="btn" onClick={() => setToday("")}>비우기</button></div>
           </div>
         </Card>
         <Card title="데이터 위치" sub="실행 이력 DB 와 실행별 보고서 파일. 모두 이 PC 에만 저장되며 앱이 외부로 전송하지 않습니다. findings.csv 에는 환자 단위 정보가 있습니다">

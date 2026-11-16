@@ -1,18 +1,22 @@
 // 규칙 편집용 창과 부품: 사용자 규칙 서식(수준 3), 관리자 SQL 시험·저장(수준 4), 변경 이력
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type MutableRefObject } from "react";
 import type { CohortInfo, CustomRule, CustomSqlRule, RuleHistoryEntry, RuleInfo, Severity, SpecTableInfo, SqlTestResult, SqlTestSide } from "@shared/types";
 import { api, errText, fmt, fmtTime } from "../api";
+import { confirmDiscard, Modal, useDirtyRef } from "./Modal";
 
-export function Modal({ title, onClose, children, wide }: { title: ReactNode; onClose: () => void; children: ReactNode; wide?: boolean }) {
+/** 저장 전 확인: 지금 적용 중인 값 → 저장 뒤 값, 그리고 표준 값 */
+export function ChangePreview({ title, rows }: { title: string; rows: { label: string; before: string; after: string; std?: string }[] }) {
   return (
-    <div className="modal" onClick={onClose}>
-      <div className={`modal-body ${wide ? "" : "narrow"}`} onClick={(e) => e.stopPropagation()}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-          <b style={{ fontSize: 15, color: "var(--navy)" }}>{title}</b>
-          <button className="btn sm" onClick={onClose}>닫기</button>
-        </div>
-        {children}
-      </div>
+    <div className="change-preview" role="group" aria-label={title}>
+      <b>{title}</b>
+      <table>
+        <thead><tr><th scope="col">항목</th><th scope="col">지금 적용 중</th><th scope="col">저장 후</th><th scope="col">표준</th></tr></thead>
+        <tbody>{rows.map((r) => (
+          <tr key={r.label} className={r.before !== r.after ? "changed" : ""}>
+            <th scope="row">{r.label}</th><td className="mono">{r.before}</td><td className="mono"><b>{r.after}</b></td><td className="mono">{r.std ?? "-"}</td>
+          </tr>
+        ))}</tbody>
+      </table>
     </div>
   );
 }
@@ -34,10 +38,10 @@ const splitCodes = (t: string) => [...new Set(t.split(/[\s,;]+/).map((x) => x.tr
 const num = (t: string): number | undefined => (t.trim() === "" ? undefined : Number(t));
 
 /** 수준 3: 표 → 필드 → 검사 유형 → 값 → 심각도 순서로 만드는 사용자 규칙 */
-export function CustomRuleModal({ tables, edit, onClose, onSaved }: { tables: SpecTableInfo[]; edit?: RuleInfo & { custom: CustomRule }; onClose: () => void; onSaved: () => void }) {
+export function CustomRuleModal({ tables, edit, onClose, onSaved, dirtyRef }: { tables: SpecTableInfo[]; edit?: RuleInfo & { custom: CustomRule }; onClose: () => void; onSaved: () => void; dirtyRef?: MutableRefObject<boolean> }) {
   const init = edit?.custom;
   const [table, setTable] = useState(init?.table ?? tables[0]?.table ?? "");
-  const [field, setField] = useState(init?.field ?? "");
+  const [field, setField] = useState(init?.field ?? (tables.find((t) => t.table === (init?.table ?? tables[0]?.table))?.fields[0]?.name ?? ""));
   const [check, setCheck] = useState<CustomRule["check"]>(init?.check ?? "not_null");
   const [name, setName] = useState(init?.name ?? "");
   const [severity, setSeverity] = useState<Severity>(init?.severity ?? "warning");
@@ -47,6 +51,12 @@ export function CustomRuleModal({ tables, edit, onClose, onSaved }: { tables: Sp
   const [regex, setRegex] = useState(init?.params.regex ?? "");
   const [desc, setDesc] = useState(init?.desc ?? "");
   const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const snapshot = JSON.stringify([table, field, check, name, severity, min, max, codes, regex, desc]);
+  const [initial] = useState(snapshot);
+  const dirty = snapshot !== initial;
+  const ownRef = useRef(false);
+  useDirtyRef(dirtyRef ?? ownRef, dirty);
 
   const fields = useMemo(() => tables.find((t) => t.table === table)?.fields ?? [], [tables, table]);
   useEffect(() => { if (!fields.some((f) => f.name === field)) setField(fields[0]?.name ?? ""); }, [fields, field]);
@@ -55,17 +65,17 @@ export function CustomRuleModal({ tables, edit, onClose, onSaved }: { tables: Sp
   useEffect(() => { if (!allowed.includes(check)) setCheck("not_null"); }, [allowed, check]);
 
   const save = async () => {
-    setErr(null);
+    setErr(null); setBusy(true);
     const params = check === "range" ? { min: num(min), max: num(max) } : check === "codelist" ? { codes: splitCodes(codes) } : check === "pattern" ? { regex } : {};
     const rule = { name, table, field, check, severity, params, desc: desc.trim() || undefined };
     try {
       await api.changeRules(init ? { op: "updateCustom", rule: { ...rule, id: init.id } } : { op: "addCustom", rule });
       onSaved();
-    } catch (e) { setErr(errText(e)); }
+    } catch (e) { setErr(errText(e)); setBusy(false); }
   };
 
   return (
-    <Modal title={init ? `사용자 규칙 수정 · ${init.id}` : "사용자 규칙 추가"} onClose={onClose}>
+    <Modal title={init ? `사용자 규칙 수정 · ${init.id}` : "사용자 규칙 추가"} onClose={onClose} dirty={dirty}>
       <div className="form" style={{ maxWidth: "none" }}>
         <p className="hint">표준 규칙으로 잡지 못하는 기관 내부 기준을 서식으로 만듭니다. SQL 은 쓰지 않으며, 만든 규칙은 USR-### 로 번호가 붙고 결과물에 '사용자' 규칙으로 기록됩니다.</p>
         <label>규칙 이름<input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="예: 출생연도 1950 이후" /></label>
@@ -86,10 +96,11 @@ export function CustomRuleModal({ tables, edit, onClose, onSaved }: { tables: Sp
         {check === "codelist" && <label>허용 코드 (쉼표 또는 줄바꿈으로 구분)<textarea rows={3} value={codes} onChange={(e) => setCodes(e.target.value)} placeholder="예: 1, 2, 3" /></label>}
         {check === "pattern" && <label>정규식 (값 전체가 아니라 앞에서부터 맞는지 봅니다)<input type="text" className="mono" value={regex} onChange={(e) => setRegex(e.target.value)} placeholder="예: [A-Z]\d{2}(\.\d+)?" /></label>}
         <label>설명 (선택)<input type="text" value={desc} onChange={(e) => setDesc(e.target.value)} /></label>
-        {err && <div className="callout err">{err}</div>}
+        {err && <div className="callout err" role="alert">{err}</div>}
         <div className="rowflex" style={{ justifyContent: "flex-end" }}>
-          <button className="btn" onClick={onClose}>취소</button>
-          <button className="btn primary" onClick={save}>{init ? "저장" : "규칙 추가"}</button>
+          {dirty && <span className="hint" role="status">저장하지 않은 입력이 있습니다</span>}
+          <button type="button" className="btn" onClick={() => { if (confirmDiscard(dirty)) onClose(); }}>취소</button>
+          <button type="button" className="btn primary" disabled={busy} onClick={save}>{init ? "저장" : "규칙 추가"}</button>
         </div>
       </div>
     </Modal>
@@ -100,7 +111,7 @@ export function CustomRuleModal({ tables, edit, onClose, onSaved }: { tables: Sp
 /** 시험 결과 한 쪽 (clean 또는 dirty) */
 function SideView({ label, side, expectZero }: { label: string; side: SqlTestSide | null; expectZero: boolean }) {
   if (!side) return <div>{label}: <span className="hint">내장 견본이 없어 시험하지 못했습니다.</span></div>;
-  if (!side.ok) return <div className="callout err"><b>{label}: SQL 오류</b><pre className="mono" style={{ margin: "4px 0 0", whiteSpace: "pre-wrap" }}>{side.error}</pre></div>;
+  if (!side.ok) return <div className="callout err" role="alert"><b>{label}: SQL 실행 실패 (규칙 위반이 아니라 SQL 을 실행하지 못했습니다)</b><pre className="mono" style={{ margin: "4px 0 0", whiteSpace: "pre-wrap" }}>{side.error}</pre></div>;
   const bad = expectZero && side.violations > 0;
   return (
     <div>
@@ -171,8 +182,8 @@ export function SqlGateControls({ gate, cohorts }: { gate: SqlGate; cohorts: Coh
       <label className="lbl">시험할 코호트 (내장 견본의 clean · dirty 로 돌려 봅니다)
         <select value={gate.cohort} onChange={(e) => { gate.setCohort(e.target.value); gate.reset(); }}>{cohorts.map((c) => <option key={c.id} value={c.id}>{c.kor} ({c.id})</option>)}</select>
       </label>
-      {gate.busy && <div className="hint">시험하는 중…</div>}
-      {gate.err && <div className="callout err">{gate.err}</div>}
+      {gate.busy && <div className="hint" role="status">시험하는 중…</div>}
+      {gate.err && <div className="callout err" role="alert">{gate.err}</div>}
       {gate.result && <SqlTestView result={gate.result} />}
       {gate.needsConfirm && <div className="callout warn">clean 견본에서 위반이 나옵니다. 의도한 규칙이 아니라면 SQL 을 고치세요. 그래도 저장하려면 아래 '확인하고 저장'을 누르세요.</div>}
     </>
@@ -186,7 +197,7 @@ FROM VISIT_OCCURRENCE
 WHERE visit_end_date IS NULL`;
 
 /** 수준 4(관리자): SQL 규칙 추가 · 수정 (ADM-###) */
-export function SqlRuleModal({ tables, cohorts, edit, onClose, onSaved }: { tables: SpecTableInfo[]; cohorts: CohortInfo[]; edit?: RuleInfo & { adm: CustomSqlRule }; onClose: () => void; onSaved: () => void }) {
+export function SqlRuleModal({ tables, cohorts, edit, onClose, onSaved, dirtyRef }: { tables: SpecTableInfo[]; cohorts: CohortInfo[]; edit?: RuleInfo & { adm: CustomSqlRule }; onClose: () => void; onSaved: () => void; dirtyRef?: MutableRefObject<boolean> }) {
   const init = edit?.adm;
   const [name, setName] = useState(init?.name ?? "");
   const [category, setCategory] = useState<CustomSqlRule["category"]>(init?.category ?? "Plausibility");
@@ -197,6 +208,11 @@ export function SqlRuleModal({ tables, cohorts, edit, onClose, onSaved }: { tabl
   const [sql, setSql] = useState(init?.sql ?? SQL_TEMPLATE);
   const [desc, setDesc] = useState(init?.desc ?? "");
   const gate = useSqlGate(cohorts);
+  const snapshot = JSON.stringify([name, category, severity, all, scope, requires, sql, desc]);
+  const [initial] = useState(snapshot);
+  const dirty = snapshot !== initial;
+  const ownRef = useRef(false);
+  useDirtyRef(dirtyRef ?? ownRef, dirty);
   const toggle = (list: string[], set: (v: string[]) => void, x: string) => set(list.includes(x) ? list.filter((y) => y !== x) : [...list, x]);
 
   const save = async () => {
@@ -207,10 +223,10 @@ export function SqlRuleModal({ tables, cohorts, edit, onClose, onSaved }: { tabl
   const req = { sql, requires, ruleId: init?.id };
 
   return (
-    <Modal title={init ? `SQL 규칙 수정 · ${init.id}` : "SQL 규칙 추가 (관리자)"} onClose={onClose} wide>
+    <Modal title={init ? `SQL 규칙 수정 · ${init.id}` : "SQL 규칙 추가 (관리자)"} onClose={onClose} dirty={dirty} wide>
       <div style={{ overflow: "auto" }}>
         <div className="form" style={{ maxWidth: "none" }}>
-          <p className="hint">DuckDB SQL 로 위반 행을 돌려주는 규칙입니다. SELECT 하나이며 결과 컬럼은 <span className="mono">person_id, row_key, detail</span> 이어야 합니다. 검증 실행일은 <span className="mono">{"{TODAY}"}</span>, 질환 본표는 <span className="mono">{"{DISEASE}"}</span>, 그 키는 <span className="mono">{"{DISEASE_PK}"}</span> 로 쓸 수 있습니다. 저장하면 ADM-### 번호가 붙고 결과물에 '관리자' 규칙으로 기록됩니다.</p>
+          <p className="hint">DuckDB SQL 로 위반 행을 돌려주는 규칙입니다. SELECT 하나이며 결과 컬럼은 <span className="mono">person_id, row_key, detail</span> 이어야 합니다. 검증 기준일은 <span className="mono">{"{TODAY}"}</span>, 질환 본표는 <span className="mono">{"{DISEASE}"}</span>, 그 키는 <span className="mono">{"{DISEASE_PK}"}</span> 로 쓸 수 있습니다. 저장하면 ADM-### 번호가 붙고 결과물에 '관리자' 규칙으로 기록됩니다.</p>
           <label>규칙 이름<input type="text" value={name} onChange={(e) => setName(e.target.value)} /></label>
           <div className="grid c2">
             <label>분류<select value={category} onChange={(e) => setCategory(e.target.value as CustomSqlRule["category"])}><option value="Conformance">적합성</option><option value="Completeness">완전성</option><option value="Plausibility">타당성</option></select></label>
@@ -231,7 +247,8 @@ export function SqlRuleModal({ tables, cohorts, edit, onClose, onSaved }: { tabl
           <label>설명 (선택)<input type="text" value={desc} onChange={(e) => setDesc(e.target.value)} /></label>
           <SqlGateControls gate={gate} cohorts={cohorts} />
           <div className="rowflex" style={{ justifyContent: "flex-end" }}>
-            <button className="btn" onClick={onClose}>취소</button>
+            {dirty && <span className="hint" role="status">저장하지 않은 입력이 있습니다</span>}
+            <button type="button" className="btn" onClick={() => { if (confirmDiscard(dirty)) onClose(); }}>취소</button>
             <button className="btn" disabled={gate.busy} onClick={() => void gate.test(req)}>시험 실행</button>
             {gate.needsConfirm
               ? <button className="btn danger" disabled={gate.busy} onClick={() => void gate.testThenSave(req, save, true)}>확인하고 저장</button>
@@ -257,9 +274,9 @@ export function HistoryModal({ onClose }: { onClose: () => void }) {
   return (
     <Modal title="규칙 변경 이력" onClose={onClose} wide>
       <p className="hint">이 PC 의 <span className="mono">rule-history.jsonl</span> 에 남은 기록입니다 (최근 500건). 바꾸기 전과 후의 값이 SQL 까지 그대로 들어 있습니다. 이 PC 의 일반 파일이라 위·변조를 막는 감사 기록이 아니며, '관리자' 표시는 인증된 신원이 아니라 관리자 모드였다는 뜻입니다.</p>
-      {err && <div className="callout err">{err}</div>}
+      {err && <div className="callout err" role="alert">{err}</div>}
       <div className="tblwrap" style={{ maxHeight: "62vh" }}>
-        {rows && rows.length === 0 ? <div className="empty">기록이 없습니다</div> : (
+        {rows === null && !err ? <div className="loading" role="status">불러오는 중…</div> : rows && rows.length === 0 ? <div className="empty">기록이 없습니다</div> : (
           <table className="tbl">
             <thead><tr><th>시각</th><th>동작</th><th>규칙</th><th>관리자</th><th>바꾸기 전 → 후</th></tr></thead>
             <tbody>{(rows ?? []).map((h, i) => (

@@ -51,7 +51,7 @@ GitHub 저장소 [nanumspace/K-AIPA_DQ](https://github.com/nanumspace/K-AIPA_DQ)
 | `history.duckdb` | 실행 이력 DB 파일 하나. 실행 요약, 규칙별 결과, 위반 행 목록(`findings`)이 들어 있습니다 | **있음** (위반 행의 환자 ID·행 키·상세) |
 | `runs/<실행 ID>/` | 실행마다 폴더 하나. 정규화된 입력 `input/<TABLE>.csv`, 출력 파일 5종, `normalization.json` | **있음** (`input/`, `findings.csv`) |
 | `rule-overrides.json`, `rule-history.jsonl` | 이 PC 의 규칙 설정과 변경 이력([6장](06-rules.md)) | 없음 |
-| `config.json` | 명세 위치, 검증 실행일 기본값 등 앱 설정 | 없음 |
+| `config.json` | 명세 위치, 검증 기준일 기본값 등 앱 설정 | 없음 |
 
 즉 이 폴더 전체가 환자 단위 정보를 담은 **기관 내부 자료**입니다. 폴더가 있는 컴퓨터의 접근 통제·디스크 암호화·반출 금지는 기관의 정보보안 정책에 따릅니다. 프로그램이 따로 암호화하지 않습니다.
 

@@ -1,0 +1,26 @@
+/* 위반 상세 화면 전용 보조 스타일. 공용 클래스(.findings-grid .field-label .detail-panel 등)는 styles.css 에 있다. */
+.findings-page .fnd-filters { align-items: flex-end; }
+.findings-page .fnd-field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.findings-page .fnd-field select, .findings-page .fnd-field input { max-width: 100%; }
+.findings-page .fnd-run-select { min-width: 280px; max-width: 420px; }
+.findings-page .fnd-rule-select { min-width: 200px; max-width: 340px; }
+.findings-page .fnd-export { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.findings-page .fnd-export-row { display: flex; gap: 8px 16px; flex-wrap: wrap; align-items: center; }
+.findings-page .fnd-export-row .hint { color: var(--ink-2); font-size: 12px; }
+.findings-page .fnd-scroll { max-height: 62vh; overflow: auto; }
+.findings-page .fnd-rules-scroll { max-height: 68vh; overflow: auto; }
+.findings-page .rule-pick { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 0; cursor: pointer; color: inherit; }
+.findings-page .rule-pick > span { display: block; }
+.findings-page .rule-pick .meta { color: var(--muted); font-size: 11px; }
+.findings-page tr.sel .rule-pick .name { font-weight: 700; }
+.findings-page .fnd-detail-cell { max-width: 320px; }
+.findings-page .fnd-detail-grid { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 10px 0; }
+.findings-page .fnd-detail-grid dt { color: var(--ink-2); font-weight: 600; }
+.findings-page .fnd-detail-grid dd { margin: 0; overflow-wrap: anywhere; }
+.findings-page .fnd-detail-text { margin: 4px 0 10px; padding: 8px 10px; background: #f4f7fb; border: 1px solid var(--line); border-radius: 6px; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--mono); font-size: 12.5px; max-height: 40vh; overflow: auto; }
+.findings-page .fnd-panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.findings-page .fnd-panel-head h2 { margin: 0; font-size: 15px; overflow-wrap: anywhere; }
+.findings-page .fnd-guide { margin: 6px 0 0; }
+.findings-page .fnd-notice { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.findings-page .fnd-status { padding: 8px 12px; }
+.findings-page .fnd-rule-banner { margin-bottom: 10px; }

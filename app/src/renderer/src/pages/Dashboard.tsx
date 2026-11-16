@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, BarChart, Bar } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend } from "recharts";
 import type { Dashboard as DashboardData, RuleInfo } from "@shared/types";
-import { SEVERITIES, rateStatus, severityInfo, checkLabel } from "@shared/labels";
-import { api, fmt, pct, fmtTime } from "../api";
-import { Card, Stat, Empty, RateDot } from "../components/ui";
+import { SEVERITIES, severityInfo, checkLabel } from "@shared/labels";
+import { api, fmt, fmtTime } from "../api";
+import { Card, Stat, Empty, RunOutcome } from "../components/ui";
 import type { Nav } from "../App";
 
 const PALETTE = ["#2563eb", "#38bdf8", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6", "#14b8a6", "#f97316", "#64748b", "#a3e635"];
@@ -12,11 +12,15 @@ export function Dashboard({ nav }: { nav: Nav }) {
   const [d, setD] = useState<DashboardData | null>(null);
   const [rules, setRules] = useState<RuleInfo[]>([]);
   const [err, setErr] = useState<string | null>(null);
+  const [retry, setRetry] = useState(0);
+  const [rulesErr, setRulesErr] = useState<string | null>(null);
 
   useEffect(() => {
-    api.getDashboard().then(setD).catch((e) => setErr(String(e)));
-    api.listRules().then(setRules).catch(() => {});
-  }, []);
+    let active = true; setErr(null); setRulesErr(null); setD(null);
+    api.getDashboard().then((data) => { if (active) setD(data); }).catch((e) => { if (active) setErr(String(e)); });
+    api.listRules().then((data) => { if (active) setRules(data); }).catch((e) => { if (active) setRulesErr(String(e)); });
+    return () => { active = false; };
+  }, [retry]);
 
   const totalViolations = useMemo(() => d?.byCheck.reduce((a, b) => a + b.count, 0) ?? 0, [d]);
   const severityRows = useMemo(() => {
@@ -26,8 +30,8 @@ export function Dashboard({ nav }: { nav: Nav }) {
   const trend = useMemo(() => (d?.trend ?? []).map((t, i) => ({ ...t, x: `${t.cohort.slice(0, 4)}#${i + 1}`, time: fmtTime(t.created_at) })), [d]);
   const latestRun = d?.latestByCohort.slice().sort((a, b) => b.created_at.localeCompare(a.created_at))[0];
 
-  if (err) return <div className="callout err">{err}</div>;
-  if (!d) return <Empty>불러오는 중…</Empty>;
+  if (err) return <div className="callout err" role="alert">{err} <button className="btn" onClick={() => setRetry((n) => n + 1)}>다시 시도</button></div>;
+  if (!d) return <div className="loading" role="status">대시보드를 불러오는 중…</div>;
 
   return (
     <>
@@ -42,10 +46,10 @@ export function Dashboard({ nav }: { nav: Nav }) {
         </div>
       )}
 
-      <div className="grid c4">
-        {/* ① 오류 유형별 통계 */}
-        <Card num={1} title="오류 유형별 통계" sub="오류 유형별 건수 및 비율">
-          {d.byCheck.length === 0 ? <Empty>오류 없음</Empty> : (
+      <div className="grid c2">
+        {/* ① 위반 유형별 통계 */}
+        <Card num={1} title="위반 유형별 통계" sub="오류와 경고를 포함한 위반 건수의 분포">
+          {d.byCheck.length === 0 ? <Empty>보고된 위반 없음 · 검사 범위는 각 보고서에서 확인하세요.</Empty> : (
             <div style={{ display: "grid", gridTemplateColumns: "130px minmax(0, 1fr)", gap: 6, alignItems: "center" }}>
               <div style={{ height: 150, position: "relative" }}>
                 <ResponsiveContainer>
@@ -77,39 +81,33 @@ export function Dashboard({ nav }: { nav: Nav }) {
                 <tr key={s.key}><td className="nw" style={{ color: s.color, fontWeight: 600 }}>{s.label}</td><td className="num">{fmt(s.count)}</td>
                   <td className="num" style={{ color: s.color }}>{totalViolations ? ((s.count / totalViolations) * 100).toFixed(1) : "0.0"}%</td></tr>
               ))}
-              <tr className="total"><td>합계</td><td className="num">{fmt(totalViolations)}</td><td className="num">100%</td></tr>
+              <tr className="total"><td>합계</td><td className="num">{fmt(totalViolations)}</td><td className="num">{totalViolations ? "100%" : "—"}</td></tr>
             </tbody>
           </table>
         </Card>
 
         {/* ② 질환별 검증 결과 */}
-        <Card num={2} title="질환별 검증 결과" sub="질환별 규칙 위반 현황 요약 (최신 실행). 위반율 = 위반 건수 ÷ 입력 행 수">
+        <Card num={2} title="질환별 검증 결과" sub="코호트별 최신 실행. 오류·경고와 실제 검사 상태를 함께 확인하세요.">
           {d.latestByCohort.length === 0 ? <Empty>실행 기록 없음</Empty> : (
-            <table className="tbl">
-              <thead><tr><th>질환명</th><th className="num" title="검사한 입력 행의 합계">데이터 건수(행)</th><th className="num" title="오류(High)와 경고(Medium) 위반을 모두 센 건수">위반 건수</th><th className="num" title="위반 건수 ÷ 입력 행 수. 한 행이 여러 규칙을 위반하면 중복해서 세므로 오류 행의 비율이 아니며 100%를 넘을 수도 있습니다.">위반율(%)</th><th>상태</th></tr></thead>
+            <div className="table-scroll"><table className="tbl">
+              <thead><tr><th>질환 · 보고서</th><th className="num">입력 행</th><th className="num">오류</th><th className="num">경고</th><th>검사 상태</th></tr></thead>
               <tbody>
                 {d.latestByCohort.map((r) => (
-                  <tr key={r.run_id} className="click" onClick={() => nav.go("findings", r.run_id)} title={`${r.label} · ${fmtTime(r.created_at)}`}>
-                    <td className="nw">{r.cohort_kor}</td><td className="num">{fmt(r.rows_total)}</td><td className="num">{fmt(r.violations_total)}</td>
-                    <td className="num">{pct(r.error_rate)}</td><td><RateDot pct={r.error_rate} /></td>
+                  <tr key={r.run_id}>
+                    <td><button className="btn-link" onClick={() => nav.go("report", r.run_id)}>{r.cohort_kor}</button><div className="hint">{fmtTime(r.created_at)}</div></td><td className="num">{fmt(r.rows_total)}</td>
+                    <td className="num">{fmt(r.violations_error)}</td><td className="num">{fmt(r.violations_warning)}</td><td><RunOutcome run={r} /></td>
                   </tr>
                 ))}
-                <tr className="total"><td>합계</td><td className="num">{fmt(d.totals.rows)}</td><td className="num">{fmt(d.totals.violations)}</td>
-                  <td className="num">{pct(d.totals.error_rate)}</td><td><RateDot pct={d.totals.error_rate} /></td></tr>
+                <tr className="total"><td>합계</td><td className="num">{fmt(d.totals.rows)}</td><td className="num">{fmt(d.latestByCohort.reduce((n, r) => n + r.violations_error, 0))}</td><td className="num">{fmt(d.latestByCohort.reduce((n, r) => n + r.violations_warning, 0))}</td><td>상태는 코호트별 확인</td></tr>
               </tbody>
-            </table>
+            </table></div>
           )}
-          <div className="sub" style={{ marginTop: 12 }} title="위반 건수 ÷ 입력 행 수 기준의 구간입니다. 임상적 품질 판정이나 인증 기준이 아닙니다.">위반율 구간</div>
-          <div style={{ display: "flex", gap: 14, fontSize: 12 }}>
-            {[["우수 (<1%)", 0.5], ["양호 (1~2%)", 1.5], ["주의 (2~5%)", 3], ["위험 (≥5%)", 6]].map(([l, v]) => (
-              <span key={String(l)}><span className="dot" style={{ background: rateStatus(Number(v)).color, marginRight: 5 }} />{l}</span>
-            ))}
-          </div>
         </Card>
 
         {/* ③ 적용 검증 규칙 */}
         <Card num={3} title="적용 검증 규칙" sub={`구조 규칙 ${fmt(d.rulesCount.structural)}개 · 교차 규칙 ${fmt(d.rulesCount.semantic)}개`}
           right={<button className="btn sm" onClick={() => nav.go("rules")}>전체 보기</button>}>
+          {rulesErr && <div className="callout err" role="alert">규칙을 불러오지 못했습니다. <button className="btn sm" onClick={() => setRetry((n) => n + 1)}>다시 시도</button></div>}
           <div className="tblwrap short">
             <table className="tbl">
               <thead><tr><th>규칙 ID</th><th>규칙명</th><th>규칙 유형</th></tr></thead>
@@ -131,9 +129,9 @@ export function Dashboard({ nav }: { nav: Nav }) {
         </Card>
 
         {/* ④ 후속 조치 내용 */}
-        <Card num={4} title="후속 조치 내용" sub="오류 유형별 조치 내용 및 가이드">
+        <Card num={4} title="후속 조치 내용" sub="위반 심각도별 조치 안내">
           <table className="tbl">
-            <thead><tr><th>오류 구분</th><th>주요 조치 가이드</th></tr></thead>
+            <thead><tr><th>심각도</th><th>주요 조치 가이드</th></tr></thead>
             <tbody>
               {SEVERITIES.map((s) => (
                 <tr key={s.key}><td style={{ color: s.color, fontWeight: 600, whiteSpace: "nowrap" }}>{s.label}</td><td>{s.guide}</td></tr>
@@ -155,7 +153,7 @@ export function Dashboard({ nav }: { nav: Nav }) {
       {/* ⑤ 검증 결과 모니터링 */}
       <div style={{ marginTop: 14 }}>
         <Card num={5} title="검증 결과 모니터링" sub="이 PC 의 실행 이력에 따른 위반 추이">
-          <div className="grid" style={{ gridTemplateColumns: "1fr 1fr 1.1fr" }}>
+          <div className="grid c2">
             <div>
               <div className="sub" style={{ fontWeight: 600, color: "var(--navy)" }}>실행별 위반 건수 추이</div>
               <div style={{ height: 210 }}>
@@ -174,26 +172,11 @@ export function Dashboard({ nav }: { nav: Nav }) {
               </div>
             </div>
             <div>
-              <div className="sub" style={{ fontWeight: 600, color: "var(--navy)" }} title="위반 건수 ÷ 입력 행 수. 중복 위반이 있으면 오류 행 비율과 다릅니다.">위반율 추이 (%)</div>
-              <div style={{ height: 210 }}>
-                {trend.length ? (
-                  <ResponsiveContainer>
-                    <BarChart data={trend} margin={{ top: 8, right: 12, left: -10, bottom: 0 }}>
-                      <CartesianGrid stroke="#eef1f5" vertical={false} />
-                      <XAxis dataKey="x" tick={{ fontSize: 10 }} /><YAxis tick={{ fontSize: 10 }} unit="%" />
-                      <Tooltip formatter={(v) => pct(Number(v))} labelFormatter={(_, p) => (p?.[0]?.payload?.time ?? "")} />
-                      <Bar dataKey="error_rate" name="위반율" fill="#3b6fd6" radius={[3, 3, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                ) : <Empty>실행 기록 없음</Empty>}
-              </div>
-            </div>
-            <div>
               <div className="sub" style={{ fontWeight: 600, color: "var(--navy)" }}>검증 상태 요약</div>
               <div className="grid c3" style={{ gap: 8 }}>
-                <Stat k="총 검증 데이터 건수" v={fmt(d.totals.rows)} s="건" />
-                <Stat k="전체 위반 건수" v={fmt(d.totals.violations)} s="건" tone="red" />
-                <Stat k="전체 위반율" v={pct(d.totals.error_rate)} s="위반 ÷ 입력 행" tone={d.totals.error_rate < 2 ? "green" : "orange"} />
+                <Stat k="입력 행 수" v={fmt(d.totals.rows)} s="코호트별 최신 실행 합계" />
+                <Stat k="오류 건수" v={fmt(d.latestByCohort.reduce((n, r) => n + r.violations_error, 0))} tone={d.latestByCohort.some((r) => r.violations_error) ? "red" : undefined} />
+                <Stat k="경고 건수" v={fmt(d.latestByCohort.reduce((n, r) => n + r.violations_warning, 0))} tone={d.latestByCohort.some((r) => r.violations_warning) ? "orange" : undefined} />
               </div>
               <div style={{ display: "flex", gap: 10, marginTop: 10, alignItems: "stretch" }}>
                 <div className={`callout ${latestRun ? "" : "warn"}`} style={{ flex: 1 }}>

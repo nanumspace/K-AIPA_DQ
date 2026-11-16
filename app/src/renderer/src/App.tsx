@@ -7,24 +7,28 @@ import { FindingsPage } from "./pages/FindingsPage";
 import { ReportPage } from "./pages/ReportPage";
 import { MonitorPage } from "./pages/MonitorPage";
 import { SettingsPage } from "./pages/SettingsPage";
-
+import type { RunProgress, RunRecord } from "@shared/types";
 export type Page = "dashboard" | "run" | "rules" | "findings" | "report" | "monitor" | "settings";
 
 const MENU: { id: Page; label: string; icon: string }[] = [
   { id: "run", label: "검증 실행", icon: "▶" },
   { id: "report", label: "결과 보고서", icon: "▤" },
-  { id: "findings", label: "오류 현황 조회", icon: "⌕" },
+  { id: "findings", label: "위반 상세", icon: "⌕" },
   { id: "dashboard", label: "대시보드", icon: "⌂" },
   { id: "monitor", label: "통계 모니터링", icon: "▥" },
   { id: "rules", label: "검증 규칙 관리", icon: "☰" },
   { id: "settings", label: "설정", icon: "⚙" },
 ];
 
-export interface Nav { page: Page; runId?: string; go: (page: Page, runId?: string) => void }
+export interface Nav { page: Page; runId?: string; ruleId?: string; go: (page: Page, runId?: string, ruleId?: string) => void }
+
+export interface RunActivity { busy: string | null; progress: RunProgress | null; result: RunRecord | null }
 
 export function App() {
   const [page, setPage] = useState<Page>("run");
   const [runId, setRunId] = useState<string | undefined>();
+  const [ruleId, setRuleId] = useState<string | undefined>();
+  const [activity, setActivity] = useState<RunActivity>({ busy: null, progress: null, result: null });
   const [version, setVersion] = useState(0); // 실행 완료 시 증가 → 목록 갱신
   // 꼬리말은 명세(매뉴얼 2026-11-16)의 실제 규모를 적는다. 규칙 수는 이 PC 의 설정(사용자·관리자 규칙 포함)을 따른다.
   const [foot, setFoot] = useState("");
@@ -43,13 +47,18 @@ export function App() {
     return () => window.removeEventListener("kai:config", load);
   }, []);
 
-  const go = (p: Page, r?: string) => { setPage(p); if (r !== undefined) setRunId(r); };
-  useEffect(() => api.onNav((p) => setPage(p as Page)), []);
+  const go = (p: Page, r?: string, rule?: string) => {
+    if (p !== page && !window.dispatchEvent(new CustomEvent("kai:before-nav", { cancelable: true }))) return;
+    setPage(p);
+    if (r !== undefined) setRunId(r);
+    setRuleId(rule);
+  };
+  useEffect(() => api.onNav((p) => go(p as Page)), [page]);
   useEffect(() => api.onProgress((p) => { if (p.stage === "done") setVersion((v) => v + 1); }), []);
 
   const adminOff = async () => { await api.setAdminMode(false); window.dispatchEvent(new Event("kai:config")); };
 
-  const nav: Nav = { page, runId, go };
+  const nav: Nav = { page, runId, ruleId, go };
   return (
     <div className="shell">
       {admin && (
@@ -63,17 +72,29 @@ export function App() {
         <aside className="sidebar">
           <div className="brand">K-AIPA DQ<small>K-AIPA 임상 데이터 품질검증</small></div>
           {MENU.map((m) => (
-            <button key={m.id} className={page === m.id ? "active" : ""} onClick={() => setPage(m.id)}>
+            <button key={m.id} className={page === m.id ? "active" : ""} aria-current={page === m.id ? "page" : undefined} onClick={() => go(m.id)}>
               <span className="icon">{m.icon}</span>{m.label}
             </button>
           ))}
           <div className="foot">{foot}<br />{appVersion && `v${appVersion}`}</div>
         </aside>
-        <main className="main">
+        <main className="main" id="main-content">
+          {page !== "run" && activity.busy && (
+            <div className="run-banner" role="status" aria-live="polite">
+              <span>{activity.busy === "run" ? `검증 진행 중 · ${activity.progress?.text ?? "준비 중"} · ${activity.progress?.pct ?? 0}%` : "입력 파일을 준비하고 있습니다."}</span>
+              <button className="btn sm" onClick={() => go("run")}>검증 화면으로 돌아가기</button>
+            </div>
+          )}
+          {page !== "run" && !activity.busy && activity.result && (
+            <div className="run-banner">
+              <span>최근 검증 완료 · {activity.result.cohort_kor} · {activity.result.label}</span>
+              <button className="btn sm" onClick={() => go("report", activity.result!.run_id)}>결과 보기</button>
+            </div>
+          )}
           {page === "dashboard" && <Dashboard key={version} nav={nav} />}
-          {page === "run" && <RunPage nav={nav} />}
+          <div hidden={page !== "run"}><RunPage nav={nav} onActivity={setActivity} /></div>
           {page === "rules" && <RulesPage />}
-          {page === "findings" && <FindingsPage key={`${version}-${runId ?? ""}`} nav={nav} />}
+          {page === "findings" && <FindingsPage key={`${version}-${runId ?? ""}-${ruleId ?? ""}`} nav={nav} />}
           {page === "report" && <ReportPage key={`${version}-${runId ?? ""}`} nav={nav} />}
           {page === "monitor" && <MonitorPage key={version} nav={nav} />}
           {page === "settings" && <SettingsPage />}

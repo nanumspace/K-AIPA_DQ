@@ -1,0 +1,33 @@
+/* 규칙 관리 화면 전용 스타일 (공용 styles.css 는 건드리지 않는다) */
+.rule-grid.with-detail { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: start; }
+@media (max-width: 1100px) {
+  .rule-grid.with-detail { grid-template-columns: minmax(0, 1fr); }
+}
+
+.tbl tr.click:focus-visible { outline: 2px solid var(--navy, #1f3a5f); outline-offset: -2px; }
+.switch input:focus-visible + .sl { outline: 2px solid var(--navy, #1f3a5f); outline-offset: 2px; }
+.switch input:disabled + .sl { opacity: .55; cursor: progress; }
+
+/* 즉시 적용 / 저장해야 적용 표시 */
+.apply-tag { display: inline-block; font-size: 11px; font-weight: 700; line-height: 1; padding: 3px 7px; border-radius: 999px; border: 1px solid transparent; white-space: nowrap; vertical-align: middle; }
+.apply-tag.now { color: #0f6b3a; background: #e3f4ea; border-color: #b8e0c8; }
+.apply-tag.save { color: #8a5a00; background: #fff3d6; border-color: #f0d9a3; }
+.apply-legend { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; }
+
+.callout.ok { background: #e9f7ef; border-color: #b8e0c8; color: #0f5132; }
+
+/* 저장 전 확인표 */
+.change-preview { border: 1px solid var(--line, #d9e0ea); border-radius: 8px; padding: 8px 10px; background: #fbfcfe; }
+.change-preview table { width: 100%; border-collapse: collapse; margin-top: 6px; font-size: 12.5px; }
+.change-preview th, .change-preview td { text-align: left; padding: 4px 8px; border-top: 1px solid var(--line, #d9e0ea); vertical-align: top; overflow-wrap: anywhere; }
+.change-preview thead th { color: var(--muted, #6b7685); font-weight: 600; border-top: 0; }
+.change-preview tr.changed td:nth-child(3) { background: #fff8e1; }
+
+.sql-compare { border: 1px solid var(--line, #d9e0ea); border-radius: 8px; padding: 6px 10px; }
+.sql-compare summary { cursor: pointer; font-size: 12.5px; }
+.sql-compare pre { max-height: 180px; overflow: auto; margin: 4px 0 8px; }
+
+/* 되돌릴 수 없는 작업은 평소 도구 모음과 떨어뜨려 둔다 */
+.danger-zone { margin-top: 32px; padding: 14px 16px; border: 1px solid var(--red, #c0392b); border-radius: 10px; background: #fff7f6; }
+.danger-zone h2 { margin: 0 0 6px; font-size: 14px; color: var(--red, #c0392b); }
+.danger-zone p { margin: 0 0 10px; font-size: 12.5px; color: var(--ink-2, #3b4756); }

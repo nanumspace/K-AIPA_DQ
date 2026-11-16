@@ -28,6 +28,7 @@ const api: Api = {
   getRun: (runId) => ipcRenderer.invoke("runs:get", runId),
   getRunOutputs: (runId) => ipcRenderer.invoke("runs:outputs", runId),
   getFindings: (q) => ipcRenderer.invoke("findings:query", q),
+  exportFindings: (q) => ipcRenderer.invoke("findings:export", q),
   exportFile: (runId, key) => ipcRenderer.invoke("runs:exportFile", runId, key),
   exportBundle: (runId) => ipcRenderer.invoke("runs:exportBundle", runId),
   deleteRun: (runId) => ipcRenderer.invoke("runs:delete", runId),

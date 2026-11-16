@@ -316,7 +316,7 @@
             <div class="s" data-i18n="mock.sub">K-AIPA 임상 데이터 품질검증</div>
             <div class="m on" data-i18n="mock.m1">▶ 검증 실행</div>
             <div class="m" data-i18n="mock.m2">▤ 결과 보고서</div>
-            <div class="m" data-i18n="mock.m3">⌕ 오류 현황 조회</div>
+            <div class="m" data-i18n="mock.m3">⌕ 위반 상세</div>
             <div class="m" data-i18n="mock.m4">⌂ 대시보드</div>
             <div class="m" data-i18n="mock.m5">▥ 통계 모니터링</div>
             <div class="m" data-i18n="mock.m6">☰ 검증 규칙 관리</div>
@@ -402,15 +402,15 @@
           </article>
           <article class="card reveal">
             <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div>
-            <h3 data-i18n="f7.h">오류 현황 조회</h3>
-            <p data-i18n="f7.p">위반 행을 규칙·테이블·심각도·검색어로 걸러 보고 CSV 로 내보냅니다. 행 키와 환자 ID, 상세 설명이 있어 원천 데이터에서 바로 찾아 고칩니다.</p>
+            <h3 data-i18n="f7.h">위반 상세</h3>
+            <p data-i18n="f7.p">규칙·테이블·심각도·검색어로 위반을 찾고 상세 전문과 확인 방법을 봅니다. 현재 조건 전체 쪽과 실행 전체 CSV를 구분해 기관 내부용으로 저장합니다.</p>
             <div class="tags"><b data-i18n="f7.t1">규칙별 조치 안내</b><b data-i18n="f7.t2">오류 · 경고</b></div>
           </article>
           <article class="card reveal">
             <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg></div>
             <h3 data-i18n="f8.h">대시보드 · 실행 이력</h3>
-            <p data-i18n="f8.p">오류 유형별 통계, 질환별 최신 결과와 오류율 신호등, 실행 이력 추이를 봅니다. 데이터를 고치고 다시 실행하면 위반 건수 변화가 추이로 남습니다.</p>
-            <div class="tags"><b data-i18n="f8.t1">오류율 신호등</b><b data-i18n="f8.t2">추이</b></div>
+            <p data-i18n="f8.p">위반 유형별 통계, 질환별 최신 검사 상태와 오류·경고 건수 추이를 봅니다. 데이터를 고치고 다시 검증하면 변화가 실행 이력으로 남습니다.</p>
+            <div class="tags"><b data-i18n="f8.t1">검사 상태 구분</b><b data-i18n="f8.t2">추이</b></div>
           </article>
           <article class="card reveal">
             <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6l1 3h4v4l-3 1v2l3 1v4h-4l-1 3H9l-1-3H4v-4l3-1v-2L4 10V6h4z"/></svg></div>
@@ -463,8 +463,8 @@
         </div>
         <div class="shots">
           <figure class="shot reveal"><img src="img/app-run.jpg" alt="검증 실행 화면" loading="lazy"><figcaption><b data-i18n="scr.c1b">검증 실행.</b> <span data-i18n="scr.c1">폴더 두 곳에 나눠 담은 CSV 12개가 테이블에 자동 대응되고 사전 점검 결과가 함께 표시됩니다.</span></figcaption></figure>
-          <figure class="shot reveal"><img src="img/app-report.jpg" alt="결과 보고서 화면" loading="lazy"><figcaption><b data-i18n="scr.c2b">결과 보고서.</b> <span data-i18n="scr.c2">규칙을 조정한 실행의 보고서. 규칙 출처(표준·변경·사용자·관리자), 실패 규칙, 분류별 집계.</span></figcaption></figure>
-          <figure class="shot reveal"><img src="img/app-dashboard.jpg" alt="대시보드 화면" loading="lazy"><figcaption><b data-i18n="scr.c3b">대시보드.</b> <span data-i18n="scr.c3">오류 유형별 통계와 질환별 최신 결과, 실행 추이.</span></figcaption></figure>
+          <figure class="shot reveal"><img src="img/app-report.jpg" alt="결과 보고서 화면" loading="lazy"><figcaption><b data-i18n="scr.c2b">결과 보고서.</b> <span data-i18n="scr.c2">오류·경고·실행 오류·미검사를 구분하고 원인 확인 후 제출용 집계와 내부용 파일을 따로 저장합니다.</span></figcaption></figure>
+          <figure class="shot reveal"><img src="img/app-dashboard.jpg" alt="대시보드 화면" loading="lazy"><figcaption><b data-i18n="scr.c3b">대시보드.</b> <span data-i18n="scr.c3">위반 유형별 통계와 질환별 검사 상태, 오류·경고 건수 추이.</span></figcaption></figure>
         </div>
       </div>
     </section>
@@ -596,7 +596,7 @@
         'hero.lede': { ko: 'K-AI 신약개발 전임상·임상 모델개발 사업의 6개 질환 임상 코호트 데이터를 점검합니다. 지정 매뉴얼(2026-11-16)과 교차 테이블 규칙 등 390개 규칙으로 로컬 검증 보고서와 제출용 집계를 만듭니다. 데이터는 자동 전송하지 않으며, 임상적 적절성이나 AI 모델 성능을 인증하지 않습니다.', en: 'Check six clinical disease cohorts built for the K-AI preclinical and clinical drug-development project. Apply 390 specification, cross-table and review rules based on the designated manual (2026-11-16), producing local reports and aggregates for submission. The app does not automatically transmit data or certify clinical appropriateness or AI model performance.' },
         'hero.dl': { ko: '설치 파일 받기', en: 'Download' }, 'hero.manual': { ko: '사용자 설명서', en: 'User manual' },
         'hero.chip1': { ko: 'CSV(UTF-8·EUC-KR) · 엑셀 · 폴더', en: 'CSV (UTF-8 · EUC-KR) · Excel · folder' }, 'hero.chip2': { ko: '입력 데이터 전송 기능 없음', en: 'No upload of input data' },
-        'mock.sub': { ko: 'K-AIPA 임상 데이터 품질검증', en: 'K-AIPA clinical data quality' }, 'mock.m1': { ko: '▶ 검증 실행', en: '▶ Run validation' }, 'mock.m2': { ko: '▤ 결과 보고서', en: '▤ Report' }, 'mock.m3': { ko: '⌕ 오류 현황 조회', en: '⌕ Findings' }, 'mock.m4': { ko: '⌂ 대시보드', en: '⌂ Dashboard' }, 'mock.m5': { ko: '▥ 통계 모니터링', en: '▥ Monitoring' }, 'mock.m6': { ko: '☰ 검증 규칙 관리', en: '☰ Rules' },
+        'mock.sub': { ko: 'K-AIPA 임상 데이터 품질검증', en: 'K-AIPA clinical data quality' }, 'mock.m1': { ko: '▶ 검증 실행', en: '▶ Run validation' }, 'mock.m2': { ko: '▤ 결과 보고서', en: '▤ Report' }, 'mock.m3': { ko: '⌕ 위반 상세', en: '⌕ Findings' }, 'mock.m4': { ko: '⌂ 대시보드', en: '⌂ Dashboard' }, 'mock.m5': { ko: '▥ 통계 모니터링', en: '▥ Monitoring' }, 'mock.m6': { ko: '☰ 검증 규칙 관리', en: '☰ Rules' },
         'mock.ft': { ko: '매뉴얼 2026-11-16 · 규칙 390개 · 코호트 6개<br>v1.0.0', en: 'Manual 2026-11-16 · 390 rules · 6 cohorts<br>v1.0.0' }, 'mock.hd': { ko: '검증 실행 · 폐암 (LUNG_CANCER)', en: 'Run · Lung cancer (LUNG_CANCER)' },
         'mock.s1': { ko: '코호트와 파일', en: 'Cohort & files' }, 'mock.s2': { ko: '대응 · 사전 점검', en: 'Mapping · pre-check' }, 'mock.s3': { ko: '검증 실행', en: 'Run' }, 'mock.s4': { ko: '결과와 출력물', en: 'Results' },
         'mock.th1': { ko: '테이블', en: 'Table' }, 'mock.th2': { ko: '파일 / 시트', en: 'File / sheet' }, 'mock.th3': { ko: '행', en: 'Rows' }, 'mock.th4': { ko: '점검', en: 'Check' }, 'mock.ok': { ko: '이상 없음', en: 'OK' }, 'mock.warn': { ko: '날짜 형식 표본', en: 'Date format sample' },
@@ -611,8 +611,8 @@
         'f4.h': { ko: 'Kahn 세 축 규칙 390개', en: '390 rules on Kahn’s three axes' }, 'f4.p': { ko: '적합성(형식·코드·관계), 완전성(필수값), 타당성(범위·논리)으로 분류합니다. 매뉴얼에 적힌 것의 위반은 오류, 임상 상식 범위 같은 매뉴얼 밖 제약은 경고입니다. 구조 규칙은 명세에서 자동 생성되고, 교차 테이블 규칙은 DuckDB SQL 로 실행되며, 앱의 TypeScript 엔진은 Python 참조 구현과 동등합니다(회귀 시험으로 고정).', en: 'Conformance (format, code, relation), completeness (required values) and plausibility (range, logic). Violations of what the manual states are errors; constraints beyond the manual, such as clinical ranges, are warnings. Structural rules are generated from the spec; cross-table rules run as DuckDB SQL; the app’s TypeScript engine is equivalent to the Python reference (locked by regression tests).' }, 'f4.t1': { ko: '적합성', en: 'Conformance' }, 'f4.t2': { ko: '완전성', en: 'Completeness' }, 'f4.t3': { ko: '타당성', en: 'Plausibility' },
         'f5.h': { ko: '임상 논리 교차 검증', en: 'Clinical cross-table logic' }, 'f5.p': { ko: '사망 이후 이벤트, 이벤트-방문 환자 일치, 약물 종료일 계산, 투여 빈도·간격의 조건부 필수, 항암요법 기간과 line 번호, 항종양제의 sact_id 연결 확인, 폐암 AJCC 병기군, 림프종 cell_of_origin 처럼 테이블을 넘나드는 22개 규칙을 실행합니다.', en: 'Events after death, event–visit patient match, drug end-date arithmetic, conditional requirements on dosing frequency and interval, therapy period and line numbers, sact_id link check for antineoplastic drugs, AJCC stage groups for lung cancer, cell_of_origin for lymphoma: 22 rules across tables.' }, 'f5.t1': { ko: '공통 14', en: 'Common 14' }, 'f5.t2': { ko: '항암요법 SACT 6', en: 'SACT 6' }, 'f5.t3': { ko: '질환별 2', en: 'Per disease 2' },
         'f6.h': { ko: '출력물 5종, 제출은 1종', en: 'Five outputs, one to submit' }, 'f6.p': { ko: '보고서, 위반 행 목록, 규칙별 결과, 실행 요약, 그리고 중앙 제출용 집계. 환자 단위 정보가 든 위반 행 목록은 병원 안에서만 쓰고, 중앙에는 집계 파일 하나만 보냅니다.', en: 'Report, finding rows, per-rule results, run summary, and the central submission aggregate. The finding rows carry patient-level data and stay inside; only the aggregate is sent.' }, 'f6.t3': { ko: 'findings.csv 제출 금지', en: 'findings.csv stays local' },
-        'f7.h': { ko: '오류 현황 조회', en: 'Findings browser' }, 'f7.p': { ko: '위반 행을 규칙·테이블·심각도·검색어로 걸러 보고 CSV 로 내보냅니다. 행 키와 환자 ID, 상세 설명이 있어 원천 데이터에서 바로 찾아 고칩니다.', en: 'Filter finding rows by rule, table, severity and text, and export to CSV. Row keys, patient IDs and details point straight to the source data.' }, 'f7.t1': { ko: '규칙별 조치 안내', en: 'Guidance per rule' }, 'f7.t2': { ko: '오류 · 경고', en: 'Error · warning' },
-        'f8.h': { ko: '대시보드 · 실행 이력', en: 'Dashboard · run history' }, 'f8.p': { ko: '오류 유형별 통계, 질환별 최신 결과와 오류율 신호등, 실행 이력 추이를 봅니다. 데이터를 고치고 다시 실행하면 위반 건수 변화가 추이로 남습니다.', en: 'Error-type statistics, latest result per cohort with an error-rate traffic light, and run history. Fix data, run again, and the trend records the change.' }, 'f8.t1': { ko: '오류율 신호등', en: 'Error-rate light' }, 'f8.t2': { ko: '추이', en: 'Trend' },
+        'f7.h': { ko: '위반 상세', en: 'Finding details' }, 'f7.p': { ko: '규칙·테이블·심각도·검색어로 위반을 찾고 상세 전문과 확인 방법을 봅니다. 현재 조건 전체 쪽과 실행 전체 CSV를 구분해 기관 내부용으로 저장합니다.', en: 'Filter findings by rule, table, severity and text, then open full details and review guidance. Save all matching pages or all findings from the run as separate internal-use CSV exports.' }, 'f7.t1': { ko: '규칙별 조치 안내', en: 'Guidance per rule' }, 'f7.t2': { ko: '오류 · 경고', en: 'Error · warning' },
+        'f8.h': { ko: '대시보드 · 실행 이력', en: 'Dashboard · run history' }, 'f8.p': { ko: '위반 유형별 통계, 질환별 최신 검사 상태와 오류·경고 건수 추이를 봅니다. 데이터를 고치고 다시 검증하면 변화가 실행 이력으로 남습니다.', en: 'View finding types, examination status per cohort, and error and warning count trends. Fix source data and rerun to record the change in run history.' }, 'f8.t1': { ko: '검사 상태 구분', en: 'Examination status' }, 'f8.t2': { ko: '추이', en: 'Trend' },
         'f9.h': { ko: '규칙을 기관에 맞게 편집', en: 'Edit rules to fit your site' }, 'f9.p': { ko: '규칙을 켜고 끄고, 심각도와 값 범위를 조정하고, 양식으로 사용자 규칙을 추가합니다. 관리자 모드에서는 SQL 까지 고칩니다. 표준과 다르게 실행하면 보고서·규칙별 결과·제출 파일에 기록되고, 중앙은 표준 결과와 따로 집계합니다.', en: 'Turn rules on or off, adjust severities and value ranges, and add your own rules from a form. Admin mode lets you edit the SQL. Runs that differ from the standard are recorded in the report, per-rule results and the submission file, and the center aggregates them separately from standard results.' }, 'f9.t1': { ko: '수준 1~4', en: 'Levels 1–4' }, 'f9.t2': { ko: '표준과 분리 집계', en: 'Aggregated separately' },
         'flow.eyebrow': { ko: '사용 흐름', en: 'How it works' }, 'flow.title': { ko: '네 단계면<br>제출 준비가 끝납니다.', en: 'Four steps<br>to submission-ready.' },
         'flow.s1h': { ko: '코호트와 파일', en: 'Cohort and files' }, 'flow.s1p': { ko: '코호트를 고르고 채운 테이블 파일(CSV·엑셀·폴더)을 넣습니다. 입력 양식과 견본 데이터는 앱에서 내려받습니다.', en: 'Pick the cohort and drop the filled table files (CSV, Excel or a folder). Templates and sample data download from the app.' },
@@ -622,8 +622,8 @@
         'res.title': { ko: '검증 결과 · 폐암 dirty 견본', en: 'Result · lung cancer dirty sample' }, 'res.k1': { ko: '검사 행 수', en: 'Rows checked' }, 'res.k2': { ko: '위반 건수', en: 'Violations' }, 'res.k3': { ko: '오류율', en: 'Error rate' }, 'res.k4': { ko: '실행 규칙', en: 'Rules run' }, 'res.c1': { ko: '적합성', en: 'Conformance' }, 'res.c2': { ko: '완전성', en: 'Completeness' }, 'res.c3': { ko: '타당성', en: 'Plausibility' },
         'scr.eyebrow': { ko: '화면', en: 'Screens' }, 'scr.title': { ko: '가상데이터로 실행한 실제 화면', en: 'Real screens, synthetic data' }, 'scr.lede': { ko: '아래는 100명 가상 코호트로 자동 실행한 캡처입니다. 실제 환자 데이터는 개발 과정 어디에도 쓰이지 않았습니다.', en: 'Captured from automated runs on a 100-patient synthetic cohort. No real patient data was used anywhere in development.' },
         'scr.c1b': { ko: '검증 실행.', en: 'Run.' }, 'scr.c1': { ko: '폴더 두 곳에 나눠 담은 CSV 12개가 테이블에 자동 대응되고 사전 점검 결과가 함께 표시됩니다.', en: 'Twelve CSV files from two folders mapped to tables automatically, with pre-check results.' },
-        'scr.c2b': { ko: '결과 보고서.', en: 'Report.' }, 'scr.c2': { ko: '규칙을 조정한 실행의 보고서. 규칙 출처(표준·변경·사용자·관리자), 실패 규칙, 분류별 집계.', en: 'Report of a run with adjusted rules: rule origin (standard, modified, custom, admin), failed rules, per-axis totals.' },
-        'scr.c3b': { ko: '대시보드.', en: 'Dashboard.' }, 'scr.c3': { ko: '오류 유형별 통계와 질환별 최신 결과, 실행 추이.', en: 'Error-type statistics, latest result per cohort, run trend.' },
+        'scr.c2b': { ko: '결과 보고서.', en: 'Report.' }, 'scr.c2': { ko: '오류·경고·실행 오류·미검사를 구분하고 원인 확인 후 제출용 집계와 내부용 파일을 따로 저장합니다.', en: 'Separate errors, warnings, execution errors and unexamined rules. Review causes before saving submission aggregates separately from internal files.' },
+        'scr.c3b': { ko: '대시보드.', en: 'Dashboard.' }, 'scr.c3': { ko: '위반 유형별 통계와 질환별 검사 상태, 오류·경고 건수 추이.', en: 'Finding-type statistics, examination status per cohort, and error and warning count trends.' },
         'band.title': { ko: '입력 데이터는 병원 안에서 처리됩니다.', en: 'Input data is processed inside the hospital.' }, 'band.p': { ko: '로컬 데스크톱 앱입니다. 내보낸 파일만 읽고 결과를 사용자 컴퓨터에 저장하며, 검증에 서버나 클라우드가 필요하지 않고 입력 데이터를 전송하는 기능이 없습니다. 중앙에 보내는 파일은 사용자가 직접 보내는, 규칙별 건수와 테이블 행 수만 담은 집계 하나입니다.', en: 'A local desktop app. It reads exported files and stores results on your computer; validation needs no server or cloud and the app has no feature that uploads input data. The only file for the center holds per-rule counts and table row counts, and you send it yourself.' },
         'band.ms1': { ko: 'DB 접속 · 입력 데이터 전송', en: 'DB connections · input uploads' }, 'band.ms2': { ko: '병원 밖으로 보내는 유일한 파일. 환자 단위 정보 없음', en: 'The only file that leaves. No patient-level data' }, 'band.ms3b': { ko: '규칙 변경 기록', en: 'Rule change records' }, 'band.ms3': { ko: '적용 규칙과 관리자 모드 사용 여부를 결과에 기록', en: 'Results record applied rules and administrator-mode use' },
         'dl.eyebrow': { ko: '다운로드', en: 'Download' }, 'dl.lede': { ko: '운영체제와 아키텍처에 맞는 파일을 받으세요. 명세와 검증 규칙, 견본 데이터가 설치 파일에 들어 있어 따로 받을 것이 없습니다.', en: 'Pick the file for your OS and architecture. The spec, rules and sample data are bundled; nothing else to download.' },

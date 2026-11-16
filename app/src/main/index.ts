@@ -7,7 +7,7 @@ import * as XLSX from "xlsx";
 import { setRoot, loadSpec, loadProfiles, loadStructuralRules, loadSemanticRules, ruleSetHash, describeOverrides, readCsv } from "@engine/index.js";
 import type { Summary, Spec } from "@engine/types.js";
 import type {
-  AppConfig, CohortInfo, RuleInfo, RunRequest, RunRecord, RunDetail, FindingsQuery, Dashboard, InputPlan, SourceCandidate, TemplateKind, OutputFile,
+  AppConfig, CohortInfo, RuleInfo, RunRequest, RunRecord, RunDetail, FindingsQuery, FindingsFilter, FindingsExportResult, Dashboard, InputPlan, SourceCandidate, TemplateKind, OutputFile,
   RuleChange, RuleOverrides, RuleSetState, SqlTestRequest, SqlTestResult, SqlTestSide, SpecTableInfo,
 } from "@shared/types";
 import { readConfig, writeConfig, adminAcknowledged, setAdminAcknowledged } from "./config";
@@ -38,7 +38,7 @@ const userDir = () => app.getPath("userData");
 
 function createWindow(): BrowserWindow {
   const w = new BrowserWindow({
-    width: 1480, height: 940, minWidth: 1100, minHeight: 700, show: false,
+    width: 1480, height: 940, minWidth: 820, minHeight: 650, show: false,
     title: "K-AIPA DQ",
     backgroundColor: "#eef2f7",
     webPreferences: { preload: path.join(__dirname, "../preload/index.js"), sandbox: true, contextIsolation: true },
@@ -364,6 +364,20 @@ function registerIpc(): void {
   });
   ipcMain.handle("runs:outputs", (_e, runId: string) => runOutputs(path.join(runsDir(), runId)));
   ipcMain.handle("findings:query", (_e, q: FindingsQuery) => db.getFindings(q));
+  // 조건에 맞는 위반 행 전체(쪽 나누기 없음)를 저장한다. 조건 검증과 검색 의미는 findings:query 와 같은 db 함수를 쓴다.
+  ipcMain.handle("findings:export", async (_e, q: FindingsFilter): Promise<FindingsExportResult | null> => {
+    const f = db.parseFindingsFilter(q);
+    if (!(await db.getRun(f.runId))) throw new Error("실행 기록이 없습니다");
+    const filtered = !!(f.ruleId || f.table || f.severity || f.search);
+    if (!(await db.countFindings(f))) throw new Error(filtered ? "저장할 위반 행이 없습니다. 조건을 바꿔 다시 시도하세요." : "이 실행에는 저장할 위반 행이 없습니다.");
+    const r = await dialog.showSaveDialog(win!, { defaultPath: `${f.runId}_findings${filtered ? "_filtered" : ""}.csv`, filters: [{ name: "CSV", extensions: ["csv"] }] });
+    if (r.canceled || !r.filePath) return null;
+    try {
+      return { path: r.filePath, rows: await db.exportFindingsCsv(f, r.filePath) };
+    } catch (e) {
+      throw new Error(`파일을 저장하지 못했습니다: ${(e as Error).message}`);
+    }
+  });
   ipcMain.handle("runs:exportFile", async (_e, runId: string, key: OutputFile["key"]) => {
     const f = runOutputs(path.join(runsDir(), runId)).files.find((x) => x.key === key);
     if (!f || !f.size) throw new Error("파일이 없습니다");
@@ -417,10 +431,12 @@ async function smoke(): Promise<void> {
       XLSX.writeFile(wb, xlsxPath);
     }
     // 표준 실행: clean 은 오류 0·허용된 치료 차수 경고만, good 은 위반 0, dirty 는 위반 발생.
+    let dirtyRun: RunRecord | null = null;
     for (const [cohort, kind, label] of [["LUNG_CANCER", "clean", "clean 견본"], ["LUNG_CANCER", "good", "good 견본"], ["DIABETES", "dirty", "dirty 견본"], ["LYMPHOMA", "clean", "림프종 clean 견본"]] as const) {
       const dir = sampleDir(cohort, kind);
       if (!dir) { failures++; log(`FAIL ${cohort} ${kind} 견본 데이터가 없습니다 (${path.join(config.root, "synth/output", kind, cohort)})`); continue; }
       const rec = await runFromDir(cohort, dir, SAMPLE_TODAY, label);
+      if (kind === "dirty") dirtyRun = rec;
       log(`run ${rec.run_id}: rules=${rec.rules_total} violations=${rec.violations_total}`);
       expect(rec.rules_error === 0, `${cohort} ${kind}: 규칙 실행 오류 ${rec.rules_error}`);
       const summary: Summary = JSON.parse(fs.readFileSync(path.join(runsDir(), rec.run_id, "summary.json"), "utf-8"));
@@ -429,6 +445,26 @@ async function smoke(): Promise<void> {
       expect(!rec.rule_set_modified && !rec.admin_modified, `${cohort} ${kind}: 표준 실행인데 규칙 변경으로 기록됨`);
       const sub = JSON.parse(fs.readFileSync(path.join(runsDir(), rec.run_id, "submission.json"), "utf-8"));
       expect(sub.rule_set.standard_hash === sub.rule_set.effective_hash && sub.rule_set.admin_modified === false && sub.rule_set.disabled.length === 0, `${cohort} ${kind}: 표준 실행의 rule_set 이 표준이 아님`);
+    }
+    // 위반 상세의 '현재 조건 CSV 저장': 쪽 나누기와 무관하게 조건에 맞는 행이 모두, 그 행만 나와야 한다
+    if (dirtyRun) {
+      const results = await db.getRuleResults(dirtyRun.run_id);
+      const top = results.filter((r) => r.status === "fail").sort((a, b) => b.violations - a.violations)[0];
+      const sample = (await db.getFindings({ runId: dirtyRun.run_id, offset: 0, limit: 1 })).rows[0];
+      const conds = [
+        { runId: dirtyRun.run_id },
+        ...(top ? [{ runId: dirtyRun.run_id, ruleId: top.rule_id }, { runId: dirtyRun.run_id, ruleId: top.rule_id, severity: top.severity }] : []),
+        ...(sample ? [{ runId: dirtyRun.run_id, search: sample.person_id || sample.row_key }] : []),
+      ];
+      for (const cond of conds) {
+        const file = path.join(out, "findings_filtered.csv");
+        const written = await db.exportFindingsCsv(cond, file);
+        const total = (await db.getFindings({ ...cond, offset: 0, limit: 1 })).total;
+        const csv = readCsv(file);
+        expect(written === total && csv.n === total && total > 0, `조건 CSV 저장: 쓴 행 ${written} · 파일 ${csv.n} · 조회 ${total} (${JSON.stringify({ ...cond, runId: undefined })})`);
+        if (Object.keys(cond).length === 1) expect(total === dirtyRun.violations_total, `전체 조건 CSV 행 수 ${total} ≠ 위반 ${dirtyRun.violations_total}`);
+      }
+      log(`조건 CSV 저장 ${conds.length}개 조건 확인`);
     }
     const planX = dirtyLung ? inspect("LUNG_CANCER", [xlsxPath]) : null;
     if (planX) {

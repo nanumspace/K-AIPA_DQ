@@ -1,7 +1,7 @@
 // 작은 공용 컴포넌트
 import type { ReactNode } from "react";
-import { severityInfo, rateStatus } from "@shared/labels";
-import type { RuleOrigin } from "@shared/types";
+import { severityInfo } from "@shared/labels";
+import type { RuleOrigin, RunRecord } from "@shared/types";
 
 export function Card(props: { title?: ReactNode; num?: number; sub?: ReactNode; children: ReactNode; className?: string; right?: ReactNode }) {
   return (
@@ -34,7 +34,7 @@ export function SeverityPill({ s }: { s: string }) {
 }
 
 export function StatusPill({ s }: { s: string }) {
-  const label: Record<string, string> = { pass: "통과", fail: "실패", skipped: "건너뜀", error: "오류", disabled: "꺼짐" };
+  const label: Record<string, string> = { pass: "통과", fail: "위반 발견", skipped: "건너뜀", error: "실행 오류", disabled: "꺼짐" };
   return <span className={`pill ${s === "error" ? "fail" : s}`}>{label[s] ?? s}</span>;
 }
 
@@ -46,9 +46,26 @@ export function OriginPill({ o }: { o: string }) {
   return <span className={`pill ${o}`}>{ORIGIN_LABEL[o as RuleOrigin] ?? o}</span>;
 }
 
-export function RateDot({ pct }: { pct: number }) {
-  const st = rateStatus(pct);
-  return <span className="dot" style={{ background: st.color }} title={st.label} />;
+export function RunOutcome({ run }: { run: RunRecord }) {
+  const incomplete = run.rules_error + run.rules_skipped + run.rules_disabled;
+  const cls = run.rules_error || run.violations_error ? "error" : incomplete || run.violations_warning ? "warning" : "pass";
+  const label = run.rules_error ? "검사 불완전 · 실행 오류" : incomplete ? "검사 범위 확인 필요" : run.violations_error ? "오류 수정 필요" : run.violations_warning ? "경고 검토 필요" : "보고된 위반 없음";
+  return <span className={`pill ${cls}`}>{label}</span>;
+}
+
+export function RunSummary({ run }: { run: RunRecord }) {
+  return (
+    <section aria-label="검증 결과 요약">
+      <div className="result-heading"><RunOutcome run={run} /><span>입력 {run.rows_total.toLocaleString("ko-KR")}행 · 테이블 {Object.keys(run.tables).length}개 · 대상 규칙 {run.rules_total}개</span></div>
+      <div className="grid c4">
+        <Stat k="수정할 오류" v={run.violations_error.toLocaleString("ko-KR")} s="오류 등급 위반 건수" tone={run.violations_error ? "red" : undefined} />
+        <Stat k="검토할 경고" v={run.violations_warning.toLocaleString("ko-KR")} s="원천 데이터와 임상 맥락 확인" tone={run.violations_warning ? "orange" : undefined} />
+        <Stat k="실행 오류" v={run.rules_error} s="검사를 끝내지 못한 규칙" tone={run.rules_error ? "red" : undefined} />
+        <Stat k="미검사 규칙" v={run.rules_skipped + run.rules_disabled} s={`건너뜀 ${run.rules_skipped} · 꺼짐 ${run.rules_disabled}`} tone={run.rules_skipped + run.rules_disabled ? "orange" : undefined} />
+      </div>
+      {(run.rules_error + run.rules_skipped + run.rules_disabled > 0) && <p className="callout warn">검사하지 못했거나 꺼 둔 규칙이 있습니다. 오류·경고가 0건이어도 전체 규칙을 통과한 것은 아닙니다. 아래 미검사·실행 오류 사유를 확인하세요.</p>}
+    </section>
+  );
 }
 
 export function Empty({ children }: { children: ReactNode }) {

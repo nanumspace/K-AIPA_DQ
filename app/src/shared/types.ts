@@ -181,7 +181,11 @@ export interface FindingsQuery {
   runId: string; ruleId?: string; table?: string; severity?: string; search?: string;
   offset: number; limit: number;
 }
+/** 쪽 나누기 없이 같은 조건으로 걸러 낼 때의 조건 (getFindings 와 같은 의미) */
+export type FindingsFilter = Omit<FindingsQuery, "offset" | "limit">;
 export interface FindingsPage { total: number; rows: FindingRow[] }
+/** 조건에 맞는 위반 행을 CSV 로 저장한 결과 */
+export interface FindingsExportResult { path: string; rows: number }
 
 export interface RunDetail { run: RunRecord; rules: RuleResultRow[]; report: string }
 
@@ -231,6 +235,8 @@ export interface Api {
   getRun(runId: string): Promise<RunDetail>;
   getRunOutputs(runId: string): Promise<RunOutputs>;
   getFindings(q: FindingsQuery): Promise<FindingsPage>;
+  /** 조건(쪽 나누기 제외)에 맞는 위반 행 전체를 CSV 로 저장한다. 저장 창을 닫으면 null. */
+  exportFindings(q: FindingsFilter): Promise<FindingsExportResult | null>;
   exportFile(runId: string, key: OutputFile["key"]): Promise<string | null>;
   exportBundle(runId: string): Promise<string | null>;
   deleteRun(runId: string): Promise<void>;

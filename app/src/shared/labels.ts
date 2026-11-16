@@ -41,13 +41,6 @@ export function severityInfo(key: string): SeverityInfo {
   return SEVERITIES.find((s) => s.key === key) ?? SEVERITIES[2];
 }
 
-/** 오류율(%) 에 따른 상태 색. 우수 <1, 양호 1~2, 주의 2~5, 위험 ≥5 */
-export function rateStatus(pct: number): { label: string; color: string } {
-  if (pct < 1) return { label: "우수", color: "#3a9d5d" };
-  if (pct < 2) return { label: "양호", color: "#9ec13a" };
-  if (pct < 5) return { label: "주의", color: "#e8a33d" };
-  return { label: "위험", color: "#d64545" };
-}
 
 /** 검사 유형별 조치 안내 */
 export const CHECK_GUIDES: Record<string, string> = {
@@ -58,7 +51,7 @@ export const CHECK_GUIDES: Record<string, string> = {
   pattern: "값의 표기 형식이 규칙과 다릅니다. 병기·KCD 등 표준 표기를 확인합니다.",
   fk: "참조하는 행이 없습니다. 참조 테이블의 누락 행을 함께 제출합니다.",
   pk_unique: "기본키가 비었거나 중복됩니다. 행 식별자를 고유하게 부여합니다.",
-  not_future: "검증일 이후 날짜입니다. 입력 오류인지 확인합니다.",
+  not_future: "검증 기준일 이후 날짜입니다. 입력 오류인지 확인합니다.",
   group_anchor: "그룹 값이 있으나 기준 날짜가 없습니다. 이벤트 날짜를 채웁니다.",
   person_invariant: "환자 수준 항목이 같은 환자 안에서 다릅니다. 한 값으로 정리합니다.",
   must_be_null: "이 코호트에서는 비어 있어야 하는 항목입니다.",
