@@ -41,6 +41,9 @@
   "build": {
     "appId": "kr.kai.quality-validator",
     "productName": "Quality Validator",
+    "toolsets": {
+      "nsis": "1.2.1"
+    },
     "directories": {
       "output": "release"
     },

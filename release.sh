@@ -67,15 +67,15 @@ if [ "$UNSIGNED" = 0 ]; then
     [ -f "$PKCS11_MODULE" ] || fail "PKCS#11 모듈이 없습니다: $PKCS11_MODULE (brew install opensc)"
     pkcs11-tool --module "$PKCS11_MODULE" -L 2>/dev/null | grep -q "token label" || fail "USB 토큰이 인식되지 않습니다. 꽂혀 있는지 확인하세요."
     security find-generic-password -s "$PIN_SERVICE" >/dev/null 2>&1 || fail "토큰 PIN 이 키체인에 없습니다: security add-generic-password -a \"\$USER\" -s $PIN_SERVICE -w"
-    pkcs11-tool --module "$PKCS11_MODULE" --login --pin "$(security find-generic-password -s "$PIN_SERVICE" -w)" -O 2>/dev/null | grep -q "Private Key" \
+    pkcs11-tool --module "$PKCS11_MODULE" --login --pin "$(security find-generic-password -s "$PIN_SERVICE" -w)" -O | grep "Private Key" >/dev/null \
       || fail "토큰 로그인에 실패했습니다 (PIN 이 틀렸거나 개인키가 없음)."
     [ -f "$APP/build/globalsign-ev-codesigning-ca-2020.pem" ] || fail "중간 인증서가 없습니다: app/build/globalsign-ev-codesigning-ca-2020.pem"
     ok "SafeNet 토큰, PIN, 중간 인증서"
   fi
   if [ "$SKIP_MAC" = 0 ]; then
     security find-identity -v -p codesigning | grep -q "Developer ID Application" || fail "키체인에 Developer ID Application 인증서가 없습니다."
-    xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null 2>&1 \
-      || fail "공증 프로필이 없습니다: xcrun notarytool store-credentials $NOTARY_PROFILE --apple-id <Apple ID> --team-id <Team ID>"
+    xcrun notarytool history --keychain-profile "$NOTARY_PROFILE" >/dev/null \
+      || fail "Apple 공증 연결에 실패했습니다. 위 응답의 계정·계약·프로필 오류를 확인하세요."
     ok "Developer ID 인증서, 공증 프로필 $NOTARY_PROFILE"
   fi
 fi
