@@ -35,15 +35,15 @@ export function compareRun(run: string, pyDir: string, tsDir: string): CompareRe
   const py: Summary = JSON.parse(fs.readFileSync(path.join(pyDir, "summary.json"), "utf-8"));
   const ts: Summary = JSON.parse(fs.readFileSync(path.join(tsDir, "summary.json"), "utf-8"));
   const res: CompareResult = { run, rules_py: py.rules_total, rules_ts: ts.rules_total, rule_diffs: [], top_diffs: [], findings_py: 0, findings_ts: 0, only_py: [], only_ts: [] };
-  for (const k of ["rules_total", "rules_failed", "rules_skipped", "rules_error", "violations_total", "violations_error", "violations_warning"] as const)
+  for (const k of ["rules_total", "rules_failed", "rules_skipped", "rules_error", "rules_disabled", "violations_total", "violations_error", "violations_warning"] as const)
     if (py[k] !== ts[k]) res.top_diffs.push(`${k}: py=${py[k]} ts=${ts[k]}`);
   for (const [t, n] of Object.entries(py.tables)) if (ts.tables[t] !== n) res.top_diffs.push(`tables.${t}: py=${n} ts=${ts.tables[t]}`);
   const tsRules = new Map(ts.rules.map((r) => [r.rule_id, r]));
   for (const r of py.rules) {
     const o = tsRules.get(r.rule_id);
     if (!o) { res.rule_diffs.push(`${r.rule_id}: TS 에 없음`); continue; }
-    if (r.status !== o.status || r.violations !== o.violations || r.rows_checked !== o.rows_checked || r.note !== o.note)
-      res.rule_diffs.push(`${r.rule_id}: py=${r.status}/${r.violations}/${r.rows_checked}/${r.note} ts=${o.status}/${o.violations}/${o.rows_checked}/${o.note}`);
+    if (r.status !== o.status || r.origin !== o.origin || r.violations !== o.violations || r.rows_checked !== o.rows_checked || r.note !== o.note)
+      res.rule_diffs.push(`${r.rule_id}: py=${r.status}/${r.origin}/${r.violations}/${r.rows_checked}/${r.note} ts=${o.status}/${o.origin}/${o.violations}/${o.rows_checked}/${o.note}`);
   }
   for (const r of ts.rules) if (!py.rules.some((p) => p.rule_id === r.rule_id)) res.rule_diffs.push(`${r.rule_id}: Python 에 없음`);
   const fp = findingKeys(path.join(pyDir, "findings.csv")), ft = findingKeys(path.join(tsDir, "findings.csv"));

@@ -7,11 +7,18 @@
 같은 기관·같은 코호트의 실행이 여럿이면 가장 늦은 것(generated_at)만 쓴다 — 형식 문제를 고친 뒤의
 두 번째 실행이 첫 실행을 덮는다.
 
+규칙 설정(submission.json 의 rule_set): 앱에서 규칙을 끄거나 조정하거나 추가한 실행은 표준 규칙으로 돌린 결과와
+섞어 비교하지 않는다. 규칙마다 origin 이 standard 이고 꺼지지 않은 결과만 기관 간 비교(rules_*.csv, 요약의 두 절)에
+쓰고, 끈·조정한·사용자(USR-###)·관리자(ADM-###) 규칙의 결과는 nonstandard_rules.csv 로 따로 모은다.
+rule_set 이 없는 제출분(이전 형식)은 표준 실행으로 본다.
+
 산출물
-  rules_by_site.csv   규칙 × 기관 표. 칸은 위반 건수(통과 0, 건너뜀 '-', 오류 '!')
-  rules_summary.csv   규칙마다 실패한 기관 수, 위반 합계, 검사 행 합계
-  sites.csv           기관·코호트마다 규칙·위반·행 수와 정규화 건수
-  summary.md          사람이 읽는 요약: 모든 기관에서 우는 규칙(규칙·명세를 의심), 한 기관에서만 우는 규칙(그 기관의 내보내기를 의심)
+  rules_by_site.csv       규칙 × 기관 표. 칸은 위반 건수(통과 0, 건너뜀 '-', 오류 '!')   (표준 출처 규칙만)
+  rules_summary.csv       규칙마다 실패한 기관 수, 위반 합계, 검사 행 합계                  (표준 출처 규칙만)
+  nonstandard_rules.csv   끈 · 조정한 · 사용자 · 관리자 규칙의 기관별 결과
+  sites.csv               기관·코호트마다 규칙·위반·행 수, 정규화 건수, 규칙 설정 상태
+  summary.md              사람이 읽는 요약: 모든 기관에서 우는 규칙(규칙·명세를 의심), 한 기관에서만 우는 규칙(그 기관의 내보내기를 의심),
+                          입력 정규화, 규칙 설정이 표준이 아닌 실행
 
 파일에는 환자 단위 정보가 없으므로 이 도구도 그런 것을 만들지 않는다.
 """
@@ -62,6 +69,30 @@ def load(paths, names):
     return list(latest.values())
 
 
+def ruleset_state(s):
+    """제출분의 규칙 설정 상태: 'standard' | 'adjusted'(끄기·조정·사용자 규칙) | 'admin'(SQL 변경이나 ADM 규칙)"""
+    rs = s.get("rule_set")
+    if not isinstance(rs, dict):
+        return "standard"
+    if rs.get("admin_modified") or rs.get("admin"):
+        return "admin"
+    changed = rs.get("standard_hash") != rs.get("effective_hash") or rs.get("disabled") or rs.get("modified") or rs.get("custom")
+    return "adjusted" if changed else "standard"
+
+
+STATE_KOR = {"standard": "표준", "adjusted": "규칙 조정", "admin": "관리자 수정"}
+
+
+def count(rs, key):
+    v = (rs or {}).get(key)
+    return len(v) if isinstance(v, (list, dict)) else (v or 0)
+
+
+def is_standard_result(r):
+    """규칙 결과가 표준 규칙의 것인가 (출처가 표준이고 꺼지지 않았다). origin 이 없으면 표준."""
+    return r.get("origin", "standard") == "standard" and r.get("status") != "disabled"
+
+
 def write_csv(path, header, rows):
     with io.open(path, "w", encoding="utf-8-sig", newline="") as fh:
         w = csv.writer(fh)
@@ -89,22 +120,33 @@ def main():
     for s in sorted(subs, key=lambda x: (x["_site"], x["cohort"])):
         norm = s.get("normalization", {}) or {}
         norm_total = sum(sum(v.values()) for v in norm.values())
+        rs = s.get("rule_set")
         site_rows.append([s["_site"], s["cohort"], s.get("cohort_kor", ""), s.get("app_version", ""), s.get("run_id", ""),
                           s.get("run_date", ""), s.get("rows_total", 0),
                           s["rules"]["total"], s["rules"]["failed"], s["rules"]["skipped"], s["rules"]["error"],
                           s["violations"]["total"], s["violations"]["error"], s["violations"]["warning"],
-                          norm_total, "; ".join(f"{t}:{','.join(f'{k}={v}' for k, v in r.items() if v)}" for t, r in norm.items())])
+                          norm_total, "; ".join(f"{t}:{','.join(f'{k}={v}' for k, v in r.items() if v)}" for t, r in norm.items()),
+                          STATE_KOR[ruleset_state(s)], count(rs, "disabled"), count(rs, "modified"), count(rs, "custom"), count(rs, "admin")])
     write_csv(os.path.join(a.out, "sites.csv"),
-              ["기관", "코호트", "코호트(한글)", "앱버전", "실행ID", "검증일", "행수", "규칙", "실패", "건너뜀", "오류", "위반", "위반(오류)", "위반(경고)", "정규화건수", "정규화내역"],
+              ["기관", "코호트", "코호트(한글)", "앱버전", "실행ID", "검증일", "행수", "규칙", "실패", "건너뜀", "오류", "위반", "위반(오류)", "위반(경고)", "정규화건수", "정규화내역",
+               "규칙설정", "꺼진규칙", "바꾼규칙", "사용자규칙", "관리자규칙"],
               site_rows)
 
-    # ---- 규칙 × 기관
+    # ---- 규칙 × 기관 (표준 출처 규칙만) 과 표준이 아닌 규칙의 결과
     rules = {}        # rule_id -> meta
     cell = defaultdict(dict)   # rule_id -> (site, cohort) -> (status, violations, rows)
-    for s in subs:
+    nonstd_rows = []
+    for s in sorted(subs, key=lambda x: (x["_site"], x["cohort"])):
         for r in s.get("by_rule", []):
-            rules.setdefault(r["rule_id"], r)
-            cell[r["rule_id"]][(s["_site"], s["cohort"])] = (r["status"], r.get("violations", 0), r.get("rows_checked", 0))
+            if is_standard_result(r):
+                rules.setdefault(r["rule_id"], r)
+                cell[r["rule_id"]][(s["_site"], s["cohort"])] = (r["status"], r.get("violations", 0), r.get("rows_checked", 0))
+            else:
+                nonstd_rows.append([s["_site"], s["cohort"], r["rule_id"], r.get("name", ""), r.get("origin", "standard"), r.get("status", ""),
+                                    r.get("severity", ""), r.get("violations", 0), r.get("rows_checked", 0)])
+    nonstd_rows.sort(key=lambda x: (x[2], x[0], x[1]))
+    write_csv(os.path.join(a.out, "nonstandard_rules.csv"),
+              ["기관", "코호트", "규칙ID", "이름", "출처", "상태", "심각도", "위반", "검사행"], nonstd_rows)
     site_labels = [f"{st}·{co}" for st, co in sites]
 
     def show(v):
@@ -137,24 +179,37 @@ def main():
               ["규칙ID", "이름", "분류", "심각도", "검사", "테이블", "실행기관수", "실패기관수", "위반합계", "검사행합계", "위반율%"], summary_rows)
 
     # ---- 요약
-    L = [f"# 파일럿 집계 — 기관·코호트 {len(sites)}개, 규칙 {len(rules)}개", ""]
-    L += ["| 기관 | 코호트 | 검증일 | 행 | 규칙 | 실패 | 위반 | 정규화 |", "|---|---|---|---|---|---|---|---|"]
+    L = [f"# 파일럿 집계 — 기관·코호트 {len(sites)}개, 표준 규칙 {len(rules)}개", ""]
+    L += ["| 기관 | 코호트 | 검증일 | 행 | 규칙 | 실패 | 위반 | 정규화 | 규칙 설정 |", "|---|---|---|---|---|---|---|---|---|"]
     for r in site_rows:
-        L.append(f"| {r[0]} | {r[2]} | {r[5]} | {r[6]:,} | {r[7]} | {r[8]} | {r[11]:,} | {r[14]:,} |")
-    L += ["", "## 실행한 모든 기관에서 우는 규칙 — 규칙이나 명세를 먼저 의심한다", ""]
+        L.append(f"| {r[0]} | {r[2]} | {r[5]} | {r[6]:,} | {r[7]} | {r[8]} | {r[11]:,} | {r[14]:,} | {r[16]} |")
+    hashes = {(s.get("rule_set") or {}).get("standard_hash") for s in subs} - {None}
+    if len(hashes) > 1:
+        L += ["", f"> 주의: 제출분 사이에 표준 규칙 묶음 해시(`standard_hash`)가 {len(hashes)}가지입니다. 앱(규칙) 버전이 달라 같은 규칙 id 라도 뜻이 다를 수 있습니다."]
+    L += ["", "## 실행한 모든 기관에서 우는 규칙 — 규칙이나 명세를 먼저 의심한다 (표준 출처 규칙만)", ""]
     if all_fail:
         L += ["| 규칙 | 심각도 | 기관 수 | 위반 합계 |", "|---|---|---|---|"]
         for rid, m, n, v in sorted(all_fail, key=lambda x: -x[3]):
             L.append(f"| {rid} {m.get('name', '')} | {m.get('severity', '')} | {n} | {v:,} |")
     else:
         L.append("(없음)")
-    L += ["", "## 한 기관에서만 우는 규칙 — 그 기관의 내보내기나 관행을 먼저 의심한다", ""]
+    L += ["", "## 한 기관에서만 우는 규칙 — 그 기관의 내보내기나 관행을 먼저 의심한다 (표준 출처 규칙만)", ""]
     if one_fail:
         L += ["| 규칙 | 심각도 | 기관 | 위반 |", "|---|---|---|---|"]
         for rid, m, (st, co), v in sorted(one_fail, key=lambda x: -x[3])[:60]:
             L.append(f"| {rid} {m.get('name', '')} | {m.get('severity', '')} | {st}·{co} | {v:,} |")
         if len(one_fail) > 60:
             L.append(f"| … {len(one_fail) - 60}개 더 (rules_summary.csv) | | | |")
+    else:
+        L.append("(없음)")
+    L += ["", "## 규칙 설정이 표준이 아닌 실행 — 기관 간 비교에 섞지 않는다 (nonstandard_rules.csv)", ""]
+    nonstd_subs = [s for s in sorted(subs, key=lambda x: (x["_site"], x["cohort"])) if ruleset_state(s) != "standard"]
+    if nonstd_subs:
+        L += ["| 기관 | 코호트 | 설정 | 꺼진 규칙 | 바꾼 규칙 | 사용자 규칙 | 관리자 규칙 |", "|---|---|---|---|---|---|---|"]
+        for s in nonstd_subs:
+            rs = s.get("rule_set") or {}
+            ids = lambda k: ", ".join(x if isinstance(x, str) else x.get("rule_id", "") for x in (rs.get(k) or [])) or "-"
+            L.append(f"| {s['_site']} | {s['cohort']} | {STATE_KOR[ruleset_state(s)]} | {ids('disabled')} | {ids('modified')} | {ids('custom')} | {ids('admin')} |")
     else:
         L.append("(없음)")
     L += ["", "## 입력 정규화 (내보내기 흔적)", ""]
@@ -170,8 +225,8 @@ def main():
     L.append("")
     with io.open(os.path.join(a.out, "summary.md"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L))
-    print(f"기관·코호트 {len(sites)}개, 규칙 {len(rules)}개 → {a.out}/ (sites.csv, rules_by_site.csv, rules_summary.csv, summary.md)")
-    print(f"  모든 기관에서 우는 규칙 {len(all_fail)}개, 한 기관에서만 우는 규칙 {len(one_fail)}개")
+    print(f"기관·코호트 {len(sites)}개, 표준 규칙 {len(rules)}개 → {a.out}/ (sites.csv, rules_by_site.csv, rules_summary.csv, nonstandard_rules.csv, summary.md)")
+    print(f"  모든 기관에서 우는 규칙 {len(all_fail)}개, 한 기관에서만 우는 규칙 {len(one_fail)}개, 규칙 설정이 표준이 아닌 실행 {len(nonstd_subs)}개")
 
 
 if __name__ == "__main__":

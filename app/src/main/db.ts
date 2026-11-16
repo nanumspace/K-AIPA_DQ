@@ -23,6 +23,11 @@ const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS findings (
      run_id VARCHAR, seq INTEGER, rule_id VARCHAR, rule_name VARCHAR, category VARCHAR, severity VARCHAR,
      table_name VARCHAR, field VARCHAR, row_key VARCHAR, person_id VARCHAR, detail VARCHAR)`,
+  // 규칙 설정 도입 전에 만든 이력 DB 도 그대로 열린다: 없는 컬럼만 더하고 옛 행은 표준 실행으로 본다.
+  `ALTER TABLE runs ADD COLUMN IF NOT EXISTS rules_disabled INTEGER DEFAULT 0`,
+  `ALTER TABLE runs ADD COLUMN IF NOT EXISTS rule_set_modified BOOLEAN DEFAULT false`,
+  `ALTER TABLE runs ADD COLUMN IF NOT EXISTS admin_modified BOOLEAN DEFAULT false`,
+  `ALTER TABLE rule_results ADD COLUMN IF NOT EXISTS origin VARCHAR DEFAULT 'standard'`,
 ];
 
 export async function openDb(file: string): Promise<void> {
@@ -46,35 +51,45 @@ async function rows<T>(sql: string, params?: DuckDBValue[]): Promise<T[]> {
   return r.getRowObjectsJson() as unknown as T[];
 }
 
-const NUM_FIELDS = ["rules_total", "rules_failed", "rules_skipped", "rules_error", "violations_total", "violations_error", "violations_warning", "rows_total"] as const;
+const NUM_FIELDS = ["rules_total", "rules_failed", "rules_skipped", "rules_error", "violations_total", "violations_error", "violations_warning", "rows_total", "rules_disabled"] as const;
 
 /** DuckDB 의 BIGINT 는 JSON 변환 시 문자열이 될 수 있어 숫자 필드를 강제 변환한다. */
 function toRun(r: Record<string, unknown>): RunRecord {
   const { tables_json, ...rest } = r as Record<string, unknown> & { tables_json: string };
   const out = { ...(rest as unknown as RunRecord), tables: JSON.parse(tables_json || "{}") };
-  for (const k of NUM_FIELDS) out[k] = Number(out[k]);
+  for (const k of NUM_FIELDS) out[k] = Number(out[k] ?? 0);
+  out.rule_set_modified = out.rule_set_modified === true;
+  out.admin_modified = out.admin_modified === true;
   return out;
 }
 
 export interface InsertRunArgs {
   runId: string; cohort: string; cohortKor: string; label: string; dataDir: string; createdAt: string;
   summary: Summary; findings: RawTable;
+  /** 표준이 아닌 규칙(변경·사용자·관리자)이 하나라도 있었는지 */
+  ruleSetModified: boolean;
+  /** 관리자 출처 규칙(SQL 교체·ADM)이 있었는지 */
+  adminModified: boolean;
 }
 
 export async function insertRun(a: InsertRunArgs): Promise<RunRecord> {
   const s = a.summary;
   const rowsTotal = Object.values(s.tables).reduce((x, y) => x + y, 0);
   await c().run(
-    `INSERT INTO runs VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+    `INSERT INTO runs (run_id, cohort, cohort_kor, label, data_dir, run_date, created_at,
+       rules_total, rules_failed, rules_skipped, rules_error, violations_total, violations_error, violations_warning,
+       rows_total, tables_json, rules_disabled, rule_set_modified, admin_modified)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     [a.runId, a.cohort, a.cohortKor, a.label, a.dataDir, s.run_date, a.createdAt,
      s.rules_total, s.rules_failed, s.rules_skipped, s.rules_error,
-     s.violations_total, s.violations_error, s.violations_warning, rowsTotal, JSON.stringify(s.tables)]);
+     s.violations_total, s.violations_error, s.violations_warning, rowsTotal, JSON.stringify(s.tables),
+     s.rules_disabled ?? 0, a.ruleSetModified, a.adminModified]);
   const ra = await c().createAppender("rule_results");
   for (const r of s.rules as RuleStat[]) {
     ra.appendVarchar(a.runId); ra.appendVarchar(r.rule_id); ra.appendVarchar(r.name); ra.appendVarchar(r.category);
     ra.appendVarchar(r.subcategory); ra.appendVarchar(r.severity); ra.appendVarchar(r.table); ra.appendVarchar(r.fields);
     ra.appendVarchar(r.check); ra.appendVarchar(r.status); ra.appendInteger(r.violations); ra.appendInteger(r.rows_checked);
-    ra.appendVarchar(r.note); ra.endRow();
+    ra.appendVarchar(r.note); ra.appendVarchar(r.origin); ra.endRow();
   }
   ra.closeSync();
   const f = a.findings;

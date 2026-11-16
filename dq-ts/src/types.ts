@@ -21,6 +21,34 @@ export interface Spec {
   tables: Record<string, SpecTable>;
 }
 
+export type RuleOrigin = "standard" | "modified" | "admin" | "custom";
+export type Severity = "error" | "warning";
+
+/** 수준 2: 표준 규칙의 허용 범위 · 패턴 · 코드를 조정 (min/max 는 range, regex 는 pattern, extraCodes 는 codelist 규칙에 쓴다) */
+export interface RuleParamsOverride { min?: number; max?: number; regex?: string; extraCodes?: string[] }
+
+/** 수준 3: 서식(폼)으로 만드는 사용자 규칙. id 는 USR-001 형식 */
+export interface CustomRule {
+  id: string; name: string; table: string; field: string;
+  check: "not_null" | "range" | "codelist" | "pattern" | "not_future";
+  severity: Severity; params: { min?: number; max?: number; codes?: string[]; regex?: string }; desc?: string;
+}
+
+/** 수준 4(관리자 모드): SQL 로 직접 쓰는 규칙. id 는 ADM-001 형식 */
+export interface CustomSqlRule {
+  id: string; name: string; category: "Conformance" | "Completeness" | "Plausibility"; severity: Severity;
+  scope: "all" | string[]; requires: string[]; sql: string; desc?: string;
+}
+
+export interface RuleOverrides {
+  disabled?: string[];                               // 수준 1: 끄기
+  severity?: Record<string, Severity>;               // 수준 2: 심각도
+  params?: Record<string, RuleParamsOverride>;       // 수준 2: 범위/패턴/코드
+  sql?: Record<string, string>;                      // 수준 4: 표준 교차 규칙의 SQL 교체
+  customRules?: CustomRule[];                        // 수준 3
+  customSql?: CustomSqlRule[];                       // 수준 4
+}
+
 export interface StructuralRule {
   id: string;
   name: string;
@@ -28,13 +56,17 @@ export interface StructuralRule {
   subcategory?: string;
   table: string;
   fields: string[];
-  severity: "error" | "warning";
+  severity: Severity;
   check: string;
   params: Record<string, any>;
   desc?: string;
   scope: "all" | string[];
   /** YAML 원문에서 가져온 range 경계 표기 (Python repr 과 일치시키기 위함) */
   paramText?: { min?: string; max?: string };
+  /** 규칙 묶음에서의 출처 (표준 규칙은 "standard") */
+  origin: RuleOrigin;
+  /** 사용자가 끈 규칙: 실행하지 않고 status "disabled" 로만 기록한다 */
+  disabled?: boolean;
 }
 
 export interface SemanticRule {
@@ -42,11 +74,13 @@ export interface SemanticRule {
   name: string;
   category: string;
   subcategory?: string;
-  severity: "error" | "warning";
+  severity: Severity;
   scope: "all" | string[];
   requires: string[];
   desc?: string;
   sql: string;
+  origin: RuleOrigin;
+  disabled?: boolean;
 }
 
 export interface Finding {
@@ -70,7 +104,8 @@ export interface RuleStat {
   table: string;
   fields: string;
   check: string;
-  status: "pass" | "fail" | "skipped" | "error";
+  origin: RuleOrigin;
+  status: "pass" | "fail" | "skipped" | "error" | "disabled";
   violations: number;
   rows_checked: number;
   note: string;
@@ -84,6 +119,7 @@ export interface Summary {
   rules_failed: number;
   rules_skipped: number;
   rules_error: number;
+  rules_disabled: number;
   violations_total: number;
   violations_error: number;
   violations_warning: number;
@@ -98,15 +134,7 @@ export interface RawTable {
   n: number;
 }
 
-export interface CohortDefinition {
-  condition_concept_ids: number[];
-  kcd_prefix: string[];
-  age_at_index: { median_min: number; median_max: number };
-  female_ratio: { min: number; max: number };
-}
-
 export interface Concepts {
-  cohort_definition: Record<string, CohortDefinition>;
   measurements: Record<string, { name: string; plausible: [number, number]; [k: string]: unknown }>;
   drugs: Record<string, { name: string; category?: number | null; [k: string]: unknown }>;
   [k: string]: unknown;

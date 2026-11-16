@@ -1,0 +1,270 @@
+# 매뉴얼에 없는 값 제약 (손으로 관리)
+#
+# 의뢰사 매뉴얼(raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx)은 필드명·타입·PK/FK·필수·설명만 정한다.
+# 여기에는 그 밖에 검증에 쓰는 값 제약을 적는다. spec/build_spec.py 가 매뉴얼과 합쳐 명세를 만든다.
+#
+#   fields.<TABLE>.<field>:
+#     range: [min, max]       타당 범위 (위반은 경고)
+#     pattern: 정규식          형식 (위반은 경고)
+#     codelist: OMOP.<name>   아래 codelists 의 OMOP 대표 concept 집합 (위반은 경고; 병원 어휘로 확장 가능)
+#     fk_external: <TABLE>    제출 범위 밖 테이블을 가리키는 키 (참조 무결성 검사 안 함)
+#
+# 매뉴얼 설명에 'N=라벨' 로 적힌 코드표(예: SACT.therapy_intent)는 build_spec.py 가 설명에서 직접 읽는다.
+
+fields:
+  PERSON.gender_concept_id:
+    codelist: OMOP.gender_concept_id
+  PERSON.year_of_birth:
+    range:
+    - 1900
+    - 2026
+  PERSON.month_of_birth:
+    range:
+    - 1
+    - 12
+  PERSON.day_of_birth:
+    range:
+    - 1
+    - 31
+  PERSON.age_at_index:
+    range:
+    - 0
+    - 110
+  PERSON.care_site_id:
+    fk_external: CARE_SITE
+  VISIT_OCCURRENCE.visit_concept_id:
+    codelist: OMOP.visit_concept_id
+  VISIT_OCCURRENCE.visit_type_concept_id:
+    codelist: OMOP.visit_type_concept_id
+  PROCEDURE_OCCURRENCE.procedure_type_concept_id:
+    codelist: OMOP.procedure_type_concept_id
+  DRUG_EXPOSURE.days_supply:
+    range:
+    - 0
+    - 400
+  DRUG_EXPOSURE.amount_unit_concept_id:
+    codelist: OMOP.amount_unit_concept_id
+  DRUG_EXPOSURE.amount_value:
+    range:
+    - 0
+    - 100000
+  DRUG_EXPOSURE.quantity:
+    range:
+    - 0
+    - 100000
+  DRUG_EXPOSURE.numerator_unit_concept_id:
+    codelist: OMOP.numerator_unit_concept_id
+  DRUG_EXPOSURE.denominator_unit_concept_id:
+    codelist: OMOP.denominator_unit_concept_id
+  DRUG_EXPOSURE.frequency_per_day:
+    range:
+    - 1
+    - 24
+  DRUG_EXPOSURE.dosing_interval_day:
+    range:
+    - 1
+    - 180
+  DRUG_EXPOSURE.dosing_number:
+    range:
+    - 1
+    - 500
+  CONDITION_OCCURRENCE.condition_type_concept_id:
+    codelist: OMOP.condition_type_concept_id
+  MEASUREMENT.measurement_type_concept_id:
+    codelist: OMOP.measurement_type_concept_id
+  MEASUREMENT.value_as_number:
+    range:
+    - -1000000
+    - 1000000
+  MEASUREMENT.unit_concept_id:
+    codelist: OMOP.unit_concept_id
+  MEASUREMENT.range_low:
+    range:
+    - -1000000
+    - 1000000
+  MEASUREMENT.range_high:
+    range:
+    - -1000000
+    - 1000000
+  OBSERVATION.observation_type_concept_id:
+    codelist: OMOP.observation_type_concept_id
+  OBSERVATION.value_as_number:
+    range:
+    - -1000000
+    - 1000000
+  OBSERVATION.unit_concept_id:
+    codelist: OMOP.unit_concept_id
+  NOTE.note_type_concept_id:
+    codelist: OMOP.note_type_concept_id
+  NOTE.note_class_concept_id:
+    codelist: OMOP.note_class_concept_id
+  MASLD.fib4_score:
+    range:
+    - 0
+    - 50
+  MASLD.apri_score:
+    range:
+    - 0
+    - 30
+  MASLD.bard_score:
+    range:
+    - 0
+    - 4
+  MASLD.safe_score:
+    range:
+    - -50
+    - 300
+  LYMPHOMA.mipi_score:
+    range:
+    - 0
+    - 15
+  LYMPHOMA.hodgkin_ips_score:
+    range:
+    - 0
+    - 7
+  LYMPHOMA.pit_score:
+    range:
+    - 0
+    - 4
+  SACT.line_of_therapy:
+    range:
+    - 1
+    - 20
+  SACT.number_of_cycles:
+    range:
+    - 1
+    - 100
+  SACT.ecog_performance_status:
+    range:
+    - 0
+    - 5
+  ADVERSE_EVENT.severity_concept_id:
+    codelist: OMOP.severity_concept_id
+  ADVERSE_EVENT.causality_concept_id:
+    codelist: OMOP.causality_concept_id
+  ADVERSE_EVENT.seriousness_concept_id:
+    codelist: OMOP.seriousness_concept_id
+  ADVERSE_EVENT.outcome_concept_id:
+    codelist: OMOP.outcome_concept_id
+  ADVERSE_EVENT.action_taken_concept_id:
+    codelist: OMOP.action_taken_concept_id
+codelists:
+  OMOP.gender_concept_id:
+    '8507': MALE
+    '8532': FEMALE
+  OMOP.visit_concept_id:
+    '9201': Inpatient Visit
+    '9202': Outpatient Visit
+    '9203': Emergency Room Visit
+    '262': Emergency Room and Inpatient Visit
+  OMOP.visit_type_concept_id:
+    '32817': EHR
+    '32879': Registry
+    '32810': Claim
+  OMOP.procedure_type_concept_id:
+    '32817': EHR
+    '32879': Registry
+    '32810': Claim
+  OMOP.amount_unit_concept_id:
+    '8576': mg
+    '8587': mL
+    '9655': ug
+    '8510': unit
+    '8718': IU
+    '9551': mg/m2
+    '8504': mg/kg
+    '8573': mmol
+  OMOP.numerator_unit_concept_id:
+    '8576': mg
+    '9655': ug
+    '8718': IU
+    '8510': unit
+  OMOP.denominator_unit_concept_id:
+    '8587': mL
+    '8576': mg
+    '8582': cm
+    '9529': kg
+  OMOP.condition_type_concept_id:
+    '32817': EHR
+    '32879': Registry
+    '32810': Claim
+    '32840': EHR problem list
+  OMOP.measurement_type_concept_id:
+    '32817': EHR
+    '32856': Lab
+    '32879': Registry
+  OMOP.unit_concept_id:
+    '8576': mg
+    '8587': mL
+    '8840': mg/dL
+    '8753': mmol/L
+    '8554': '%'
+    '8645': U/L
+    '8848': 10^3/uL
+    '8961': 10^3/mm3
+    '8582': cm
+    '9529': kg
+    '9531': kg/m2
+    '8876': mmHg
+    '8713': g/dL
+    '8555': ng/mL
+    '8847': 10^6/uL
+    '8629': ug/L
+    '8749': umol/L
+    '9550': mL/min/1.73m2
+    '8636': ng/mL
+    '8859': mg/L
+    '9435': ug/dL
+    '8641': mIU/mL
+  OMOP.observation_type_concept_id:
+    '32817': EHR
+    '32879': Registry
+  OMOP.note_type_concept_id:
+    '32817': EHR
+    '44814637': Radiology report
+    '44814640': Pathology report
+    '44814641': Discharge summary
+    '44814645': Outpatient note
+    '32831': EHR note
+  OMOP.note_class_concept_id:
+    '36716164': Radiology note
+    '36716165': Pathology note
+    '36716213': Discharge summary
+    '36716177': Progress note
+    '44814641': Discharge summary
+    '3040218': Oncology note
+    '0': No matching concept (표준 분류가 없는 노트, 예 약물 구조식 SMILES)
+  OMOP.severity_concept_id:
+    '1': CTCAE Grade 1
+    '2': CTCAE Grade 2
+    '3': CTCAE Grade 3
+    '4': CTCAE Grade 4
+    '5': CTCAE Grade 5
+  OMOP.causality_concept_id:
+    '1': Certain
+    '2': Probable
+    '3': Possible
+    '4': Unlikely
+    '5': Unrelated
+    '6': Unassessable
+  OMOP.seriousness_concept_id:
+    '1': Death
+    '2': Life-threatening
+    '3': Hospitalization
+    '4': Disability
+    '5': Congenital anomaly
+    '6': Other medically important
+  OMOP.outcome_concept_id:
+    '1': Recovered
+    '2': Recovering
+    '3': Not recovered
+    '4': Recovered with sequelae
+    '5': Fatal
+    '6': Unknown
+  OMOP.action_taken_concept_id:
+    '1': None
+    '2': Dose reduced
+    '3': Interrupted
+    '4': Withdrawn
+    '5': Not applicable
+    '6': Unknown

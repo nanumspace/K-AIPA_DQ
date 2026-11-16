@@ -1,4 +1,4 @@
-// 규모 시험. 평소 시험에서는 돌지 않고 KAI_SCALE_DATA=<clean_v2 모양의 폴더> 를 주면 돈다.
+// 규모 시험. 평소 시험에서는 돌지 않고 KAI_SCALE_DATA=<clean 모양의 폴더> 를 주면 돈다.
 //
 //   KAI_SCALE_DATA=/path/to/scale npx vitest run test/scale.test.ts
 //
@@ -9,7 +9,7 @@ import { describe, it, expect, beforeAll } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
-import { setRoot, loadSpecV2, loadProfilesV2, runEngine } from "@engine/index.js";
+import { setRoot, loadSpec, loadProfiles, runEngine } from "@engine/index.js";
 import { inspectPaths, buildPlan, stageInputs } from "../src/main/input";
 
 const ROOT = path.resolve(__dirname, "../..");
@@ -25,9 +25,8 @@ describe.skipIf(!cohorts.length)("규모 시험", () => {
 
   for (const cohort of cohorts) {
     it(`${cohort}: 입력 처리와 엔진이 끝나고 위반 0`, async () => {
-      const spec = loadSpecV2();
-      const p = loadProfilesV2()[cohort];
-      const tables = [...p.omop_tables, ...p.extension_tables];
+      const spec = loadSpec();
+      const tables = loadProfiles()[cohort].tables;
       const src = path.join(DATA, cohort);
       const rows = Object.fromEntries(tables.filter((t) => fs.existsSync(path.join(src, `${t}.csv`)))
         .map((t) => [t, fs.readFileSync(path.join(src, `${t}.csv`), "utf-8").split("\n").length - 2]));
@@ -51,7 +50,7 @@ describe.skipIf(!cohorts.length)("규모 시험", () => {
       const stages: Record<string, number> = {};
       let last = performance.now(), lastStage = "";
       const s = await runEngine({
-        cohort, today: "2026-09-07", spec: "v2", data: staged, out: path.join(work, `${cohort}-out`),
+        cohort, today: "2026-09-07", data: staged, out: path.join(work, `${cohort}-out`),
         onProgress: (pr) => { if (pr.stage !== lastStage) { const now = performance.now(); if (lastStage) stages[lastStage] = (stages[lastStage] ?? 0) + (now - last); last = now; lastStage = pr.stage; } },
       });
       const now = performance.now(); if (lastStage) stages[lastStage] = (stages[lastStage] ?? 0) + (now - last);

@@ -1,0 +1,2 @@
+observation_id,visit_occurrence_id,person_id,observation_concept_id,observation_date,observation_type_concept_id,value_as_number,value_as_string,unit_concept_id
+500020,500298,500020,4275495,2022-12-03,32817,,Never smoker,

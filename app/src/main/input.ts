@@ -8,9 +8,13 @@ import type { Spec, SpecTable } from "@engine/types.js";
 import type { SourceCandidate, TableCheck, InputPlan, PreviewData, InputIssue } from "@shared/types";
 
 const SAMPLE_ROWS = 20;
-const ALIASES: Record<string, string> = { antp_therapy_id: "antp_id" };
 /** 병원 내보내기가 빈 값 대신 적어 두는 글자들. 이것은 데이터가 아니라 도구의 흔적이라 빈 값으로 본다. */
 const NULL_STRINGS = new Set(["NULL", "null", "Null", "NA", "N/A", "n/a", "#N/A", "None", "nan", "NaN"]);
+/**
+ * 'NA' 가 빈 값이 아니라 매뉴얼이 정한 값인 컬럼. LYMPHOMA.cell_of_origin 은 필수이며 DLBCL 이 아니면 글자 그대로 NA 를 적는다.
+ * 여기서 빈 값으로 바꾸면 필수값 누락으로 잘못 걸리므로 'NA' 만 그대로 둔다 (NULL·N/A 등 다른 흔적은 이 컬럼에서도 빈 값으로 본다).
+ */
+const NA_LITERAL_FIELDS = new Set(["LYMPHOMA.cell_of_origin"]);
 
 /**
  * 첫 줄을 보고 구분자를 정한다. 쉼표가 기본이지만 유럽식 엑셀은 세미콜론을, 일부 도구는 탭을 쓴다.
@@ -31,24 +35,21 @@ export function sniffDelimiter(text: string, ext: string): string {
 }
 
 /**
- * 파일의 컬럼명을 명세 컬럼명으로 잇는다. 그대로 같으면 그대로, 대소문자만 다르면 소문자로,
- * 알려진 별칭이면 그것으로. 잇지 못한 것은 그대로 둔다(명세에 없는 컬럼).
+ * 파일의 컬럼명을 명세 컬럼명으로 잇는다. 그대로 같으면 그대로, 대소문자만 다르면 소문자로.
+ * 잇지 못한 것은 그대로 둔다(명세에 없는 컬럼).
  */
-export function columnAliases(columns: string[], specCols: string[]): { map: Record<string, string>; caseFolded: string[]; aliased: string[] } {
+export function columnNames(columns: string[], specCols: string[]): { map: Record<string, string>; caseFolded: string[] } {
   const exact = new Set(specCols);
   const lower = new Map(specCols.map((c) => [c.toLowerCase(), c]));
   const map: Record<string, string> = {};
   const caseFolded: string[] = [];
-  const aliased: string[] = [];
   for (const c of columns) {
     if (exact.has(c)) { map[c] = c; continue; }
     const byCase = lower.get(c.toLowerCase());
     if (byCase && !columns.includes(byCase)) { map[c] = byCase; caseFolded.push(c); continue; }
-    const byAlias = ALIASES[c] ?? ALIASES[c.toLowerCase()];
-    if (byAlias && !columns.includes(byAlias)) { map[c] = byAlias; aliased.push(`${c} → ${byAlias}`); continue; }
     map[c] = c;
   }
-  return { map, caseFolded, aliased };
+  return { map, caseFolded };
 }
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 const TS_RE = /^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}(:\d{2}(\.\d+)?)?)?$/;
@@ -107,8 +108,7 @@ function filesIn(dir: string): string[] {
 /**
  * 폴더는 그 안의 CSV/엑셀 파일로 펼친다.
  * 폴더에 직접 든 파일이 하나도 없으면 바로 아래 폴더까지만 들여다본다 —
- * v2 는 서식을 바꾼 폴더와 EHR 추출본 폴더가 따로 오므로, 그 둘을 담은 상위 폴더를
- * 통째로 끌어다 놓는 일이 흔하다. 그보다 깊이는 보지 않는다.
+ * 테이블 파일을 나눠 담은 폴더들의 상위 폴더를 통째로 끌어다 놓는 일이 흔하다. 그보다 깊이는 보지 않는다.
  */
 export function expandPaths(paths: string[]): string[] {
   const out: string[] = [];
@@ -206,15 +206,16 @@ export function inspectPaths(paths: string[]): SourceCandidate[] {
 const INT_FLOAT_RE = /^-?\d+\.0+$/;
 const ZERO_TIME_RE = /^(\d{4}-\d{2}-\d{2})[ T]00:00(:00(\.0+)?)?$/;
 
-export interface NormReport { trimmed: number; nullStrings: number; intFloats: number; zeroTimes: number; droppedColumns: number; caseFolded: number; aliased: number }
-const emptyReport = (): NormReport => ({ trimmed: 0, nullStrings: 0, intFloats: 0, zeroTimes: 0, droppedColumns: 0, caseFolded: 0, aliased: 0 });
+export interface NormReport { trimmed: number; nullStrings: number; intFloats: number; zeroTimes: number; droppedColumns: number; caseFolded: number }
+const emptyReport = (): NormReport => ({ trimmed: 0, nullStrings: 0, intFloats: 0, zeroTimes: 0, droppedColumns: 0, caseFolded: 0 });
 
-/** 한 칸을 정리한다. 무엇을 했는지는 report 에 센다. */
-function normalizeCell(raw: string, type: string, report?: NormReport): string {
+/** 한 칸을 정리한다. 무엇을 했는지는 report 에 센다. keepNA: 이 컬럼에서는 'NA' 가 값이다 (NA_LITERAL_FIELDS). */
+export function normalizeCell(raw: string, type: string, report?: NormReport, keepNA = false): string {
   let v = raw;
   const t = v.trim();
   if (t !== v) { v = t; if (report) report.trimmed++; }
   if (v === "") return v;
+  if (keepNA && v === "NA") return v;
   if (NULL_STRINGS.has(v)) { if (report) report.nullStrings++; return ""; }
   if ((type === "integer" || type === "bigint") && INT_FLOAT_RE.test(v)) { if (report) report.intFloats++; return v.slice(0, v.indexOf(".")); }
   if (type === "date") { const m = ZERO_TIME_RE.exec(v); if (m) { if (report) report.zeroTimes++; return m[1]; } }
@@ -222,12 +223,13 @@ function normalizeCell(raw: string, type: string, report?: NormReport): string {
 }
 
 /** 표본 20행에서 흔적을 센다 (사전 점검 안내용) */
-function sampleMarks(c: SourceCandidate, st: SpecTable, aliasMap: Record<string, string>): NormReport {
+function sampleMarks(c: SourceCandidate, st: SpecTable, nameMap: Record<string, string>): NormReport {
   const r = emptyReport();
   const typeOf = new Map(st.fields.map((f) => [f.name, f.type as string]));
   c.columns.forEach((col, j) => {
-    const type = typeOf.get(aliasMap[col]) ?? "varchar";
-    for (const row of c.sample) normalizeCell(row[j] ?? "", type, r);
+    const type = typeOf.get(nameMap[col]) ?? "varchar";
+    const keepNA = NA_LITERAL_FIELDS.has(`${st.name}.${nameMap[col]}`);
+    for (const row of c.sample) normalizeCell(row[j] ?? "", type, r, keepNA);
   });
   r.trimmed = 0;   // 표본은 이미 걷어 낸 값이라 세지 않는다
   return r;
@@ -251,7 +253,7 @@ export function folderLabel(dir: string): string {
 function headerSimilarity(columns: string[], t: SpecTable): number {
   if (!columns.length) return 0;
   const spec = t.fields.map((f) => f.name);
-  const have = new Set(Object.values(columnAliases(columns, spec).map));
+  const have = new Set(Object.values(columnNames(columns, spec).map));
   const hit = spec.filter((c) => have.has(c)).length;
   return hit / Math.max(spec.length, 1);
 }
@@ -259,7 +261,7 @@ function headerSimilarity(columns: string[], t: SpecTable): number {
 /**
  * 파일 이름 → 테이블 이름 → 헤더 유사도 순으로 대응시킨다.
  * 이름이 테이블과 같은 파일이 여러 폴더에서 오면 모두 그 테이블로 잇는다(합쳐 읽는다).
- * v2 는 EHR 추출본과 서식 변환 결과가 같은 OMOP 표(MEASUREMENT 등)를 나눠 갖기 때문이다.
+ * 큰 표(MEASUREMENT 등)를 나눠 내보내는 기관이 있기 때문이다.
  */
 export function autoMatch(tables: string[], spec: Spec, candidates: SourceCandidate[]): Record<string, string[]> {
   const mapping: Record<string, string[]> = {};
@@ -305,7 +307,7 @@ export function checkTables(tables: string[], spec: Spec, candidates: SourceCand
     const ids = (mapping[table] ?? []).filter((id) => byId.has(id));
     const cs = ids.map((id) => byId.get(id)!);
     const issues: InputIssue[] = [];
-    const out: TableCheck = { table, kor: st.kor, required, candidateIds: ids, auto: ids.length > 0 && same(auto[table], ids), rows: null, missingColumns: [], extraColumns: [], aliases: [], issues };
+    const out: TableCheck = { table, kor: st.kor, required, candidateIds: ids, auto: ids.length > 0 && same(auto[table], ids), rows: null, missingColumns: [], extraColumns: [], issues };
     if (!cs.length) {
       issues.push(required
         ? { level: "error", text: "파일이 없습니다. 이 테이블 없이는 검증할 수 없습니다." }
@@ -319,16 +321,15 @@ export function checkTables(tables: string[], spec: Spec, candidates: SourceCand
     // 합칠 때는 컬럼을 이름으로 맞춘다. 파일마다 컬럼이 다르면 없는 자리는 빈 값이 된다 — 그것을 말해 준다.
     if (cs.length > 1) {
       issues.push({ level: "info", text: `${cs.length}개 파일을 합쳐 읽습니다: ${cs.map((c) => `${folderLabel(c.folder)} ${c.rows.toLocaleString("ko-KR")}행`).join(" + ")}.` });
-      const sets = cs.map((c) => new Set(Object.values(columnAliases(c.columns, specCols).map)));
+      const sets = cs.map((c) => new Set(Object.values(columnNames(c.columns, specCols).map)));
       const all = new Set(sets.flatMap((x) => [...x]));
       const uneven = cs.filter((_, i) => sets[i].size !== all.size);
       if (uneven.length) issues.push({ level: "warn", text: `합치는 파일들의 컬럼 구성이 다릅니다 (${uneven.map((c) => folderLabel(c.folder)).join(", ")}). 없는 컬럼은 빈 값으로 채웁니다.` });
     }
     const have = new Set<string>();
     for (const c of cs) {
-      const al = columnAliases(c.columns, specCols);
+      const al = columnNames(c.columns, specCols);
       for (const v of Object.values(al.map)) have.add(v);
-      for (const a of al.aliased) if (!out.aliases.includes(a)) out.aliases.push(a);
       if (al.caseFolded.length) issues.push({ level: "info", text: `컬럼명 대소문자가 다릅니다 (${al.caseFolded.length}개, 예: ${al.caseFolded[0]}). 소문자로 맞춰 읽습니다.` });
       if (c.delimiter) issues.push({ level: "info", text: `구분자가 '${c.delimiter === "\t" ? "탭" : c.delimiter}' 입니다. 그대로 읽습니다.` });
       // 표본에서 내보내기 흔적을 미리 센다. 실제 정규화는 실행할 때 전체 행에 한다.
@@ -349,13 +350,12 @@ export function checkTables(tables: string[], spec: Spec, candidates: SourceCand
       }
     }
     out.missingColumns = specCols.filter((n) => !have.has(n));
-    out.extraColumns = [...new Set(cs.flatMap((c) => { const m = columnAliases(c.columns, specCols).map; return c.columns.filter((n) => !specCols.includes(m[n])); }))];
+    out.extraColumns = [...new Set(cs.flatMap((c) => { const m = columnNames(c.columns, specCols).map; return c.columns.filter((n) => !specCols.includes(m[n])); }))];
     if (out.missingColumns.includes(st.pk)) issues.push({ level: "error", text: `기본키 컬럼 ${st.pk} 이(가) 없습니다.` });
     if (table !== "PERSON" && specCols.includes("person_id") && out.missingColumns.includes("person_id")) issues.push({ level: "error", text: "person_id 컬럼이 없습니다." });
     const otherMissing = out.missingColumns.filter((n) => n !== st.pk && n !== "person_id");
     if (otherMissing.length) issues.push({ level: "warn", text: `명세 컬럼 ${otherMissing.length}개 없음: ${otherMissing.slice(0, 6).join(", ")}${otherMissing.length > 6 ? " …" : ""}` });
     if (out.extraColumns.length) issues.push({ level: "info", text: `명세에 없는 컬럼 ${out.extraColumns.length}개 (무시됨): ${out.extraColumns.slice(0, 6).join(", ")}${out.extraColumns.length > 6 ? " …" : ""}` });
-    for (const a of out.aliases) issues.push({ level: "info", text: `별칭 컬럼 해석: ${a}` });
     return out;
   });
 }
@@ -384,7 +384,7 @@ export function preview(c: SourceCandidate, limit = 50): PreviewData {
 // ------------------------------------------------------------------ 스테이징 (정규화된 입력 폴더)
 /**
  * 대응된 파일을 <TABLE>.csv (UTF-8, 쉼표) 로 옮긴다. 엑셀 시트는 CSV 로, EUC-KR 은 UTF-8 로,
- * 세미콜론·탭 구분은 쉼표로. 컬럼명은 명세 이름으로 잇고(대소문자·별칭), 값은 normalizeCell 로 정리한다.
+ * 세미콜론·탭 구분은 쉼표로. 컬럼명은 명세 이름으로 잇고(대소문자), 값은 normalizeCell 로 정리한다.
  * 무엇을 얼마나 손댔는지 표별로 돌려준다 — 보고서에 적어 병원이 알 수 있게.
  */
 export function stageInputs(candidates: SourceCandidate[], mapping: Record<string, string[]>, dir: string, spec: Spec): Record<string, NormReport> {
@@ -414,20 +414,20 @@ export function stageInputs(candidates: SourceCandidate[], mapping: Record<strin
       const rows = readRows(c);
       const { columns: rawCols, keep, dropped } = headerOf(rows[0] ?? []);
       report.droppedColumns += dropped;
-      const al = columnAliases(rawCols, specCols);
+      const al = columnNames(rawCols, specCols);
       report.caseFolded += al.caseFolded.length;
-      report.aliased += al.aliased.length;
       const cols = rawCols.map((n) => al.map[n]);
       for (const n of cols) if (!columns.includes(n)) columns.push(n);
       parts.push({ cols, keep, rows: rows.slice(1) });
     }
     const types = columns.map((n) => typeOf.get(n) ?? "varchar");
+    const keepNA = columns.map((n) => NA_LITERAL_FIELDS.has(`${table}.${n}`));
     const lines = [columns.map(csvCell).join(",")];
     for (const part of parts) {
       // 이 파일의 자리 → 합친 컬럼의 자리
       const at = columns.map((n) => { const j = part.cols.indexOf(n); return j < 0 ? -1 : part.keep[j]; });
       for (const r of part.rows) {
-        lines.push(at.map((k, j) => csvCell(k < 0 ? "" : normalizeCell(r[k] ?? "", types[j], report))).join(","));
+        lines.push(at.map((k, j) => csvCell(k < 0 ? "" : normalizeCell(r[k] ?? "", types[j], report, keepNA[j]))).join(","));
       }
     }
     fs.writeFileSync(path.join(dir, `${table}.csv`), lines.join("\n") + "\n", "utf-8");
@@ -443,9 +443,7 @@ function specRows(tables: string[], spec: Spec): (string | number | boolean)[][]
     const st = spec.tables[t];
     st.fields.forEach((f, i) => {
       const range = Array.isArray(f.range) ? `${(f.range as number[])[0]} ~ ${(f.range as number[])[1]}` : "";
-      // 코드표 이름은 v1 이 codelist, v2 가 concept_set 이다
-      const codes = f.codelist ?? f.concept_set;
-      rows.push([t, st.kor, i + 1, f.name, String(f.kor ?? ""), f.type, f.required ? "Y" : "", String(f.key ?? ""), String(f.ref ?? ""), String(codes ?? ""), range, String(f.pattern ?? ""), String(f.desc ?? "")]);
+      rows.push([t, st.kor, i + 1, f.name, String(f.kor ?? ""), f.type, f.required ? "Y" : "", String(f.key ?? ""), String(f.ref ?? ""), String(f.codelist ?? ""), range, String(f.pattern ?? ""), String(f.desc ?? "")]);
     });
   }
   return rows;

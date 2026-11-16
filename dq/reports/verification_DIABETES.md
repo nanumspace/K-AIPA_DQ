@@ -1,38 +1,34 @@
 # 검출 성능 검증: DIABETES
 
-- clean 데이터: 규칙 392개 실행, 위반 0건 (오탐)
-- dirty 데이터: 주입 오류 94건 중 94건 검출, 재현율 1.0
-- 오류 유형 29종 중 전부 검출 29종
-- 주입 오류의 부수 효과로 함께 발화한 규칙: SEM-COM-006, SEM-COM-015, SEM-COM-030, SEM-DM-005, SEM-DM-006, ST-0758, ST-0760
+- clean 데이터: 규칙 252개 실행, 위반 0건 (오탐)
+- dirty 데이터: 주입 오류 197건 중 197건 검출, 재현율 1.0
+- 오류 유형 25종 중 전부 검출 25종
+- 주입 오류의 부수 효과로 함께 발화한 규칙: ST-0359, ST-0361, ST-0364, ST-0366, ST-0368
 
 | 오류 유형 | 분류 | 주입 | 검출 | 재현율 |
 |---|---|---|---|---|
-| AGE_AT_INDEX_MISMATCH | Plausibility | 3 | 3 | 1.0 |
-| ALIAS_COLUMN | Conformance | 1 | 1 | 1.0 |
-| ANTP_IN_NONCANCER | Conformance | 3 | 3 | 1.0 |
-| CODELIST | Conformance | 6 | 6 | 1.0 |
-| COHORT_CONDITION_MISSING | Completeness | 2 | 2 | 1.0 |
-| DEATH_DATE_MISMATCH | Conformance | 3 | 3 | 1.0 |
-| DM_DRUG_MISMATCH | Conformance | 2 | 2 | 1.0 |
-| DM_MEASUREMENT_MISMATCH | Conformance | 3 | 3 | 1.0 |
-| DM_VISIT_MISMATCH | Conformance | 3 | 3 | 1.0 |
-| DM_VISIT_NOT_OUTPATIENT | Conformance | 2 | 2 | 1.0 |
-| DRUG_END_BEFORE_START | Plausibility | 3 | 3 | 1.0 |
-| DUPLICATE_RECORD | Plausibility | 3 | 3 | 1.0 |
-| EVENT_AFTER_DEATH | Plausibility | 3 | 3 | 1.0 |
-| FK_ORPHAN | Conformance | 6 | 6 | 1.0 |
-| FREQ_WITHOUT_DAYS | Completeness | 3 | 3 | 1.0 |
-| FUTURE_DATE | Plausibility | 3 | 3 | 1.0 |
-| GROUP_ANCHOR_NULL | Completeness | 6 | 6 | 1.0 |
-| MEASUREMENT_IMPLAUSIBLE | Plausibility | 3 | 3 | 1.0 |
-| MEASUREMENT_NO_VALUE | Completeness | 3 | 3 | 1.0 |
-| MISSING_COLUMN | Conformance | 1 | 1 | 1.0 |
-| PK_DUPLICATE | Conformance | 3 | 3 | 1.0 |
-| RANGE | Plausibility | 4 | 4 | 1.0 |
-| REQUIRED_NULL | Completeness | 6 | 6 | 1.0 |
-| SERIOUS_AE_INCOMPLETE | Completeness | 3 | 3 | 1.0 |
-| TYPE_DATE | Conformance | 6 | 6 | 1.0 |
-| TYPE_NUMBER | Conformance | 3 | 3 | 1.0 |
-| UNKNOWN_COLUMN | Conformance | 1 | 1 | 1.0 |
-| VISIT_END_BEFORE_START | Plausibility | 3 | 3 | 1.0 |
-| VISIT_PERSON_MISMATCH | Conformance | 3 | 3 | 1.0 |
+| AE_AFTER_DEATH | Plausibility | 1 | 1 | 1.0 |
+| CODELIST | Conformance | 10 | 10 | 1.0 |
+| COLUMN_MISSING | Conformance | 2 | 2 | 1.0 |
+| DAYS_SUPPLY_MISMATCH | Plausibility | 2 | 2 | 1.0 |
+| DISEASE_VISIT_PERSON_MISMATCH | Conformance | 1 | 1 | 1.0 |
+| DRUG_END_BEFORE_START | Plausibility | 1 | 1 | 1.0 |
+| DRUG_NOTE_PERSON_MISMATCH | Conformance | 1 | 1 | 1.0 |
+| EXTRA_COLUMN | Conformance | 2 | 2 | 1.0 |
+| FK_BROKEN | Conformance | 16 | 16 | 1.0 |
+| FREQ_WITHOUT_DAYS_SUPPLY | Completeness | 1 | 1 | 1.0 |
+| FUTURE_DATE | Plausibility | 12 | 12 | 1.0 |
+| INTERVAL_WITHOUT_NUMBER | Completeness | 1 | 1 | 1.0 |
+| MEASUREMENT_WITHOUT_DATE | Completeness | 2 | 2 | 1.0 |
+| MEASUREMENT_WITHOUT_RESULT | Completeness | 2 | 2 | 1.0 |
+| MUST_BE_NULL | Conformance | 1 | 1 | 1.0 |
+| PERSON_WITHOUT_DISEASE_ROW | Completeness | 1 | 1 | 1.0 |
+| PK_DUP | Conformance | 8 | 8 | 1.0 |
+| PK_NULL | Completeness | 8 | 8 | 1.0 |
+| RANGE | Plausibility | 13 | 13 | 1.0 |
+| RANGE_LOW_GT_HIGH | Plausibility | 2 | 2 | 1.0 |
+| REQUIRED_NULL | Completeness | 33 | 33 | 1.0 |
+| TABLE_MISSING | Completeness | 1 | 1 | 1.0 |
+| TYPE_BAD | Conformance | 73 | 73 | 1.0 |
+| VISIT_BEFORE_BIRTH | Plausibility | 1 | 1 | 1.0 |
+| VISIT_END_BEFORE_START | Plausibility | 2 | 2 | 1.0 |

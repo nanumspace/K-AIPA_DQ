@@ -1,115 +1,131 @@
 # 명세와 규칙 카탈로그
 
-> **앱의 기본은 v3 입니다.** 이 문서의 본문(속성 표, 이벤트 그룹, 규칙 카탈로그)은 v1 명세(16 테이블 · 1,105 필드 · 규칙 1,196개)를 풀어 쓴 것이고, v3 는 v1 과 같은 모양이라 속성과 검사 유형의 설명이 그대로 통합니다. 판별 요약은 아래 표에 있습니다.
->
-> | 판 | 규모 | 설명 |
-> |---|---|---|
-> | **v3 (기본)** | 표 17개 · 필드 169개 · 규칙 389개 (구조 367 + 교차 22) | 2026-09-30 의뢰사 매뉴얼 + 10/1 검토 결정(제안 21건 중 14건 채택). [`spec/v3/README.md`](../spec/v3/README.md) |
-> | v2 (이전 판) | 표 30개 · 필드 547개 · 규칙 1,078개 (구조 1,038 + 교차 40) | OMOP CDM 5.4 + K-AI 확장. 병원은 서식을 채우고 앱이 변환. [`spec/v2/README.md`](../spec/v2/README.md) |
-> | v1 (이전 판) | 표 16개 · 필드 1,105개 · 규칙 1,196개 (구조 1,121 + 교차 75) | 이 문서 본문. 질환별 단일 표 |
->
-> v2·v1 은 앱의 **설정 → 명세 판**에서 고를 수 있습니다. v2 에서 더해진 검사는 값 집합(`concept_set`·`concept_code`), 조건부 필수(`not_null_when`·`not_null_either`), 복합 PK 입니다.
-
-## 기본 판 v3
-
-의뢰사의 2026-09-30 매뉴얼에 2026-10-01 검토 결정을 반영한 명세입니다. 코호트마다 질환 본표 하나와 OMOP 형식 공통 표를 두고, **병원이 표를 직접 채웁니다**(서식·CRF 변환 없음). 코드는 v1 처럼 문자열 코드표로 받습니다.
+검증 기준은 의뢰사 **「질환별 데이터 테이블」 매뉴얼 2026-11-16**(`raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx`) 하나입니다. 표 16개 · 필드 157개이며, 규칙은 구조 규칙 368개 + 교차 테이블 규칙 21개 = 389개입니다.
 
 | 항목 | 내용 |
 |---|---|
-| 명세 | `spec/v3/kai_cdm_spec_v3.yaml` (표 17개: core 8 · 질환 6 · 확장 2(SACT, ADVERSE_EVENT) · 참조 1(DRUG_INGREDIENT_STRUCTURE) · 필드 169개), `codelists_v3.yaml`, `cohort_profiles_v3.yaml` |
-| 구조 규칙 | `rules/rules_structural_v3.yaml` 367개 (명세에서 자동 생성) |
-| 교차 규칙 | `rules/rules_semantic_v3.yaml` 22개 (손으로 작성, DuckDB SQL, id `SEM3-*`: 공통 10 · SACT 6 · 폐암 4 · 림프종 2) |
-| 코호트별 적용 규칙 | 폐암 287 · 유방암 287 · 대장암 270 · MASLD 251 · 당뇨병 247 · 림프종 281 |
-| 코호트별 표 | PERSON, VISIT_OCCURRENCE, PROCEDURE_OCCURRENCE, DRUG_EXPOSURE, CONDITION_OCCURRENCE, MEASUREMENT, OBSERVATION, NOTE, 질환 본표, ADVERSE_EVENT, SACT(MASLD·당뇨병 제외), DRUG_INGREDIENT_STRUCTURE |
+| 명세 | `spec/kai_cdm_spec.yaml` (표 16개: 공통 8 · 질환 본표 6 · 확장 2(SACT, ADVERSE_EVENT) · 필드 157개), `spec/codelists.yaml`, `spec/cohort_profiles.yaml` |
+| 값 제약 | `spec/constraints.yaml` (매뉴얼에 없는 범위·형식·OMOP 대표 코드·제출 범위 밖 FK, 손으로 관리) |
+| 구조 규칙 | `rules/rules_structural.yaml` 368개 (명세에서 `rules/generate_structural_rules.py` 가 자동 생성) |
+| 교차 규칙 | `rules/rules_semantic.yaml` 21개 (손으로 작성, DuckDB SQL, id `SEM-*`: 공통 COM 12 · 검사 MEAS 2 · 항암요법 SACT 5 · 폐암 LC 1 · 림프종 LY 1) |
+| 코호트별 적용 규칙 | 폐암 284 · 유방암 293 · 대장암 276 · MASLD 256 · 당뇨병 252 · 림프종 285 |
+| 코호트별 표 | 공통 8표 + 질환 본표 + ADVERSE_EVENT + SACT(MASLD·당뇨병 제외) |
 | 실행 전 필수 표 | PERSON 과 질환 본표 (없으면 실행이 막힘) |
 
-9/30 매뉴얼 대비 달라진 점: 치료 표 `SACT`(키 `sact_id`, ATC L01 항종양제 투여일 때만 필수), `DRUG_EXPOSURE.note_id` 삭제, SMILES 는 성분별 `DRUG_INGREDIENT_STRUCTURE` 로 이동, 폐암 ICD-O-3 조직형·부위 열과 AJCC 판수 열, 림프종 ICD-O-3 조직형 열, `OBSERVATION.value_as_concept_id`, `*_source_value` 열, `cell_of_origin` 은 DLBCL 일 때만 필수, 소세포폐암 제한기/확장기 병기 허용, `diag_rgst_ymd` 는 진단일, 비어 있던 필수 여부 채움.
-
-알려진 한계: Athena 어휘가 없어 concept 의 존재·표준 여부는 검증하지 못하고 OMOP 코드표는 경고 수준이며, 항암제 판정은 앱 내장 항암제 목록을 씁니다. 자세한 것은 [`spec/v3/README.md`](../spec/v3/README.md). 아래 속성·이벤트 그룹·규칙 카탈로그 설명은 v1 기준이며, v3 의 실제 규칙 목록은 앱의 **검증 규칙 관리** 화면이나 `rules/*_v3.yaml` 에서 봅니다.
-
-## v1 명세 (이전 판)
+**코호트별 적용 규칙의 셈법.** 엔진이 쓰는 기준과 같습니다. 구조 규칙은 *코호트 구성에 있는 표*의 규칙 가운데 적용 범위(`scope`)가 `all` 이거나 그 코호트를 가리키는 것, 교차 규칙은 `scope` 가 `all` 이거나 그 코호트를 가리키는 것입니다. 교차 규칙이 필요로 하는 표가 코호트에 없으면 규칙은 *건너뜀*으로 보고됩니다(건너뜀도 적용 규칙 수에 들어갑니다). 자료실의 규칙 목록(`resources.html`)이 같은 계산을 합니다.
 
 ## 기계 판독 명세 (`spec/`)
 
-데이터 사전(엑셀 16개 시트)을 `spec/build_spec.py`가 파싱해 필드마다 다음 속성을 부여한 YAML 명세를 만듭니다. 원본 사전 파일은 공개 저장소에 포함되지 않으며, 생성된 명세 YAML이 공개 산출물입니다.
+`spec/build_spec.py` 가 매뉴얼 엑셀(시트 하나가 표 하나)을 읽어 필드마다 이름·타입·필수 여부·PK/FK·설명을 가져오고, 설명의 `N=라벨` 형태 코드표를 `codelists.yaml` 의 `embedded` 절로 분리합니다. 매뉴얼은 FK 의 대상 표를 적지 않으므로 이름으로 정합니다(`person_id`, `visit_occurrence_id`, `sact_id`, `note_id`). 거기에 `spec/constraints.yaml` 의 값 제약(`range`, `pattern`, `codelist`, `fk_external`)을 합칩니다.
 
 | 속성 | 내용 |
 |---|---|
-| `type` | integer / float / varchar / text / date / timestamp 로 정규화 |
-| `required` | 핵심 테이블은 사전의 '필수' 열, 특화 테이블은 PK와 person_id만 필수 |
-| `key`, `ref` | PK / FK와 참조 대상 (예: `VISIT_OCCURRENCE.visit_occurrence_id`) |
-| `codelist` | 설명문에서 분리한 코드표 또는 OMOP 허용집합 참조 |
-| `group`, `anchor` | 특화 테이블의 이벤트 그룹과 그룹의 기준 날짜 필드 |
-| `level` | person(환자 불변) / event / key |
-| `range`, `pattern` | 수치 타당 범위, 문자열 정규식 (병기, KCD, LOINC 등) |
+| `type` | integer / float / varchar / text / date 로 정규화 (매뉴얼 `RBDMS dependent text` 는 text) |
+| `required` | 매뉴얼의 필수 열(Y/N). 값이 Y/N 이 아니면 생성이 멈춤 |
+| `key`, `ref` | PK / FK 와 참조 대상 (예: `VISIT_OCCURRENCE.visit_occurrence_id`) |
+| `codelist` | 설명문에서 분리한 코드표(`embedded`) 또는 OMOP 대표 코드 집합(`omop`) 참조 |
+| `range`, `pattern` | 수치 타당 범위, 문자열 정규식 (`constraints.yaml` 에서 옴. 위반은 경고) |
+| `fk_external` | 제출 범위 밖 표를 가리키는 키(예: `PERSON.care_site_id`). 참조 무결성 검사 안 함 |
 
 | 파일 | 내용 |
 |---|---|
-| `kai_cdm_spec.yaml` | 16 테이블 · 1,105 필드 명세 |
-| `codelists.yaml` | 분리된 코드표 22개 + 공통 코드표 + OMOP 허용집합 |
-| `cohort_profiles.yaml` | 코호트별 테이블 구성 |
-| `concepts.yaml` | 규칙과 생성기가 공유하는 대표 concept 목록 (OMOP 대표값, 병원 적용 전 Athena 대조 필요) |
+| `kai_cdm_spec.yaml` | 16 테이블 · 157 필드 명세 |
+| `codelists.yaml` | 매뉴얼 설명에서 분리한 코드표(embedded) + OMOP 대표 코드 집합(omop) |
+| `cohort_profiles.yaml` | 코호트별 테이블 구성 (SACT 는 폐암·유방암·대장암·림프종만) |
+| `constraints.yaml` | 매뉴얼에 없는 값 제약 |
+| `concepts.yaml` | 가상데이터 생성기와 교차 규칙이 공유하는 대표 concept 목록, 검사 타당 범위 `_MEASUREMENT_CONCEPTS`, 항암제 목록 `_ANTICANCER_DRUGS` |
 
-### 특화 테이블의 행 단위: 이벤트 그룹
+### 매뉴얼 해석
 
-특화 테이블 한 시트에는 유전자검사일, 폐기능검사일, 수술일, 메모일처럼 서로 다른 시점의 필드가 함께 있습니다. 환자당 1행으로는 반복 검사를 담을 수 없고, 방문당 1행은 한 방문의 여러 검사에서 깨집니다.
+매뉴얼이 모호하거나 표 사이에 걸쳐 있는 곳은 다음처럼 해석합니다. 이 해석이 명세와 규칙에 들어 있습니다.
 
-그래서 날짜 필드(anchor)를 기준으로 필드를 묶은 **이벤트 그룹**을 행 단위로 정했습니다. 한 행은 (person_id, visit_occurrence_id, 그룹) 하나의 이벤트를 담고, 다른 그룹의 필드는 NULL입니다. 흡연력처럼 환자 수준에서 불변인 필드는 같은 환자의 모든 행에서 값이 같아야 합니다. 이 정의에서 "그룹 필드가 있으면 anchor 날짜 필수"(완전성)와 "환자 내 불변"(타당성) 규칙이 자동으로 따라옵니다.
+| 주제 | 해석 |
+|---|---|
+| NOTE 필수 열 | 필수는 `note_id`, `note_type_concept_id`, `note_class_concept_id` 세 개뿐입니다. `person_id`, `visit_occurrence_id`, `note_date`, `note_text`, `file_id` 는 선택입니다. 노트의 `person_id` 가 있으면 약물 등이 가리키는 환자와 같아야 합니다(`SEM-COM-012`). |
+| SMILES (약물 화학 구조식) | 별도 표를 만들지 않습니다. 매뉴얼의 `DRUG_EXPOSURE.note_id` 설명("AI 학습용 의약품의 화학 구조식(Smiles code)은 Note 레코드로 매핑한다")대로 SMILES 는 NOTE 레코드에 담기고 약물 행이 `note_id` 로 가리킵니다. `DRUG_EXPOSURE.note_id` 와 `sact_id` 는 선택입니다. 가상데이터에서는 SMILES 노트의 `note_class_concept_id` 를 0("No matching concept")으로 둡니다(OMOP 대표 코드 집합에 0 이 들어 있음). |
+| `LYMPHOMA.cell_of_origin` | 필수입니다. DLBCL 은 `GCB`·`ABC/non-GCB`·`unclassifiable` 중 하나를 적고, **DLBCL 이 아니면 `NA` 를 입력**합니다(매뉴얼 문구). 그래서 앱은 입력 정규화에서 `NA` 글자를 빈 값으로 바꾸지만 **이 열에서만 글자 `NA` 를 그대로 둡니다**(빈 값이 되면 필수값 누락으로 오인됨). 이 열 값이 이 넷이 아니면 `SEM-LY-001` 이 경고합니다. 한계: 림프종 아형(DLBCL 여부)을 담은 열이 명세에 없으므로 DLBCL 인데 `NA` 라고 잘못 적은 경우나 그 반대는 검출할 수 없습니다. |
+| 폐암 `clinical_stage` | 매뉴얼은 AJCC 임상 병기로 `IA, IB, IIA, IIB, IIIA, IIIB, IV 등` 을 적으라고 합니다. AJCC 병기군(0, IA·IA1~IA3, IB, IIA, IIB, IIIA~IIIC, IV·IVA·IVB)이 아니면 `SEM-LC-001` 이 **경고**합니다. 소세포폐암의 제한기/확장기(LD/ED)는 병기군이 아니므로 이 경고에 걸리며 TNM 병기로 바꿔 입력해야 합니다. |
+| `diag_rgst_ymd` | **진단정보 등록일**입니다(진단일이 아님). 매뉴얼 설명 "진단정보 등록 연월일"을 따릅니다. 진단일 관계를 검사하는 규칙에 쓰지 않습니다. |
+| 약물 투여 빈도·간격 | 매뉴얼 설명 "매일 투여하는 경우 days_supply 값이 반드시 입력되어야 한다"(`frequency_per_day` 가 있으면 `days_supply` 필수, `SEM-COM-006`), "투여 간격이 1일을 초과하는 경우 dosing_number 값이 반드시 입력되어야 한다"(`SEM-COM-007`)는 매뉴얼이 명시한 조건부 필수이므로 **오류**입니다. |
+| SACT 연결 | `DRUG_EXPOSURE.sact_id` 는 선택입니다. 항종양제(`_ANTICANCER_DRUGS` 의 ATC L01 계열)인데 `sact_id` 가 없으면 연결 누락 확인을 안내하는 **경고**(`SEM-SACT-005`)만 냅니다. SACT 가 없는 코호트(MASLD, 당뇨병)에서는 `sact_id` 가 항상 비어 있어야 합니다. |
+| 명세 외 열 | 매뉴얼에 없는 열이 파일에 있으면 `명세에 없는 컬럼: <c>` 경고만 냅니다(검사에는 쓰지 않음). 컬럼 구성 규칙은 **누락된** 열만 오류로 보고하며 별칭은 받지 않습니다. |
 
-| 특화 테이블 | 그룹 수 | 대표 그룹 (anchor) |
+## 심각도 원칙
+
+| 심각도 | 기준 | 예 |
 |---|---|---|
-| LUNG_CANCER | 21 | gmt(유전자검사), plex(폐기능), bpsy(생검), oprt(수술), sgpt(외과병리), drug, rdt(방사선), rlps(재발), imex, cexm |
-| BREAST_CANCER | 22 | obtr(산과력), gmvx(생식세포변이), gnrx(유전자발현), imem(면역조직화학), oprt, sgpt, rdt |
-| COLORECTAL_CANCER | 20 | imex(MRI), oprt(44필드), ostm_reop(장루복원), sgpt(35필드), mlem(분자병리) |
-| MASLD | 8 | score(FIB-4 등 예후척도), imex, hist(음주·흡연·운동), anth, oprt(간이식) |
-| DIABETES | 9 | person, visit, condition, measurement, drug, death (핵심 테이블 파생 뷰) |
-| LYMPHOMA | 15 | dx, stage, ihc, mol(FISH), prog(IPI), tx, sct, cart, resp(Deauville), fu |
+| error | **매뉴얼에 적힌 것**의 위반: 표·컬럼 구성, 필수, 타입, PK/FK, 설명 속 코드표, 매뉴얼이 명시한 조건부 규칙 | 필수값 NULL, 날짜 형식, PK 중복, 코드표 밖 값, 투여 빈도는 있는데 `days_supply` 없음 |
+| warning | 매뉴얼 밖의 **제약·임상 개연성** | 임상 상식 범위(`constraints.yaml`), OMOP 대표 코드 집합(병원 어휘에 따라 다를 수 있음), 명세 외 열, 검사 타당 범위, 병기군 표기, 항종양제의 SACT 연결 확인 |
 
-### 명세에 반영된 주요 정의
-
-- 외래키 이름은 `antp_id`로 통일하고, `antp_therapy_id`는 별칭으로 받아 경고 후 처리합니다.
-- 설명문 안에 "1=…, 2=…" 형태로 있던 코드값은 `codelists.yaml`로 분리했습니다. 병원 LOCAL/EDI 코드는 중앙에서 검증할 수 없으므로 코드-명칭 1:1 일관성만 검증합니다.
-- DIABETES 특화 테이블은 핵심 테이블의 파생 뷰로 취급해 값 일치를 교차검증합니다.
-- OMOP 표준 concept은 최소 허용집합(gender, visit, type concept, 단위)만 `codelists.yaml`의 `omop` 절에 두고, 병원은 설정으로 확장할 수 있습니다. 전체 OMOP vocabulary 검증은 병원 DB에서 OHDSI DataQualityDashboard로 수행합니다.
-- index date는 코호트 정의 진단의 최초 condition_start_date이며, `age_at_index`는 이 날짜 기준 만 나이입니다.
-- 날짜는 ISO 8601(YYYY-MM-DD), 타임스탬프는 YYYY-MM-DD HH:MM:SS, CSV는 UTF-8·헤더 포함·NULL은 빈 문자열입니다.
-- 수치 범위와 문자열 패턴은 임상 상식 범위(BMI 10~70, ECOG 0~5, Deauville 1~5, 방사선 1회 선량 0~30 Gy 등)이며 파일럿 병원 집계로 보정합니다.
+구조 규칙 368개 중 오류 309 · 경고 59, 교차 규칙 21개 중 오류 14 · 경고 7입니다. 분류는 Kahn 세 축(OHDSI DataQualityDashboard 와 같음)이며 적합성 246 · 완전성 88 · 타당성 55개입니다.
 
 ## 규칙 카탈로그 (`rules/`)
 
-규칙은 OHDSI DataQualityDashboard와 같은 **Kahn 프레임워크** 세 축(Conformance 적합성, Completeness 완전성, Plausibility 타당성)으로 분류하고, 심각도 error(적재 거부 수준)와 warning(검토 필요)을 둡니다.
+### 구조 규칙 368개 (명세에서 자동 생성)
 
-### 구조 규칙 1,121개 (명세에서 자동 생성)
-
-`rules/generate_structural_rules.py`가 명세에서 생성하므로 사전이 바뀌면 다시 생성하면 됩니다.
+`rules/generate_structural_rules.py` 가 명세에서 생성하므로 매뉴얼이나 값 제약이 바뀌면 다시 생성합니다. 직접 편집하지 않습니다.
 
 | 검사 유형 | 규칙 수 | 내용 |
 |---|---|---|
-| type | 478 | integer / float / date(YYYY-MM-DD) / timestamp 형식 |
-| range | 139 | BMI 10~70, ECOG 0~5, Deauville 1~5, 방사선 1회 선량 0~30 Gy 등 |
-| not_future | 136 | 검증 실행일 이후 날짜 금지 |
-| group_anchor | 86 | 그룹 필드가 있으면 anchor 날짜 필수 |
-| codelist | 73 | 코드표 / OMOP 허용집합 (OMOP은 병원 설정으로 확장 가능하므로 warning) |
-| fk | 72 | 참조무결성 (참조 테이블이 코호트에 없으면 건너뜀) |
-| not_null | 45 | 필수 필드 |
-| pattern | 32 | TNM 병기 `^(y?p?)T(is|0|X|1[abc]?…)$`, KCD, LOINC, ECOG 등 |
-| table_present, columns, pk_unique | 48 | 테이블 존재, 컬럼 구성(별칭 antp_therapy_id 수용), PK 유일성 |
-| must_be_null | 8 | 비항암 코호트에서 antp_id는 NULL |
-| person_invariant | 5 | 환자 수준 필드는 환자 내 동일 |
+| type | 134 | integer / float / date(YYYY-MM-DD) 형식 |
+| not_null | 66 | 필수 필드 |
+| fk | 30 | 참조무결성 (참조 테이블이 코호트에 없으면 건너뜀) |
+| codelist | 27 | 매뉴얼 설명의 코드표, OMOP 대표 코드 집합(병원 어휘로 확장될 수 있어 경고) |
+| range | 24 | 임상 상식 범위 (경고) |
+| not_future | 22 | 검증 실행일 이후 날짜 금지 |
+| table_present | 16 | 코호트 구성에 있는 표가 제출되어야 함 |
+| columns | 16 | 명세의 모든 컬럼이 있어야 함 (누락 컬럼만 보고) |
+| extra_columns | 16 | 명세에 없는 컬럼 알림 (경고) |
+| pk_unique | 16 | PK 는 비어 있지 않고 유일 |
+| must_be_null | 1 | 비항암 코호트(MASLD, 당뇨병)에서 `DRUG_EXPOSURE.sact_id` 는 NULL |
 
-### 교차 테이블 규칙 75개 (수동 작성, `rules_semantic.yaml`)
+### 교차 테이블 규칙 21개 (수동 작성, `rules_semantic.yaml`)
 
-DuckDB SQL로 작성되어 있어 병원 DBMS로 옮기기 쉽습니다. 각 규칙은 위반 행(person_id, row_key, detail)을 반환합니다. 치환자(`{COHORT_CONDITION_IDS}`, `{DISEASE}`, `{DISEASE_PK}` 등)로 코호트별로 실행됩니다.
+DuckDB SQL로 작성되어 있어 병원 DBMS로 옮기기 쉽습니다. 각 규칙은 위반 행(person_id, row_key, detail)을 반환합니다. 치환자(`{TODAY}`, `{DISEASE}`, `{DISEASE_PK}`)로 코호트별로 실행됩니다.
 
-| 그룹 | 수 | 예 |
+| 그룹 | 수 | 규칙 |
 |---|---|---|
-| 공통 SEM-COM | 30 | 방문 종료일 ≥ 시작일, 사망 이후 이벤트 금지, 이벤트-방문 환자 일치, 이벤트일이 방문 기간 안, 약물 종료일 = 시작일 + days_supply − 1, 검사 결과값 존재, 검사항목별 타당 범위, age_at_index 재계산, 코호트 포함 조건, 이상사례 ≥ 항암 시작일, 중대 AE 논리, line 번호 연속, 항암 시작일 = 연결 약물 최소 시작일, 진단일 ≤ 첫 항암, 중복 레코드, 성비·나이 분포, 단위 일관성, 입원 중첩, 특화 테이블 death_date = PERSON |
-| 암 공통 SEM-CA | 8 | 외과병리일은 수술 후 60일 이내, TNM 조합 일치, 방사선 총선량 = 1회 선량 × 횟수, BMI 재계산, 재발일 > 수술일, KCD 비율 ≥ 90%, 양성 림프절 ≤ 절제 림프절, 판독일 ≥ 검사일 |
-| 폐암 SEM-LC | 5 | Stage IV 진단일, 흡연력 논리, 종양 크기 vs T 병기, 유전자검사 ≥ 생검, 조직형 일관성 |
-| 유방암 SEM-BC | 5 | 산과 필드는 여성, 폐경 논리, 임신·출산 조건부 논리, 감시림프절 수, 월경 재개일 > 세포독성 항암 종료 |
-| 대장암 SEM-CC | 4 | 장루 논리, 개복 전환 사유, 직장암 MRI 거리, 추정실혈량 구분 |
-| MASLD SEM-MA | 6 | FIB-4 재계산(MEASUREMENT의 AST/ALT/혈소판 ±7일), 지표 나이, 음주 임계, 예후 척도 명칭, 심장대사 위험인자, 간이식일 |
-| 당뇨병 SEM-DM | 6 | DIABETES 방문·검사·약물·진단·환자 필드가 핵심 테이블과 일치, 방문 유형 외래, 연 1회 HbA1c, 당뇨약 ≥ 진단일 |
-| 림프종 SEM-LY | 11 | dx 그룹 1행과 진단일 일치, B 증상 ↔ 병기 수식자, 결절외/골수/bulky 논리, 전환, IPI 위험군, 치료 line ↔ ANTP, 이식/CAR-T 날짜 순서, Deauville ↔ 대사 반응, 추적/생존 일관성, double-hit, 대분류 ↔ 아형 |
+| 공통 SEM-COM | 12 | 방문 종료일 ≥ 시작일, 방문일 ≥ 출생연도, 사망 이후 임상 이벤트 금지, 이벤트-방문 환자 일치, 약물 종료일 ≥ 시작일과 days_supply 일치, 매일 투여면 days_supply 필수, 투여 간격 > 1일이면 dosing_number 필수, 검사 정상범위 하한 ≤ 상한, 특화 표 누락 환자, 특화 표 방문 환자 일치, 이상사례 발생일 사망 이후 금지, 노트-환자 일치 |
+| 검사 SEM-MEAS | 2 | 검사일 없음, 검사 결과값 없음 (경고) |
+| 항암요법 SEM-SACT | 5 | 항암요법 기간과 line 번호, 항암요법 기간 = 연결 약물 기간(경고), 진행일 ≥ 항암 시작일, 약물-항암요법 환자 일치, 항종양제 투여의 항암요법 연결 확인(경고) |
+| 폐암 SEM-LC | 1 | 임상 병기가 AJCC 병기군 표기인지 (경고) |
+| 림프종 SEM-LY | 1 | `cell_of_origin` 값 (경고) |
 
-규칙을 추가하거나 고치는 방법은 [CONTRIBUTING.md](../CONTRIBUTING.md)에 있습니다.
+### 알려진 한계
+
+- Athena 어휘가 없어 `*_concept_id` 의 **존재·표준 여부는 검사하지 않습니다.** OMOP 코드표는 대표 코드 집합과의 대조이며 경고입니다.
+- 항종양제 판정은 앱에 내장된 항암제 목록(`_ANTICANCER_DRUGS`)을 씁니다. 목록 밖 약제는 판정되지 않습니다.
+- 림프종 아형 열이 없어 DLBCL 인데 `cell_of_origin` 이 `NA` 인 오기입은 검출할 수 없습니다.
+- 수치 범위와 문자열 패턴은 임상 상식 범위(예: `age_at_index` 0~110)이며 파일럿 병원 집계로 보정합니다.
+
+## 규칙 편집 (앱의 규칙 설정)
+
+위 YAML 이 **표준 규칙**입니다. 병원은 앱에서 표준 규칙 묶음을 자기 기관에 맞게 조정할 수 있고, 조정은 네 수준으로 나뉩니다. 사용자 안내는 [manual/06-rules.md](../manual/06-rules.md)에 있습니다.
+
+| 수준 | 누가 | 할 수 있는 것 | 결과 규칙의 `origin` |
+|---|---|---|---|
+| 1 | 사용자 | 규칙 켜기/끄기 (`overrides.disabled`) | `modified` |
+| 2 | 사용자 | 심각도 바꾸기(`severity`), 값 범위·정규식·허용 코드 조정(`params`: `min`, `max`, `regex`, `extraCodes`) | `modified` |
+| 3 | 사용자 | 양식으로 사용자 규칙 만들기 — 표·필드·검사 유형(`not_null`, `range`, `codelist`, `pattern`, `not_future`)을 고르면 `USR-001` 형 규칙이 생김. SQL 을 쓰지 않음 | `custom` |
+| 4 | 관리자 모드 | 표준 교차 규칙의 SQL 교체(`sql`), SQL 로 새 규칙 작성(`ADM-001` 형, `customSql`) | `admin` |
+
+수준 4 는 설정 화면의 **관리자 모드** 단추로 켭니다(비밀번호 없음). 실수로 SQL 을 건드리지 않게 하는 안전장치이지 접근 통제가 아닙니다.
+
+**엔진 쪽 구조** (`dq-ts/src/rules.ts`, `dq-ts/src/types.ts`)
+
+- `RuleOverrides` 가 조정 전체를 담습니다. `effectiveRules(overrides)` 가 표준 규칙에 조정을 입힌 실제 규칙 묶음을, `ruleSetHash(overrides)` 가 그 묶음의 SHA-256 을, `describeOverrides(overrides)` 가 변경 목록(규칙 id, origin, 한국어 변경 내용)을 줍니다. 입력은 엄격히 검증하며(알 수 없는 규칙 id, 맞지 않는 `params`, 잘못된 id 형식은 오류) 정규식은 컴파일해 봅니다.
+- 끈 규칙은 실행하지 않고 `status: disabled`, 위반 0건으로 통계에 남으며 `summary.json` 의 `rules_disabled` 에 셉니다.
+- 규칙 통계 항목에는 `origin`(`standard`·`modified`·`custom`·`admin`) 이 있어 어떤 규칙이 표준에서 벗어났는지 남습니다. 표준 실행(조정 없음, 관리자 모드 꺼짐)의 `summary.json`·`report.md` 는 Python 참조 구현과 바이트까지 같습니다.
+
+**조정이 남기는 기록**
+
+| 위치 | 내용 |
+|---|---|
+| `report.md` 의 `## 규칙 설정` | 조정이 있거나 관리자 모드를 쓴 실행에만 붙는 절. 표준 규칙 묶음 해시와 실제 규칙 묶음 해시, 관리자 모드 사용 여부, 변경 표(규칙 id · origin · 변경 내용). 환자 데이터가 아니라 규칙 설정입니다. |
+| `rule_results.csv` 의 `origin` 열 | 규칙마다 표준/변경/사용자/관리자 구분 |
+| `submission.json` 의 `rule_set` | `standard_hash`, `effective_hash`, `admin_mode`(관리자 모드를 켠 채 실행), `admin_modified`(표준 교차 규칙의 SQL 교체나 `ADM-###` 규칙이 하나라도 있음 — 관리자 모드를 켰다는 사실만으로는 true 가 아님), `disabled`(꺼진 규칙 id), `modified`(`rule_id` 와 변경 내용), `custom`(`USR-###` id), `admin`(관리자 출처 규칙 id). `by_rule` 의 각 규칙에도 `origin` 이 있음 |
+| 규칙 설정 파일과 변경 이력 | 앱 데이터 폴더의 `rule-overrides.json`(이 PC 의 설정: 표준과의 차이만 저장)과 `rule-history.jsonl`(설정을 바꿀 때마다 시각·규칙 id·변경 전후·관리자 모드 여부 한 줄씩 추가) |
+
+**중앙 집계.** 중앙은 `submission.json` 의 `rule_set` 과 규칙별 `origin` 으로 표준 규칙의 결과와 그렇지 않은 것을 나눕니다(`pilot/aggregate.py`). `origin` 이 `standard` 인 규칙의 결과만 기관 간 비교(어떤 규칙이 여러 기관에서 우는가)에 쓰고, 끈 규칙·조정한 규칙·사용자 규칙·관리자 규칙의 결과는 `nonstandard_rules.csv` 로 따로 모읍니다. `standard_hash` 가 서로 다른 제출분(규칙 버전이 다름)이 섞여 있거나 `admin_modified` 인 제출분이 있으면 요약에 따로 표시합니다. 관리자 수준 변경이 있는 실행은 규칙 의미 자체가 달라졌으므로 더 조심해서 읽어야 합니다.
+
+규칙을 추가하거나 고치는 방법(표준 규칙)은 [CONTRIBUTING.md](../CONTRIBUTING.md)에 있습니다.

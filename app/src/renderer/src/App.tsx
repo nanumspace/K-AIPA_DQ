@@ -2,18 +2,16 @@ import { useEffect, useState } from "react";
 import { api } from "./api";
 import { Dashboard } from "./pages/Dashboard";
 import { RunPage } from "./pages/RunPage";
-import { CrfPage } from "./pages/CrfPage";
 import { RulesPage } from "./pages/RulesPage";
 import { FindingsPage } from "./pages/FindingsPage";
 import { ReportPage } from "./pages/ReportPage";
 import { MonitorPage } from "./pages/MonitorPage";
 import { SettingsPage } from "./pages/SettingsPage";
 
-export type Page = "dashboard" | "run" | "crf" | "rules" | "findings" | "report" | "monitor" | "settings";
+export type Page = "dashboard" | "run" | "rules" | "findings" | "report" | "monitor" | "settings";
 
 const MENU: { id: Page; label: string; icon: string }[] = [
   { id: "run", label: "검증 실행", icon: "▶" },
-  { id: "crf", label: "서식 변환", icon: "⇄" },
   { id: "report", label: "결과 보고서", icon: "▤" },
   { id: "findings", label: "오류 현황 조회", icon: "⌕" },
   { id: "dashboard", label: "대시보드", icon: "⌂" },
@@ -28,16 +26,16 @@ export function App() {
   const [page, setPage] = useState<Page>("run");
   const [runId, setRunId] = useState<string | undefined>();
   const [version, setVersion] = useState(0); // 실행 완료 시 증가 → 목록 갱신
-  // 꼬리말은 지금 켜진 명세 판의 실제 규모를 적는다 (판마다 규칙 수가 다르다).
-  // '서식 변환'은 v2 저장 레코드를 만드는 기능이라 v2 에서만 메뉴에 둔다. 설정에서 판을 바꾸면 다시 읽는다.
+  // 꼬리말은 명세(매뉴얼 2026-11-16)의 실제 규모를 적는다. 규칙 수는 이 PC 의 설정(사용자·관리자 규칙 포함)을 따른다.
   const [foot, setFoot] = useState("");
-  const [specVersion, setSpecVersion] = useState<string>("");
+  const [admin, setAdmin] = useState(false);
+  const [appVersion, setAppVersion] = useState("");
   useEffect(() => {
     const load = () => Promise.all([api.listRules(), api.listCohorts(), api.getConfig()])
       .then(([rs, cs, cfg]) => {
-        setFoot(`${cfg.specVersion} · 규칙 ${rs.length.toLocaleString("ko-KR")}개 · 코호트 ${cs.length}개`);
-        setSpecVersion(cfg.specVersion);
-        if (cfg.specVersion !== "v2") setPage((p) => (p === "crf" ? "run" : p));
+        setFoot(`매뉴얼 2026-11-16 · 규칙 ${rs.length.toLocaleString("ko-KR")}개 · 코호트 ${cs.length}개`);
+        setAdmin(cfg.adminMode);
+        setAppVersion(cfg.version);
       })
       .catch(() => setFoot(""));
     load();
@@ -49,28 +47,38 @@ export function App() {
   useEffect(() => api.onNav((p) => setPage(p as Page)), []);
   useEffect(() => api.onProgress((p) => { if (p.stage === "done") setVersion((v) => v + 1); }), []);
 
+  const adminOff = async () => { await api.setAdminMode(false); window.dispatchEvent(new Event("kai:config")); };
+
   const nav: Nav = { page, runId, go };
   return (
-    <div className="app">
-      <aside className="sidebar">
-        <div className="brand">Quality Validator<small>K-AI 코호트 데이터 품질검증</small></div>
-        {MENU.filter((m) => m.id !== "crf" || specVersion === "v2").map((m) => (
-          <button key={m.id} className={page === m.id ? "active" : ""} onClick={() => setPage(m.id)}>
-            <span className="icon">{m.icon}</span>{m.label}
-          </button>
-        ))}
-        <div className="foot">{foot}<br />v0.3.0</div>
-      </aside>
-      <main className="main">
-        {page === "dashboard" && <Dashboard key={version} nav={nav} />}
-        {page === "run" && <RunPage nav={nav} />}
-        {page === "crf" && <CrfPage />}
-        {page === "rules" && <RulesPage />}
-        {page === "findings" && <FindingsPage key={`${version}-${runId ?? ""}`} nav={nav} />}
-        {page === "report" && <ReportPage key={`${version}-${runId ?? ""}`} nav={nav} />}
-        {page === "monitor" && <MonitorPage key={version} nav={nav} />}
-        {page === "settings" && <SettingsPage />}
-      </main>
+    <div className="shell">
+      {admin && (
+        <div className="adminbar" role="status">
+          <b>관리자 모드</b>
+          <span>SQL 규칙을 직접 수정할 수 있습니다. 바꾼 내용은 이 PC 의 변경 이력과 검증 결과물(보고서 · 제출용 집계)에 기록됩니다.</span>
+          <button className="btn sm" onClick={adminOff}>관리자 모드 끄기</button>
+        </div>
+      )}
+      <div className="app">
+        <aside className="sidebar">
+          <div className="brand">Quality Validator<small>K-AI 코호트 데이터 품질검증</small></div>
+          {MENU.map((m) => (
+            <button key={m.id} className={page === m.id ? "active" : ""} onClick={() => setPage(m.id)}>
+              <span className="icon">{m.icon}</span>{m.label}
+            </button>
+          ))}
+          <div className="foot">{foot}<br />{appVersion && `v${appVersion}`}</div>
+        </aside>
+        <main className="main">
+          {page === "dashboard" && <Dashboard key={version} nav={nav} />}
+          {page === "run" && <RunPage nav={nav} />}
+          {page === "rules" && <RulesPage />}
+          {page === "findings" && <FindingsPage key={`${version}-${runId ?? ""}`} nav={nav} />}
+          {page === "report" && <ReportPage key={`${version}-${runId ?? ""}`} nav={nav} />}
+          {page === "monitor" && <MonitorPage key={version} nav={nav} />}
+          {page === "settings" && <SettingsPage />}
+        </main>
+      </div>
     </div>
   );
 }

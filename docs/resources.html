@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>자료실 · Quality Validator</title>
-  <meta name="description" content="K-AI 코호트 데이터 품질검증 앱의 기본 명세(v3) 자료: 입력 양식, 컬럼 명세서, 검증 규칙 목록, 견본 데이터 기대 결과.">
+  <meta name="description" content="K-AI 코호트 데이터 품질검증 앱의 명세(의뢰사 매뉴얼 2026-11-16) 자료: 입력 양식, 컬럼 명세서, 검증 규칙 목록, 견본 데이터 기대 결과.">
   <style>
     :root { --bg:#f4f6f9; --card:#fff; --ink:#132033; --mut:#5b6b80; --line:#dbe2ea; --acc:#275BAB; --acc2:#00C2D1; --err:#b42318; --warn:#9a5b00; --code:#eef2f7; color-scheme: light; }
     @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#101623; --card:#172033; --ink:#e6edf6; --mut:#9aabc2; --line:#2a3750; --acc:#7aa7f0; --code:#1f2b42; --err:#ff8a7a; --warn:#f0b35a; color-scheme: dark; } }
@@ -56,23 +56,23 @@
 </div></header>
 <main class="wrap">
   <h1>자료실 <span id="ed" class="tag"></span></h1>
-  <p class="lede">앱의 기본 명세에서 그대로 만든 자료입니다. 병원은 앱을 설치하기 전에 입력 양식을 받고, 어떤 규칙으로 검사받는지 미리 볼 수 있습니다. 명세나 규칙이 바뀌면 이 페이지도 다음 배포 때 함께 바뀝니다.</p>
+  <p class="lede">의뢰사 매뉴얼(2026-11-16)에서 그대로 만든 자료입니다. 병원은 앱을 설치하기 전에 입력 양식을 받고, 어떤 규칙으로 검사받는지 미리 볼 수 있습니다. 명세나 규칙이 바뀌면 이 페이지도 다음 배포 때 함께 바뀝니다.</p>
   <div class="stats" id="stats"></div>
 
   <section class="card" id="downloads">
     <h2>내려받기</h2>
-    <p class="sub">엑셀 양식은 시트 하나가 테이블 하나이고 '명세' 시트에 컬럼 설명이 있습니다. CSV 묶음은 테이블마다 헤더만 있는 파일입니다. 앱의 '입력 양식 내려받기'와 같은 모양입니다.</p>
+    <p class="sub">엑셀 양식은 시트 하나가 테이블 하나이고 '명세' 시트에 컬럼 설명이 있습니다. CSV 묶음은 테이블마다 헤더만 있는 파일입니다. 앱의 '입력 양식 내려받기'와 같은 모양입니다. 코호트마다 공통 8표 + 질환 본표 + ADVERSE_EVENT 를 내고, 폐암·유방암·대장암·림프종은 SACT 를 더합니다.</p>
     <div class="btns" style="margin-bottom:14px" id="common"></div>
     <div style="overflow:auto"><table>
-      <thead><tr><th>코호트</th><th class="num">표</th><th class="num">적용 규칙</th><th>입력 양식</th><th>견본 데이터 기대 결과 <span class="note">(clean / dirty 위반 수)</span></th></tr></thead>
+      <thead><tr><th>코호트</th><th class="num">표</th><th class="num">적용 규칙</th><th>입력 양식</th><th>견본 데이터 기대 결과 <span class="note">(clean / dirty / good 위반 수)</span></th></tr></thead>
       <tbody id="cohorts"></tbody>
     </table></div>
-    <p class="note">견본 데이터(100명 가상 코호트, clean·dirty)는 <a href="https://github.com/nanumspace/KAI_DQ_App/releases/latest">최신 릴리스</a>에서 받습니다. 폴더째 앱의 검증 실행 화면에 넣으면 위 기대 결과와 같은 수가 나와야 합니다.</p>
+    <p class="note">견본 데이터(clean · dirty 는 100명 가상 코호트, good 은 가상 환자 1명)는 <a href="https://github.com/nanumspace/KAI_DQ_App/releases/latest">최신 릴리스</a>에서 받습니다. 폴더째 앱의 검증 실행 화면에 넣고 폴더의 README.txt 에 적힌 검증 실행일로 맞추면 위 기대 결과와 같은 수가 나와야 합니다. dirty 의 오류는 규칙에서 역으로 만든 것이라 모두 검출되는 것이 실제 병원 데이터에서의 민감도를 뜻하지 않으며, Good Sample 은 합성한 자료로 임상의의 감수를 받지 않았습니다.</p>
   </section>
 
   <section class="card" id="rules">
     <h2>검증 규칙</h2>
-    <p class="sub">구조 규칙은 명세에서 자동 생성되고, 교차 규칙은 여러 표를 함께 보는 SQL 입니다. 분류는 Kahn 프레임워크(적합성 Conformance · 완전성 Completeness · 타당성 Plausibility)를 따릅니다. 심각도 error 는 적재 거부 수준, warning 은 검토 필요입니다.</p>
+    <p class="sub">구조 규칙은 명세에서 자동 생성되고, 교차 규칙은 여러 표를 함께 보는 SQL 입니다. 분류는 Kahn 프레임워크(적합성 Conformance · 완전성 Completeness · 타당성 Plausibility)를 따릅니다. 심각도 error 는 매뉴얼에 적힌 것의 위반(적재 거부 수준), warning 은 임상 개연성·OMOP 대표 코드·명세 외 열 같은 매뉴얼 밖 제약(검토 필요)입니다. 앱에서 규칙을 켜고 끄거나 조정할 수 있으며 이 목록은 표준 규칙입니다.</p>
     <div class="filters">
       <label>코호트<select id="f-cohort"><option value="">전체</option></select></label>
       <label>종류<select id="f-kind"><option value="">전체</option><option>구조</option><option>교차</option></select></label>
@@ -117,19 +117,19 @@
   });
 
   function render(d) {
-    $('ed').textContent = d.edition + ' · ' + d.spec_version;
+    $('ed').textContent = '매뉴얼 ' + d.manual_date;
     var c = d.counts;
     $('stats').innerHTML = [['표', c.tables], ['컬럼', c.fields], ['구조 규칙', c.structural], ['교차 규칙', c.semantic], ['코호트', d.cohorts.length]]
       .map(function (s) { return '<div class="stat"><b>' + fmt(s[1]) + '</b><span>' + s[0] + '</span></div>'; }).join('');
     $('common').innerHTML = '<a class="btn solid" href="' + R + d.files.column_spec + '" download>컬럼 명세서 (xlsx, 전체 표)</a>' +
       '<a class="btn" href="' + R + d.files.rules_csv + '" download>검증 규칙 목록 (csv)</a>';
     $('cohorts').innerHTML = d.cohorts.map(function (k) {
-      var e = k.expected || {}, cl = e.clean, di = e.dirty;
+      var e = k.expected || {}, cl = e.clean, di = e.dirty, go = e.good;
       return '<tr><td><b>' + esc(k.kor) + '</b> <span class="mono">' + esc(k.id) + '</span></td><td class="num">' + k.tables.length +
         '</td><td class="num">' + k.rules + '</td><td><div class="btns"><a class="btn" href="' + R + k.template_xlsx + '" download>엑셀</a><a class="btn" href="' + R + k.template_csv + '" download>CSV 묶음</a></div></td><td>' +
-        (cl ? fmt(cl.violations) + ' / ' + (di ? fmt(di.violations) : '–') + ' <span class="note">(규칙 ' + cl.rules + '개)</span>' : '–') + '</td></tr>';
+        (cl ? fmt(cl.violations) + ' / ' + (di ? fmt(di.violations) : '–') + ' / ' + (go ? fmt(go.violations) : '–') + ' <span class="note">(규칙 ' + cl.rules + '개' + (cl.run_date ? ', 검증 실행일 ' + esc(cl.run_date) : '') + ')</span>' : '–') + '</td></tr>';
     }).join('');
-    $('foot').innerHTML = esc(d.spec_name) + ' · 이 페이지는 저장소의 spec/v3 와 rules/*_v3.yaml 에서 생성됩니다 (docs/build_resources.py).';
+    $('foot').innerHTML = esc(d.spec_name) + ' · 이 페이지는 저장소의 spec/kai_cdm_spec.yaml 과 rules/rules_*.yaml 에서 생성됩니다 (docs/build_resources.py).';
 
     // 규칙
     var fc = $('f-cohort'), ft = $('f-table');

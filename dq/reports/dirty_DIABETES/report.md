@@ -1,75 +1,216 @@
 # 데이터 품질 검증 보고서: DIABETES (당뇨병)
 
-검증일 2026-09-07 / 테이블 10개 / 규칙 392개 (실패 46, 건너뜀 9, 오류 0)
+검증일 2026-09-07 / 테이블 9개 / 규칙 252개 (실패 188, 건너뜀 32, 오류 0)
 
-위반 950건 (error 885, warning 65)
+위반 868건 (error 816, warning 52)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
-| Conformance | 259 | 22 | 855 |
-| Completeness | 60 | 13 | 32 |
-| Plausibility | 73 | 11 | 63 |
+| Conformance | 161 | 119 | 766 |
+| Completeness | 54 | 39 | 50 |
+| Plausibility | 37 | 30 | 52 |
 
 ## 테이블 행수
 
 - PERSON: 100
-- VISIT_OCCURRENCE: 1684
-- PROCEDURE_OCCURRENCE: 450
-- DRUG_EXPOSURE: 4293
-- CONDITION_OCCURRENCE: 277
-- MEASUREMENT: 13235
-- OBSERVATION: 100
-- NOTE: 1822
-- DIABETES: 21875
-- ADVERSE_EVENT: 19
+- VISIT_OCCURRENCE: 1633
+- PROCEDURE_OCCURRENCE: 437
+- DRUG_EXPOSURE: 4226
+- CONDITION_OCCURRENCE: 293
+- MEASUREMENT: 12849
+- NOTE: 1637
+- DIABETES: 99
+- ADVERSE_EVENT: 18
 
 ## 실패 규칙
 
 | 규칙 | 분류 | 심각도 | 테이블 | 위반 | 예시 |
 |---|---|---|---|---|---|
-| ST-0002 PERSON 컬럼 구성 | Conformance | error | PERSON | 1 | 명세에 없는 컬럼: extra_col (경고) |
-| ST-0005 PERSON.gender_concept_id 필수 | Completeness | error | PERSON | 3 | gender_concept_id NULL / gender_concept_id NULL |
-| ST-0007 PERSON.gender_concept_id 코드표 | Conformance | warning | PERSON | 3 | gender_concept_id=9999 코드표(OMOP.gender_concept_id) 밖 / gender_concept_id=9999 코드표(OMOP.gender_concept_id) 밖 |
-| ST-0034 VISIT_OCCURRENCE.visit_start_date 필수 | Completeness | error | VISIT_OCCURRENCE | 3 | visit_start_date NULL / visit_start_date NULL |
-| ST-0035 VISIT_OCCURRENCE.visit_start_date 타입(date) | Conformance | error | VISIT_OCCURRENCE | 3 | visit_start_date='2024/13/40' 은 date 아님 / visit_start_date='2024/13/40' 은 date 아님 |
-| ST-0065 DRUG_EXPOSURE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 3 | visit_occurrence_id=999999999 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 / visit_occurrence_id=999999999 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 |
-| ST-0101 DRUG_EXPOSURE.antp_id 비항암 코호트 NULL | Conformance | error | DRUG_EXPOSURE | 3 | antp_id=1 (이 코호트에서는 NULL 이어야 함) / antp_id=1 (이 코호트에서는 NULL 이어야 함) |
-| ST-0114 CONDITION_OCCURRENCE.condition_start_date 타입(date) | Conformance | error | CONDITION_OCCURRENCE | 3 | condition_start_date='2023-02-30' 은 date 아님 / condition_start_date='2023-02-30' 은 date 아님 |
-| ST-0121 MEASUREMENT.measurement_id PK 유일성 | Conformance | error | MEASUREMENT | 6 | PK 중복: 506556 / PK 중복: 509742 |
-| ST-0136 MEASUREMENT.value_as_number 타입(float) | Conformance | error | MEASUREMENT | 3 | value_as_number='N/A' 은 float 아님 / value_as_number='N/A' 은 float 아님 |
-| ST-0146 OBSERVATION 컬럼 구성 | Conformance | error | OBSERVATION | 1 | 컬럼 누락: value_as_string |
-| ST-0177 NOTE.note_date 미래 날짜 금지 | Plausibility | error | NOTE | 3 | note_date=2030-01-01 미래 날짜 / note_date=2030-01-01 미래 날짜 |
-| ST-0754 DIABETES.person_id -> PERSON.person_id 참조무결성 | Conformance | error | DIABETES | 3 | person_id=888888888 가 PERSON.person_id 에 없음 / person_id=888888888 가 PERSON.person_id 에 없음 |
-| ST-0758 DIABETES.condition_occurrence_id -> CONDITION_OCCURRENCE.condition_occurrence_id 참조무결성 | Conformance | error | DIABETES | 2 | condition_occurrence_id=500001 가 CONDITION_OCCURRENCE.condition_occurrence_id 에 없음 / condition_occurrence_id=500003 가 CONDITION_OCCURRENCE.condition_o |
-| ST-0760 DIABETES.measurement_id -> MEASUREMENT.measurement_id 참조무결성 | Conformance | error | DIABETES | 3 | measurement_id=504158 가 MEASUREMENT.measurement_id 에 없음 / measurement_id=504461 가 MEASUREMENT.measurement_id 에 없음 |
-| ST-0776 DIABETES.year_of_birth 범위 | Plausibility | warning | DIABETES | 2 | year_of_birth=21260 범위 [1900,2026] 밖 / year_of_birth=21260 범위 [1900,2026] 밖 |
-| ST-0778 DIABETES.month_of_birth 범위 | Plausibility | warning | DIABETES | 2 | month_of_birth=1120 범위 [1,12] 밖 / month_of_birth=1120 범위 [1,12] 밖 |
-| ST-0872 DIABETES 그룹 'visit' anchor 날짜 | Completeness | error | DIABETES | 1 | ['provider_id', 'visit_concept_id', 'visit_start_datetime'] 값 있으나 anchor visit_start_date NULL |
-| ST-0873 DIABETES 그룹 'condition' anchor 날짜 | Completeness | error | DIABETES | 1 | ['condition_concept_id', 'condition_start_datetime', 'condition_type_concept_id'] 값 있으나 anchor condition_start_date NULL |
-| ST-0874 DIABETES 그룹 'measurement' anchor 날짜 | Completeness | error | DIABETES | 1 | ['measurement_concept_id', 'measurement_datetime', 'measurement_time'] 값 있으나 anchor measurement_date NULL |
-| ST-0875 DIABETES 그룹 'drug' anchor 날짜 | Completeness | error | DIABETES | 1 | ['drug_concept_id', 'drug_exposure_start_datetime', 'drug_exposure_end_date'] 값 있으나 anchor drug_exposure_start_date NULL |
-| ST-0876 DIABETES 그룹 'death' anchor 날짜 | Completeness | error | DIABETES | 1 | ['death_datetime', 'death_type_concept_id', 'cause_concept_id'] 값 있으나 anchor death_date NULL |
-| ST-0877 DIABETES 그룹 'note' anchor 날짜 | Completeness | error | DIABETES | 1 | ['note_type_concept_id', 'note_text'] 값 있으나 anchor note_date NULL |
-| ST-1054 ADVERSE_EVENT 컬럼 구성 | Conformance | error | ADVERSE_EVENT | 1 | 별칭 컬럼 antp_therapy_id 를 antp_id 로 해석함 (경고) |
-| ST-1084 ADVERSE_EVENT.severity_concept_id 코드표 | Conformance | warning | ADVERSE_EVENT | 3 | severity_concept_id=7 코드표(OMOP.severity_concept_id) 밖 / severity_concept_id=7 코드표(OMOP.severity_concept_id) 밖 |
-| SEM-COM-001 방문 종료일 >= 시작일 | Plausibility | error | VISIT_OCCURRENCE | 3 | visit_end_date 2000-01-01 < visit_start_date 2023-05-21 / visit_end_date 2000-01-01 < visit_start_date 2021-02-08 |
-| SEM-COM-003 사망 이후 임상 이벤트 금지 | Plausibility | error | PERSON | 3 | 이벤트일 2026-08-30 > death_date 2022-06-21 / 이벤트일 2026-08-30 > death_date 2024-12-31 |
-| SEM-COM-005 이벤트-방문 환자 일치 | Conformance | error | VISIT_OCCURRENCE | 3 | visit 500223 의 person_id=500015 / visit 500613 의 person_id=500037 |
-| SEM-COM-006 이벤트일이 방문 기간 안에 있음 | Plausibility | warning | VISIT_OCCURRENCE | 36 | 이벤트일 2023-05-12 가 방문기간 2023-05-12~2000-01-01 밖 / 이벤트일 2026-08-30 가 방문기간 2018-12-05~2018-12-05 밖 |
-| SEM-COM-007 약물 종료일 >= 시작일, days_supply 일치 | Plausibility | error | DRUG_EXPOSURE | 3 | end < start / end < start |
-| SEM-COM-008 투여 빈도/간격 조건부 필수 | Completeness | warning | DRUG_EXPOSURE | 3 | frequency_per_day 있음, days_supply 없음 / frequency_per_day 있음, days_supply 없음 |
-| SEM-COM-009 검사 결과값 존재 | Completeness | error | MEASUREMENT | 6 | value_as_number, value_as_concept_id 모두 NULL / value_as_number, value_as_concept_id 모두 NULL |
-| SEM-COM-011 검사항목별 타당 범위 | Plausibility | warning | MEASUREMENT | 3 | Diastolic blood pressure=99999.0 (타당범위 20.0~200.0) / Creatinine=99999.0 (타당범위 0.1~30.0) |
-| SEM-COM-012 age_at_index 와 index date 일치 | Plausibility | error | CONDITION_OCCURRENCE,PERSON | 3 | age_at_index=79, index_date=2021-04-28, year_of_birth=1956 / age_at_index=84, index_date=2022-08-17, year_of_birth=1952 |
-| SEM-COM-013 코호트 포함 조건 | Completeness | error | CONDITION_OCCURRENCE,PERSON,VISIT_OCCURRENCE | 2 | 코호트 정의 진단 없음 / 코호트 정의 진단 없음 |
-| SEM-COM-015 특화 테이블 고아 환자 | Conformance | error | PERSON | 1 | PERSON 에 없는 person_id |
-| SEM-COM-017 중대한 이상사례 조건부 필수 / 치명 결과와 사망 일치 | Completeness | error | ADVERSE_EVENT,PERSON | 3 | is_serious=1 인데 seriousness_concept_id 없음 / is_serious=1 인데 seriousness_concept_id 없음 |
-| SEM-COM-023 중복 이벤트 레코드 | Plausibility | warning | MEASUREMENT | 3 | 2건 중복 / 2건 중복 |
-| SEM-COM-029 특화 테이블 death_date 와 PERSON 일치 | Conformance | error | PERSON | 3 | DIABETES.death_date=2024-01-01 <> PERSON.death_date=NULL / DIABETES.death_date=2024-01-01 <> PERSON.death_date=NULL |
-| SEM-COM-030 특화 테이블 방문 환자 일치 | Conformance | error | VISIT_OCCURRENCE | 3 | visit 500269 의 person_id=500017 / visit 501060 의 person_id=500063 |
-| SEM-DM-001 DIABETES 방문 필드가 VISIT_OCCURRENCE 와 일치 | Conformance | error | VISIT_OCCURRENCE | 8 | visit_end_date 불일치 / visit_end_date 불일치 |
-| SEM-DM-002 DIABETES 검사 필드가 MEASUREMENT 와 일치 | Conformance | error | MEASUREMENT | 18 | MEASUREMENT 500001 불일치: concept 3036277/3036277, value 173.3/173.3 / MEASUREMENT 500615 불일치: concept 3038553/3038553, value 27.4/NULL |
-| SEM-DM-003 DIABETES 약물/진단/환자 필드가 핵심 테이블과 일치 | Conformance | error | CONDITION_OCCURRENCE,DRUG_EXPOSURE,PERSON | 779 | DRUG_EXPOSURE 500186 불일치 / DRUG_EXPOSURE 500426 불일치 |
-| SEM-DM-004 당뇨 코호트 방문 유형 = 외래 | Conformance | warning | DIABETES | 2 | visit_concept_id=9201 / visit_concept_id=9201 |
-| SEM-DM-005 연 1회 이상 HbA1c | Completeness | warning | MEASUREMENT,PERSON,VISIT_OCCURRENCE | 6 |  /  |
-| SEM-DM-006 당뇨약 처방 환자의 진단 존재 | Plausibility | warning | CONDITION_OCCURRENCE,DRUG_EXPOSURE | 2 | 당뇨약 처방인데 T2DM 진단 없음 / 당뇨약 처방인데 T2DM 진단 없음 |
+| ST-0004 PERSON.person_id PK 유일성 | Conformance | error | PERSON | 3 | PK NULL / PK 중복: … |
+| ST-0005 PERSON.person_id 타입(integer) | Conformance | error | PERSON | 1 | person_id=… 은 integer 아님 |
+| ST-0006 PERSON.gender_concept_id 필수 | Completeness | error | PERSON | 1 | gender_concept_id NULL |
+| ST-0007 PERSON.gender_concept_id 타입(integer) | Conformance | error | PERSON | 1 | gender_concept_id=… 은 integer 아님 |
+| ST-0008 PERSON.gender_concept_id 코드표 | Conformance | warning | PERSON | 2 | gender_concept_id=… 코드표(OMOP.gender_concept_id) 밖 / gender_concept_id=… 코드표(OMOP.gender_concept_id) 밖 |
+| ST-0009 PERSON.year_of_birth 필수 | Completeness | error | PERSON | 1 | year_of_birth NULL |
+| ST-0010 PERSON.year_of_birth 타입(integer) | Conformance | error | PERSON | 1 | year_of_birth=… 은 integer 아님 |
+| ST-0011 PERSON.year_of_birth 범위 | Plausibility | warning | PERSON | 1 | year_of_birth=… 범위 […,…] 밖 |
+| ST-0012 PERSON.month_of_birth 타입(integer) | Conformance | error | PERSON | 1 | month_of_birth=… 은 integer 아님 |
+| ST-0013 PERSON.month_of_birth 범위 | Plausibility | warning | PERSON | 1 | month_of_birth=… 범위 […,…] 밖 |
+| ST-0014 PERSON.day_of_birth 타입(integer) | Conformance | error | PERSON | 1 | day_of_birth=… 은 integer 아님 |
+| ST-0015 PERSON.day_of_birth 범위 | Plausibility | warning | PERSON | 1 | day_of_birth=… 범위 […,…] 밖 |
+| ST-0016 PERSON.age_at_index 필수 | Completeness | error | PERSON | 1 | age_at_index NULL |
+| ST-0017 PERSON.age_at_index 타입(integer) | Conformance | error | PERSON | 1 | age_at_index=… 은 integer 아님 |
+| ST-0018 PERSON.age_at_index 범위 | Plausibility | warning | PERSON | 1 | age_at_index=… 범위 […,…] 밖 |
+| ST-0019 PERSON.care_site_id 필수 | Completeness | error | PERSON | 1 | care_site_id NULL |
+| ST-0020 PERSON.care_site_id 타입(integer) | Conformance | error | PERSON | 1 | care_site_id=… 은 integer 아님 |
+| ST-0021 PERSON.observation_period_start_date 타입(date) | Conformance | error | PERSON | 1 | observation_period_start_date=… 은 date 아님 |
+| ST-0022 PERSON.observation_period_start_date 미래 날짜 금지 | Plausibility | error | PERSON | 1 | observation_period_start_date=… 미래 날짜 |
+| ST-0023 PERSON.death_date 타입(date) | Conformance | error | PERSON | 1 | death_date=… 은 date 아님 |
+| ST-0024 PERSON.death_date 미래 날짜 금지 | Plausibility | error | PERSON | 1 | death_date=… 미래 날짜 |
+| ST-0028 VISIT_OCCURRENCE.visit_occurrence_id PK 유일성 | Conformance | error | VISIT_OCCURRENCE | 3 | PK NULL / PK 중복: … |
+| ST-0029 VISIT_OCCURRENCE.visit_occurrence_id 타입(integer) | Conformance | error | VISIT_OCCURRENCE | 1 | visit_occurrence_id=… 은 integer 아님 |
+| ST-0030 VISIT_OCCURRENCE.person_id 필수 | Completeness | error | VISIT_OCCURRENCE | 1 | person_id NULL |
+| ST-0031 VISIT_OCCURRENCE.person_id 타입(integer) | Conformance | error | VISIT_OCCURRENCE | 1 | person_id=… 은 integer 아님 |
+| ST-0032 VISIT_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | VISIT_OCCURRENCE | 44 | person_id=… 가 PERSON.person_id 에 없음 / person_id=… 가 PERSON.person_id 에 없음 |
+| ST-0033 VISIT_OCCURRENCE.visit_concept_id 필수 | Completeness | error | VISIT_OCCURRENCE | 1 | visit_concept_id NULL |
+| ST-0034 VISIT_OCCURRENCE.visit_concept_id 타입(integer) | Conformance | error | VISIT_OCCURRENCE | 1 | visit_concept_id=… 은 integer 아님 |
+| ST-0035 VISIT_OCCURRENCE.visit_concept_id 코드표 | Conformance | warning | VISIT_OCCURRENCE | 2 | visit_concept_id=… 코드표(OMOP.visit_concept_id) 밖 / visit_concept_id=… 코드표(OMOP.visit_concept_id) 밖 |
+| ST-0036 VISIT_OCCURRENCE.visit_start_date 필수 | Completeness | error | VISIT_OCCURRENCE | 1 | visit_start_date NULL |
+| ST-0037 VISIT_OCCURRENCE.visit_start_date 타입(date) | Conformance | error | VISIT_OCCURRENCE | 1 | visit_start_date=… 은 date 아님 |
+| ST-0038 VISIT_OCCURRENCE.visit_start_date 미래 날짜 금지 | Plausibility | error | VISIT_OCCURRENCE | 1 | visit_start_date=… 미래 날짜 |
+| ST-0039 VISIT_OCCURRENCE.visit_end_date 필수 | Completeness | error | VISIT_OCCURRENCE | 1 | visit_end_date NULL |
+| ST-0040 VISIT_OCCURRENCE.visit_end_date 타입(date) | Conformance | error | VISIT_OCCURRENCE | 1 | visit_end_date=… 은 date 아님 |
+| ST-0041 VISIT_OCCURRENCE.visit_end_date 미래 날짜 금지 | Plausibility | error | VISIT_OCCURRENCE | 1 | visit_end_date=… 미래 날짜 |
+| ST-0042 VISIT_OCCURRENCE.visit_type_concept_id 필수 | Completeness | error | VISIT_OCCURRENCE | 1 | visit_type_concept_id NULL |
+| ST-0043 VISIT_OCCURRENCE.visit_type_concept_id 타입(integer) | Conformance | error | VISIT_OCCURRENCE | 1 | visit_type_concept_id=… 은 integer 아님 |
+| ST-0044 VISIT_OCCURRENCE.visit_type_concept_id 코드표 | Conformance | warning | VISIT_OCCURRENCE | 2 | visit_type_concept_id=… 코드표(OMOP.visit_type_concept_id) 밖 / visit_type_concept_id=… 코드표(OMOP.visit_type_concept_id) 밖 |
+| ST-0048 PROCEDURE_OCCURRENCE.procedure_occurrence_id PK 유일성 | Conformance | error | PROCEDURE_OCCURRENCE | 3 | PK NULL / PK 중복: … |
+| ST-0049 PROCEDURE_OCCURRENCE.procedure_occurrence_id 타입(integer) | Conformance | error | PROCEDURE_OCCURRENCE | 1 | procedure_occurrence_id=… 은 integer 아님 |
+| ST-0050 PROCEDURE_OCCURRENCE.visit_occurrence_id 타입(integer) | Conformance | error | PROCEDURE_OCCURRENCE | 1 | visit_occurrence_id=… 은 integer 아님 |
+| ST-0051 PROCEDURE_OCCURRENCE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | PROCEDURE_OCCURRENCE | 1 | visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 |
+| ST-0052 PROCEDURE_OCCURRENCE.person_id 필수 | Completeness | error | PROCEDURE_OCCURRENCE | 1 | person_id NULL |
+| ST-0053 PROCEDURE_OCCURRENCE.person_id 타입(integer) | Conformance | error | PROCEDURE_OCCURRENCE | 1 | person_id=… 은 integer 아님 |
+| ST-0054 PROCEDURE_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | PROCEDURE_OCCURRENCE | 13 | person_id=… 가 PERSON.person_id 에 없음 / person_id=… 가 PERSON.person_id 에 없음 |
+| ST-0055 PROCEDURE_OCCURRENCE.procedure_concept_id 필수 | Completeness | error | PROCEDURE_OCCURRENCE | 1 | procedure_concept_id NULL |
+| ST-0056 PROCEDURE_OCCURRENCE.procedure_concept_id 타입(integer) | Conformance | error | PROCEDURE_OCCURRENCE | 1 | procedure_concept_id=… 은 integer 아님 |
+| ST-0057 PROCEDURE_OCCURRENCE.procedure_date 필수 | Completeness | error | PROCEDURE_OCCURRENCE | 1 | procedure_date NULL |
+| ST-0058 PROCEDURE_OCCURRENCE.procedure_date 타입(date) | Conformance | error | PROCEDURE_OCCURRENCE | 1 | procedure_date=… 은 date 아님 |
+| ST-0059 PROCEDURE_OCCURRENCE.procedure_date 미래 날짜 금지 | Plausibility | error | PROCEDURE_OCCURRENCE | 1 | procedure_date=… 미래 날짜 |
+| ST-0060 PROCEDURE_OCCURRENCE.procedure_type_concept_id 필수 | Completeness | error | PROCEDURE_OCCURRENCE | 1 | procedure_type_concept_id NULL |
+| ST-0061 PROCEDURE_OCCURRENCE.procedure_type_concept_id 타입(integer) | Conformance | error | PROCEDURE_OCCURRENCE | 1 | procedure_type_concept_id=… 은 integer 아님 |
+| ST-0062 PROCEDURE_OCCURRENCE.procedure_type_concept_id 코드표 | Conformance | warning | PROCEDURE_OCCURRENCE | 2 | procedure_type_concept_id=… 코드표(OMOP.procedure_type_concept_id) 밖 / procedure_type_concept_id=… 코드표(OMOP.procedure_type_concept_id) 밖 |
+| ST-0064 DRUG_EXPOSURE 컬럼 구성 | Conformance | error | DRUG_EXPOSURE | 1 | 컬럼 누락: denominator_value |
+| ST-0065 DRUG_EXPOSURE 명세 외 컬럼 | Conformance | warning | DRUG_EXPOSURE | 1 | 명세에 없는 컬럼: extra_memo |
+| ST-0066 DRUG_EXPOSURE.drug_exposure_id PK 유일성 | Conformance | error | DRUG_EXPOSURE | 3 | PK NULL / PK 중복: … |
+| ST-0067 DRUG_EXPOSURE.drug_exposure_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | drug_exposure_id=… 은 integer 아님 |
+| ST-0068 DRUG_EXPOSURE.visit_occurrence_id 필수 | Completeness | error | DRUG_EXPOSURE | 1 | visit_occurrence_id NULL |
+| ST-0069 DRUG_EXPOSURE.visit_occurrence_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | visit_occurrence_id=… 은 integer 아님 |
+| ST-0070 DRUG_EXPOSURE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 12 | visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 / visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 |
+| ST-0071 DRUG_EXPOSURE.person_id 필수 | Completeness | error | DRUG_EXPOSURE | 1 | person_id NULL |
+| ST-0072 DRUG_EXPOSURE.person_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | person_id=… 은 integer 아님 |
+| ST-0073 DRUG_EXPOSURE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 134 | person_id=… 가 PERSON.person_id 에 없음 / person_id=… 가 PERSON.person_id 에 없음 |
+| ST-0076 DRUG_EXPOSURE.note_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | note_id=… 은 integer 아님 |
+| ST-0077 DRUG_EXPOSURE.note_id -> NOTE.note_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 1 | note_id=… 가 NOTE.note_id 에 없음 |
+| ST-0078 DRUG_EXPOSURE.drug_concept_id 필수 | Completeness | error | DRUG_EXPOSURE | 1 | drug_concept_id NULL |
+| ST-0079 DRUG_EXPOSURE.drug_concept_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | drug_concept_id=… 은 integer 아님 |
+| ST-0080 DRUG_EXPOSURE.drug_exposure_start_date 필수 | Completeness | error | DRUG_EXPOSURE | 1 | drug_exposure_start_date NULL |
+| ST-0081 DRUG_EXPOSURE.drug_exposure_start_date 타입(date) | Conformance | error | DRUG_EXPOSURE | 1 | drug_exposure_start_date=… 은 date 아님 |
+| ST-0082 DRUG_EXPOSURE.drug_exposure_start_date 미래 날짜 금지 | Plausibility | error | DRUG_EXPOSURE | 1 | drug_exposure_start_date=… 미래 날짜 |
+| ST-0083 DRUG_EXPOSURE.drug_exposure_end_date 필수 | Completeness | error | DRUG_EXPOSURE | 1 | drug_exposure_end_date NULL |
+| ST-0084 DRUG_EXPOSURE.drug_exposure_end_date 타입(date) | Conformance | error | DRUG_EXPOSURE | 1 | drug_exposure_end_date=… 은 date 아님 |
+| ST-0085 DRUG_EXPOSURE.drug_exposure_end_date 미래 날짜 금지 | Plausibility | error | DRUG_EXPOSURE | 1 | drug_exposure_end_date=… 미래 날짜 |
+| ST-0086 DRUG_EXPOSURE.days_supply 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | days_supply=… 은 integer 아님 |
+| ST-0087 DRUG_EXPOSURE.days_supply 범위 | Plausibility | warning | DRUG_EXPOSURE | 1 | days_supply=… 범위 […,…] 밖 |
+| ST-0088 DRUG_EXPOSURE.amount_unit_concept_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | amount_unit_concept_id=… 은 integer 아님 |
+| ST-0089 DRUG_EXPOSURE.amount_unit_concept_id 코드표 | Conformance | warning | DRUG_EXPOSURE | 2 | amount_unit_concept_id=… 코드표(OMOP.amount_unit_concept_id) 밖 / amount_unit_concept_id=… 코드표(OMOP.amount_unit_concept_id) 밖 |
+| ST-0090 DRUG_EXPOSURE.amount_value 타입(float) | Conformance | error | DRUG_EXPOSURE | 1 | amount_value=… 은 float 아님 |
+| ST-0091 DRUG_EXPOSURE.amount_value 범위 | Plausibility | warning | DRUG_EXPOSURE | 1 | amount_value=… 범위 […,…] 밖 |
+| ST-0092 DRUG_EXPOSURE.quantity 타입(float) | Conformance | error | DRUG_EXPOSURE | 1 | quantity=… 은 float 아님 |
+| ST-0093 DRUG_EXPOSURE.quantity 범위 | Plausibility | warning | DRUG_EXPOSURE | 1 | quantity=… 범위 […,…] 밖 |
+| ST-0100 DRUG_EXPOSURE.frequency_per_day 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | frequency_per_day=… 은 integer 아님 |
+| ST-0101 DRUG_EXPOSURE.frequency_per_day 범위 | Plausibility | warning | DRUG_EXPOSURE | 1 | frequency_per_day=… 범위 […,…] 밖 |
+| ST-0102 DRUG_EXPOSURE.dosing_interval_day 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | dosing_interval_day=… 은 integer 아님 |
+| ST-0103 DRUG_EXPOSURE.dosing_interval_day 범위 | Plausibility | warning | DRUG_EXPOSURE | 1 | dosing_interval_day=… 범위 […,…] 밖 |
+| ST-0104 DRUG_EXPOSURE.dosing_number 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 | dosing_number=… 은 integer 아님 |
+| ST-0105 DRUG_EXPOSURE.dosing_number 범위 | Plausibility | warning | DRUG_EXPOSURE | 1 | dosing_number=… 범위 […,…] 밖 |
+| ST-0106 DRUG_EXPOSURE.sact_id 비항암 코호트 NULL | Conformance | error | DRUG_EXPOSURE | 1 | sact_id=… (이 코호트에서는 NULL 이어야 함) |
+| ST-0110 CONDITION_OCCURRENCE.condition_occurrence_id PK 유일성 | Conformance | error | CONDITION_OCCURRENCE | 3 | PK NULL / PK 중복: … |
+| ST-0111 CONDITION_OCCURRENCE.condition_occurrence_id 타입(integer) | Conformance | error | CONDITION_OCCURRENCE | 1 | condition_occurrence_id=… 은 integer 아님 |
+| ST-0112 CONDITION_OCCURRENCE.visit_occurrence_id 타입(integer) | Conformance | error | CONDITION_OCCURRENCE | 1 | visit_occurrence_id=… 은 integer 아님 |
+| ST-0113 CONDITION_OCCURRENCE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | CONDITION_OCCURRENCE | 1 | visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 |
+| ST-0114 CONDITION_OCCURRENCE.person_id 필수 | Completeness | error | CONDITION_OCCURRENCE | 1 | person_id NULL |
+| ST-0115 CONDITION_OCCURRENCE.person_id 타입(integer) | Conformance | error | CONDITION_OCCURRENCE | 1 | person_id=… 은 integer 아님 |
+| ST-0116 CONDITION_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | CONDITION_OCCURRENCE | 10 | person_id=… 가 PERSON.person_id 에 없음 / person_id=… 가 PERSON.person_id 에 없음 |
+| ST-0117 CONDITION_OCCURRENCE.condition_concept_id 필수 | Completeness | error | CONDITION_OCCURRENCE | 1 | condition_concept_id NULL |
+| ST-0118 CONDITION_OCCURRENCE.condition_concept_id 타입(integer) | Conformance | error | CONDITION_OCCURRENCE | 1 | condition_concept_id=… 은 integer 아님 |
+| ST-0119 CONDITION_OCCURRENCE.condition_start_date 필수 | Completeness | error | CONDITION_OCCURRENCE | 1 | condition_start_date NULL |
+| ST-0120 CONDITION_OCCURRENCE.condition_start_date 타입(date) | Conformance | error | CONDITION_OCCURRENCE | 1 | condition_start_date=… 은 date 아님 |
+| ST-0121 CONDITION_OCCURRENCE.condition_start_date 미래 날짜 금지 | Plausibility | error | CONDITION_OCCURRENCE | 1 | condition_start_date=… 미래 날짜 |
+| ST-0122 CONDITION_OCCURRENCE.condition_type_concept_id 필수 | Completeness | error | CONDITION_OCCURRENCE | 1 | condition_type_concept_id NULL |
+| ST-0123 CONDITION_OCCURRENCE.condition_type_concept_id 타입(integer) | Conformance | error | CONDITION_OCCURRENCE | 1 | condition_type_concept_id=… 은 integer 아님 |
+| ST-0124 CONDITION_OCCURRENCE.condition_type_concept_id 코드표 | Conformance | warning | CONDITION_OCCURRENCE | 2 | condition_type_concept_id=… 코드표(OMOP.condition_type_concept_id) 밖 / condition_type_concept_id=… 코드표(OMOP.condition_type_concept_id) 밖 |
+| ST-0128 MEASUREMENT.measurement_id PK 유일성 | Conformance | error | MEASUREMENT | 3 | PK NULL / PK 중복: … |
+| ST-0129 MEASUREMENT.measurement_id 타입(integer) | Conformance | error | MEASUREMENT | 1 | measurement_id=… 은 integer 아님 |
+| ST-0130 MEASUREMENT.visit_occurrence_id 타입(integer) | Conformance | error | MEASUREMENT | 1 | visit_occurrence_id=… 은 integer 아님 |
+| ST-0131 MEASUREMENT.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | MEASUREMENT | 19 | visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 / visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 |
+| ST-0132 MEASUREMENT.person_id 필수 | Completeness | error | MEASUREMENT | 1 | person_id NULL |
+| ST-0133 MEASUREMENT.person_id 타입(integer) | Conformance | error | MEASUREMENT | 1 | person_id=… 은 integer 아님 |
+| ST-0134 MEASUREMENT.person_id -> PERSON.person_id 참조무결성 | Conformance | error | MEASUREMENT | 346 | person_id=… 가 PERSON.person_id 에 없음 / person_id=… 가 PERSON.person_id 에 없음 |
+| ST-0135 MEASUREMENT.measurement_concept_id 필수 | Completeness | error | MEASUREMENT | 1 | measurement_concept_id NULL |
+| ST-0136 MEASUREMENT.measurement_concept_id 타입(integer) | Conformance | error | MEASUREMENT | 1 | measurement_concept_id=… 은 integer 아님 |
+| ST-0137 MEASUREMENT.measurement_date 타입(date) | Conformance | error | MEASUREMENT | 1 | measurement_date=… 은 date 아님 |
+| ST-0138 MEASUREMENT.measurement_date 미래 날짜 금지 | Plausibility | error | MEASUREMENT | 1 | measurement_date=… 미래 날짜 |
+| ST-0139 MEASUREMENT.measurement_type_concept_id 타입(integer) | Conformance | error | MEASUREMENT | 1 | measurement_type_concept_id=… 은 integer 아님 |
+| ST-0140 MEASUREMENT.measurement_type_concept_id 코드표 | Conformance | warning | MEASUREMENT | 2 | measurement_type_concept_id=… 코드표(OMOP.measurement_type_concept_id) 밖 / measurement_type_concept_id=… 코드표(OMOP.measurement_type_concept_id) 밖 |
+| ST-0141 MEASUREMENT.value_as_number 타입(float) | Conformance | error | MEASUREMENT | 1 | value_as_number=… 은 float 아님 |
+| ST-0142 MEASUREMENT.value_as_number 범위 | Plausibility | warning | MEASUREMENT | 1 | value_as_number=… 범위 [-…,…] 밖 |
+| ST-0144 MEASUREMENT.unit_concept_id 타입(integer) | Conformance | error | MEASUREMENT | 1 | unit_concept_id=… 은 integer 아님 |
+| ST-0145 MEASUREMENT.unit_concept_id 코드표 | Conformance | warning | MEASUREMENT | 2 | unit_concept_id=… 코드표(OMOP.unit_concept_id) 밖 / unit_concept_id=… 코드표(OMOP.unit_concept_id) 밖 |
+| ST-0146 MEASUREMENT.range_low 타입(float) | Conformance | error | MEASUREMENT | 1 | range_low=… 은 float 아님 |
+| ST-0147 MEASUREMENT.range_low 범위 | Plausibility | warning | MEASUREMENT | 1 | range_low=… 범위 [-…,…] 밖 |
+| ST-0148 MEASUREMENT.range_high 타입(float) | Conformance | error | MEASUREMENT | 1 | range_high=… 은 float 아님 |
+| ST-0149 MEASUREMENT.range_high 범위 | Plausibility | warning | MEASUREMENT | 1 | range_high=… 범위 [-…,…] 밖 |
+| ST-0150 OBSERVATION 테이블 존재 | Completeness | error | OBSERVATION | 1 | OBSERVATION.csv 없음 |
+| ST-0174 NOTE 컬럼 구성 | Conformance | error | NOTE | 1 | 컬럼 누락: file_id |
+| ST-0175 NOTE 명세 외 컬럼 | Conformance | warning | NOTE | 1 | 명세에 없는 컬럼: extra_memo |
+| ST-0176 NOTE.note_id PK 유일성 | Conformance | error | NOTE | 3 | PK NULL / PK 중복: … |
+| ST-0177 NOTE.note_id 타입(integer) | Conformance | error | NOTE | 1 | note_id=… 은 integer 아님 |
+| ST-0178 NOTE.visit_occurrence_id 타입(integer) | Conformance | error | NOTE | 1 | visit_occurrence_id=… 은 integer 아님 |
+| ST-0179 NOTE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | NOTE | 4 | visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 / visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 |
+| ST-0180 NOTE.person_id 타입(integer) | Conformance | error | NOTE | 1 | person_id=… 은 integer 아님 |
+| ST-0181 NOTE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | NOTE | 44 | person_id=… 가 PERSON.person_id 에 없음 / person_id=… 가 PERSON.person_id 에 없음 |
+| ST-0182 NOTE.note_date 타입(date) | Conformance | error | NOTE | 1 | note_date=… 은 date 아님 |
+| ST-0183 NOTE.note_date 미래 날짜 금지 | Plausibility | error | NOTE | 1 | note_date=… 미래 날짜 |
+| ST-0184 NOTE.note_type_concept_id 필수 | Completeness | error | NOTE | 1 | note_type_concept_id NULL |
+| ST-0185 NOTE.note_type_concept_id 타입(integer) | Conformance | error | NOTE | 1 | note_type_concept_id=… 은 integer 아님 |
+| ST-0186 NOTE.note_type_concept_id 코드표 | Conformance | warning | NOTE | 2 | note_type_concept_id=… 코드표(OMOP.note_type_concept_id) 밖 / note_type_concept_id=… 코드표(OMOP.note_type_concept_id) 밖 |
+| ST-0187 NOTE.note_class_concept_id 필수 | Completeness | error | NOTE | 1 | note_class_concept_id NULL |
+| ST-0188 NOTE.note_class_concept_id 타입(integer) | Conformance | error | NOTE | 1 | note_class_concept_id=… 은 integer 아님 |
+| ST-0189 NOTE.note_class_concept_id 코드표 | Conformance | warning | NOTE | 2 | note_class_concept_id=… 코드표(OMOP.note_class_concept_id) 밖 / note_class_concept_id=… 코드표(OMOP.note_class_concept_id) 밖 |
+| ST-0280 DIABETES.dm_id PK 유일성 | Conformance | error | DIABETES | 3 | PK NULL / PK 중복: … |
+| ST-0281 DIABETES.dm_id 타입(integer) | Conformance | error | DIABETES | 1 | dm_id=… 은 integer 아님 |
+| ST-0282 DIABETES.person_id 필수 | Completeness | error | DIABETES | 1 | person_id NULL |
+| ST-0283 DIABETES.person_id 타입(integer) | Conformance | error | DIABETES | 1 | person_id=… 은 integer 아님 |
+| ST-0284 DIABETES.person_id -> PERSON.person_id 참조무결성 | Conformance | error | DIABETES | 4 | person_id=… 가 PERSON.person_id 에 없음 / person_id=… 가 PERSON.person_id 에 없음 |
+| ST-0285 DIABETES.visit_occurrence_id 필수 | Completeness | error | DIABETES | 1 | visit_occurrence_id NULL |
+| ST-0286 DIABETES.visit_occurrence_id 타입(integer) | Conformance | error | DIABETES | 1 | visit_occurrence_id=… 은 integer 아님 |
+| ST-0287 DIABETES.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | DIABETES | 1 | visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 |
+| ST-0288 DIABETES.condition_start_date 필수 | Completeness | error | DIABETES | 1 | condition_start_date NULL |
+| ST-0289 DIABETES.condition_start_date 타입(date) | Conformance | error | DIABETES | 1 | condition_start_date=… 은 date 아님 |
+| ST-0290 DIABETES.condition_start_date 미래 날짜 금지 | Plausibility | error | DIABETES | 1 | condition_start_date=… 미래 날짜 |
+| ST-0291 DIABETES.condition_end_date 타입(date) | Conformance | error | DIABETES | 1 | condition_end_date=… 은 date 아님 |
+| ST-0292 DIABETES.condition_end_date 미래 날짜 금지 | Plausibility | error | DIABETES | 1 | condition_end_date=… 미래 날짜 |
+| ST-0346 ADVERSE_EVENT.adverse_event_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | adverse_event_id=… 은 integer 아님 |
+| ST-0347 ADVERSE_EVENT.person_id 필수 | Completeness | error | ADVERSE_EVENT | 1 | person_id NULL |
+| ST-0348 ADVERSE_EVENT.person_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | person_id=… 은 integer 아님 |
+| ST-0349 ADVERSE_EVENT.person_id -> PERSON.person_id 참조무결성 | Conformance | error | ADVERSE_EVENT | 1 | person_id=… 가 PERSON.person_id 에 없음 |
+| ST-0350 ADVERSE_EVENT.visit_occurrence_id 필수 | Completeness | error | ADVERSE_EVENT | 1 | visit_occurrence_id NULL |
+| ST-0351 ADVERSE_EVENT.visit_occurrence_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | visit_occurrence_id=… 은 integer 아님 |
+| ST-0352 ADVERSE_EVENT.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | ADVERSE_EVENT | 1 | visit_occurrence_id=… 가 VISIT_OCCURRENCE.visit_occurrence_id 에 없음 |
+| ST-0353 ADVERSE_EVENT.adverse_event_concept_id 필수 | Completeness | error | ADVERSE_EVENT | 1 | adverse_event_concept_id NULL |
+| ST-0354 ADVERSE_EVENT.adverse_event_concept_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | adverse_event_concept_id=… 은 integer 아님 |
+| ST-0355 ADVERSE_EVENT.adverse_event_start_date 필수 | Completeness | error | ADVERSE_EVENT | 1 | adverse_event_start_date NULL |
+| ST-0356 ADVERSE_EVENT.adverse_event_start_date 타입(date) | Conformance | error | ADVERSE_EVENT | 1 | adverse_event_start_date=… 은 date 아님 |
+| ST-0358 ADVERSE_EVENT.severity_concept_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | severity_concept_id=… 은 integer 아님 |
+| ST-0359 ADVERSE_EVENT.severity_concept_id 코드표 | Conformance | warning | ADVERSE_EVENT | 1 | severity_concept_id=… 코드표(OMOP.severity_concept_id) 밖 |
+| ST-0360 ADVERSE_EVENT.causality_concept_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | causality_concept_id=… 은 integer 아님 |
+| ST-0361 ADVERSE_EVENT.causality_concept_id 코드표 | Conformance | warning | ADVERSE_EVENT | 1 | causality_concept_id=… 코드표(OMOP.causality_concept_id) 밖 |
+| ST-0362 ADVERSE_EVENT.is_serious_yn 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | is_serious_yn=… 은 integer 아님 |
+| ST-0363 ADVERSE_EVENT.seriousness_concept_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | seriousness_concept_id=… 은 integer 아님 |
+| ST-0364 ADVERSE_EVENT.seriousness_concept_id 코드표 | Conformance | warning | ADVERSE_EVENT | 1 | seriousness_concept_id=… 코드표(OMOP.seriousness_concept_id) 밖 |
+| ST-0365 ADVERSE_EVENT.outcome_concept_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | outcome_concept_id=… 은 integer 아님 |
+| ST-0366 ADVERSE_EVENT.outcome_concept_id 코드표 | Conformance | warning | ADVERSE_EVENT | 1 | outcome_concept_id=… 코드표(OMOP.outcome_concept_id) 밖 |
+| ST-0367 ADVERSE_EVENT.action_taken_concept_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 | action_taken_concept_id=… 은 integer 아님 |
+| ST-0368 ADVERSE_EVENT.action_taken_concept_id 코드표 | Conformance | warning | ADVERSE_EVENT | 1 | action_taken_concept_id=… 코드표(OMOP.action_taken_concept_id) 밖 |
+| SEM-COM-001 방문 종료일 >= 시작일 | Plausibility | error | VISIT_OCCURRENCE | 3 | visit_end_date … < visit_start_date … / visit_end_date … < visit_start_date … |
+| SEM-COM-002 방문일 >= 출생연도 | Plausibility | error | PERSON,VISIT_OCCURRENCE | 14 | visit_start_date … < year_of_birth … / visit_start_date … < year_of_birth … |
+| SEM-COM-005 약물 종료일 >= 시작일, days_supply 일치 | Plausibility | error | DRUG_EXPOSURE | 6 | days_supply=… 이나 기간=… / days_supply=… 이나 기간=… |
+| SEM-COM-006 매일 투여면 days_supply 필수 | Completeness | error | DRUG_EXPOSURE | 2 | frequency_per_day=… 인데 days_supply 없음 / frequency_per_day=… 인데 days_supply 없음 |
+| SEM-COM-007 투여 간격이 1일 초과면 dosing_number 필수 | Completeness | error | DRUG_EXPOSURE | 2 | dosing_interval_day=… 인데 dosing_number 없음 / dosing_interval_day=… 인데 dosing_number 없음 |
+| SEM-COM-008 정상범위 하한 <= 상한 | Plausibility | error | MEASUREMENT | 3 | range_low … > range_high … / range_low … > range_high … |
+| SEM-COM-009 특화 테이블 누락 환자 | Completeness | warning | PERSON | 6 | DIABETES 에 행 없음 / DIABETES 에 행 없음 |
+| SEM-COM-010 특화 테이블 방문 환자 일치 | Conformance | error | VISIT_OCCURRENCE | 2 | visit … 의 person_id=… / visit … 의 person_id=… |
+| SEM-COM-011 이상사례 발생일 사망 이후 금지 | Plausibility | error | ADVERSE_EVENT,PERSON | 1 | adverse_event_start_date … > death_date … |
+| SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 | note … 의 person_id=… |
+| SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 | measurement_date 없음 / measurement_date 없음 |
+| SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 | value_as_number, value_as_concept_id 모두 없음 / value_as_number, value_as_concept_id 모두 없음 |

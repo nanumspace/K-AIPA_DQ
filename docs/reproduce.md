@@ -1,7 +1,5 @@
 # 재현과 빌드
 
-> **기본 판은 v3 입니다.** 아래 "전체 파이프라인 재현"의 v3 명령을 먼저 보세요. 이 문서의 개별 실행 예시는 v1 형태이고, 명령줄 도구의 `--spec` 기본값은 아직 v1 이므로 v3 는 `--spec v3` 를 꼭 붙입니다(앱의 기본 판과는 별개). v2 는 `--spec v2`: `python dq/run_all.py --spec v2`, `npm run engine -- --spec v2 …`. 파이썬 의존은 `uv run --with pyyaml --with pandas --with numpy --with duckdb python …` 로 넣습니다.
-
 ## 환경
 
 | 구성 | 요구 사항 |
@@ -14,50 +12,35 @@
 pip install pandas numpy pyyaml duckdb openpyxl
 ```
 
-Windows에서는 `PYTHONIOENCODING=utf-8`을 권장합니다.
+`uv` 를 쓴다면 `uv run --with pyyaml --with pandas --with numpy --with duckdb --with openpyxl python …` 로 설치 없이 실행해도 됩니다. Windows에서는 `PYTHONIOENCODING=utf-8`을 권장합니다.
 
 ## 전체 파이프라인 재현
 
 ```bash
-# v3 (기본)
-python spec/build_spec_v3.py                          # 수정안 엑셀(spec/client_v1/) → 명세·코드표·코호트 구성 (spec/v3/)
-python rules/generate_structural_rules.py --spec v3   # 명세 → 구조 규칙 367개 (rules/rules_structural_v3.yaml)
-python synth/generate.py --spec v3 --all              # 가상데이터 clean (synth/output/clean_v3/)
-python synth/inject_faults_v3.py --all                 # 오류 주입 → synth/output/dirty_v3/ + fault_manifest.csv
-python synth/build_good_samples_v3.py                 # clean → 질환별 환자 1명 (synth/output/good_v3/)
-python dq/run_all.py --spec v3                         # 생성·검증(clean/dirty/good)·주입·정답 대조를 모두 실행
-
-# 이전 판 (--spec 생략 = v1)
-python rules/generate_structural_rules.py             # v1 (--spec v2 로 v2)
-python dq/run_all.py                                  # v1 (--spec v2 로 v2)
+python spec/build_spec.py                    # 매뉴얼 엑셀(raw/) + spec/constraints.yaml → 명세·코드표·코호트 구성 (spec/)
+python rules/generate_structural_rules.py    # 명세 → 구조 규칙 368개 (rules/rules_structural.yaml)
+python dq/run_all.py                         # 생성·검증(clean/dirty/good)·오류 주입·정답 대조를 모두 실행
 ```
 
-`dq/run_all.py --spec v3` 는 생성·주입·Good Sample 출력과 검증을 포함하므로 앞의 `synth/` 세 줄은 개별 단계를 따로 돌릴 때만 필요합니다. 교차 규칙 `rules/rules_semantic_v3.yaml` 은 손으로 고칩니다. v3 의 출처와 한계는 [`spec/v3/README.md`](../spec/v3/README.md). 주입 오류 검출률은 규칙에서 역으로 만든 오류에 대한 결과이지 실제 병원 데이터의 민감도가 아닙니다.
+`dq/run_all.py` 는 clean 생성(`synth/output/clean/`) → clean 검증 → 오류 주입(`synth/output/dirty/` + `fault_manifest.csv`) → dirty 검증 → Good Sample 생성(`synth/output/good/`) → Good Sample 검증 → 검출 성능 판정을 코호트 6개에 대해 차례로 돌려 `dq/reports/` 를 만듭니다. 교차 규칙 `rules/rules_semantic.yaml` 은 손으로 고칩니다. 매뉴얼 해석의 근거는 [spec-and-rules.md](spec-and-rules.md)에 있습니다.
+
+주입 오류 검출률은 규칙에서 역으로 만든 오류에 대한 결과이지 실제 병원 데이터의 민감도가 아닙니다. Good Sample 은 합성한 자료이며 임상의의 감수를 받지 않았습니다.
 
 `run_all.py`는 코호트마다 시드를 고정하므로(20260907 + 코호트 순번) 결과가 재현됩니다. 실행 후 `synth/output/`과 `dq/reports/`가 저장소에 든 것과 같은 내용으로 다시 만들어집니다.
 
-명세 자체를 다시 만드는 `spec/build_spec.py`는 원본 데이터 사전(엑셀)을 파싱한 JSON을 입력으로 받습니다. 원본 사전은 공개 저장소에 포함되지 않으므로, 공개 저장소에서는 생성된 `spec/*.yaml`을 그대로 사용합니다.
+`spec/build_spec.py` 는 `raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx` 를 읽습니다. 매뉴얼이 정하지 않는 값 제약(범위, 정규식, OMOP 대표 코드)은 `spec/constraints.yaml` 에서 옵니다. 매뉴얼에 없는 필드가 `constraints.yaml` 에 있으면 멈춥니다.
 
 ### 개별 실행
 
 ```bash
 python synth/generate.py --cohort LUNG_CANCER --n 100 --seed 20260907
 python dq/engine.py --cohort LUNG_CANCER --data synth/output/clean/LUNG_CANCER --out dq/reports/clean_LUNG_CANCER --today 2026-09-07
-python synth/inject_faults.py --cohort LUNG_CANCER --k 3
+python synth/inject_faults.py --cohort LUNG_CANCER
 python dq/engine.py --cohort LUNG_CANCER --data synth/output/dirty/LUNG_CANCER --out dq/reports/dirty_LUNG_CANCER --today 2026-09-07
 python dq/verify.py --cohort LUNG_CANCER
+python synth/build_good_samples.py            # clean → 질환별 환자 1명 (synth/output/good/)
+python synth/check_samples.py                 # clean·good 의 임상·관계 불변식 점검
 ```
-
-v3 로 같은 일을 하려면 `--spec v3` 를 붙이고 `clean_v3`·`dirty_v3` 폴더를 씁니다:
-
-```bash
-python dq/engine.py --spec v3 --cohort LUNG_CANCER --data synth/output/clean_v3/LUNG_CANCER --out dq/reports/clean_v3_LUNG_CANCER
-cd dq-ts && npm run engine -- --spec v3 --cohort LUNG_CANCER --data ../synth/output/clean_v3/LUNG_CANCER --out output/reports/clean_v3_LUNG_CANCER
-```
-
-## 사전 v2 (이전 판)
-
-`spec/v2/` 는 전문가 자문을 반영해 재설계한 데이터 모델 초안입니다. 저장 테이블은 OMOP CDM 5.4 + Oncology(EPISODE) 구조를 그대로 쓰고, concept_id 는 K-AI 자체 어휘(`spec/v2/vocab/`, 10,000,000,000 부터)이며, 병원은 CRF 서식을 채우고 앱이 서식→레코드 규칙으로 저장 테이블을 만듭니다. 원천은 비공개 배치표와 `spec/v2_field_names.py`, `spec/v2_omop_map.py` 이며, `spec/build_spec_v2.py` 가 명세·서식·어휘·예시·팀 배포용 사전·보고서를 재생성합니다. 자세한 구조는 `spec/v2/README.md`, 레코드 예시는 `spec/v2/crf_to_omop_examples.md` 에 있습니다. 규칙(`--spec v2`)·가상데이터·앱도 v2 를 읽습니다. 현재 앱의 기본 판은 v3 입니다.
 
 ## TypeScript 엔진
 
@@ -65,7 +48,7 @@ cd dq-ts && npm run engine -- --spec v3 --cohort LUNG_CANCER --data ../synth/out
 cd dq-ts
 npm install
 npm run engine -- --cohort LUNG_CANCER --data ../synth/output/clean/LUNG_CANCER --out output/reports/clean_LUNG_CANCER --today 2026-09-07
-npm run run-all      # 12회 실행 → 검출 성능 평가 → Python 참조와 비교
+npm run run-all      # 6개 코호트 clean/dirty 실행 → 검출 성능 평가 → Python 참조와 비교
 npm test             # 단위 시험 + 위 전체 실행
 ```
 
@@ -83,8 +66,8 @@ npm run dist:mac                 # macOS DMG (macOS 에서)
 npm run dist:win                 # Windows 설치 파일 (Windows 에서)
 ```
 
-- 개발 모드에서는 명세 위치가 저장소 루트이고, 실행 이력은 OS의 앱 데이터 폴더(`~/Library/Application Support/kai-quality-validator` 또는 `%APPDATA%`)에 저장됩니다.
-- 설치본은 `spec/`(v1·v2·v3), `rules/` YAML과 견본 데이터(`synth/output/clean`·`clean_v2`·`clean_v3`)를 `resources/kai/`에 내장합니다.
+- 개발 모드에서는 명세 위치가 저장소 루트이고, 실행 이력은 OS의 앱 데이터 폴더(`~/Library/Application Support/kai-quality-validator` 또는 `%APPDATA%`)에 저장됩니다. 규칙 설정(켜고 끄기, 조정, 사용자 규칙)과 그 변경 이력도 같은 앱 데이터 폴더에 있습니다.
+- 설치본은 `spec/`, `rules/` YAML과 견본 데이터(`synth/output/clean`)를 `resources/kai/`에 내장합니다.
 - DuckDB는 네이티브 모듈이라 `asarUnpack`으로 풀어 둡니다.
 - 앱 아이콘은 `app/build/icon.svg`(원본)와 `app/build/icon.png`(1024×1024)입니다. electron-builder가 PNG를 macOS icns와 Windows ico로 변환합니다. SVG를 고치면 `qlmanage -t -s 1024 -o app/build app/build/icon.svg && mv app/build/icon.svg.png app/build/icon.png`으로 다시 만듭니다.
 
@@ -92,9 +75,9 @@ npm run dist:win                 # Windows 설치 파일 (Windows 에서)
 
 `.github/workflows/ci.yml`은 push와 pull request마다 TypeScript 엔진의 회귀 시험(`dq-ts`의 `npm test`)과 앱의 타입 검사·빌드를 실행합니다.
 
-## 소개 페이지 (GitHub Pages)
+## 소개 페이지와 자료실 (GitHub Pages)
 
-`docs/index.html` 한 파일(인라인 CSS·JS, 한/영 전환, 라이트/다크)과 `docs/img/` 캡처가 소개 페이지입니다. `docs/` 아래가 바뀌어 main 에 push 되면 `.github/workflows/deploy-pages.yml` 이 https://nanumspace.github.io/KAI_DQ_App/ 에 배포합니다. 다운로드 단추는 GitHub 의 최신 Release 를 읽어 파일 이름과 링크를 스스로 갱신하므로, 새 버전을 릴리스해도 페이지를 고칠 필요가 없습니다. 캡처는 `internal/presentations/img/` 원본을 1600px JPEG 로 줄인 것입니다.
+`docs/index.html` 한 파일(인라인 CSS·JS, 한/영 전환, 라이트/다크)과 `docs/img/` 캡처가 소개 페이지입니다. `docs/` 아래가 바뀌어 main 에 push 되면 `.github/workflows/deploy-pages.yml` 이 https://nanumspace.github.io/KAI_DQ_App/ 에 배포합니다. 배포 단계에서 `python docs/build_resources.py` 가 자료실(`resources.html`)이 읽는 `docs/resources/`(코호트별 양식, 컬럼 명세서, 규칙 목록, `data.json`)를 명세·규칙·`dq/reports/*/summary.json` 에서 만듭니다. 이 워크플로는 `spec/*.yaml`, `rules/*.yaml`, `dq/reports/*_*/summary.json` 이 바뀌어도 실행됩니다. 다운로드 단추는 GitHub 의 최신 Release 를 읽어 파일 이름과 링크를 스스로 갱신하므로(읽지 못할 때를 위한 대체 링크는 v0.4.0), 새 버전을 릴리스해도 페이지를 고칠 필요가 없습니다. 캡처는 `internal/presentations/img/` 원본을 1600px JPEG 로 줄인 것입니다.
 
 ## 릴리스 (`release.sh`)
 
@@ -107,9 +90,9 @@ npm run dist:win                 # Windows 설치 파일 (Windows 에서)
 | 빌드 준비 | 타입 검사, `electron-vite build`. 빌드 대상 플랫폼의 DuckDB 바이너리만 `node_modules/@duckdb/` 에 남기고 나머지는 잠시 치움 (Windows 바이너리는 npm 레지스트리에서 받아 `~/Library/Caches/kai-release/` 에 보관) |
 | macOS | `electron-builder --mac --arm64`. hardened runtime 으로 Developer ID 서명, 앱 공증과 staple 은 electron-builder 가 `APPLE_KEYCHAIN_PROFILE` 로 수행. 이어서 DMG 자체를 `notarytool` 로 공증하고 staple (오프라인 PC 에서도 경고 없이 열리도록) |
 | Windows | x64, arm64 각각 `electron-builder --win`. exe 마다 `app/build/sign-win.cjs` 훅이 `osslsigncode` 로 토큰 서명 (PKCS#11 은 OpenSC 모듈, 중간 인증서 `app/build/globalsign-ev-codesigning-ca-2020.pem` 첨부, RFC 3161 타임스탬프) |
-| 견본 데이터 | `app/build/pack-samples.cjs` 가 `synth/output/{clean,dirty,good}_v3` 를 코호트별 zip 18개와 전체 묶음 1개로 만듦. clean/dirty 는 100명 규칙 시험용, good 은 질환별 1명 구조 예시. 각 zip 에 CSV·시트별 엑셀, (dirty) 정답표, README.txt, (good) 질환별 README.md |
+| 견본 데이터 | `app/build/pack-samples.cjs` 가 `synth/output/{clean,dirty,good}` 를 코호트별 zip 18개와 전체 묶음 1개로 만듦. clean/dirty 는 100명 규칙 시험용, good 은 질환별 1명 구조 예시(합성, 임상의 감수 없음). 각 zip 에 CSV·시트별 엑셀, (dirty) 정답표, README.txt, (good) 질환별 README.md. 기대 결과는 `dq/reports/` 의 `summary.json` 에서 읽음 |
 | 검증 | `osslsigncode verify`, `spctl -a -t open`, `xcrun stapler validate`, `SHA256SUMS.txt` (설치 파일과 견본 zip) |
-| 게시 | 태그 `v<버전>` 생성과 push, `gh release create` 로 DMG·exe·SHA256SUMS 첨부. `--replace` 를 주면 같은 버전의 기존 Release 와 태그를 지우고 다시 게시 |
+| 게시 | 태그 `v<버전>` 생성과 push, `gh release create` 로 DMG·exe·견본 zip·SHA256SUMS 첨부. Release 설명 맨 앞에 `docs/release-notes/<태그>.md` 가 실림. `--replace` 를 주면 같은 버전의 기존 Release 와 태그를 지우고 다시 게시 |
 
 Windows 32비트(x86)는 만들지 않습니다. DuckDB Node 바인딩이 Windows 는 x64 와 arm64 만 제공하고, Windows 11 은 64비트 전용입니다.
 

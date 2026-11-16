@@ -234,7 +234,7 @@ NOTES="$(mktemp)"
   echo
   echo "### 견본 데이터 (가상데이터)"
   echo
-  echo "앱 동작을 확인할 때 쓰는 가상데이터입니다. 실제 환자와 무관합니다. \`SampleData-$VERSION-all.zip\` 은 6개 코호트 × clean/dirty(각 100명 규칙 시험용) / good(질환별 가상 환자 1명의 연결된 표 예시) 18개 폴더 전체입니다. 코호트별 zip 에는 CSV 와 동일한 내용을 시트별로 담은 엑셀 파일이 있고, README.txt 에 기대 결과를 적었습니다. Good Sample 은 실제 임상자료나 임상의 감수 결과가 아닙니다. 폴더째 앱의 검증 실행 화면에 끌어다 놓으면 됩니다."
+  echo "앱 동작을 확인할 때 쓰는 가상데이터이며 의뢰사 매뉴얼 2026-11-16 기준입니다. 실제 환자와 무관합니다. \`SampleData-$VERSION-all.zip\` 은 6개 코호트 × clean/dirty(각 100명 규칙 시험용) / good(질환별 가상 환자 1명의 연결된 표 예시) 18개 폴더 전체입니다. 코호트별 zip 에는 CSV 와 동일한 내용을 시트별로 담은 엑셀 파일이 있고, README.txt 에 기대 결과를 적었습니다. dirty 의 오류는 규칙에서 역으로 만든 것이라 «모두 검출»이 실제 병원 데이터에서의 민감도는 아니며, Good Sample 은 합성한 자료로 임상의의 감수를 받지 않았습니다. 폴더째 앱의 검증 실행 화면에 끌어다 놓으면 됩니다."
   echo
   echo "설치와 사용 방법은 [사용자 설명서](https://github.com/$(gh repo view --json nameWithOwner -q .nameWithOwner)/blob/main/manual/README.md)를 보세요."
   echo

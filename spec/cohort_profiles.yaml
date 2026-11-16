@@ -12,7 +12,7 @@ cohorts:
     - NOTE
     - LUNG_CANCER
     - ADVERSE_EVENT
-    - ANTP_THERAPY
+    - SACT
   BREAST_CANCER:
     kor: 유방암
     tables:
@@ -26,7 +26,7 @@ cohorts:
     - NOTE
     - BREAST_CANCER
     - ADVERSE_EVENT
-    - ANTP_THERAPY
+    - SACT
   COLORECTAL_CANCER:
     kor: 대장암
     tables:
@@ -40,7 +40,7 @@ cohorts:
     - NOTE
     - COLORECTAL_CANCER
     - ADVERSE_EVENT
-    - ANTP_THERAPY
+    - SACT
   MASLD:
     kor: 대사이상지방간
     tables:
@@ -80,4 +80,4 @@ cohorts:
     - NOTE
     - LYMPHOMA
     - ADVERSE_EVENT
-    - ANTP_THERAPY
+    - SACT

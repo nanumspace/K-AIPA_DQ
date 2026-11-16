@@ -12,6 +12,7 @@ const api: Api = {
   getConfig: () => ipcRenderer.invoke("config:get"),
   setConfig: (patch) => ipcRenderer.invoke("config:set", patch),
   listCohorts: () => ipcRenderer.invoke("cohorts:list"),
+  listSpecTables: () => ipcRenderer.invoke("spec:tables"),
   listRules: () => ipcRenderer.invoke("rules:list"),
   chooseDirectory: (title) => ipcRenderer.invoke("dialog:directory", title),
   chooseDirectories: (title) => ipcRenderer.invoke("dialog:directories", title),
@@ -21,7 +22,6 @@ const api: Api = {
   checkInput: (cohort, candidates, mapping) => ipcRenderer.invoke("input:check", cohort, candidates, mapping),
   previewSource: (c) => ipcRenderer.invoke("input:preview", c),
   exportTemplate: (cohort, kind) => ipcRenderer.invoke("template:export", cohort, kind),
-  convertCrf: (req) => ipcRenderer.invoke("crf:convert", req),
   runValidation: (req) => ipcRenderer.invoke("run:start", req),
   onProgress: (cb) => on("run:progress", cb),
   listRuns: () => ipcRenderer.invoke("runs:list"),
@@ -35,7 +35,14 @@ const api: Api = {
   openPath: (p) => ipcRenderer.invoke("shell:open", p),
   onNav: (cb) => on("nav", cb),
   onSmokePlan: (cb) => on("smoke:plan", cb),
-  onSmokeCrf: (cb) => on("smoke:crf", cb),
+  getRuleSet: () => ipcRenderer.invoke("ruleset:get"),
+  changeRules: (change) => ipcRenderer.invoke("ruleset:change", change),
+  exportRuleSet: () => ipcRenderer.invoke("ruleset:export"),
+  importRuleSet: () => ipcRenderer.invoke("ruleset:import"),
+  getRuleHistory: (limit) => ipcRenderer.invoke("ruleset:history", limit),
+  setAdminMode: (on) => ipcRenderer.invoke("admin:set", on),
+  testSqlRule: (req) => ipcRenderer.invoke("admin:testSql", req),
+  onSmokeRule: (cb) => on("smoke:rule", cb),
 };
 
 contextBridge.exposeInMainWorld("api", api);

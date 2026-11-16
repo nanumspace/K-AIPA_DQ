@@ -18,3 +18,9 @@ export function fmtTime(iso: string): string {
   const p = (x: number) => String(x).padStart(2, "0");
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
 }
+
+/** IPC 오류 메시지에서 'Error invoking remote method …' 머리말을 걷어 사람이 쓴 문장만 남긴다 */
+export function errText(e: unknown): string {
+  const m = e instanceof Error ? e.message : String(e);
+  return m.replace(/^Error invoking remote method '[^']+': (Error: )?/, "");
+}

@@ -1,415 +1,380 @@
-note_id,visit_occurrence_id,person_id,note_date,note_text,note_type_concept_id,note_class_concept_id
-100001,100001,100001,2022-03-05,"Chest CT (contrast). 우중엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100002,100001,100001,2022-03-08,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.9 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100003,100002,100001,2022-03-14,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100004,100008,100001,2022-08-15,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164
-100005,100010,100002,2019-10-13,"Chest CT (contrast). 좌하엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100006,100010,100002,2019-10-16,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.3 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100007,100011,100002,2019-10-24,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100008,100016,100002,2020-03-31,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100009,100021,100003,2021-02-20,"Chest CT (contrast). 우중엽 에 5.8 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100010,100021,100003,2021-02-23,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 5.8 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100011,100022,100003,2021-02-25,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100012,100024,100003,2021-04-11,"Lung, 우중엽, lobectomy: Adenocarcinoma. Tumor size 5.2 cm. Differentiation: well. Visceral pleural invasion: absent. Lymph nodes: 2/23 positive. Pathologic stage pT3N2M0.",44814640,36716165
-100013,100025,100003,2021-07-10,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164
-100014,100038,100004,2022-01-15,"Chest CT (contrast). 좌하엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100015,100038,100004,2022-01-18,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.5 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100016,100039,100004,2022-01-21,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 1%.,44814640,36716165
-100017,100046,100004,2022-04-28,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100018,100060,100005,2022-01-30,"Chest CT (contrast). 우하엽 에 4.6 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164
-100019,100060,100005,2022-02-02,"Lung, 우하엽, bronchoscopic biopsy: Large cell carcinoma. Tumor size 4.6 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2bN0M0.",44814640,36716165
-100020,100061,100005,2022-02-11,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100021,100063,100005,2022-03-21,"Lung, 우하엽, lobectomy: Large cell carcinoma. Tumor size 4.9 cm. Differentiation: moderately. Visceral pleural invasion: absent. Lymph nodes: 0/22 positive. Pathologic stage pT2bN0M0.",44814640,36716165
-100022,100064,100005,2022-05-10,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100023,100077,100006,2019-08-12,"Chest CT (contrast). 우상엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100024,100077,100006,2019-08-15,"Lung, 우상엽, bronchoscopic biopsy: Large cell carcinoma. Tumor size 3.9 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100025,100078,100006,2019-08-21,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100026,100084,100006,2019-12-26,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100027,100093,100007,2019-03-06,"Chest CT (contrast). 좌상엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100028,100093,100007,2019-03-09,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.5 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100029,100094,100007,2019-03-16,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100030,100095,100007,2019-03-28,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100031,100126,100007,2021-04-14,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100032,100130,100008,2023-12-31,"Chest CT (contrast). 좌하엽 에 6.7 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164
-100033,100130,100008,2024-01-03,"Lung, 좌하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 6.7 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N0M0.",44814640,36716165
-100034,100131,100008,2024-01-06,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 0%.,44814640,36716165
-100035,100158,100009,2019-03-06,"Chest CT (contrast). 우하엽 에 3.6 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100036,100158,100009,2019-03-09,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.6 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100037,100159,100009,2019-03-14,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 1%.,44814640,36716165
-100038,100164,100009,2019-08-25,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100039,100178,100010,2021-03-27,"Chest CT (contrast). 우하엽 에 6.5 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164
-100040,100178,100010,2021-03-30,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 6.5 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N0M0.",44814640,36716165
-100041,100179,100010,2021-04-01,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100042,100181,100010,2021-04-26,"Lung, 우하엽, lobectomy: Adenocarcinoma. Tumor size 5.3 cm. Differentiation: moderately. Visceral pleural invasion: absent. Lymph nodes: 0/9 positive. Pathologic stage pT3N0M0.",44814640,36716165
-100043,100182,100010,2021-05-30,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100044,100196,100011,2019-02-03,"Chest CT (contrast). 좌상엽 에 4.5 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164
-100045,100196,100011,2019-02-06,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 4.5 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2bN0M0.",44814640,36716165
-100046,100197,100011,2019-02-09,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100047,100199,100011,2019-03-16,"Lung, 좌상엽, lobectomy: Adenocarcinoma. Tumor size 4.5 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 0/23 positive. Pathologic stage pT2bN0M0.",44814640,36716165
-100048,100200,100011,2019-05-06,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100049,100207,100011,2020-06-19,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164
-100050,100219,100012,2023-07-03,"Chest CT (contrast). 좌하엽 에 5.8 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100051,100219,100012,2023-07-06,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 5.8 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100052,100220,100012,2023-07-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100053,100222,100012,2023-08-02,"Lung, 좌하엽, lobectomy: Adenocarcinoma. Tumor size 6.0 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 6/18 positive. Pathologic stage pT3N2M0.",44814640,36716165
-100054,100224,100012,2024-01-31,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164
-100055,100236,100013,2021-05-25,"Chest CT (contrast). 우중엽 에 1.7 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100056,100236,100013,2021-05-28,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 1.7 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100057,100237,100013,2021-06-02,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100058,100239,100013,2021-07-05,"Lung, 우중엽, lobectomy: Adenocarcinoma. Tumor size 1.1 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 0/17 positive. Pathologic stage pT1bN0M0.",44814640,36716165
-100059,100248,100014,2020-09-27,"Chest CT (contrast). 우상엽 에 5.1 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100060,100248,100014,2020-09-30,"Lung, 우상엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 5.1 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100061,100249,100014,2020-10-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100062,100251,100014,2020-10-27,"Lung, 우상엽, lobectomy: Squamous cell carcinoma. Tumor size 6.1 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 6/30 positive. Pathologic stage pT3N2M0.",44814640,36716165
-100063,100252,100014,2020-12-09,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100064,100265,100015,2022-01-07,"Chest CT (contrast). 좌상엽 에 1.5 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100065,100265,100015,2022-01-10,"Lung, 좌상엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 1.5 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100066,100266,100015,2022-01-12,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100067,100268,100015,2022-02-08,"Lung, 좌상엽, lobectomy: Squamous cell carcinoma. Tumor size 4.4 cm. Differentiation: well. Visceral pleural invasion: present. Lymph nodes: 0/16 positive. Pathologic stage pT2bN0M0.",44814640,36716165
-100068,100277,100016,2022-11-15,"Chest CT (contrast). 우하엽 에 7.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100069,100277,100016,2022-11-18,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 7.3 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100070,100278,100016,2022-11-24,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100071,100305,100017,2021-09-21,"Chest CT (contrast). 우하엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100072,100305,100017,2021-09-24,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.5 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100073,100306,100017,2021-10-03,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 0%.,44814640,36716165
-100074,100312,100017,2022-02-18,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100075,100314,100018,2022-01-21,"Chest CT (contrast). 우하엽 에 1.3 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100076,100314,100018,2022-01-24,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 1.3 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100077,100315,100018,2022-01-29,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100078,100317,100018,2022-02-22,"Lung, 우하엽, lobectomy: Squamous cell carcinoma. Tumor size 1.8 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 0/23 positive. Pathologic stage pT1bN0M0.",44814640,36716165
-100079,100324,100018,2023-12-01,Chest CT: new Liver lesion suspicious for recurrence.,44814637,36716164
-100080,100330,100019,2022-10-26,"Chest CT (contrast). 좌상엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100081,100330,100019,2022-10-29,"Lung, 좌상엽, bronchoscopic biopsy: Large cell carcinoma. Tumor size 3.5 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100082,100331,100019,2022-11-06,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100083,100345,100020,2021-03-16,"Chest CT (contrast). 우중엽 에 3.4 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100084,100345,100020,2021-03-19,"Lung, 우중엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 3.4 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100085,100346,100020,2021-03-27,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100086,100352,100020,2021-07-16,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164
-100087,100364,100021,2019-09-11,"Chest CT (contrast). 좌상엽 에 6.2 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100088,100364,100021,2019-09-14,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 6.2 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100089,100365,100021,2019-09-21,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100090,100367,100021,2019-10-25,"Lung, 좌상엽, lobectomy: Adenocarcinoma. Tumor size 5.9 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 2/25 positive. Pathologic stage pT3N2M0.",44814640,36716165
-100091,100368,100021,2019-11-25,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100092,100381,100022,2020-04-24,"Chest CT (contrast). 우중엽 에 5.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100093,100381,100022,2020-04-27,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 5.3 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100094,100382,100022,2020-05-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100095,100383,100022,2020-06-01,"Lung, 우중엽, lobectomy: Squamous cell carcinoma. Tumor size 5.2 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 4/23 positive. Pathologic stage pT3N1M0.",44814640,36716165
-100096,100384,100022,2020-07-04,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100097,100389,100022,2020-12-04,Chest CT: new Liver lesion suspicious for recurrence.,44814637,36716164
-100098,100404,100023,2021-06-13,"Chest CT (contrast). 우하엽 에 3.7 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100099,100404,100023,2021-06-16,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.7 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100100,100405,100023,2021-06-22,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100101,100411,100023,2021-11-24,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100102,100418,100024,2023-08-24,"Chest CT (contrast). 우중엽 에 1.4 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100103,100418,100024,2023-08-27,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 1.4 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100104,100419,100024,2023-09-01,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 1%.,44814640,36716165
-100105,100421,100024,2023-09-24,"Lung, 우중엽, lobectomy: Squamous cell carcinoma. Tumor size 3.8 cm. Differentiation: moderately. Visceral pleural invasion: present. Lymph nodes: 0/26 positive. Pathologic stage pT2aN0M0.",44814640,36716165
-100106,100428,100024,2025-06-20,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164
-100107,100436,100025,2019-08-29,"Chest CT (contrast). 우하엽 에 4.0 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100108,100436,100025,2019-09-01,"Lung, 우하엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 4.0 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100109,100437,100025,2019-09-18,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100110,100450,100026,2020-08-17,"Chest CT (contrast). 우상엽 에 5.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100111,100450,100026,2020-08-20,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 5.3 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100112,100452,100026,2020-09-16,"Lung, 우상엽, lobectomy: Small cell carcinoma. Tumor size 6.6 cm. Differentiation: moderately. Visceral pleural invasion: absent. Lymph nodes: 5/28 positive. Pathologic stage pT3N2M0.",44814640,36716165
-100113,100453,100026,2020-11-10,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100114,100460,100026,2021-07-13,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164
-100115,100473,100027,2021-05-21,"Chest CT (contrast). 우중엽 에 5.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100116,100473,100027,2021-05-24,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 5.5 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100117,100474,100027,2021-05-31,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100118,100476,100027,2021-06-18,"Lung, 우중엽, lobectomy: Squamous cell carcinoma. Tumor size 1.8 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 5/11 positive. Pathologic stage pT1bN2M0.",44814640,36716165
-100119,100477,100027,2021-08-09,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100120,100484,100027,2022-04-05,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164
-100121,100497,100028,2022-11-20,"Chest CT (contrast). 좌하엽 에 7.7 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100122,100497,100028,2022-11-23,"Lung, 좌하엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 7.7 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100123,100515,100029,2022-08-22,"Chest CT (contrast). 좌상엽 에 5.7 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100124,100515,100029,2022-08-25,"Lung, 좌상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 5.7 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100125,100517,100029,2022-10-11,"Lung, 좌상엽, lobectomy: Small cell carcinoma. Tumor size 6.5 cm. Differentiation: well. Visceral pleural invasion: absent. Lymph nodes: 1/25 positive. Pathologic stage pT3N2M0.",44814640,36716165
-100126,100518,100029,2022-11-26,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100127,100525,100029,2023-07-27,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164
-100128,100537,100030,2023-08-12,"Chest CT (contrast). 우상엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100129,100537,100030,2023-08-15,"Lung, 우상엽, bronchoscopic biopsy: Large cell carcinoma. Tumor size 3.5 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100130,100538,100030,2023-08-19,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100131,100545,100030,2024-01-02,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100132,100550,100031,2023-04-06,"Chest CT (contrast). 좌상엽 에 3.6 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100133,100550,100031,2023-04-09,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.6 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100134,100551,100031,2023-04-15,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100135,100552,100031,2023-04-17,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100136,100567,100031,2024-04-15,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100137,100572,100032,2021-04-02,"Chest CT (contrast). 좌상엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100138,100572,100032,2021-04-05,"Lung, 좌상엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.9 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100139,100573,100032,2021-04-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100140,100579,100032,2021-09-06,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100141,100585,100033,2021-04-18,"Chest CT (contrast). 우중엽 에 3.6 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100142,100585,100033,2021-04-21,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.6 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100143,100586,100033,2021-04-29,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100144,100601,100034,2019-06-17,"Chest CT (contrast). 좌하엽 에 3.7 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100145,100601,100034,2019-06-20,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.7 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100146,100602,100034,2019-06-26,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100147,100608,100034,2019-10-26,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100148,100610,100035,2021-02-05,"Chest CT (contrast). 우하엽 에 3.2 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100149,100610,100035,2021-02-08,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.2 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100150,100611,100035,2021-02-14,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100151,100626,100036,2023-10-21,"Chest CT (contrast). 우중엽 에 6.4 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100152,100626,100036,2023-10-24,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 6.4 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100153,100627,100036,2023-11-01,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100154,100629,100036,2023-12-02,"Lung, 우중엽, lobectomy: Adenocarcinoma. Tumor size 6.5 cm. Differentiation: well. Visceral pleural invasion: absent. Lymph nodes: 6/29 positive. Pathologic stage pT3N2M0.",44814640,36716165
-100155,100630,100036,2024-01-22,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100156,100641,100036,2025-09-05,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164
-100157,100648,100037,2023-06-24,"Chest CT (contrast). 우중엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100158,100648,100037,2023-06-27,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.9 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100159,100649,100037,2023-06-29,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100160,100656,100037,2023-12-08,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164
-100161,100658,100038,2019-01-03,"Chest CT (contrast). 좌하엽 에 1.9 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100162,100658,100038,2019-01-06,"Lung, 좌하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 1.9 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100163,100659,100038,2019-01-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100164,100661,100038,2019-02-03,"Lung, 좌하엽, lobectomy: Squamous cell carcinoma. Tumor size 3.9 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 0/11 positive. Pathologic stage pT2aN0M0.",44814640,36716165
-100165,100665,100038,2020-02-26,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164
-100166,100675,100039,2020-02-08,"Chest CT (contrast). 우상엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100167,100675,100039,2020-02-11,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.3 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100168,100676,100039,2020-02-19,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100169,100677,100039,2020-03-04,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100170,100719,100039,2022-07-25,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100171,100728,100040,2019-04-10,"Chest CT (contrast). 우중엽 에 8.2 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100172,100728,100040,2019-04-13,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 8.2 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100173,100729,100040,2019-04-18,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100174,100747,100041,2023-02-17,"Chest CT (contrast). 우상엽 에 3.4 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100175,100747,100041,2023-02-20,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.4 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100176,100748,100041,2023-02-26,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100177,100749,100041,2023-03-05,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100178,100790,100041,2025-05-29,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100179,100799,100042,2020-09-27,"Chest CT (contrast). 우중엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100180,100799,100042,2020-09-30,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.3 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100181,100800,100042,2020-10-05,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100182,100807,100042,2021-04-14,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164
-100183,100816,100043,2023-06-16,"Chest CT (contrast). 우중엽 에 1.4 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100184,100816,100043,2023-06-19,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 1.4 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100185,100817,100043,2023-06-25,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100186,100819,100043,2023-07-29,"Lung, 우중엽, lobectomy: Adenocarcinoma. Tumor size 1.2 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 0/14 positive. Pathologic stage pT1bN0M0.",44814640,36716165
-100187,100828,100044,2023-09-06,"Chest CT (contrast). 우상엽 에 1.3 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100188,100828,100044,2023-09-09,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 1.3 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100189,100829,100044,2023-09-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100190,100831,100044,2023-10-02,"Lung, 우상엽, lobectomy: Adenocarcinoma. Tumor size 1.5 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 0/10 positive. Pathologic stage pT1bN0M0.",44814640,36716165
-100191,100839,100044,2025-10-05,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164
-100192,100844,100045,2023-11-26,"Chest CT (contrast). 우중엽 에 3.7 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100193,100844,100045,2023-11-29,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.7 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100194,100845,100045,2023-12-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 25%.,44814640,36716165
-100195,100860,100046,2022-01-26,"Chest CT (contrast). 우하엽 에 4.3 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164
-100196,100860,100046,2022-01-29,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 4.3 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2bN0M0.",44814640,36716165
-100197,100861,100046,2022-02-05,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100198,100863,100046,2022-03-17,"Lung, 우하엽, lobectomy: Adenocarcinoma. Tumor size 4.6 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 0/14 positive. Pathologic stage pT2bN0M0.",44814640,36716165
-100199,100864,100046,2022-06-17,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164
-100200,100877,100047,2022-06-04,"Chest CT (contrast). 우하엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100201,100877,100047,2022-06-07,"Lung, 우하엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 3.9 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100202,100878,100047,2022-06-17,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100203,100885,100047,2022-11-10,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100204,100892,100048,2020-07-13,"Chest CT (contrast). 우중엽 에 4.8 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164
-100205,100892,100048,2020-07-16,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 4.8 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2bN0M0.",44814640,36716165
-100206,100893,100048,2020-07-23,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100207,100895,100048,2020-08-23,"Lung, 우중엽, lobectomy: Squamous cell carcinoma. Tumor size 4.7 cm. Differentiation: moderately. Visceral pleural invasion: present. Lymph nodes: 0/22 positive. Pathologic stage pT2bN0M0.",44814640,36716165
-100208,100904,100049,2023-12-12,"Chest CT (contrast). 우하엽 에 3.8 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100209,100904,100049,2023-12-15,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.8 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100210,100905,100049,2023-12-22,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100211,100911,100049,2024-04-14,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100212,100918,100050,2022-12-03,"Chest CT (contrast). 우하엽 에 3.1 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100213,100918,100050,2022-12-06,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.1 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100214,100919,100050,2022-12-14,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100215,100920,100050,2022-12-20,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100216,100933,100050,2023-11-09,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100217,100947,100051,2022-06-27,"Chest CT (contrast). 우하엽 에 3.6 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164
-100218,100947,100051,2022-06-30,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.6 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN0M0.",44814640,36716165
-100219,100948,100051,2022-07-03,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100220,100950,100051,2022-07-29,"Lung, 우하엽, lobectomy: Squamous cell carcinoma. Tumor size 3.7 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 0/12 positive. Pathologic stage pT2aN0M0.",44814640,36716165
-100221,100951,100051,2022-09-05,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100222,100957,100051,2023-02-05,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164
-100223,100970,100052,2022-10-21,"Chest CT (contrast). 좌하엽 에 3.7 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164
-100224,100970,100052,2022-10-24,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.7 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN0M0.",44814640,36716165
-100225,100971,100052,2022-11-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100226,100973,100052,2022-11-20,"Lung, 좌하엽, lobectomy: Adenocarcinoma. Tumor size 3.4 cm. Differentiation: moderately. Visceral pleural invasion: absent. Lymph nodes: 0/8 positive. Pathologic stage pT2aN0M0.",44814640,36716165
-100227,100974,100052,2022-12-29,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100228,100984,100052,2024-05-17,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164
-100229,100993,100053,2021-07-01,"Chest CT (contrast). 우상엽 에 8.7 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100230,100993,100053,2021-07-04,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 8.7 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100231,100994,100053,2021-07-10,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100232,101017,100054,2021-01-27,"Chest CT (contrast). 우하엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100233,101017,100054,2021-01-30,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.5 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100234,101018,100054,2021-02-04,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100235,101019,100054,2021-02-15,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100236,101053,100055,2021-07-15,"Chest CT (contrast). 좌하엽 에 8.4 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100237,101053,100055,2021-07-18,"Lung, 좌하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 8.4 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100238,101054,100055,2021-07-25,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100239,101076,100056,2021-07-11,"Chest CT (contrast). 좌상엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100240,101076,100056,2021-07-14,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.5 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100241,101077,100056,2021-07-21,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100242,101091,100057,2022-11-30,"Chest CT (contrast). 좌상엽 에 3.2 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100243,101091,100057,2022-12-03,"Lung, 좌상엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.2 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100244,101092,100057,2022-12-07,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100245,101100,100057,2023-06-12,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100246,101116,100058,2021-04-08,"Chest CT (contrast). 우상엽 에 3.6 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100247,101116,100058,2021-04-11,"Lung, 우상엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.6 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100248,101117,100058,2021-04-20,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100249,101123,100058,2021-09-15,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100250,101137,100059,2020-10-12,"Chest CT (contrast). 우중엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100251,101137,100059,2020-10-15,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.3 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100252,101138,100059,2020-10-18,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100253,101152,100060,2021-01-06,"Chest CT (contrast). 우상엽 에 5.0 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164
-100254,101152,100060,2021-01-09,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 5.0 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2bN0M0.",44814640,36716165
-100255,101153,100060,2021-01-11,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100256,101155,100060,2021-02-16,"Lung, 우상엽, lobectomy: Adenocarcinoma. Tumor size 3.9 cm. Differentiation: well. Visceral pleural invasion: absent. Lymph nodes: 1/12 positive. Pathologic stage pT2aN1M0.",44814640,36716165
-100257,101156,100060,2021-03-30,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100258,101163,100060,2022-06-08,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164
-100259,101173,100061,2021-03-11,"Chest CT (contrast). 우중엽 에 1.7 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100260,101173,100061,2021-03-14,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 1.7 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100261,101174,100061,2021-03-20,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100262,101175,100061,2021-04-15,"Lung, 우중엽, lobectomy: Squamous cell carcinoma. Tumor size 1.8 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 0/10 positive. Pathologic stage pT1bN0M0.",44814640,36716165
-100263,101184,100062,2022-10-11,"Chest CT (contrast). 우하엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100264,101184,100062,2022-10-14,"Lung, 우하엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 3.3 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100265,101185,100062,2022-11-04,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100266,101191,100062,2023-02-16,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100267,101193,100063,2020-03-24,"Chest CT (contrast). 우상엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100268,101193,100063,2020-03-27,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.3 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100269,101194,100063,2020-04-01,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100270,101202,100063,2020-07-29,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100271,101210,100064,2021-06-11,"Chest CT (contrast). 우상엽 에 5.6 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100272,101210,100064,2021-06-14,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 5.6 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100273,101212,100064,2021-07-09,"Lung, 우상엽, lobectomy: Small cell carcinoma. Tumor size 4.8 cm. Differentiation: moderately. Visceral pleural invasion: absent. Lymph nodes: 3/10 positive. Pathologic stage pT2bN2M0.",44814640,36716165
-100274,101221,100065,2022-03-10,"Chest CT (contrast). 우중엽 에 3.7 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100275,101221,100065,2022-03-13,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.7 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100276,101222,100065,2022-03-22,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100277,101229,100065,2022-07-01,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164
-100278,101231,100066,2019-12-28,"Chest CT (contrast). 우중엽 에 3.4 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100279,101231,100066,2019-12-31,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.4 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100280,101232,100066,2020-01-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100281,101245,100067,2022-02-09,"Chest CT (contrast). 좌하엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100282,101245,100067,2022-02-12,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.9 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100283,101246,100067,2022-02-20,Molecular pathology (NGS panel): EGFR wild type; ALK IHC positive; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100284,101261,100068,2020-06-24,"Chest CT (contrast). 우중엽 에 6.8 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164
-100285,101261,100068,2020-06-27,"Lung, 우중엽, bronchoscopic biopsy: Large cell carcinoma. Tumor size 6.8 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N0M0.",44814640,36716165
-100286,101262,100068,2020-07-04,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100287,101264,100068,2020-08-11,"Lung, 우중엽, lobectomy: Large cell carcinoma. Tumor size 6.7 cm. Differentiation: well. Visceral pleural invasion: present. Lymph nodes: 0/15 positive. Pathologic stage pT3N0M0.",44814640,36716165
-100288,101273,100069,2021-02-02,"Chest CT (contrast). 우중엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100289,101273,100069,2021-02-05,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.3 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100290,101274,100069,2021-02-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100291,101289,100070,2020-12-07,"Chest CT (contrast). 우상엽 에 3.2 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164
-100292,101289,100070,2020-12-10,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.2 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN0M0.",44814640,36716165
-100293,101290,100070,2020-12-17,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100294,101292,100070,2021-01-10,"Lung, 우상엽, lobectomy: Adenocarcinoma. Tumor size 3.2 cm. Differentiation: well. Visceral pleural invasion: absent. Lymph nodes: 3/14 positive. Pathologic stage pT2aN1M0.",44814640,36716165
-100295,101293,100070,2021-03-02,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100296,101304,100070,2022-11-04,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164
-100297,101312,100071,2022-09-16,"Chest CT (contrast). 우상엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100298,101312,100071,2022-09-19,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.3 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100299,101313,100071,2022-09-27,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100300,101320,100071,2023-01-08,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100301,101324,100072,2023-01-01,"Chest CT (contrast). 우하엽 에 4.4 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164
-100302,101324,100072,2023-01-04,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 4.4 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2bN0M0.",44814640,36716165
-100303,101325,100072,2023-01-10,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165
-100304,101326,100072,2023-02-20,"Lung, 우하엽, lobectomy: Adenocarcinoma. Tumor size 4.3 cm. Differentiation: moderately. Visceral pleural invasion: present. Lymph nodes: 2/20 positive. Pathologic stage pT2bN1M0.",44814640,36716165
-100305,101335,100073,2019-02-28,"Chest CT (contrast). 우중엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100306,101335,100073,2019-03-03,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.5 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100307,101336,100073,2019-03-10,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100308,101337,100073,2019-03-13,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100309,101363,100073,2020-12-13,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164
-100310,101365,100074,2021-04-29,"Chest CT (contrast). 좌상엽 에 3.8 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100311,101365,100074,2021-05-02,"Lung, 좌상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 3.8 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100312,101366,100074,2021-05-12,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100313,101381,100075,2023-09-21,"Chest CT (contrast). 좌하엽 에 1.4 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100314,101381,100075,2023-09-24,"Lung, 좌하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 1.4 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100315,101382,100075,2023-10-01,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100316,101384,100075,2023-10-18,"Lung, 좌하엽, lobectomy: Squamous cell carcinoma. Tumor size 1.8 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 0/9 positive. Pathologic stage pT1bN0M0.",44814640,36716165
-100317,101393,100076,2021-05-07,"Chest CT (contrast). 우상엽 에 8.0 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100318,101393,100076,2021-05-10,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 8.0 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100319,101409,100077,2021-02-04,"Chest CT (contrast). 좌상엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100320,101409,100077,2021-02-07,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.9 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100321,101410,100077,2021-02-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100322,101425,100078,2021-05-29,"Chest CT (contrast). 우중엽 에 1.3 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100323,101425,100078,2021-06-01,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 1.3 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100324,101426,100078,2021-06-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165
-100325,101427,100078,2021-07-12,"Lung, 우중엽, lobectomy: Squamous cell carcinoma. Tumor size 1.2 cm. Differentiation: well. Visceral pleural invasion: present. Lymph nodes: 0/14 positive. Pathologic stage pT1bN0M0.",44814640,36716165
-100326,101432,100078,2022-10-20,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164
-100327,101441,100079,2021-10-18,"Chest CT (contrast). 좌상엽 에 3.4 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100328,101441,100079,2021-10-21,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.4 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100329,101442,100079,2021-10-26,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100330,101449,100079,2022-04-06,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100331,101460,100080,2020-01-27,"Chest CT (contrast). 좌하엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100332,101460,100080,2020-01-30,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.9 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100333,101461,100080,2020-02-08,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100334,101462,100080,2020-02-21,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100335,101487,100080,2021-10-25,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100336,101496,100081,2023-06-02,"Chest CT (contrast). 좌상엽 에 1.6 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164
-100337,101496,100081,2023-06-05,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 1.6 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT1bN0M0.",44814640,36716165
-100338,101497,100081,2023-06-09,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 50%.,44814640,36716165
-100339,101499,100081,2023-07-04,"Lung, 좌상엽, lobectomy: Adenocarcinoma. Tumor size 6.6 cm. Differentiation: well. Visceral pleural invasion: absent. Lymph nodes: 0/15 positive. Pathologic stage pT3N0M0.",44814640,36716165
-100340,101508,100082,2019-01-28,"Chest CT (contrast). 좌상엽 에 6.6 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164
-100341,101508,100082,2019-01-31,"Lung, 좌상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 6.6 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N0M0.",44814640,36716165
-100342,101510,100082,2019-03-12,"Lung, 좌상엽, lobectomy: Small cell carcinoma. Tumor size 6.2 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 2/13 positive. Pathologic stage pT3N2M0.",44814640,36716165
-100343,101511,100082,2019-04-21,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100344,101521,100082,2020-11-28,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164
-100345,101529,100083,2023-08-19,"Chest CT (contrast). 좌상엽 에 3.3 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100346,101529,100083,2023-08-22,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.3 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100347,101530,100083,2023-08-29,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100348,101544,100084,2022-02-17,"Chest CT (contrast). 우중엽 에 3.6 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100349,101544,100084,2022-02-20,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.6 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100350,101545,100084,2022-02-24,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100351,101559,100085,2023-03-20,"Chest CT (contrast). 우중엽 에 3.7 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100352,101559,100085,2023-03-23,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.7 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100353,101560,100085,2023-03-28,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100354,101576,100086,2019-04-09,"Chest CT (contrast). 좌상엽 에 5.8 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164
-100355,101576,100086,2019-04-12,"Lung, 좌상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 5.8 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N0M0.",44814640,36716165
-100356,101578,100086,2019-05-18,"Lung, 좌상엽, lobectomy: Small cell carcinoma. Tumor size 1.1 cm. Differentiation: well. Visceral pleural invasion: absent. Lymph nodes: 0/21 positive. Pathologic stage pT1bN0M0.",44814640,36716165
-100357,101579,100086,2019-07-10,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100358,101586,100086,2020-03-19,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164
-100359,101597,100087,2022-05-26,"Chest CT (contrast). 우상엽 에 3.6 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100360,101597,100087,2022-05-29,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.6 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100361,101598,100087,2022-06-06,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100362,101599,100087,2022-06-15,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100363,101634,100088,2019-12-28,"Chest CT (contrast). 좌상엽 에 3.8 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100364,101634,100088,2019-12-31,"Lung, 좌상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 3.8 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100365,101635,100088,2020-01-18,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100366,101648,100089,2020-10-08,"Chest CT (contrast). 우중엽 에 3.4 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100367,101648,100089,2020-10-11,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.4 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100368,101649,100089,2020-10-18,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165
-100369,101650,100089,2020-10-25,SMILES osimertinib: COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32831,36716177
-100370,101665,100089,2021-11-24,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164
-100371,101674,100090,2019-01-08,"Chest CT (contrast). 좌상엽 에 3.2 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100372,101674,100090,2019-01-11,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.2 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100373,101675,100090,2019-01-17,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100374,101682,100090,2019-06-14,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164
-100375,101684,100091,2021-11-25,"Chest CT (contrast). 우상엽 에 3.9 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164
-100376,101684,100091,2021-11-28,"Lung, 우상엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.9 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN0M0.",44814640,36716165
-100377,101685,100091,2021-12-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165
-100378,101686,100091,2021-12-23,"Lung, 우상엽, lobectomy: Squamous cell carcinoma. Tumor size 3.7 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 0/27 positive. Pathologic stage pT2aN0M0.",44814640,36716165
-100379,101689,100091,2022-09-05,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164
-100380,101701,100092,2023-07-25,"Chest CT (contrast). 우하엽 에 8.8 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100381,101701,100092,2023-07-28,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 8.8 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100382,101702,100092,2023-08-06,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 1%.,44814640,36716165
-100383,101727,100093,2019-08-05,"Chest CT (contrast). 우상엽 에 4.2 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164
-100384,101727,100093,2019-08-08,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 4.2 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2bN0M0.",44814640,36716165
-100385,101728,100093,2019-08-17,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 25%.,44814640,36716165
-100386,101730,100093,2019-09-12,"Lung, 우상엽, lobectomy: Adenocarcinoma. Tumor size 4.7 cm. Differentiation: poorly. Visceral pleural invasion: present. Lymph nodes: 5/10 positive. Pathologic stage pT2bN1M0.",44814640,36716165
-100387,101736,100093,2021-03-28,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164
-100388,101744,100094,2019-01-20,"Chest CT (contrast). 우하엽 에 8.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100389,101744,100094,2019-01-23,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 8.5 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100390,101745,100094,2019-01-31,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100391,101767,100095,2022-12-19,"Chest CT (contrast). 좌상엽 에 3.9 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100392,101767,100095,2022-12-22,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma. Tumor size 3.9 cm. Differentiation: moderately. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100393,101768,100095,2022-12-27,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100394,101783,100096,2023-04-16,"Chest CT (contrast). 우하엽 에 4.0 cm 크기의 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164
-100395,101783,100096,2023-04-19,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 4.0 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN0M0.",44814640,36716165
-100396,101784,100096,2023-04-23,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100397,101786,100096,2023-06-01,"Lung, 우하엽, lobectomy: Squamous cell carcinoma. Tumor size 3.1 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 0/15 positive. Pathologic stage pT2aN0M0.",44814640,36716165
-100398,101787,100096,2023-07-14,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100399,101795,100096,2024-06-10,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164
-100400,101808,100097,2023-10-30,"Chest CT (contrast). 좌상엽 에 3.5 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100401,101808,100097,2023-11-02,"Lung, 좌상엽, bronchoscopic biopsy: Small cell carcinoma. Tumor size 3.5 cm. Differentiation: well. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100402,101809,100097,2023-11-19,SMILES cisplatin: N.N.Cl[Pt]Cl,32831,36716177
-100403,101821,100098,2020-06-05,"Chest CT (contrast). 좌상엽 에 5.8 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT3N2M0. Recommend tissue confirmation.",44814637,36716164
-100404,101821,100098,2020-06-08,"Lung, 좌상엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 5.8 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT3N2M0.",44814640,36716165
-100405,101822,100098,2020-06-16,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165
-100406,101824,100098,2020-07-12,"Lung, 좌상엽, lobectomy: Squamous cell carcinoma. Tumor size 4.5 cm. Differentiation: poorly. Visceral pleural invasion: absent. Lymph nodes: 6/19 positive. Pathologic stage pT2bN2M0.",44814640,36716165
-100407,101831,100098,2022-04-03,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164
-100408,101839,100099,2019-09-27,"Chest CT (contrast). 우하엽 에 3.2 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164
-100409,101839,100099,2019-09-30,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 3.2 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT2aN2M1b.",44814640,36716165
-100410,101840,100099,2019-10-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
-100411,101846,100099,2020-01-08,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164
-100412,101851,100100,2023-09-04,"Chest CT (contrast). 좌하엽 에 8.0 cm 크기의 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT4N2M0. Recommend tissue confirmation.",44814637,36716164
-100413,101851,100100,2023-09-07,"Lung, 좌하엽, bronchoscopic biopsy: Squamous cell carcinoma. Tumor size 8.0 cm. Differentiation: poorly. Visceral pleural invasion: not assessable. Lymph nodes: not assessable. Pathologic stage pT4N2M0.",44814640,36716165
-100414,101852,100100,2023-09-11,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165
+note_id,visit_occurrence_id,person_id,note_date,note_text,note_type_concept_id,note_class_concept_id,file_id
+100001,100001,100001,2022-03-05,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Bone. Impression: Lung cancer, 우중엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100002,100001,100001,2022-03-06,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100003,100002,100001,2022-03-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100004,,,,O=C1O[Pt](N)(N)OC(=O)C12CCC2,32817,0,
+100005,,,,Nc1nc2[nH]cc(CCc3ccc(cc3)C(=O)NC(CCC(=O)O)C(=O)O)c2c(=O)[nH]1,32817,0,
+100006,100008,100001,2022-08-14,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100007,100010,100002,2019-02-27,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Adrenal gland. Impression: Lung cancer, 좌상엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100008,100010,100002,2019-02-28,"Lung, 좌상엽, bronchoscopic biopsy: Squamous cell carcinoma, keratinizing. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100009,100011,100002,2019-03-10,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100010,,,,CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(C5=CC=CC=C5)NC(=O)C6=CC=CC=C6)O)O)OC(=O)C7=CC=CC=C7)(CO4)OC(=O)C)O)C)OC(=O)C,32817,0,
+100011,100018,100002,2019-08-04,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100012,100020,100003,2020-11-20,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 좌하엽, cT2aN2M1a. Recommend tissue confirmation.",44814637,36716164,
+100013,100020,100003,2020-11-21,"Lung, 좌하엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1a is from imaging.",44814640,36716165,
+100014,,,,CC1OCC2C(O1)C(C(C(O2)OC3C4C(COC4=O)C(C5=CC6=C(C=C35)OCO6)C7=CC(=C(C(=C7)OC)O)OC)O)O,32817,0,
+100015,,,,N.N.Cl[Pt]Cl,32817,0,
+100016,100026,100003,2021-02-19,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100017,100028,100004,2022-08-12,"Chest CT (contrast). 우하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT1cN0M0. Recommend tissue confirmation.",44814637,36716164,
+100018,100028,100004,2022-08-13,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma, lepidic pattern. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1cN0M0 is from imaging.",44814640,36716165,
+100019,100029,100004,2022-08-23,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100020,100030,100004,2022-09-24,"Lung, 우하엽, lobectomy: Adenocarcinoma, lepidic pattern. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/22 positive. Pathologic stage pT1cN0M0.",44814640,36716165,
+100021,100032,100004,2023-03-16,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164,
+100022,,,,CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C,32817,0,
+100023,100046,100005,2023-04-19,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100024,100046,100005,2023-04-20,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100025,100047,100005,2023-04-24,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100026,100054,100005,2023-07-17,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100027,,,,CC1=C2C(C(=O)C3(C(CC4C(C3C(C(C2(C)C)(CC1OC(=O)C(C(C5=CC=CC=C5)NC(=O)OC(C)(C)C)O)O)OC(=O)C6=CC=CC=C6)(CO4)OC(=O)C)O)C)O,32817,0,
+100028,100066,100006,2023-02-28,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Adrenal gland. Impression: Lung cancer, 좌하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100029,100066,100006,2023-03-01,"Lung, 좌하엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100030,100071,100006,2023-07-22,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100031,100073,100007,2022-03-28,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT2aN3M0. Recommend tissue confirmation.",44814637,36716164,
+100032,100073,100007,2022-03-29,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN3M0 is from imaging.",44814640,36716165,
+100033,100074,100007,2022-04-03,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 50%.,44814640,36716165,
+100034,100091,100008,2019-06-06,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100035,100091,100008,2019-06-07,"Lung, 우상엽, bronchoscopic biopsy: Squamous cell carcinoma, keratinizing. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100036,100092,100008,2019-06-12,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100037,100107,100009,2019-12-03,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100038,100107,100009,2019-12-04,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100039,100108,100009,2019-12-09,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100040,100121,100010,2023-07-17,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Liver. Impression: Lung cancer, 우상엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100041,100121,100010,2023-07-18,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100042,100134,100011,2022-10-02,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Brain. Impression: Lung cancer, 좌하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100043,100134,100011,2022-10-03,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100044,100135,100011,2022-10-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 50%.,44814640,36716165,
+100045,100149,100012,2020-05-22,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Brain. Impression: Lung cancer, 좌상엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100046,100149,100012,2020-05-23,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100047,100150,100012,2020-05-27,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100048,,,,COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32817,0,
+100049,100160,100012,2021-01-29,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100050,100172,100013,2019-07-26,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Liver. Impression: Lung cancer, 좌하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100051,100172,100013,2019-07-27,"Lung, 좌하엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100052,100173,100013,2019-08-07,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100053,100180,100013,2019-12-24,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100054,100182,100014,2022-07-13,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100055,100182,100014,2022-07-14,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100056,100183,100014,2022-07-24,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100057,100184,100014,2022-09-02,"Lung, 우하엽, lobectomy: Adenocarcinoma with mixed subtypes. Differentiation: poorly differentiated. Visceral pleural invasion: present. Lymph nodes: 3/8 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100058,100193,100014,2023-06-25,Chest CT: new Liver lesion suspicious for recurrence.,44814637,36716164,
+100059,100230,100015,2020-09-15,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100060,100230,100015,2020-09-16,"Lung, 좌상엽, bronchoscopic biopsy: Non-small cell carcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100061,100231,100015,2020-09-23,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100062,100237,100015,2021-02-05,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100063,100250,100016,2022-11-28,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100064,100250,100016,2022-11-29,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100065,100251,100016,2022-12-07,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165,
+100066,100252,100016,2023-01-05,"Lung, 우중엽, lobectomy: Adenocarcinoma with mixed subtypes. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/25 positive. Pathologic stage pT2aN0M0.",44814640,36716165,
+100067,100266,100017,2020-05-25,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100068,100266,100017,2020-05-26,"Lung, 우하엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100069,100271,100017,2020-08-24,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100070,100273,100018,2023-10-30,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100071,100273,100018,2023-10-31,"Lung, 좌하엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100072,100288,100019,2021-01-28,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100073,100288,100019,2021-01-29,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100074,100289,100019,2021-02-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100075,100290,100019,2021-02-24,"Lung, 좌하엽, lobectomy: Adenocarcinoma, NOS. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 4/28 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100076,100291,100019,2021-05-26,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164,
+100077,100304,100020,2019-12-21,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100078,100304,100020,2019-12-22,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100079,100305,100020,2019-12-26,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100080,100306,100020,2020-01-15,"Lung, 우하엽, lobectomy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Visceral pleural invasion: absent. Lymph nodes: 4/28 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100081,100321,100021,2021-06-03,"Chest CT (contrast). 우중엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164,
+100082,100321,100021,2021-06-04,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN0M0 is from imaging.",44814640,36716165,
+100083,100322,100021,2021-06-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 25%.,44814640,36716165,
+100084,100323,100021,2021-07-08,"Lung, 우중엽, lobectomy: Adenocarcinoma, NOS. Differentiation: well differentiated. Visceral pleural invasion: present. Lymph nodes: 0/26 positive. Pathologic stage pT2aN0M0.",44814640,36716165,
+100085,100336,100022,2022-12-31,"Chest CT (contrast). 우상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100086,100336,100022,2023-01-01,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100087,100337,100022,2023-01-12,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 0%.,44814640,36716165,
+100088,100338,100022,2023-02-07,"Lung, 우상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/12 positive. Pathologic stage pT3N0M0.",44814640,36716165,
+100089,100345,100022,2023-09-02,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164,
+100090,100358,100023,2023-05-29,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Bone. Impression: Lung cancer, 우중엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100091,100358,100023,2023-05-30,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100092,100359,100023,2023-06-06,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100093,100375,100024,2021-04-11,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100094,100375,100024,2021-04-12,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100095,100376,100024,2021-04-20,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100096,100404,100024,2022-12-12,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100097,100414,100025,2022-10-02,"Chest CT (contrast). 좌상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164,
+100098,100414,100025,2022-10-03,"Lung, 좌상엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN0M0 is from imaging.",44814640,36716165,
+100099,100415,100025,2022-10-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100100,100416,100025,2022-11-06,"Lung, 좌상엽, lobectomy: Squamous cell carcinoma, NOS. Differentiation: poorly differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/26 positive. Pathologic stage pT2aN0M0.",44814640,36716165,
+100101,,,,NC1=NC(=O)N(C=C1)C1OC(CO)C(O)C1(F)F,32817,0,
+100102,100425,100025,2024-04-22,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164,
+100103,100433,100026,2022-07-20,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100104,100433,100026,2022-07-21,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100105,100434,100026,2022-07-30,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100106,100448,100027,2020-05-14,"Chest CT (contrast). 우중엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100107,100448,100027,2020-05-15,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100108,100449,100027,2020-05-26,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100109,100450,100027,2020-06-22,"Lung, 우중엽, lobectomy: Adenocarcinoma with mixed subtypes. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/25 positive. Pathologic stage pT3N0M0.",44814640,36716165,
+100110,100461,100027,2022-04-17,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164,
+100111,100469,100028,2022-11-02,"Chest CT (contrast). 우상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100112,100469,100028,2022-11-03,"Lung, 우상엽, bronchoscopic biopsy: Non-small cell carcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100113,100470,100028,2022-11-10,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100114,100471,100028,2022-12-05,"Lung, 우상엽, lobectomy: Non-small cell carcinoma, NOS. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/19 positive. Pathologic stage pT3N0M0.",44814640,36716165,
+100115,100484,100029,2020-08-14,"Chest CT (contrast). 우상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100116,100484,100029,2020-08-15,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100117,100485,100029,2020-08-24,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 1%.,44814640,36716165,
+100118,100501,100030,2021-01-14,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Liver. Impression: Lung cancer, 좌하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100119,100501,100030,2021-01-15,"Lung, 좌하엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100120,100516,100031,2022-01-04,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT4N3M0. Recommend tissue confirmation.",44814637,36716164,
+100121,100516,100031,2022-01-05,"Lung, 우하엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT4N3M0 is from imaging.",44814640,36716165,
+100122,100530,100032,2023-04-05,"Chest CT (contrast). 우하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100123,100530,100032,2023-04-06,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1bN0M0 is from imaging.",44814640,36716165,
+100124,100531,100032,2023-04-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100125,100532,100032,2023-05-17,"Lung, 우하엽, lobectomy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Visceral pleural invasion: present. Lymph nodes: 0/9 positive. Pathologic stage pT1bN0M0.",44814640,36716165,
+100126,100533,100032,2023-08-16,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164,
+100127,100546,100033,2020-12-02,"Chest CT (contrast). 좌상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100128,100546,100033,2020-12-03,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1bN0M0 is from imaging.",44814640,36716165,
+100129,100547,100033,2020-12-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165,
+100130,100548,100033,2021-01-22,"Lung, 좌상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/11 positive. Pathologic stage pT1bN0M0.",44814640,36716165,
+100131,100550,100033,2021-07-12,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164,
+100132,100561,100034,2021-12-30,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2aN3M0. Recommend tissue confirmation.",44814637,36716164,
+100133,100561,100034,2021-12-31,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN3M0 is from imaging.",44814640,36716165,
+100134,100576,100035,2019-02-26,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT4N3M0. Recommend tissue confirmation.",44814637,36716164,
+100135,100576,100035,2019-02-27,"Lung, 우하엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT4N3M0 is from imaging.",44814640,36716165,
+100136,100592,100036,2020-12-11,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT4N3M0. Recommend tissue confirmation.",44814637,36716164,
+100137,100592,100036,2020-12-12,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma, lepidic pattern. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT4N3M0 is from imaging.",44814640,36716165,
+100138,100593,100036,2020-12-19,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100139,100610,100037,2022-01-09,"Chest CT (contrast). 좌하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100140,100610,100037,2022-01-10,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2bN0M0 is from imaging.",44814640,36716165,
+100141,100611,100037,2022-01-16,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100142,100612,100037,2022-02-18,"Lung, 좌하엽, lobectomy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/27 positive. Pathologic stage pT2bN0M0.",44814640,36716165,
+100143,100616,100037,2023-02-21,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164,
+100144,100628,100038,2021-01-07,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100145,100628,100038,2021-01-08,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100146,100629,100038,2021-01-15,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100147,100653,100038,2022-08-22,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100148,100662,100039,2020-03-01,"Chest CT (contrast). 좌상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100149,100662,100039,2020-03-02,"Lung, 좌상엽, bronchoscopic biopsy: Squamous cell carcinoma, keratinizing. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1bN0M0 is from imaging.",44814640,36716165,
+100150,100663,100039,2020-03-06,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100151,100664,100039,2020-04-14,"Lung, 좌상엽, lobectomy: Squamous cell carcinoma, keratinizing. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/23 positive. Pathologic stage pT1bN0M0.",44814640,36716165,
+100152,100667,100039,2021-01-08,Chest CT: new Liver lesion suspicious for recurrence.,44814637,36716164,
+100153,100677,100040,2023-03-02,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100154,100677,100040,2023-03-03,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100155,100678,100040,2023-03-12,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165,
+100156,100693,100041,2019-07-29,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100157,100693,100041,2019-07-30,"Lung, 우하엽, bronchoscopic biopsy: Adenosquamous carcinoma. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100158,100694,100041,2019-08-06,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100159,100701,100041,2019-10-25,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100160,100703,100042,2019-06-23,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Adrenal gland. Impression: Lung cancer, 좌하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100161,100703,100042,2019-06-24,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100162,100704,100042,2019-07-02,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100163,100712,100042,2019-12-02,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100164,100723,100043,2020-04-29,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100165,100723,100043,2020-04-30,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma, lepidic pattern. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100166,100724,100043,2020-05-05,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100167,100725,100043,2020-06-18,"Lung, 좌하엽, lobectomy: Adenocarcinoma, lepidic pattern. Differentiation: poorly differentiated. Visceral pleural invasion: present. Lymph nodes: 1/13 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100168,100734,100043,2022-01-15,Chest CT: new Liver lesion suspicious for recurrence.,44814637,36716164,
+100169,100743,100044,2019-12-17,"Chest CT (contrast). 우하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT1aN0M0. Recommend tissue confirmation.",44814637,36716164,
+100170,100743,100044,2019-12-18,"Lung, 우하엽, bronchoscopic biopsy: Carcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1aN0M0 is from imaging.",44814640,36716165,
+100171,100744,100044,2019-12-23,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100172,100745,100044,2020-01-29,"Lung, 우하엽, lobectomy: Carcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: present. Lymph nodes: 0/16 positive. Pathologic stage pT1aN0M0.",44814640,36716165,
+100173,100754,100045,2023-02-20,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100174,100754,100045,2023-02-21,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100175,100755,100045,2023-03-03,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165,
+100176,100756,100045,2023-03-24,"Lung, 우상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Visceral pleural invasion: present. Lymph nodes: 1/23 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100177,100770,100046,2023-11-02,"Chest CT (contrast). 우하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164,
+100178,100770,100046,2023-11-03,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN0M0 is from imaging.",44814640,36716165,
+100179,100771,100046,2023-11-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100180,100772,100046,2023-12-13,"Lung, 우하엽, lobectomy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Visceral pleural invasion: absent. Lymph nodes: 5/23 positive. Pathologic stage pT2aN1M0.",44814640,36716165,
+100181,100784,100046,2025-11-10,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164,
+100182,100791,100047,2019-05-22,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100183,100791,100047,2019-05-23,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100184,100792,100047,2019-05-30,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 25%.,44814640,36716165,
+100185,100793,100047,2019-07-03,"Lung, 우하엽, lobectomy: Squamous cell carcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 4/26 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100186,100804,100047,2021-01-15,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164,
+100187,100815,100048,2019-11-29,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT2aN3M0. Recommend tissue confirmation.",44814637,36716164,
+100188,100815,100048,2019-11-30,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN3M0 is from imaging.",44814640,36716165,
+100189,100816,100048,2019-12-10,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100190,100833,100049,2019-05-15,"Chest CT (contrast). 좌상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164,
+100191,100833,100049,2019-05-16,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN0M0 is from imaging.",44814640,36716165,
+100192,100834,100049,2019-05-22,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100193,100850,100050,2023-02-15,"Chest CT (contrast). 우상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100194,100850,100050,2023-02-16,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1bN0M0 is from imaging.",44814640,36716165,
+100195,100851,100050,2023-02-26,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100196,100852,100050,2023-04-05,"Lung, 우상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/12 positive. Pathologic stage pT1bN0M0.",44814640,36716165,
+100197,100861,100051,2022-08-18,"Chest CT (contrast). 우중엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT1cN0M0. Recommend tissue confirmation.",44814637,36716164,
+100198,100861,100051,2022-08-19,"Lung, 우중엽, bronchoscopic biopsy: Carcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1cN0M0 is from imaging.",44814640,36716165,
+100199,100862,100051,2022-08-23,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165,
+100200,100863,100051,2022-09-15,"Lung, 우중엽, lobectomy: Carcinoma, NOS. Differentiation: poorly differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/19 positive. Pathologic stage pT1cN0M0.",44814640,36716165,
+100201,100872,100052,2022-12-05,"Chest CT (contrast). 우중엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100202,100872,100052,2022-12-06,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100203,100873,100052,2022-12-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100204,100874,100052,2023-01-05,"Lung, 우중엽, lobectomy: Adenocarcinoma, NOS. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 1/23 positive. Pathologic stage pT3N1M0.",44814640,36716165,
+100205,100881,100052,2024-01-16,Chest CT: new Liver lesion suspicious for recurrence.,44814637,36716164,
+100206,100894,100053,2022-05-15,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Adrenal gland. Impression: Lung cancer, 우중엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100207,100894,100053,2022-05-16,"Lung, 우중엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100208,100910,100054,2019-01-20,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Liver. Impression: Lung cancer, 우하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100209,100910,100054,2019-01-21,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100210,100911,100054,2019-01-26,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165,
+100211,100918,100054,2019-05-23,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100212,100920,100055,2023-02-27,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Adrenal gland. Impression: Lung cancer, 우중엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100213,100920,100055,2023-02-28,"Lung, 우중엽, bronchoscopic biopsy: Large cell carcinoma. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100214,100921,100055,2023-03-07,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165,
+100215,100935,100056,2023-08-16,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 우하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100216,100935,100056,2023-08-17,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100217,100936,100056,2023-08-26,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100218,100950,100056,2024-07-18,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100219,100962,100057,2022-07-15,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Bone. Impression: Lung cancer, 우상엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100220,100962,100057,2022-07-16,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100221,100963,100057,2022-07-22,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100222,100976,100058,2022-01-02,"Chest CT (contrast). 좌하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT1cN0M0. Recommend tissue confirmation.",44814637,36716164,
+100223,100976,100058,2022-01-03,"Lung, 좌하엽, bronchoscopic biopsy: Squamous cell carcinoma, keratinizing. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1cN0M0 is from imaging.",44814640,36716165,
+100224,100977,100058,2022-01-10,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100225,100978,100058,2022-02-03,"Lung, 좌하엽, lobectomy: Squamous cell carcinoma, keratinizing. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 5/24 positive. Pathologic stage pT1cN1M0.",44814640,36716165,
+100226,100980,100058,2022-08-03,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164,
+100227,100993,100059,2021-04-12,"Chest CT (contrast). 좌상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100228,100993,100059,2021-04-13,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100229,100994,100059,2021-04-18,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100230,100995,100059,2021-05-17,"Lung, 좌상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/26 positive. Pathologic stage pT3N0M0.",44814640,36716165,
+100231,101009,100060,2023-02-23,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100232,101009,100060,2023-02-24,"Lung, 좌상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100233,101022,100061,2023-03-08,"Chest CT (contrast). 우상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100234,101022,100061,2023-03-09,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1bN0M0 is from imaging.",44814640,36716165,
+100235,101023,100061,2023-03-16,Molecular pathology (NGS panel): EGFR wild type; ALK IHC positive; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100236,101024,100061,2023-04-17,"Lung, 우상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: present. Lymph nodes: 0/9 positive. Pathologic stage pT1bN0M0.",44814640,36716165,
+100237,101026,100061,2023-10-24,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164,
+100238,101038,100062,2022-03-11,"Chest CT (contrast). 좌상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT1cN0M0. Recommend tissue confirmation.",44814637,36716164,
+100239,101038,100062,2022-03-12,"Lung, 좌상엽, bronchoscopic biopsy: Non-small cell carcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1cN0M0 is from imaging.",44814640,36716165,
+100240,101039,100062,2022-03-16,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100241,101040,100062,2022-04-18,"Lung, 좌상엽, lobectomy: Non-small cell carcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/9 positive. Pathologic stage pT1cN0M0.",44814640,36716165,
+100242,101042,100062,2022-10-11,Chest CT: new Liver lesion suspicious for recurrence.,44814637,36716164,
+100243,101055,100063,2020-08-07,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100244,101055,100063,2020-08-08,"Lung, 우중엽, bronchoscopic biopsy: Large cell carcinoma. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100245,101056,100063,2020-08-13,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 0%.,44814640,36716165,
+100246,101057,100063,2020-08-31,"Lung, 우중엽, lobectomy: Large cell carcinoma. Differentiation: poorly differentiated. Visceral pleural invasion: absent. Lymph nodes: 5/17 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100247,101066,100064,2021-02-21,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우상엽, cT2aN2M1a. Recommend tissue confirmation.",44814637,36716164,
+100248,101066,100064,2021-02-22,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1a is from imaging.",44814640,36716165,
+100249,101067,100064,2021-02-27,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100250,101097,100064,2023-01-30,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100251,101106,100065,2019-11-04,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Liver. Impression: Lung cancer, 우중엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100252,101106,100065,2019-11-05,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100253,101107,100065,2019-11-10,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100254,101122,100066,2021-02-08,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우중엽, cT2aN2M1a. Recommend tissue confirmation.",44814637,36716164,
+100255,101122,100066,2021-02-09,"Lung, 우중엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1a is from imaging.",44814640,36716165,
+100256,101123,100066,2021-02-16,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100257,101137,100067,2019-04-30,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Bone. Impression: Lung cancer, 우상엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100258,101137,100067,2019-05-01,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100259,101144,100067,2019-08-06,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100260,101153,100068,2021-10-10,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100261,101153,100068,2021-10-11,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100262,101154,100068,2021-10-21,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100263,101155,100068,2021-11-21,"Lung, 우하엽, lobectomy: Squamous cell carcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/15 positive. Pathologic stage pT2aN0M0.",44814640,36716165,
+100264,101168,100068,2024-03-24,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164,
+100265,101175,100069,2020-07-29,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Brain. Impression: Lung cancer, 우중엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100266,101175,100069,2020-07-30,"Lung, 우중엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100267,101190,100070,2019-07-28,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100268,101190,100070,2019-07-29,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100269,101196,100070,2019-11-05,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100270,101198,100071,2019-10-27,"Chest CT (contrast). 우상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100271,101198,100071,2019-10-28,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1bN0M0 is from imaging.",44814640,36716165,
+100272,101199,100071,2019-11-03,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100273,101200,100071,2019-12-03,"Lung, 우상엽, lobectomy: Adenocarcinoma with mixed subtypes. Differentiation: poorly differentiated. Visceral pleural invasion: present. Lymph nodes: 0/30 positive. Pathologic stage pT1bN0M0.",44814640,36716165,
+100274,101206,100071,2021-05-10,Chest CT: new Adrenal gland lesion suspicious for recurrence.,44814637,36716164,
+100275,101247,100072,2019-03-15,"Chest CT (contrast). 우중엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT1bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100276,101247,100072,2019-03-16,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT1bN0M0 is from imaging.",44814640,36716165,
+100277,101248,100072,2019-03-20,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100278,101249,100072,2019-04-14,"Lung, 우중엽, lobectomy: Squamous cell carcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/13 positive. Pathologic stage pT1bN0M0.",44814640,36716165,
+100279,101256,100072,2021-01-21,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164,
+100280,101263,100073,2019-08-17,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Liver. Impression: Lung cancer, 우하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100281,101263,100073,2019-08-18,"Lung, 우하엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100282,101264,100073,2019-08-27,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100283,101278,100074,2019-01-17,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2aN3M0. Recommend tissue confirmation.",44814637,36716164,
+100284,101278,100074,2019-01-18,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN3M0 is from imaging.",44814640,36716165,
+100285,101292,100075,2019-10-31,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Liver. Impression: Lung cancer, 좌상엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100286,101292,100075,2019-11-01,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100287,101293,100075,2019-11-05,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100288,101301,100075,2020-03-26,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100289,101307,100076,2022-10-26,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Brain. Impression: Lung cancer, 우중엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100290,101307,100076,2022-10-27,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100291,101308,100076,2022-11-04,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100292,101314,100076,2023-01-21,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100293,101323,100077,2021-10-30,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100294,101323,100077,2021-10-31,"Lung, 우중엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100295,101337,100078,2022-06-20,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100296,101337,100078,2022-06-21,"Lung, 좌상엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100297,101338,100078,2022-06-27,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100298,101339,100078,2022-07-21,"Lung, 좌상엽, lobectomy: Squamous cell carcinoma, NOS. Differentiation: well differentiated. Visceral pleural invasion: present. Lymph nodes: 2/25 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100299,101348,100078,2024-01-28,Chest CT: new Brain lesion suspicious for recurrence.,44814637,36716164,
+100300,101357,100079,2023-10-31,"Chest CT (contrast). 우하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100301,101357,100079,2023-11-01,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma, keratinizing. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100302,101358,100079,2023-11-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS G12C; PD-L1 TPS 1%.,44814640,36716165,
+100303,101359,100079,2023-12-15,"Lung, 우하엽, lobectomy: Squamous cell carcinoma, keratinizing. Differentiation: well differentiated. Visceral pleural invasion: present. Lymph nodes: 5/19 positive. Pathologic stage pT3N2M0.",44814640,36716165,
+100304,101372,100080,2019-10-03,"Chest CT (contrast). 우상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164,
+100305,101372,100080,2019-10-04,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN0M0 is from imaging.",44814640,36716165,
+100306,101373,100080,2019-10-10,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100307,101374,100080,2019-11-16,"Lung, 우상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: well differentiated. Visceral pleural invasion: present. Lymph nodes: 0/21 positive. Pathologic stage pT2aN0M0.",44814640,36716165,
+100308,101389,100081,2021-05-16,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌하엽, cT4N3M0. Recommend tissue confirmation.",44814637,36716164,
+100309,101389,100081,2021-05-17,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT4N3M0 is from imaging.",44814640,36716165,
+100310,101390,100081,2021-05-26,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100311,101408,100082,2020-03-19,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Adrenal gland. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100312,101408,100082,2020-03-20,"Lung, 좌하엽, bronchoscopic biopsy: Non-small cell carcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100313,101409,100082,2020-03-25,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100314,101422,100083,2020-12-16,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100315,101422,100083,2020-12-17,"Lung, 좌상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100316,101428,100083,2021-07-07,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100317,101437,100084,2019-06-02,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100318,101437,100084,2019-06-03,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100319,101438,100084,2019-06-12,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100320,101439,100084,2019-07-09,"Lung, 좌상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: absent. Lymph nodes: 4/15 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100321,101453,100085,2022-06-17,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Liver. Impression: Lung cancer, 우하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100322,101453,100085,2022-06-18,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma, keratinizing. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100323,101454,100085,2022-06-26,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,
+100324,101459,100085,2022-10-11,Chest CT: interval increase of 우하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100325,101468,100086,2021-10-21,"Chest CT (contrast). 우중엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우중엽, cT2bN0M0. Recommend tissue confirmation.",44814637,36716164,
+100326,101468,100086,2021-10-22,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2bN0M0 is from imaging.",44814640,36716165,
+100327,101469,100086,2021-10-29,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100328,101470,100086,2021-11-22,"Lung, 우중엽, lobectomy: Squamous cell carcinoma, NOS. Differentiation: well differentiated. Visceral pleural invasion: present. Lymph nodes: 0/12 positive. Pathologic stage pT2bN0M0.",44814640,36716165,
+100329,101486,100087,2019-12-14,"Chest CT (contrast). 좌상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 좌상엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100330,101486,100087,2019-12-15,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100331,101487,100087,2019-12-20,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100332,101488,100087,2020-01-08,"Lung, 좌상엽, lobectomy: Adenocarcinoma, NOS. Differentiation: poorly differentiated. Visceral pleural invasion: present. Lymph nodes: 0/26 positive. Pathologic stage pT3N0M0.",44814640,36716165,
+100333,101502,100088,2021-09-29,"Chest CT (contrast). 좌상엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Brain. Impression: Lung cancer, 좌상엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100334,101502,100088,2021-09-30,"Lung, 좌상엽, bronchoscopic biopsy: Adenocarcinoma with mixed subtypes. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100335,101503,100088,2021-10-04,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100336,101509,100088,2021-12-22,Chest CT: interval increase of 좌상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100337,101519,100089,2022-06-29,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100338,101519,100089,2022-06-30,"Lung, 우상엽, bronchoscopic biopsy: Adenosquamous carcinoma. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100339,101520,100089,2022-07-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100340,101536,100090,2020-11-21,"Chest CT (contrast). 우하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164,
+100341,101536,100090,2020-11-22,"Lung, 우하엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: moderately differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN0M0 is from imaging.",44814640,36716165,
+100342,101537,100090,2020-11-26,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 5%.,44814640,36716165,
+100343,101538,100090,2020-12-26,"Lung, 우하엽, lobectomy: Squamous cell carcinoma, NOS. Differentiation: moderately differentiated. Visceral pleural invasion: present. Lymph nodes: 3/26 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100344,101547,100091,2021-10-06,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Brain. Impression: Lung cancer, 우상엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100345,101547,100091,2021-10-07,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100346,101555,100091,2022-04-16,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100347,101557,100092,2020-11-23,"Chest CT (contrast). 우하엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우하엽, cT3N0M0. Recommend tissue confirmation.",44814637,36716164,
+100348,101557,100092,2020-11-24,"Lung, 우하엽, bronchoscopic biopsy: Large cell carcinoma. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT3N0M0 is from imaging.",44814640,36716165,
+100349,101558,100092,2020-12-04,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 50%.,44814640,36716165,
+100350,101559,100092,2021-01-08,"Lung, 우하엽, lobectomy: Large cell carcinoma. Differentiation: poorly differentiated. Visceral pleural invasion: present. Lymph nodes: 0/26 positive. Pathologic stage pT3N0M0.",44814640,36716165,
+100351,101572,100092,2023-03-23,Chest CT: new Bone lesion suspicious for recurrence.,44814637,36716164,
+100352,101577,100093,2020-09-06,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Bone. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100353,101577,100093,2020-09-07,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100354,101578,100093,2020-09-14,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100355,101585,100093,2021-01-26,Chest CT: interval increase of 좌하엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100356,101597,100094,2020-10-06,"Chest CT (contrast). 우하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Contralateral lung. Impression: Lung cancer, 우하엽, cT2aN2M1a. Recommend tissue confirmation.",44814637,36716164,
+100357,101597,100094,2020-10-07,"Lung, 우하엽, bronchoscopic biopsy: Large cell carcinoma. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1a is from imaging.",44814640,36716165,
+100358,101598,100094,2020-10-12,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100359,101613,100095,2021-06-16,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 우상엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100360,101613,100095,2021-06-17,"Lung, 우상엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100361,101619,100095,2021-09-01,Chest CT: interval increase of 우상엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100362,101628,100096,2022-04-02,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Multiple extrathoracic metastases including Bone. Impression: Lung cancer, 좌하엽, cT2aN2M1c. Recommend tissue confirmation.",44814637,36716164,
+100363,101628,100096,2022-04-03,"Lung, 좌하엽, bronchoscopic biopsy: Small cell carcinoma. Differentiation: not graded (high-grade neuroendocrine carcinoma). Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1c is from imaging.",44814640,36716165,
+100364,101641,100097,2023-06-03,"Chest CT (contrast). 우중엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Liver. Impression: Lung cancer, 우중엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100365,101641,100097,2023-06-04,"Lung, 우중엽, bronchoscopic biopsy: Squamous cell carcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100366,101642,100097,2023-06-08,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 0%.,44814640,36716165,
+100367,101648,100097,2023-10-18,Chest CT: interval increase of 우중엽 mass and new nodules. Progressive disease.,44814637,36716164,
+100368,101657,100098,2020-12-06,"Chest CT (contrast). 우상엽 에 spiculated mass. No significant lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2aN0M0. Recommend tissue confirmation.",44814637,36716164,
+100369,101657,100098,2020-12-07,"Lung, 우상엽, bronchoscopic biopsy: Large cell carcinoma. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN0M0 is from imaging.",44814640,36716165,
+100370,101658,100098,2020-12-12,Molecular pathology (NGS panel): EGFR wild type; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,44814640,36716165,
+100371,101659,100098,2021-01-20,"Lung, 우상엽, lobectomy: Large cell carcinoma. Differentiation: poorly differentiated. Visceral pleural invasion: absent. Lymph nodes: 1/9 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100372,101674,100099,2019-06-26,"Chest CT (contrast). 우상엽 에 spiculated mass. Mediastinal lymphadenopathy. No distant metastasis. Impression: Lung cancer, 우상엽, cT2aN2M0. Recommend tissue confirmation.",44814637,36716164,
+100373,101674,100099,2019-06-27,"Lung, 우상엽, bronchoscopic biopsy: Adenocarcinoma, lepidic pattern. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M0 is from imaging.",44814640,36716165,
+100374,101675,100099,2019-07-07,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 1%.,44814640,36716165,
+100375,101676,100099,2019-07-31,"Lung, 우상엽, lobectomy: Adenocarcinoma, lepidic pattern. Differentiation: well differentiated. Visceral pleural invasion: absent. Lymph nodes: 2/19 positive. Pathologic stage pT2aN2M0.",44814640,36716165,
+100376,101680,100099,2020-07-21,Chest CT: new Contralateral lung lesion suspicious for recurrence.,44814637,36716164,
+100377,101694,100100,2021-09-24,"Chest CT (contrast). 좌하엽 에 spiculated mass. Mediastinal lymphadenopathy. Metastasis to Brain. Impression: Lung cancer, 좌하엽, cT2aN2M1b. Recommend tissue confirmation.",44814637,36716164,
+100378,101694,100100,2021-09-25,"Lung, 좌하엽, bronchoscopic biopsy: Adenocarcinoma, NOS. Differentiation: well differentiated. Pathologic TNM is not assigned on a biopsy specimen; clinical stage cT2aN2M1b is from imaging.",44814640,36716165,
+100379,101695,100100,2021-09-30,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 80%.,44814640,36716165,

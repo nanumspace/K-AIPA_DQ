@@ -4,44 +4,48 @@
 
 | 폴더 | 내용 | 바꿀 때 다시 해야 하는 것 |
 |---|---|---|
-| `spec/` | 명세, 코드표, 코호트 구성, concept | 구조 규칙 재생성 → 가상데이터 재생성 → 검증 |
+| `raw/` | 의뢰사 매뉴얼(엑셀) | 명세 재생성 → 구조 규칙 재생성 → 가상데이터 재생성 → 검증 |
+| `spec/` | 명세, 코드표, 코호트 구성, 값 제약(`constraints.yaml`), concept | 구조 규칙 재생성 → 가상데이터 재생성 → 검증 |
 | `rules/` | 구조 규칙(자동 생성), 교차 테이블 SQL 규칙(수동) | 가상데이터로 검증, 필요하면 오류 주입 유형 추가 |
-| `synth/` | 생성 프레임워크, 시나리오, 오류 주입기 | 전체 파이프라인 재실행 |
+| `synth/` | 생성 프레임워크, 시나리오, 오류 주입기, Good Sample 생성기 | 전체 파이프라인 재실행 |
 | `dq/` | Python 참조 엔진, 검출 성능 평가 | `dq-ts` 동등성 시험 |
 | `dq-ts/` | TypeScript 엔진 | `npm test` |
 | `app/` | 데스크톱 앱 | `npm run typecheck`, `npm run build`, `npm run smoke` |
-| `docs/`, `manual/` | 공개 문서, 사용자 설명서 | 화면이나 출력물이 바뀌면 설명서를 같이 고침 |
+| `docs/`, `manual/`, `pilot/` | 공개 문서, 사용자 설명서, 파일럿 키트 | 화면이나 출력물이 바뀌면 설명서를 같이 고침 |
+
+검증 기준은 의뢰사 매뉴얼 2026-11-16 하나입니다. 판을 나누거나 매뉴얼에 없는 표·열을 더하지 않습니다.
 
 ## 규칙을 추가하거나 고치기
 
-**구조 규칙**은 직접 편집하지 않습니다. `spec/kai_cdm_spec.yaml`의 필드 속성(`required`, `range`, `pattern`, `codelist`, `group`, `anchor`, `level`)을 고친 뒤 생성기를 다시 돌립니다.
+**구조 규칙**은 직접 편집하지 않습니다. 매뉴얼이 정하는 것(표, 필드, 타입, PK/FK, 필수, 설명 속의 코드표)은 `raw/`의 엑셀이 원천이고, 그 밖의 값 제약(범위, 정규식, OMOP 대표 코드, 제출 범위 밖 FK)은 `spec/constraints.yaml`에 손으로 적습니다. 둘을 고친 뒤 명세와 구조 규칙을 차례로 다시 만듭니다.
 
 ```bash
-python rules/generate_structural_rules.py
+python spec/build_spec.py                    # 매뉴얼 + constraints.yaml → spec/*.yaml
+python rules/generate_structural_rules.py    # 명세 → rules/rules_structural.yaml
 ```
 
-**교차 테이블 규칙**은 `rules/rules_semantic.yaml`에 DuckDB SQL로 추가합니다. 규칙 하나는 id(`SEM-<그룹>-<번호>`), 이름, Kahn 분류, 심각도, 적용 코호트, 설명, SQL을 가집니다. SQL은 위반 행을 `person_id`, `row_key`, `detail` 세 컬럼으로 반환해야 하며, 코호트별 치환자(`{COHORT_CONDITION_IDS}`, `{DISEASE}`, `{DISEASE_PK}` 등)를 쓸 수 있습니다. 기존 규칙을 본떠 작성하면 됩니다.
+`build_spec.py`는 `constraints.yaml`에 매뉴얼에 없는 필드가 있으면 멈춥니다(매뉴얼이 바뀐 것을 놓치지 않기 위해).
+
+**심각도 원칙.** 매뉴얼에 적힌 것의 위반은 **error**, 임상 상식 범위·OMOP 대표 코드 집합·명세에 없는 추가 열 같은 매뉴얼 밖 제약은 **warning**입니다. 새 규칙의 심각도도 이 기준으로 정합니다. 매뉴얼에 근거 문장이 있으면 규칙의 `desc`에 인용합니다.
+
+**교차 테이블 규칙**은 `rules/rules_semantic.yaml`에 DuckDB SQL로 추가합니다. 규칙 하나는 id(`SEM-<그룹>-<번호>`), 이름, Kahn 분류, 심각도, 적용 코호트(`scope`: `all` 또는 코호트 목록), 필요한 표(`requires`), 설명, SQL을 가집니다. SQL은 위반 행을 `person_id`, `row_key`, `detail` 세 컬럼으로 반환해야 하며, 코호트별 치환자(`{TODAY}`, `{DISEASE}`, `{DISEASE_PK}`)를 쓸 수 있습니다. 보조 표 `_MEASUREMENT_CONCEPTS`, `_ANTICANCER_DRUGS`(`spec/concepts.yaml`)를 쓸 수 있습니다. 기존 규칙을 본떠 작성하면 됩니다.
 
 규칙을 추가했으면 다음 순서로 확인합니다.
 
-1. clean 가상데이터에서 새 규칙의 위반이 0건인지 봅니다. 위반이 있으면 규칙이 틀렸거나 시나리오가 사전과 다른 것이므로 어느 쪽인지 판단합니다.
+1. clean 가상데이터에서 새 규칙의 위반이 0건인지 봅니다. 위반이 있으면 규칙이 틀렸거나 시나리오가 매뉴얼과 다른 것이므로 어느 쪽인지 판단합니다.
 2. `synth/inject_faults.py`에 그 규칙이 잡아야 할 오류 주입 유형을 추가하고 `expected_rules`에 규칙 id를 적습니다.
-3. 전체 파이프라인을 다시 돌려 재현율이 유지되는지 봅니다.
+3. 전체 파이프라인을 다시 돌려 주입 오류가 전부 검출되는지 봅니다.
 
 ```bash
 python dq/run_all.py
 cd dq-ts && npm test
 ```
 
-Python과 TypeScript 엔진은 같은 YAML을 읽으므로 규칙 YAML만 고치면 두 엔진에 같이 반영됩니다. 구조 규칙의 검사 유형을 새로 만드는 경우에만 `dq/engine.py`와 `dq-ts/src/structural.ts` 양쪽을 고치고 동등성 시험을 통과시켜야 합니다.
+Python과 TypeScript 엔진은 같은 YAML을 읽으므로 규칙 YAML만 고치면 두 엔진에 같이 반영됩니다. 구조 규칙의 검사 유형을 새로 만드는 경우에만 `dq/engine.py`와 `dq-ts/src/structural.ts` 양쪽을 고치고 동등성 시험을 통과시켜야 합니다. 표준 실행의 `summary.json`·`report.md`는 두 엔진이 바이트까지 같아야 합니다.
 
-## 사전 v2
+### 표준 규칙과 사용자 규칙은 다릅니다
 
-`spec/v2/` 의 재설계 명세는 `spec/build_spec_v2.py` 가 배치표(비공개), `spec/v2_field_names.py`(필드 이름·단위·코드표·타입), `spec/v2_omop_map.py`(OMOP 테이블 정의, 어휘 씨앗, 서식→레코드 규칙)에서 생성합니다. 생성물을 직접 편집하지 말고 원천을 고쳐 다시 생성하세요. `spec/v2/vocab/concept_registry.json` 은 concept_id 등록부이므로 지우거나 고치지 마세요. 한 번 부여된 ID 는 재사용하지 않습니다.
-
-## 명세 자체를 바꾸기
-
-명세를 만드는 `spec/build_spec.py`는 원본 데이터 사전을 파싱한 JSON을 입력으로 받습니다. 원본 사전은 공개 저장소에 포함되지 않으므로, 외부 기여자는 생성된 `spec/*.yaml`을 직접 고치고 그 변경을 pull request로 제안합니다. 유지 관리자가 사전과 대조해 반영합니다.
+위의 YAML이 **표준 규칙**입니다. 병원이 앱에서 켜고 끄거나, 값을 조정하거나, 양식(USR-###)·SQL(ADM-###, 관리자 모드)로 보탠 규칙은 표준 규칙이 아니며 앱의 규칙 설정에만 있습니다. 앱은 표준 규칙 묶음과 실제로 쓴 규칙 묶음의 해시를 `submission.json`의 `rule_set`에 싣습니다. 규칙 설정 기능(`dq-ts/src/rules.ts`의 `effectiveRules`, `ruleSetHash`, `describeOverrides`)을 고칠 때는 표준 실행의 출력이 한 글자도 달라지지 않아야 합니다. 사용자 관점의 설명은 [manual/06-rules.md](manual/06-rules.md), 구조는 [docs/spec-and-rules.md](docs/spec-and-rules.md)에 있습니다.
 
 ## 코드 규약
 

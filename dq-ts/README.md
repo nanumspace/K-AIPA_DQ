@@ -2,18 +2,11 @@
 
 `dq/engine.py`(Python 참조 구현)를 TypeScript 로 옮긴 것입니다. Electron 데스크톱 앱에 넣기 위한 것으로, 명세·코드표·규칙 YAML 과 교차 테이블 SQL 규칙은 수정 없이 그대로 읽습니다.
 
-## 동등성 (2026-09-10)
+## 동등성
 
-6개 코호트 × (clean, dirty) 12회 실행에서 Python 참조 구현과 **규칙 단위 상태·위반 수·위반 행 내용이 완전히 일치**합니다. clean 오탐 0건, dirty 주입 오류 622건 전부 검출(재현율 1.00)도 같습니다. 12회 실행에 약 4.5초가 걸립니다.
+6개 코호트 × (clean, dirty, good) 18회 실행에서 Python 참조 구현(`dq/engine.py`)과 `findings.csv`·`report.md` 가 글자 단위로, `summary.json` 이 값과 키 순서까지 일치해야 합니다(`test/equivalence.test.ts`). clean · good 은 위반 0 · 규칙 오류 0, dirty 는 주입 오류를 전부 검출해야 합니다. Python 쪽 보고서는 `python3 dq/run_all.py` 로 만듭니다.
 
-| 실행 | 규칙 | 위반 행 (py = ts) |
-|---|---|---|
-| LUNG_CANCER clean / dirty | 427 | 0 / 172 |
-| BREAST_CANCER clean / dirty | 463 | 0 / 154 |
-| COLORECTAL_CANCER clean / dirty | 450 | 0 / 155 |
-| MASLD clean / dirty | 358 | 0 / 145 |
-| DIABETES clean / dirty | 392 | 0 / 950 |
-| LYMPHOMA clean / dirty | 463 | 0 / 132 |
+명세는 2026-11-16 의뢰사 매뉴얼 하나뿐입니다(`spec/kai_cdm_spec.yaml`, `spec/codelists.yaml`, `spec/cohort_profiles.yaml`, `rules/rules_structural.yaml`, `rules/rules_semantic.yaml`, `spec/concepts.yaml`).
 
 ## 실행
 
@@ -31,7 +24,7 @@ npm run run-all
 npm test
 ```
 
-입력 형식은 Python 엔진과 같습니다. `<TABLE>.csv`(UTF-8, 헤더 포함, NULL 은 빈 문자열, 날짜 `YYYY-MM-DD`)를 한 디렉터리에 둡니다. `antp_therapy_id` 는 `antp_id` 별칭으로 해석하고 경고합니다.
+입력 형식은 Python 엔진과 같습니다. `<TABLE>.csv`(UTF-8, 헤더 포함, NULL 은 빈 문자열, 날짜 `YYYY-MM-DD`)를 한 디렉터리에 둡니다. 명세에 없는 컬럼은 `extra_columns` 규칙이 경고로 알립니다(컬럼 누락은 `columns` 규칙, error).
 
 ## 구조
 
@@ -42,7 +35,8 @@ dq-ts/
 │  ├─ load.ts         YAML 로더 (spec/, rules/ 를 저장소 루트에서 읽음)
 │  ├─ csv.ts          CSV 읽기/쓰기 (pandas dtype=str, keep_default_na=False 와 같은 의미)
 │  ├─ pyrepr.ts       Python repr 흉내 (detail 문자열을 참조 구현과 글자 단위로 맞춤)
-│  ├─ structural.ts   구조 규칙 검사기 15종 (원본 문자열 위에서)
+│  ├─ rules.ts        규칙 조정(RuleOverrides) 적용 · effectiveRules · ruleSetHash · describeOverrides
+│  ├─ structural.ts   구조 규칙 검사기 (원본 문자열 위에서)
 │  ├─ semantic.ts     교차 규칙: 명세 타입으로 변환해 DuckDB 적재 → SQL 실행
 │  ├─ engine.ts       엔진 본체 (적재 → 구조 → 교차 → 요약 · 보고서)
 │  ├─ cli.ts          명령줄 진입점
@@ -51,7 +45,8 @@ dq-ts/
 │  └─ run_all.ts      전체 실행기
 ├─ test/
 │  ├─ structural.test.ts   보조 함수 단위 시험
-│  └─ equivalence.test.ts  12회 실행 회귀 시험 (오탐 0 · 재현율 1.00 · Python 동등)
+│  ├─ equivalence.test.ts  18회 실행 회귀 시험 (오탐 0 · 재현율 1.00 · Python 동등)
+│  └─ overrides.test.ts    규칙 조정 시험
 └─ output/            실행 결과 (git 제외)
 ```
 
@@ -67,11 +62,25 @@ dq-ts/
 
 | 함수 | 용도 |
 |---|---|
-| `runEngine({ cohort, data, out, today, onProgress })` | 한 번 실행. `onProgress` 로 적재·구조·교차·쓰기 단계의 진행률을 받는다 |
+| `runEngine({ cohort, data, out, today, onProgress, overrides, adminMode })` | 한 번 실행. `onProgress` 로 적재·구조·교차·쓰기 단계의 진행률을 받는다 |
 | `setRoot(dir)` / `getRoot()` | 명세·규칙 디렉터리 지정. 앱은 설정값 또는 내장 리소스 경로를 넣는다 |
-| `loadSpec()`, `loadProfiles()`, `loadStructuralRules()`, `loadSemanticRules()` | 명세와 규칙 읽기 (규칙 관리 화면, 입력 사전 점검에 사용) |
-| `readCsv(path)`, `writeCsv(...)`, `csvCell(v)` | CSV 읽기·쓰기 (앱의 입력 정규화와 출력물 생성에 사용) |
+| `loadSpec()`, `loadProfiles()`, `loadStructuralRules()`, `loadSemanticRules()` | 명세와 표준 규칙 읽기 (규칙 관리 화면, 입력 사전 점검에 사용) |
+| `effectiveRules(overrides?)` | 표준 + 조정이 반영된 `{ structural, semantic }` (각 규칙에 `origin`, 끈 규칙은 `disabled`) |
+| `ruleSetHash(overrides?)` | 실제 규칙 묶음의 SHA-256. `ruleSetHash(undefined)` 가 표준 해시 |
+| `describeOverrides(overrides)` | 변경 목록 `{ rule_id, origin, change }[]` (한국어) |
+| `readCsv(path)`, `writeCsv(...)`, `csvCell(v)` | CSV 읽기·쓰기 |
 | `verify(cohort, reportsDir)`, `compareRun(...)` | 검출 성능 평가와 Python 비교 (개발용) |
+
+### 규칙 조정 (`RuleOverrides`)
+
+| 수준 | 필드 | 내용 | origin |
+|---|---|---|---|
+| 1 | `disabled` | 규칙 끄기. 통계에는 `status: "disabled"` 로 남고 실행하지 않는다 | modified |
+| 2 | `severity`, `params` | 심각도, range 의 min/max, pattern 의 regex, codelist 의 extraCodes | modified |
+| 3 | `customRules` | 서식으로 만드는 사용자 규칙 (`USR-000`). 구조 검사기가 그대로 실행 | custom |
+| 4 | `sql`, `customSql` | 표준 교차 규칙 SQL 교체, SQL 규칙 추가 (`ADM-000`). `adminMode: true` 필요 | admin |
+
+모르는 규칙 id, 맞지 않는 params, 잘못된 id 형식은 `Error` 로 알립니다. SQL 이 잘못되면 그 규칙만 `status: "error"` 와 note 로 남고 실행은 계속됩니다. 관리자 SQL 은 `SELECT`/`WITH` 조회문만 받고, 실행 중에는 외부 파일·네트워크 접근을 막습니다. 조정이 있거나 `adminMode` 이면 `report.md` 맨 위(제목 다음)에 `## 규칙 설정` 절이 들어갑니다.
 
 ## Electron 앱으로 갈 때
 

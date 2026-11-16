@@ -22,9 +22,14 @@ export function SettingsPage() {
     if (!d) return;
     try { setCfg(await api.setConfig({ root: d })); setMsg("명세 위치를 저장했습니다."); refresh(); } catch (e) { setErr(String(e)); }
   };
-  const saveSpec = async (v: "v1" | "v2" | "v3") => {
-    try { setCfg(await api.setConfig({ specVersion: v })); setMsg(`${v} 명세로 바꿨습니다. 검증 실행 화면에서 코호트를 다시 고르세요.`); refresh(); }
-    catch (e) { setErr(String(e)); }
+  const toggleAdmin = async () => {
+    if (!cfg) return;
+    try {
+      const next = await api.setAdminMode(!cfg.adminMode);
+      setCfg(next);
+      setMsg(next.adminMode ? "관리자 모드를 켰습니다. 화면 위쪽에 표시됩니다." : cfg.adminMode ? "관리자 모드를 껐습니다. SQL 로 바꾼 규칙은 그대로 남아 있습니다." : null);
+      window.dispatchEvent(new Event("kai:config"));
+    } catch (e) { setErr(String(e)); }
   };
   const saveToday = async () => {
     try { setCfg(await api.setConfig({ defaultToday: today || null })); setMsg("검증 실행일 기본값을 저장했습니다."); } catch (e) { setErr(String(e)); }
@@ -43,24 +48,23 @@ export function SettingsPage() {
               <div className="row"><input type="text" value={cfg.root} readOnly /><button className="btn" onClick={chooseRoot}>변경</button></div>
             </label>
             <div className="kv">
-              <span className="k">명세 판</span><span>{cfg.specVersion}</span>
+              <span className="k">명세</span><span>의뢰사 매뉴얼 2026-11-16</span>
               <span className="k">코호트</span><span>{cohorts.length ? cohorts.map((c) => c.kor).join(", ") : "읽을 수 없음 (위치를 확인하세요)"}</span>
               <span className="k">패키징</span><span>{cfg.packaged ? "설치본 (내장 명세)" : "개발 모드 (저장소)"}</span>
             </div>
           </div>
         </Card>
-        <Card title="명세 판" sub="어느 저장 구조로 검증할지 고릅니다. 바꾸면 코호트 · 규칙 · 견본 데이터가 함께 바뀝니다">
+        <Card title="관리자 모드" sub="표준 교차 규칙의 SQL 을 고치거나 SQL 규칙을 추가할 수 있는 모드. 비밀번호는 없으며 쓴 흔적이 남습니다">
           <div className="form">
-            <label>판
-              <select value={cfg.specVersion} onChange={(e) => saveSpec(e.target.value as "v1" | "v2" | "v3")}>
-                <option value="v3">v3 — 의뢰사 9/30 매뉴얼 수정안 (기본)</option>
-                <option value="v2">v2 — OMOP CDM 5.4 + K-AI 확장</option>
-                <option value="v1">v1 — 질환별 단일 표 (옛 제출본용)</option>
-              </select>
-            </label>
-            <p className="muted" style={{ fontSize: 12.5, lineHeight: 1.6 }}>
-              v3 는 의뢰사 9/30 매뉴얼에 10/1 검토 결정을 반영한 판입니다. 코호트마다 질환 본표 하나와 문자열 코드표를 쓰는 v1 모양이며, 치료는 SACT 표에 둡니다.
-              v2 는 OMOP 표준 표 중심의 재설계본, v1 은 이미 낸 옛 제출본을 다시 볼 때만 고르세요.
+            <div className="rowflex">
+              <span className={`pill ${cfg.adminMode ? "admin" : "gray"}`}>{cfg.adminMode ? "켜짐" : "꺼짐"}</span>
+              <button className={`btn ${cfg.adminMode ? "" : "primary"}`} onClick={toggleAdmin}>{cfg.adminMode ? "관리자 모드 끄기" : "관리자 모드 켜기"}</button>
+            </div>
+            <p className="hint">
+              켜 있는 동안 화면 위쪽에 '관리자 모드' 띠가 표시되고, 검증 규칙 관리 화면에서 SQL 을 바꿀 수 있습니다.
+              저장 전에 내장 견본(clean · dirty)으로 SQL 을 시험해 오류와 오탐을 확인합니다.
+              모드를 켜고 끈 시각과 모든 변경은 이 PC 의 변경 이력(rule-history.jsonl)에 남고, SQL 을 바꾼 규칙이 있으면 검증 결과의 보고서와 제출용 집계에 '관리자 변경'으로 기록됩니다.
+              모드를 꺼도 이미 바꾼 SQL 은 되돌아가지 않습니다. 되돌리려면 검증 규칙 관리에서 '표준으로 되돌리기'를 쓰세요. 앱을 다시 열면 꺼진 채로 시작합니다.
             </p>
           </div>
         </Card>
@@ -73,13 +77,14 @@ export function SettingsPage() {
           <div className="kv">
             <span className="k">앱 데이터</span><span className="mono">{cfg.userData}</span>
             <span className="k">이력 DB</span><span className="mono">history.duckdb</span>
+            <span className="k">규칙 설정</span><span className="mono">rule-overrides.json · rule-history.jsonl</span>
             <span className="k">실행 결과</span><span className="mono">runs/&lt;실행 ID&gt;/findings.csv · summary.json · report.md</span>
           </div>
           <div style={{ marginTop: 10 }}><button className="btn" onClick={() => api.openPath(cfg.userData)}>폴더 열기</button></div>
         </Card>
         <Card title="정보">
           <div className="kv">
-            <span className="k">프로그램</span><span>Quality Validator v0.3.0</span>
+            <span className="k">프로그램</span><span>Quality Validator v{cfg.version}</span>
             <span className="k">엔진</span><span>kai-dq-engine (TypeScript) · DuckDB</span>
             <span className="k">규칙 체계</span><span>Kahn 3축 (적합성 · 완전성 · 타당성) · 심각도 오류/경고</span>
           </div>

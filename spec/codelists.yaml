@@ -11,87 +11,40 @@ embedded:
     '1': Premenopausal
     '2': Postmenopausal
     '3': Unknown
+    '4': Not Applicable (남성인 경우)
   BREAST_CANCER.pregnant_at_diagnosis:
     '1': 'Yes'
     '2': 'No'
+    '3': Unknown
+    '4': Not Applicable (남성인 경우)
   BREAST_CANCER.history_of_live_birth:
     '1': 'Yes'
     '2': 'No'
+    '3': Unknown
+    '4': Not Applicable (남성인 경우)
   BREAST_CANCER.postpartum_at_diagnosis:
     '1': 'Yes'
     '2': 'No'
+    '3': Unknown
+    '4': Not Applicable (남성인 경우)
   BREAST_CANCER.fertility_history:
     '1': 'Yes'
     '2': 'No'
+    '3': Unknown
+    '4': Not Applicable (남성인 경우)
   BREAST_CANCER.fertility_treatment_type:
     '1': GnRHa
     '2': 난자 동결
     '3': 배아 동결
     '4': 기타
     '5': GnRHa+동결
-  BREAST_CANCER.marital_status:
-    '1': 'Yes'
-    '2': 'No'
-  BREAST_CANCER.menstruation_resumed_after_treatment:
-    '1': 'Yes'
-    '2': 'No'
-  BREAST_CANCER.menstrual_regularity_after_treatment:
-    '1': Regular
-    '2': Irregular
-    '3': NA
-  BREAST_CANCER.pregnancy_attempt:
-    '1': 'Yes'
-    '2': 'No'
-  BREAST_CANCER.pregnancy_success:
-    '1': 'Yes'
-    '2': 'No'
-  BREAST_CANCER.method_of_conception:
-    '1': 자연임신
-    '2': 배란유도
-    '3': 인공수정
-    '4': 시험관
-    '5': 난자 공여
-  BREAST_CANCER.pregnancy_outcome:
-    '1': Chemical preg
-    '2': Clinical preg
-    '3': Abortion
-    '4': Live birth
-  BREAST_CANCER.delivery:
-    '1': 'Yes'
-    '2': 'No'
-  LYMPHOMA.transformation_yn:
-    '1': 'Yes'
-    '0': 'No'
-  LYMPHOMA.extranodal_involvement_yn:
-    '1': 'Yes'
-    '0': 'No'
-  LYMPHOMA.spleen_involvement_yn:
-    '1': 'Yes'
-    '0': 'No'
-  LYMPHOMA.bone_marrow_involvement_yn:
-    '1': 'Yes'
-    '0': 'No'
-  LYMPHOMA.cns_involvement_yn:
-    '1': 'Yes'
-    '0': 'No'
-  ANTP_THERAPY.treatment_intent_type:
+  SACT.therapy_intent:
     '1': Neoadjuvant
     '2': Adjuvant
     '3': Palliative
     '4': Maintenance
     '5': Definitive
     '6': Salvage
-  ANTP_THERAPY.drug_category:
-    '1': 세포독성항암제
-    '2': 표적치료제
-    '3': 호르몬치료제
-    '4': 항체-약물 접합체
-    '5': 면역항암제
-    '6': 기타
-common:
-  COMMON.yn01:
-    '1': 'Yes'
-    '0': 'No'
 omop:
   OMOP.gender_concept_id:
     '8507': MALE
@@ -109,35 +62,6 @@ omop:
     '32817': EHR
     '32879': Registry
     '32810': Claim
-  OMOP.condition_type_concept_id:
-    '32817': EHR
-    '32879': Registry
-    '32810': Claim
-    '32840': EHR problem list
-  OMOP.measurement_type_concept_id:
-    '32817': EHR
-    '32856': Lab
-    '32879': Registry
-  OMOP.observation_type_concept_id:
-    '32817': EHR
-    '32879': Registry
-  OMOP.note_type_concept_id:
-    '32817': EHR
-    '44814637': Radiology report
-    '44814640': Pathology report
-    '44814641': Discharge summary
-    '44814645': Outpatient note
-    '32831': EHR note
-  OMOP.note_class_concept_id:
-    '36716164': Radiology note
-    '36716165': Pathology note
-    '36716213': Discharge summary
-    '36716177': Progress note
-    '44814641': Discharge summary
-    '3040218': Oncology note
-  OMOP.adverse_event_type_concept_id:
-    '32817': EHR
-    '32879': Registry
   OMOP.amount_unit_concept_id:
     '8576': mg
     '8587': mL
@@ -147,6 +71,25 @@ omop:
     '9551': mg/m2
     '8504': mg/kg
     '8573': mmol
+  OMOP.numerator_unit_concept_id:
+    '8576': mg
+    '9655': ug
+    '8718': IU
+    '8510': unit
+  OMOP.denominator_unit_concept_id:
+    '8587': mL
+    '8576': mg
+    '8582': cm
+    '9529': kg
+  OMOP.condition_type_concept_id:
+    '32817': EHR
+    '32879': Registry
+    '32810': Claim
+    '32840': EHR problem list
+  OMOP.measurement_type_concept_id:
+    '32817': EHR
+    '32856': Lab
+    '32879': Registry
   OMOP.unit_concept_id:
     '8576': mg
     '8587': mL
@@ -170,16 +113,24 @@ omop:
     '8859': mg/L
     '9435': ug/dL
     '8641': mIU/mL
-  OMOP.numerator_unit_concept_id:
-    '8576': mg
-    '9655': ug
-    '8718': IU
-    '8510': unit
-  OMOP.denominator_unit_concept_id:
-    '8587': mL
-    '8576': mg
-    '8582': cm
-    '9529': kg
+  OMOP.observation_type_concept_id:
+    '32817': EHR
+    '32879': Registry
+  OMOP.note_type_concept_id:
+    '32817': EHR
+    '44814637': Radiology report
+    '44814640': Pathology report
+    '44814641': Discharge summary
+    '44814645': Outpatient note
+    '32831': EHR note
+  OMOP.note_class_concept_id:
+    '36716164': Radiology note
+    '36716165': Pathology note
+    '36716213': Discharge summary
+    '36716177': Progress note
+    '44814641': Discharge summary
+    '3040218': Oncology note
+    '0': No matching concept (표준 분류가 없는 노트, 예 약물 구조식 SMILES)
   OMOP.severity_concept_id:
     '1': CTCAE Grade 1
     '2': CTCAE Grade 2

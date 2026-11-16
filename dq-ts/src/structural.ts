@@ -49,6 +49,9 @@ export function parseNum(s: string): number | null {
   return Number.isFinite(v) ? v : null;
 }
 
+/** 사용자가 끈 규칙의 note */
+export const DISABLED_NOTE = "사용자 설정으로 끔";
+
 export interface StructuralContext {
   cohort: string;
   today: Date; // UTC 자정
@@ -56,11 +59,8 @@ export interface StructuralContext {
   codelists: Map<string, Set<string>>;
   tablesInCohort: string[];
   raw: Map<string, RawTable>;
-  aliasesApplied: Array<[table: string, from: string, to: string]>;
   /** 규칙 i/n 처리 후 호출 (진행률 표시용) */
   onRule?: (i: number, n: number, ruleId: string) => void;
-  /** v2 전용: concept_id -> 값 집합 코드. 행 종류(생검/수술)를 가려내는 데 쓴다. */
-  codeOfConcept?: Map<string, string>;
 }
 
 export interface RuleSink {
@@ -70,16 +70,7 @@ export interface RuleSink {
 
 function keyColumns(df: RawTable, pk: string): { pkcol: string[]; pid: string[] } {
   const empty = () => new Array<string>(df.n).fill("");
-  // v2 는 복합 PK 를 'a+b+c' 로 적는다. 엔진은 값을 같은 모양으로 이어 붙여 row_key 로 쓴다.
-  const cols = String(pk).split("+").map((c) => c.trim());
-  let pkcol: string[];
-  if (cols.length > 1 && cols.every((c) => df.cols.has(c))) {
-    pkcol = new Array<string>(df.n);
-    for (let i = 0; i < df.n; i++) pkcol[i] = cols.map((c) => df.cols.get(c)![i]).join("+");
-  } else {
-    pkcol = df.cols.get(pk) ?? empty();
-  }
-  return { pkcol, pid: df.cols.get("person_id") ?? empty() };
+  return { pkcol: df.cols.get(pk) ?? empty(), pid: df.cols.get("person_id") ?? empty() };
 }
 
 export function runStructural(ctx: StructuralContext, rules: StructuralRule[], sink: RuleSink): void {
@@ -92,6 +83,7 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
     if (!ctx.tablesInCohort.includes(table)) continue;
     if (rule.scope !== "all" && !rule.scope.includes(ctx.cohort)) continue;
     const st = sink.initStat(rule, table);
+    if (rule.disabled) { st.status = "disabled"; st.note = DISABLED_NOTE; continue; }
     const chk = rule.check;
     if (chk === "table_present") {
       if (!ctx.raw.has(table)) sink.add(rule, table, "", "", null, `${table}.csv 없음`);
@@ -104,11 +96,13 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
     const fields = rule.fields;
     const p = rule.params;
     if (chk === "columns") {
-      const exp = new Set<string>(p.expected as string[]);
       const have = new Set(df.columns);
-      for (const c of pySorted([...exp].filter((c) => !have.has(c)))) sink.add(rule, table, c, "", null, `컬럼 누락: ${c}`);
-      for (const c of pySorted([...have].filter((c) => !exp.has(c)))) sink.add(rule, table, c, "", null, `명세에 없는 컬럼: ${c} (경고)`);
-      for (const [t, a, b] of ctx.aliasesApplied) if (t === table) sink.add(rule, table, a, "", null, `별칭 컬럼 ${a} 를 ${b} 로 해석함 (경고)`);
+      for (const c of pySorted((p.expected as string[]).filter((c) => !have.has(c)))) sink.add(rule, table, c, "", null, `컬럼 누락: ${c}`);
+      continue;
+    }
+    if (chk === "extra_columns") {
+      const exp = new Set<string>(p.expected as string[]);
+      for (const c of pySorted(df.columns.filter((c) => !exp.has(c)))) sink.add(rule, table, c, "", null, `명세에 없는 컬럼: ${c}`);
       continue;
     }
     const missing = fields.filter((f) => !df.cols.has(f));
@@ -118,7 +112,7 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
     const col = (f: string) => df.cols.get(f)!;
 
     if (chk === "pk_unique") {
-      const cols = ((p.columns as string[] | undefined) ?? fields).filter((c) => df.cols.has(c));
+      const cols = fields.filter((c) => df.cols.has(c));
       const label = cols.join("+");
       const keyAt = (i: number) => cols.map((c) => df.cols.get(c)![i]).join("+");
       const nullAt = (i: number) => cols.some((c) => df.cols.get(c)![i] === "");
@@ -129,65 +123,6 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
         if (nullAt(i)) continue;
         const v = keyAt(i);
         if ((count.get(v) ?? 0) > 1) sink.add(rule, table, label, v, pid[i], `PK 중복: ${v}`);
-      }
-    } else if (chk === "concept_set") {
-      // v2: *_concept_id 는 값 집합의 concept_id 만 가질 수 있다
-      const f = fields[0]; const vals = col(f);
-      const allowed = new Set(((p.concept_ids as (string | number)[]) ?? []).map(String));
-      for (let i = 0; i < df.n; i++) {
-        const v = vals[i];
-        if (v !== "" && !allowed.has(v)) sink.add(rule, table, f, pkcol[i], pid[i], `${f}=${v} 는 값 집합(${p.concept_set}) 의 concept_id 가 아니다`);
-      }
-    } else if (chk === "concept_code") {
-      // v2: 예/아니오처럼 concept_id 가 아니라 코드를 담는 컬럼
-      const f = fields[0]; const vals = col(f);
-      const allowed = new Set(((p.codes as (string | number)[]) ?? []).map(String));
-      for (let i = 0; i < df.n; i++) {
-        const v = vals[i];
-        if (v !== "" && !allowed.has(v)) sink.add(rule, table, f, pkcol[i], pid[i], `${f}=${v} 는 값 집합(${p.concept_set}) 의 코드가 아니다 (허용: ${pyList(pySorted([...allowed]))})`);
-      }
-    } else if (chk === "concept_set_empty") {
-      st.status = "skipped"; st.note = `값 집합 ${p.concept_set} 이 비어 있어 검사할 수 없다`;
-    } else if (chk === "not_null_when") {
-      // v2: 필수 여부가 다른 컬럼의 값에 걸린다. 조건은 모두 만족해야 필수다.
-      const f = fields[0];
-      const wc = p.when_column as string | undefined, wcode = p.when_code as string | undefined;
-      const wf = p.when_filled as string | undefined;
-      const wcc = p.when_contains_column as string | undefined, wct = p.when_contains_text as string | undefined;
-      const wec = p.when_equals_column as string | undefined, wev = p.when_equals_value as string | undefined;
-      const kindCol = wc ? df.cols.get(wc) : undefined;
-      const filledCol = wf ? df.cols.get(wf) : undefined;
-      const containsCol = wcc ? df.cols.get(wcc) : undefined;
-      const equalsCol = wec ? df.cols.get(wec) : undefined;
-      if ((wc && !kindCol) || (wf && !filledCol) || (wcc && !containsCol) || (wec && !equalsCol)) {
-        st.status = "skipped";
-        st.note = `조건 컬럼 ${wc && !kindCol ? wc : wf && !filledCol ? wf : wcc && !containsCol ? wcc : wec} 없음`;
-        continue;
-      }
-      const why: string[] = [];
-      if (wcode) why.push(`${wcode} 행`);
-      if (wf) why.push(`${wf} 이 채워진 행`);
-      if (wcc) why.push(`${wcc} 에 '${wct}' 가 든 행`);
-      if (wec) why.push(`${wec} 이 ${wev} 인 행`);
-      const vals = col(f);
-      for (let i = 0; i < df.n; i++) {
-        if (kindCol && ctx.codeOfConcept?.get(kindCol[i]) !== wcode) continue;
-        if (filledCol && filledCol[i] === "") continue;
-        if (containsCol && !containsCol[i].includes(wct ?? "")) continue;
-        if (equalsCol && equalsCol[i] !== String(wev)) continue;
-        if (vals[i] === "") sink.add(rule, table, f, pkcol[i], pid[i], `${why.join(" 이고 ")} 인데 ${f} 가 비어 있다`);
-      }
-    } else if (chk === "not_null_either") {
-      // v2: 참조표를 싣기 전에는 concept_id 를 못 채우므로 원천값이라도 있어야 한다
-      const cols = ((p.columns as string[]) ?? []).filter((c) => df.cols.has(c));
-      if (!cols.length) { st.status = "skipped"; st.note = "대상 컬럼 없음"; continue; }
-      const wc = p.when_column as string | undefined;
-      const kindCol = wc ? df.cols.get(wc) : undefined;
-      for (let i = 0; i < df.n; i++) {
-        if (kindCol && ctx.codeOfConcept?.get(kindCol[i]) !== p.when_code) continue;
-        if (cols.every((c) => df.cols.get(c)![i] === "")) {
-          sink.add(rule, table, cols[0], pkcol[i], pid[i], `${cols.join(" 와 ")} 가 모두 비어 있다`);
-        }
       }
     } else if (chk === "not_null") {
       const f = fields[0]; const vals = col(f);
@@ -217,7 +152,7 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
       }
     } else if (chk === "codelist") {
       const f = fields[0]; const name = p.codelist as string;
-      const allowed = ctx.codelists.get(name) ?? new Set<string>();
+      const allowed = new Set([...(ctx.codelists.get(name) ?? []), ...((p.extraCodes as string[] | undefined) ?? [])]);
       const vals = col(f);
       for (let i = 0; i < df.n; i++) {
         const v = vals[i];

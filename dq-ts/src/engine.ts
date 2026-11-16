@@ -1,12 +1,12 @@
 // 검증 엔진 본체: 적재 → 구조 규칙 → 교차 규칙 → 요약/보고서
 import fs from "node:fs";
 import path from "node:path";
-import { loadSpec, loadCodelists, loadConcepts, loadCohortDefinitionText, loadProfiles, loadStructuralRules, loadSemanticRules,
-         loadSpecV2, loadProfilesV2, loadStructuralRulesV2, loadSemanticRulesV2, loadConceptSetsV2, type ConceptSets, type Edition } from "./load.js";
+import { loadSpec, loadCodelists, loadConcepts, loadProfiles } from "./load.js";
 import { readCsv, writeCsv } from "./csv.js";
 import { runStructural } from "./structural.js";
 import { runSemantic } from "./semantic.js";
-import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule } from "./types.js";
+import { effectiveRules, ruleSetHash, describeOverrides, isEmptyOverrides } from "./rules.js";
+import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides } from "./types.js";
 
 /**
  * 보고서에 싣는 예시에서 데이터 값을 가린다. report.md 는 병원 밖으로 나갈 수 있는 파일이라
@@ -31,8 +31,10 @@ export interface EngineOptions {
   cohort: string;
   today?: string; // YYYY-MM-DD
   onProgress?: ProgressFn;
-  /** 어느 명세로 검사할지. v1·v2·v3 는 나란히 돈다 (v3 = 의뢰사 9/30 매뉴얼 수정안, v1 과 같은 질환별 표 구조). */
-  spec?: Edition;
+  /** 규칙 조정(끄기 · 심각도 · 범위 · 사용자 규칙 · SQL). 없으면 표준 규칙 그대로 돈다. */
+  overrides?: RuleOverrides;
+  /** 관리자 모드. SQL 교체·SQL 규칙(overrides.sql, customSql)은 이 값이 true 일 때만 받는다. */
+  adminMode?: boolean;
 }
 
 export class Engine {
@@ -41,52 +43,38 @@ export class Engine {
   readonly spec: Spec;
   readonly codelists: Map<string, Set<string>>;
   readonly concepts: Concepts;
-  readonly cdText: ReturnType<typeof loadCohortDefinitionText>;
   readonly profile: { kor: string; tables: string[] };
   readonly tablesInCohort: string[];
   readonly diseaseTable: string;
-  readonly specVersion: Edition;
-  readonly conceptSets?: ConceptSets;
   readonly rulesStruct: StructuralRule[];
   readonly rulesSem: SemanticRule[];
+  readonly overrides?: RuleOverrides;
+  readonly adminMode: boolean;
   readonly raw = new Map<string, RawTable>();
   readonly findings: Finding[] = [];
   readonly ruleStats = new Map<string, RuleStat>();
-  readonly aliasesApplied: Array<[string, string, string]> = [];
   private readonly progress?: ProgressFn;
 
   constructor(opt: EngineOptions) {
     this.cohort = opt.cohort;
     this.progress = opt.onProgress;
     this.todayIso = opt.today ?? new Date().toISOString().slice(0, 10);
-    this.specVersion = opt.spec ?? "v1";
-    // 검사항목 타당 범위는 v2 명세에 없어 v1 표를 빌려 쓴다(OMOP 검사 concept_id 는 같다).
-    this.concepts = loadConcepts();
-    if (this.specVersion === "v2") {
-      this.spec = loadSpecV2();
-      this.codelists = new Map();
-      this.cdText = {};
-      const profiles = loadProfilesV2();
-      if (!profiles[opt.cohort]) throw new Error(`알 수 없는 코호트: ${opt.cohort}`);
-      this.profile = { kor: profiles[opt.cohort].kor, tables: [...profiles[opt.cohort].omop_tables, ...profiles[opt.cohort].extension_tables] };
-      this.tablesInCohort = this.profile.tables;
-      this.diseaseTable = "";
-      this.rulesStruct = loadStructuralRulesV2();
-      this.rulesSem = loadSemanticRulesV2();
-      this.conceptSets = loadConceptSetsV2();
-    } else {
-      const ed = this.specVersion;
-      this.spec = loadSpec(ed);
-      this.codelists = loadCodelists(ed);
-      this.cdText = loadCohortDefinitionText();
-      const profiles = loadProfiles(ed);
-      if (!profiles[opt.cohort]) throw new Error(`알 수 없는 코호트: ${opt.cohort}`);
-      this.profile = profiles[opt.cohort];
-      this.tablesInCohort = this.profile.tables;
-      this.diseaseTable = this.tablesInCohort.find((t) => this.spec.tables[t].category === "disease")!;
-      this.rulesStruct = loadStructuralRules(ed);
-      this.rulesSem = loadSemanticRules(ed);
+    this.adminMode = opt.adminMode === true;
+    this.overrides = isEmptyOverrides(opt.overrides) ? undefined : opt.overrides;
+    if (!this.adminMode && (Object.keys(this.overrides?.sql ?? {}).length || this.overrides?.customSql?.length)) {
+      throw new Error("규칙 설정 오류: SQL 교체와 SQL 규칙은 관리자 모드(adminMode)에서만 쓸 수 있다");
     }
+    this.concepts = loadConcepts();
+    this.spec = loadSpec();
+    this.codelists = loadCodelists();
+    const profiles = loadProfiles();
+    if (!profiles[opt.cohort]) throw new Error(`알 수 없는 코호트: ${opt.cohort}`);
+    this.profile = profiles[opt.cohort];
+    this.tablesInCohort = this.profile.tables;
+    this.diseaseTable = this.tablesInCohort.find((t) => this.spec.tables[t].category === "disease")!;
+    const eff = effectiveRules(this.overrides);
+    this.rulesStruct = eff.structural;
+    this.rulesSem = eff.semantic;
   }
 
   load(dataDir: string): this {
@@ -96,23 +84,16 @@ export class Engine {
       const p = path.join(dataDir, `${t}.csv`);
       if (!fs.existsSync(p)) return;
       const df = readCsv(p);
-      // 별칭 처리 (antp_therapy_id -> antp_id)
-      if (df.cols.has("antp_therapy_id") && !df.cols.has("antp_id")) {
-        df.cols.set("antp_id", df.cols.get("antp_therapy_id")!);
-        df.cols.delete("antp_therapy_id");
-        df.columns = df.columns.map((c) => (c === "antp_therapy_id" ? "antp_id" : c));
-        this.aliasesApplied.push([t, "antp_therapy_id", "antp_id"]);
-      }
       this.raw.set(t, df);
     });
     this.progress?.({ stage: "load", done: n, total: n, text: `테이블 ${this.raw.size}개 적재` });
     return this;
   }
 
-  private initStat = (rule: { id: string; name: string; category: string; subcategory?: string; severity: string; fields?: string[]; check?: string }, table: string): RuleStat => {
+  private initStat = (rule: { id: string; name: string; category: string; subcategory?: string; severity: string; fields?: string[]; check?: string; origin: RuleStat["origin"] }, table: string): RuleStat => {
     const st: RuleStat = {
       rule_id: rule.id, name: rule.name, category: rule.category, subcategory: rule.subcategory ?? "",
-      severity: rule.severity, table, fields: (rule.fields ?? []).join(","), check: rule.check ?? "sql",
+      severity: rule.severity, table, fields: (rule.fields ?? []).join(","), check: rule.check ?? "sql", origin: rule.origin,
       status: "pass", violations: 0, rows_checked: 0, note: "",
     };
     this.ruleStats.set(rule.id, st);
@@ -131,8 +112,7 @@ export class Engine {
   runStructural(): void {
     runStructural(
       { cohort: this.cohort, today: new Date(this.todayIso + "T00:00:00Z"), spec: this.spec, codelists: this.codelists,
-        tablesInCohort: this.tablesInCohort, raw: this.raw, aliasesApplied: this.aliasesApplied,
-        codeOfConcept: this.conceptSets?.codeOfConcept,
+        tablesInCohort: this.tablesInCohort, raw: this.raw,
         onRule: (i, n, id) => this.progress?.({ stage: "structural", done: i, total: n, text: `구조 규칙 ${id}` }) },
       this.rulesStruct, { initStat: this.initStat, add: this.add });
     for (const st of this.ruleStats.values()) if (st.violations > 0) st.status = "fail";
@@ -141,8 +121,7 @@ export class Engine {
   async runSemantic(): Promise<void> {
     await runSemantic(
       { cohort: this.cohort, todayIso: this.todayIso, spec: this.spec, concepts: this.concepts,
-        tablesInCohort: this.tablesInCohort, raw: this.raw, diseaseTable: this.diseaseTable, cdText: this.cdText[this.cohort],
-        specVersion: this.specVersion, conceptSets: this.conceptSets,
+        tablesInCohort: this.tablesInCohort, raw: this.raw, diseaseTable: this.diseaseTable,
         onRule: (i, n, id) => this.progress?.({ stage: "semantic", done: i, total: n, text: `교차 규칙 ${id}` }) },
       this.rulesSem, { initStat: this.initStat, add: this.add });
   }
@@ -163,6 +142,7 @@ export class Engine {
       rules_failed: stats.filter((s) => s.status === "fail").length,
       rules_skipped: stats.filter((s) => s.status === "skipped").length,
       rules_error: stats.filter((s) => s.status === "error").length,
+      rules_disabled: stats.filter((s) => s.status === "disabled").length,
       violations_total: sum(() => true),
       violations_error: sum((s) => s.severity === "error"),
       violations_warning: sum((s) => s.severity === "warning"),
@@ -180,10 +160,26 @@ export class Engine {
     return s;
   }
 
+  /** 보고서의 `## 규칙 설정` 절. 규칙 구성 정보이며 환자 데이터가 아니다. */
+  private ruleSettingsMd(): string[] {
+    const L = ["## 규칙 설정", "",
+      `- 표준 규칙 묶음 해시: ${ruleSetHash(undefined)}`,
+      `- 이번 실행 규칙 묶음 해시: ${ruleSetHash(this.overrides)}`,
+      `- 관리자 모드: ${this.adminMode ? "사용" : "사용 안 함"}`, ""];
+    const changes = describeOverrides(this.overrides);
+    if (changes.length) {
+      L.push("| 규칙 | 구분 | 변경 내용 |", "|---|---|---|");
+      for (const c of changes) L.push(`| ${c.rule_id} | ${c.origin} | ${c.change.replace(/\|/g, "\\|").replace(/\r?\n/g, " ")} |`);
+    } else L.push("표준 규칙에서 바뀐 것이 없다.");
+    L.push("");
+    return L;
+  }
+
   reportMd(s: Summary): string {
     const L: string[] = [];
     L.push(`# 데이터 품질 검증 보고서: ${this.cohort} (${this.profile.kor})`, "");
-    L.push(`검증일 ${s.run_date} / 테이블 ${Object.keys(s.tables).length}개 / 규칙 ${s.rules_total}개 (실패 ${s.rules_failed}, 건너뜀 ${s.rules_skipped}, 오류 ${s.rules_error})`, "");
+    if (this.overrides || this.adminMode) L.push(...this.ruleSettingsMd());
+    L.push(`검증일 ${s.run_date} / 테이블 ${Object.keys(s.tables).length}개 / 규칙 ${s.rules_total}개 (실패 ${s.rules_failed}, 건너뜀 ${s.rules_skipped}, 오류 ${s.rules_error}${s.rules_disabled ? `, 비활성 ${s.rules_disabled}` : ""})`, "");
     L.push(`위반 ${s.violations_total}건 (error ${s.violations_error}, warning ${s.violations_warning})`, "");
     L.push("| 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |", "|---|---|---|---|");
     for (const c of ["Conformance", "Completeness", "Plausibility"]) {

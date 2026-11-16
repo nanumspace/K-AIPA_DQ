@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { RunRecord, RunDetail, RunOutputs } from "@shared/types";
 import { CATEGORY_LABELS, checkLabel } from "@shared/labels";
 import { api, fmt, pct, fmtTime } from "../api";
-import { Card, Stat, SeverityPill, StatusPill, Empty } from "../components/ui";
+import { Card, Stat, SeverityPill, StatusPill, OriginPill, Empty } from "../components/ui";
 import { OutputList } from "./RunPage";
 import type { Nav } from "../App";
 
@@ -51,17 +51,22 @@ export function ReportPage({ nav }: { nav: Nav }) {
             <Stat k="코호트 · 실행 이름" v={run.cohort_kor} s={run.label} />
             <Stat k="검사 행 수" v={fmt(run.rows_total)} s={`테이블 ${Object.keys(run.tables).length}개`} />
             <Stat k="위반 건수" v={fmt(run.violations_total)} s={`오류 ${fmt(run.violations_error)} · 경고 ${fmt(run.violations_warning)}`} tone={run.violations_total ? "red" : "green"} />
-            <Stat k="규칙" v={`${fmt(run.rules_failed)} / ${fmt(run.rules_total)}`} s={`실패 / 실행 · 건너뜀 ${run.rules_skipped} · 오류율 ${pct(run.rows_total ? (run.violations_total / run.rows_total) * 100 : 0)}`} />
+            <Stat k="규칙" v={`${fmt(run.rules_failed)} / ${fmt(run.rules_total - run.rules_disabled)}`} s={`실패 / 실행 · 건너뜀 ${run.rules_skipped}${run.rules_disabled ? ` · 꺼짐 ${run.rules_disabled}` : ""} · 오류율 ${pct(run.rows_total ? (run.violations_total / run.rows_total) * 100 : 0)}`} />
           </div>
+          {run.rule_set_modified && (
+            <div className={`callout ${run.admin_modified ? "err" : "warn"}`} style={{ marginBottom: 14 }}>
+              {run.admin_modified ? "관리자가 바꾼 SQL 규칙이 포함된 실행입니다." : "표준과 다른 규칙 설정으로 실행했습니다."} 변경 내용은 아래 보고서 원문의 '규칙 설정' 절과 제출용 집계(submission.json)에 기록되어 있습니다.
+            </div>
+          )}
           {outputs && <div style={{ marginBottom: 14 }}><Card title="출력물" sub="이 실행이 만든 파일. 중앙에는 제출용 집계만 보냅니다."><OutputList outputs={outputs} runId={run.run_id} /></Card></div>}
           <div className="grid c21">
             <Card title="실패 규칙" sub={`${failed.length}개 · 위반 수 내림차순`} className="pad0">
               <div className="tblwrap" style={{ maxHeight: "48vh" }}>
                 {failed.length === 0 ? <Empty>모든 규칙 통과</Empty> : (
                   <table className="tbl">
-                    <thead><tr><th>규칙</th><th>분류</th><th>유형</th><th>심각도</th><th>테이블</th><th className="num">위반</th><th className="num">검사 행</th></tr></thead>
+                    <thead><tr><th>규칙</th><th>출처</th><th>분류</th><th>유형</th><th>심각도</th><th>테이블</th><th className="num">위반</th><th className="num">검사 행</th></tr></thead>
                     <tbody>{failed.map((r) => (
-                      <tr key={r.rule_id}><td><span className="mono">{r.rule_id}</span> {r.name}</td><td className="nw">{CATEGORY_LABELS[r.category] ?? r.category}</td><td className="nw">{checkLabel(r.check_type)}</td>
+                      <tr key={r.rule_id}><td><span className="mono">{r.rule_id}</span> {r.name}</td><td><OriginPill o={r.origin} /></td><td className="nw">{CATEGORY_LABELS[r.category] ?? r.category}</td><td className="nw">{checkLabel(r.check_type)}</td>
                         <td><SeverityPill s={r.severity} /></td><td className="mono">{r.table_name}</td><td className="num">{fmt(r.violations)}</td><td className="num">{fmt(r.rows_checked)}</td></tr>
                     ))}</tbody>
                   </table>
@@ -79,7 +84,7 @@ export function ReportPage({ nav }: { nav: Nav }) {
                 <table className="tbl"><tbody>{Object.entries(run.tables).map(([t, n]) => <tr key={t}><td className="mono">{t}</td><td className="num">{fmt(n)}</td></tr>)}</tbody></table>
               </Card>
               {skipped.length > 0 && (
-                <Card title="건너뜀 · 실행 오류" sub={`${skipped.length}개`}>
+                <Card title="건너뜀 · 꺼짐 · 실행 오류" sub={`${skipped.length}개`}>
                   <div className="tblwrap short"><table className="tbl"><tbody>{skipped.map((r) => <tr key={r.rule_id}><td className="mono">{r.rule_id}</td><td><StatusPill s={r.status} /></td><td style={{ color: "var(--muted)" }}>{r.note}</td></tr>)}</tbody></table></div>
                 </Card>
               )}

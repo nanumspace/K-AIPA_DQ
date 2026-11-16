@@ -6,7 +6,7 @@
 // (1) 내보내기 흔적이면 조용히 바로잡되 무엇을 바로잡았는지 말하고
 // (2) 진짜 데이터 문제면 규칙 위반으로 보고해야 한다.
 //
-// 깨끗한 폐암 v2 데이터를 여러 가지로 망가뜨려 입력 처리(인식 → 대응 → 사전 점검 → 정규화)와
+// 깨끗한 폐암 가상데이터를 여러 가지로 망가뜨려 입력 처리(인식 → 대응 → 사전 점검 → 정규화)와
 // 엔진을 차례로 통과시킨다. '흔적' 계열은 원본과 같은 결과(위반 0)가 나와야 하고,
 // '문제' 계열은 특정 규칙이 울려야 한다.
 import { describe, it, expect, beforeAll } from "vitest";
@@ -15,13 +15,14 @@ import path from "node:path";
 import os from "node:os";
 import { execFileSync } from "node:child_process";
 import * as XLSX from "xlsx";
-import { setRoot, loadSpecV2, loadProfilesV2, runEngine } from "@engine/index.js";
+import { parse } from "csv-parse/sync";
+import { setRoot, loadSpec, loadProfiles, runEngine, csvCell } from "@engine/index.js";
 import type { Spec } from "@engine/types.js";
 import { inspectPaths, buildPlan, stageInputs } from "../src/main/input";
 
 const ROOT = path.resolve(__dirname, "../..");
 const COHORT = "LUNG_CANCER";
-const SRC = path.join(ROOT, "synth/output/clean_v2", COHORT);
+const SRC = path.join(ROOT, "synth/output/clean", COHORT);
 const hasData = fs.existsSync(path.join(SRC, "PERSON.csv"));
 const TODAY = "2026-09-07";
 
@@ -31,9 +32,8 @@ let tables: string[];
 
 beforeAll(() => {
   setRoot(ROOT);
-  spec = loadSpecV2();
-  const p = loadProfilesV2()[COHORT];
-  tables = [...p.omop_tables, ...p.extension_tables];
+  spec = loadSpec();
+  tables = loadProfiles()[COHORT].tables;
   work = fs.mkdtempSync(path.join(os.tmpdir(), "kai-realworld-"));
 });
 
@@ -62,7 +62,7 @@ function stage(inputs: string[], name: string) {
 
 async function validate(dataDir: string, name: string) {
   const out = path.join(work, `${name}-out`);
-  const s = await runEngine({ cohort: COHORT, today: TODAY, spec: "v2", data: dataDir, out });
+  const s = await runEngine({ cohort: COHORT, today: TODAY, data: dataDir, out });
   const findings = fs.readFileSync(path.join(out, "findings.csv"), "utf-8").split(/\r?\n/).filter(Boolean).slice(1);
   return { summary: s, findings };
 }
@@ -129,15 +129,22 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
 
   it("'NULL' · 'NA' · 'N/A' 글자: 빈 값으로 바꾸고 몇 개인지 말한다", async () => {
     const d = copyClean("nulls");
-    const t = "DEATH";
-    const lines = read(d, t).split("\n");
-    const cols = lines[0].split(",");
-    const j = cols.indexOf("cause_concept_id");
+    // 필수가 아니면서 비어 있는 칸이 있는 컬럼을 찾아, 그 빈 칸에 도구가 남기는 글자를 채운다
+    let t = "", j = -1;
+    for (const tb of tables) {
+      const lines = read(d, tb).split("\n");
+      const cols = lines[0].split(",");
+      const k = cols.findIndex((c) => spec.tables[tb].fields.find((f) => f.name === c)?.required === false
+        && lines.slice(1).some((l) => l && l.split(",").length === cols.length && l.split(",")[cols.indexOf(c)] === ""));
+      if (k >= 0) { t = tb; j = k; break; }
+    }
     expect(j).toBeGreaterThan(-1);
+    const lines = read(d, t).split("\n");
+    const nCols = lines[0].split(",").length;
     for (let i = 1; i < lines.length; i++) {
       if (!lines[i]) continue;
       const cells = lines[i].split(",");
-      if (cells[j] === "") cells[j] = ["NULL", "null", "NA", "N/A"][i % 4];
+      if (cells.length === nCols && cells[j] === "") cells[j] = ["NULL", "null", "NA", "N/A"][i % 4];
       lines[i] = cells.join(",");
     }
     write(d, t, lines.join("\n"));
@@ -191,7 +198,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
   it("세미콜론 구분자 (유럽식 엑셀 CSV): 구분자를 알아채고 원본과 같다", async () => {
     const d = copyClean("semicolon");
     // NOTE 는 본문에 쉼표가 있어 인용이 얽힌다. 숫자와 날짜만 있는 표로 본다.
-    const t = "OBSERVATION_PERIOD";
+    const t = "VISIT_OCCURRENCE";
     write(d, t, read(d, t).split("\n").map((l) => l.replace(/,/g, ";")).join("\n"));
     const { plan, staged } = stage([d], "semicolon");
     expect(plan.ok).toBe(true);
@@ -284,29 +291,25 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
 
   it("빈 파일 (0 바이트) · UTF-16 파일: 죽지 않고 읽기 실패로 보고한다", () => {
     const d = copyClean("bad-files");
-    write(d, "DEATH", "");
-    write(d, "SPECIMEN", Buffer.from("\uFEFF" + read(d, "SPECIMEN"), "utf16le"));
+    write(d, "ADVERSE_EVENT", "");
+    write(d, "OBSERVATION", Buffer.from("\uFEFF" + read(d, "OBSERVATION"), "utf16le"));
     const { plan } = stage([d], "bad-files");
-    const death = plan.tables.find((t) => t.table === "DEATH")!;
-    const spec_ = plan.tables.find((t) => t.table === "SPECIMEN")!;
+    const death = plan.tables.find((t) => t.table === "ADVERSE_EVENT")!;
+    const spec_ = plan.tables.find((t) => t.table === "OBSERVATION")!;
     expect(death.issues.some((i) => i.level === "error" || i.level === "warn")).toBe(true);
     expect(spec_.issues.some((i) => i.level === "error")).toBe(true);
   });
 
   it("앞자리 0 이 있는 ID (000123): 표들 사이에서 일관되면 위반이 아니다", async () => {
     const d = copyClean("leading-zero");
+    // NOTE 본문처럼 쉼표·줄바꿈이 든 칸이 있어 CSV 로 제대로 읽고 쓴다
     for (const t of tables) {
       if (!fs.existsSync(path.join(d, `${t}.csv`))) continue;
-      const lines = read(d, t).split("\n");
-      const cols = lines[0].split(",");
-      const j = cols.indexOf("person_id");
+      const rows: string[][] = parse(read(d, t), { relax_column_count: true });
+      const j = rows[0].indexOf("person_id");
       if (j < 0) continue;
-      for (let i = 1; i < lines.length; i++) {
-        if (!lines[i]) continue;
-        const c = lines[i].split(",");
-        if (c.length === cols.length && /^\d+$/.test(c[j])) { c[j] = `00${c[j]}`; lines[i] = c.join(","); }
-      }
-      write(d, t, lines.join("\n"));
+      for (const r of rows.slice(1)) if (/^\d+$/.test(r[j])) r[j] = `00${r[j]}`;
+      write(d, t, rows.map((r) => r.map(csvCell).join(",")).join("\n") + "\n");
     }
     const { staged } = stage([d], "leading-zero");
     const r = await validate(staged, "leading-zero");
@@ -320,10 +323,8 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     for (const t of tables) {
       const f = path.join(d, `${t}.csv`);
       if (!fs.existsSync(f)) continue;
-      const rows = read(d, t).split("\n").filter(Boolean).map((l) => l.split(","));
-      // NOTE 본문은 쉼표가 들어 split 이 안 맞을 수 있다 → 그 표는 건너뛴다(빈 시트로)
-      const ok = rows.every((r) => r.length === rows[0].length);
-      const ws = XLSX.utils.aoa_to_sheet(ok ? rows.map((r, i) => (i === 0 ? r : r.map((v) => (/^\d+$/.test(v) && v.length < 15 ? Number(v) : v)))) : [rows[0]]);
+      const rows: string[][] = parse(read(d, t), { relax_column_count: true });
+      const ws = XLSX.utils.aoa_to_sheet(rows.map((r, i) => (i === 0 ? r : r.map((v) => (/^\d+$/.test(v) && v.length < 15 ? Number(v) : v)))));
       XLSX.utils.book_append_sheet(wb, ws, t.slice(0, 31));
     }
     const file = path.join(work, "cohort.xlsx");

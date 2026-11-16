@@ -12,14 +12,10 @@ export const CHECK_LABELS: Record<string, string> = {
   group_anchor: "그룹 기준일 누락",
   person_invariant: "환자 불변 필드 불일치",
   must_be_null: "NULL 필수 위반",
-  columns: "컬럼 구성 불일치",
+  columns: "컬럼 누락",
+  extra_columns: "명세 외 컬럼",
   table_present: "테이블 누락",
   sql: "논리·교차 검증",
-  // v2
-  concept_set: "값 집합 밖 concept",
-  concept_code: "값 집합 밖 코드",
-  not_null_when: "조건부 필수값 누락",
-  not_null_either: "둘 중 하나 필수",
 };
 
 export function checkLabel(check: string): string {
@@ -55,10 +51,6 @@ export function rateStatus(pct: number): { label: string; color: string } {
 
 /** 검사 유형별 조치 안내 */
 export const CHECK_GUIDES: Record<string, string> = {
-  concept_set: "값 집합에 없는 concept_id 입니다. 컬럼 명세서의 값 집합에서 concept_id 를 확인합니다. 서식에서 왔다면 서식 양식 README 의 코드를 씁니다.",
-  concept_code: "값 집합에 없는 코드입니다. 예/아니오는 1·0·9 처럼 값 집합의 코드를 그대로 씁니다.",
-  not_null_when: "행의 종류나 다른 값에 따라 필수인 항목이 비어 있습니다. 예: 수술 병리 보고서에는 절제연 상태가 있어야 합니다.",
-  not_null_either: "둘 중 하나는 있어야 하는 항목이 둘 다 비어 있습니다. 예: concept_id 나 원천값(source_value) 중 하나.",
   not_null: "필수 항목이 비어 있습니다. 원천 시스템에서 값을 보완하거나, 사전의 필수 여부를 재확인합니다.",
   type: "값의 형식이 명세와 다릅니다. 날짜는 YYYY-MM-DD, 숫자는 숫자만 넣습니다.",
   range: "값이 타당 범위를 벗어났습니다. 단위 오류나 입력 오류인지 확인합니다.",
@@ -70,7 +62,8 @@ export const CHECK_GUIDES: Record<string, string> = {
   group_anchor: "그룹 값이 있으나 기준 날짜가 없습니다. 이벤트 날짜를 채웁니다.",
   person_invariant: "환자 수준 항목이 같은 환자 안에서 다릅니다. 한 값으로 정리합니다.",
   must_be_null: "이 코호트에서는 비어 있어야 하는 항목입니다.",
-  columns: "명세와 컬럼 구성이 다릅니다. 컬럼명과 순서를 명세에 맞춥니다.",
+  columns: "명세에 있는 컬럼이 파일에 없습니다. 컬럼명을 명세대로 맞추고 빠진 컬럼을 채웁니다.",
+  extra_columns: "명세에 없는 컬럼이 파일에 있습니다. 검증에는 쓰이지 않으니 제출 파일에서 뺍니다.",
   table_present: "필요한 테이블 파일이 없습니다. 코호트 구성에 맞는 CSV 를 모두 제출합니다.",
   sql: "테이블 간 논리 불일치입니다. 상세 내용의 날짜·값 관계를 확인합니다.",
 };

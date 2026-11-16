@@ -36,12 +36,11 @@ export function RunPage({ nav }: { nav: Nav }) {
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [drag, setDrag] = useState(false);
-  const [specVersion, setSpecVersion] = useState<"v1" | "v2" | "v3">("v3");
   const resultRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     api.listCohorts().then((cs) => { setCohorts(cs); if (cs.length) setCohort((c) => c || cs[0].id); }).catch((e) => setErr(String(e)));
-    api.getConfig().then((c) => { setToday(c.defaultToday ?? new Date().toISOString().slice(0, 10)); setSpecVersion(c.specVersion); });
+    api.getConfig().then((c) => { setToday(c.defaultToday ?? new Date().toISOString().slice(0, 10)); });
     const off1 = api.onProgress((p) => setProgress(p));
     const off2 = api.onSmokePlan((p) => { setCohort(p.cohort); setPlan(p); });
     return () => { off1(); off2(); };
@@ -139,7 +138,7 @@ export function RunPage({ nav }: { nav: Nav }) {
             <div style={{ fontSize: 15, fontWeight: 600, color: "var(--navy)" }}>여기에 파일이나 폴더를 끌어다 놓으세요</div>
             <div style={{ color: "var(--muted)", fontSize: 12.5, margin: "6px 0 12px" }}>
               CSV(UTF-8 또는 EUC-KR) · 엑셀(.xlsx) · 테이블별 파일이 든 폴더<br />
-              폴더는 여러 개 넣어도 됩니다 — 서식을 바꾼 폴더와 EHR 추출본 폴더가 따로여도 그대로 넣으세요.
+              폴더는 여러 개 넣어도 됩니다 — 테이블 파일을 나눠 담은 폴더들도 그대로 넣으세요.
             </div>
             <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
               <button className="btn primary" disabled={!!busy} onClick={async () => addPaths(await api.chooseFiles())}>파일 선택</button>
@@ -153,8 +152,9 @@ export function RunPage({ nav }: { nav: Nav }) {
               <button className="btn sm" disabled={!!busy} onClick={() => template("xlsx")}>엑셀 양식 (시트당 테이블, 명세 포함)</button>
               <button className="btn sm" disabled={!!busy} onClick={() => template("csv")}>CSV 양식 묶음 (헤더만)</button>
               <button className="btn sm" disabled={!!busy} onClick={() => template("spec")}>컬럼 명세서 (xlsx)</button>
-              <button className="btn sm" disabled={!!busy} onClick={() => template("sample")}>견본 데이터 (100명 가상 코호트)</button>
-              {specVersion === "v2" && <button className="btn sm" disabled={!!busy} onClick={() => template("crf")}>서식 양식 (병원이 채울 빈 서식 · CSV)</button>}
+              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-clean")}>견본 데이터 · clean (오류 없음, 100명)</button>
+              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-dirty")}>견본 데이터 · dirty (오류 주입 + 정답표)</button>
+              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-good")}>견본 데이터 · good (환자 1명, 설명 포함)</button>
             </div>
             <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 8, lineHeight: 1.5 }}>병원은 이 양식대로 내보내면 됩니다. 파일명과 컬럼명은 그대로 두고, 날짜는 YYYY-MM-DD, 빈 값은 빈 칸입니다.</div>
           </div>
@@ -257,10 +257,15 @@ export function RunPage({ nav }: { nav: Nav }) {
             right={<div style={{ display: "flex", gap: 6 }}><button className="btn primary" onClick={() => nav.go("report", result.run_id)}>결과 보고서</button><button className="btn" onClick={() => nav.go("findings", result.run_id)}>오류 현황</button></div>}>
             <div className="grid c4" style={{ marginBottom: 14 }}>
               <Stat k="검사 행 수" v={fmt(result.rows_total)} s={`테이블 ${Object.keys(result.tables).length}개`} />
-              <Stat k="실행 규칙" v={fmt(result.rules_total)} s={`실패 ${result.rules_failed} · 건너뜀 ${result.rules_skipped}`} />
+              <Stat k="실행 규칙" v={fmt(result.rules_total - result.rules_disabled)} s={`실패 ${result.rules_failed} · 건너뜀 ${result.rules_skipped}${result.rules_disabled ? ` · 꺼짐 ${result.rules_disabled}` : ""}`} />
               <Stat k="위반 건수" v={fmt(result.violations_total)} s={`오류 ${fmt(result.violations_error)} · 경고 ${fmt(result.violations_warning)}`} tone={result.violations_total ? "red" : "green"} />
               <Stat k="오류율" v={pct(result.rows_total ? (result.violations_total / result.rows_total) * 100 : 0)} s="위반 건수 ÷ 검사 행 수" />
             </div>
+            {result.rule_set_modified && (
+              <div className={`callout ${result.admin_modified ? "err" : "warn"}`} style={{ marginBottom: 12 }}>
+                {result.admin_modified ? "관리자가 바꾼 SQL 규칙이 포함된 실행입니다." : "표준과 다른 규칙 설정으로 실행했습니다."} 이 사실은 보고서와 제출용 집계(submission.json)에 기록되어 중앙에 전달됩니다.
+              </div>
+            )}
             <OutputList outputs={outputs} runId={result.run_id} />
           </Card>
         </div>

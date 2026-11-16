@@ -4,20 +4,16 @@
 
 사용법:
     python dq/engine.py --cohort LUNG_CANCER --data synth/output/clean/LUNG_CANCER --out dq/reports/clean_LUNG_CANCER
-    python dq/engine.py --spec v2 --cohort LUNG_CANCER --data synth/output/clean_v2/LUNG_CANCER --out dq/reports/v2_LUNG_CANCER
-    python dq/engine.py --spec v3 --cohort LUNG_CANCER --data synth/output/clean_v3/LUNG_CANCER --out dq/reports/clean_v3_LUNG_CANCER
 
 입력  : 코호트 디렉터리의 <TABLE>.csv (UTF-8, 헤더 포함, NULL 은 빈 문자열)
 규칙  : rules/rules_structural.yaml (명세에서 자동 생성) + rules/rules_semantic.yaml (수동 작성, DuckDB SQL)
-        --spec v2 면 rules/rules_structural_v2.yaml 을 읽는다. v2 의미 규칙은 아직 없다
-        (v1 의미 규칙은 v1 테이블 이름으로 쓴 SQL 이라 v2 에 그대로 걸 수 없다).
+명세  : spec/kai_cdm_spec.yaml (의뢰사 매뉴얼 2026-11-16 판), spec/codelists.yaml, spec/cohort_profiles.yaml
 출력  : findings.csv (위반 행 단위), summary.json (규칙 단위), report.md (사람용 요약)
 
 구조 규칙은 원본 문자열 위에서 검사하고(타입 오류를 잡기 위해), 의미 규칙은 명세 타입으로 변환한 뒤 DuckDB 에서 SQL 로 검사한다.
 """
 import argparse, io, json, os, re, sys, datetime as dt
 from collections import OrderedDict, defaultdict
-import re
 import pandas as pd
 import yaml
 import duckdb
@@ -49,53 +45,25 @@ def mask_values(detail):
     return _MASK_NUM.sub("…", s)
 
 
-V1_PATHS = dict(spec="spec/kai_cdm_spec.yaml", codelists="spec/codelists.yaml", profiles="spec/cohort_profiles.yaml",
-                structural="rules/rules_structural.yaml", semantic="rules/rules_semantic.yaml")
-V3_PATHS = dict(spec="spec/v3/kai_cdm_spec_v3.yaml", codelists="spec/v3/codelists_v3.yaml",
-                profiles="spec/v3/cohort_profiles_v3.yaml", structural="rules/rules_structural_v3.yaml",
-                semantic="rules/rules_semantic_v3.yaml")
-
 class Engine:
-    def __init__(self, cohort, today=None, max_examples=50, spec="v1"):
+    def __init__(self, cohort, today=None, max_examples=50):
         self.cohort = cohort
         self.today = today or dt.date.today()
         self.max_examples = max_examples
-        self.spec_version = spec
-        if spec == "v2":
-            self.spec = load_yaml("spec/v2/kai_cdm_spec_v2.yaml")["tables"]
-            self.profile = load_yaml("spec/v2/cohort_profiles_v2.yaml")["cohorts"][cohort]
-            self.tables_in_cohort = list(self.profile["omop_tables"]) + list(self.profile["extension_tables"])
-            self.disease_table = None
-            self.rules_struct = load_yaml("rules/rules_structural_v2.yaml")["rules"]
-            self.rules_sem = load_yaml("rules/rules_semantic_v2.yaml")["rules"]
-            self.codelists = {}
-            # 검사항목 타당 범위는 v2 명세에 아직 없어 v1 표를 빌려 쓴다(OMOP 검사 concept_id 는 같다)
-            self.concepts = load_yaml("spec/concepts.yaml")
-            # 값 집합: 코드와 concept_id 둘 다 쓴다(컬럼 타입에 따라 다르다)
-            import csv as _csv
-            self.set_codes, self.set_ids, self.code_of_concept = {}, {}, {}
-            for r in _csv.DictReader(open(os.path.join(ROOT, "spec/v2/vocab/CONCEPT_SET_ITEM.csv"), encoding="utf-8")):
-                self.set_codes.setdefault(r["concept_set_id"], set()).add(str(r["code"]))
-                self.set_ids.setdefault(r["concept_set_id"], set()).add(str(r["concept_id"]))
-                self.code_of_concept[str(r["concept_id"])] = str(r["code"])
-        else:
-            # v1 과 v3(의뢰사 9/30 매뉴얼 수정안)는 같은 '질환별 표' 구조라 경로만 다르다.
-            paths = V3_PATHS if spec == "v3" else V1_PATHS
-            self.spec = load_yaml(paths["spec"])["tables"]
-            cl = load_yaml(paths["codelists"])
-            self.codelists = {}
-            for sect in cl.values():
-                for k, v in sect.items():
-                    self.codelists[k] = {str(c) for c in v.keys()}
-            self.concepts = load_yaml("spec/concepts.yaml")
-            self.profile = load_yaml(paths["profiles"])["cohorts"][cohort]
-            self.tables_in_cohort = self.profile["tables"]
-            self.disease_table = [t for t in self.tables_in_cohort if self.spec[t]["category"] == "disease"][0]
-            self.rules_struct = load_yaml(paths["structural"])["rules"]
-            self.rules_sem = load_yaml(paths["semantic"])["rules"]
+        self.spec = load_yaml("spec/kai_cdm_spec.yaml")["tables"]
+        cl = load_yaml("spec/codelists.yaml")
+        self.codelists = {}
+        for sect in cl.values():
+            for k, v in sect.items():
+                self.codelists[k] = {str(c) for c in v.keys()}
+        self.concepts = load_yaml("spec/concepts.yaml")
+        self.profile = load_yaml("spec/cohort_profiles.yaml")["cohorts"][cohort]
+        self.tables_in_cohort = self.profile["tables"]
+        self.disease_table = [t for t in self.tables_in_cohort if self.spec[t]["category"] == "disease"][0]
+        self.rules_struct = load_yaml("rules/rules_structural.yaml")["rules"]
+        self.rules_sem = load_yaml("rules/rules_semantic.yaml")["rules"]
         self.findings = []
         self.rule_stats = OrderedDict()
-        self.aliases_applied = []
 
     # ------------------------------------------------------------------ data
     def load(self, data_dir):
@@ -105,10 +73,6 @@ class Engine:
             if os.path.exists(p):
                 df = pd.read_csv(p, dtype=str, keep_default_na=False, encoding="utf-8")
                 df.columns = [c.strip() for c in df.columns]
-                # 별칭 처리 (antp_therapy_id -> antp_id)
-                if "antp_therapy_id" in df.columns and "antp_id" not in df.columns:
-                    df = df.rename(columns={"antp_therapy_id": "antp_id"})
-                    self.aliases_applied.append((t, "antp_therapy_id", "antp_id"))
                 self.raw[t] = df
         return self
 
@@ -126,18 +90,14 @@ class Engine:
         self.rule_stats[rule["id"]] = OrderedDict(
             rule_id=rule["id"], name=rule["name"], category=rule["category"], subcategory=rule.get("subcategory", ""),
             severity=rule["severity"], table=table, fields=",".join(rule.get("fields", [])), check=rule.get("check", "sql"),
-            status="pass", violations=0, rows_checked=0, note="")
+            origin="standard", status="pass", violations=0, rows_checked=0, note="")
 
     def pk_of(self, table):
         return self.spec[table]["pk"]
 
     def keys(self, df, table):
         pk = self.pk_of(table)
-        cols = [c.strip() for c in str(pk).split("+")]          # v2 는 복합 PK 를 'a+b+c' 로 적는다
-        if len(cols) > 1 and all(c in df.columns for c in cols):
-            pkcol = df[cols].astype(str).agg("+".join, axis=1)
-        else:
-            pkcol = df[pk] if pk in df.columns else pd.Series([""] * len(df), index=df.index)
+        pkcol = df[pk] if pk in df.columns else pd.Series([""] * len(df), index=df.index)
         pid = df["person_id"] if "person_id" in df.columns else pd.Series([""] * len(df), index=df.index)
         return pkcol, pid
 
@@ -165,21 +125,19 @@ class Engine:
             fields = rule.get("fields", [])
             p = rule.get("params", {})
             if chk == "columns":
-                exp = set(p["expected"]); have = set(df.columns)
-                for c in sorted(exp - have):
+                for c in sorted(set(p["expected"]) - set(df.columns)):
                     self.add(rule, table, c, "", None, f"컬럼 누락: {c}")
-                for c in sorted(have - exp):
-                    self.add(rule, table, c, "", None, f"명세에 없는 컬럼: {c} (경고)")
-                for (t, a, b) in self.aliases_applied:
-                    if t == table:
-                        self.add(rule, table, a, "", None, f"별칭 컬럼 {a} 를 {b} 로 해석함 (경고)")
+                continue
+            if chk == "extra_columns":
+                for c in sorted(set(df.columns) - set(p["expected"])):
+                    self.add(rule, table, c, "", None, f"명세에 없는 컬럼: {c}")
                 continue
             # 이하 필드 기반 검사: 필드가 없으면 columns 규칙이 이미 잡았으므로 건너뜀
             missing = [f for f in fields if f not in df.columns]
             if missing and chk not in ("group_anchor", "person_invariant"):
                 st["status"] = "skipped"; st["note"] = f"컬럼 없음: {missing}"; continue
             if chk == "pk_unique":
-                cols = p.get("columns", fields)          # v2 는 복합 PK 가 있다
+                cols = fields
                 null = df[cols].eq("").any(axis=1)
                 for i in df.index[null]:
                     self.add(rule, table, "+".join(cols), "", pid[i], "PK NULL")
@@ -213,65 +171,6 @@ class Engine:
                 bad = (vals != "") & ~vals.isin(refset)
                 for i in df.index[bad]:
                     self.add(rule, table, f, pkcol[i], pid[i], f"{f}={vals[i]} 가 {rt}.{rc} 에 없음")
-            elif chk == "concept_set":
-                # v2: *_concept_id 컬럼은 값 집합의 concept_id 만 가질 수 있다
-                f = fields[0]; allowed = {str(i) for i in p.get("concept_ids", [])}
-                vals = df[f]
-                bad = (vals != "") & ~vals.isin(allowed)
-                for i in df.index[bad]:
-                    self.add(rule, table, f, pkcol[i], pid[i], f"{f}={vals[i]} 는 값 집합({p['concept_set']}) 의 concept_id 가 아니다")
-            elif chk == "concept_code":
-                # v2: 예/아니오 같은 컬럼은 concept_id 가 아니라 코드를 담는다
-                f = fields[0]; allowed = {str(c) for c in p.get("codes", [])}
-                vals = df[f]
-                bad = (vals != "") & ~vals.isin(allowed)
-                for i in df.index[bad]:
-                    self.add(rule, table, f, pkcol[i], pid[i], f"{f}={vals[i]} 는 값 집합({p['concept_set']}) 의 코드가 아니다 (허용: {sorted(allowed)})")
-            elif chk == "concept_set_empty":
-                st["status"] = "skipped"; st["note"] = f"값 집합 {p['concept_set']} 이 비어 있어 검사할 수 없다"
-            elif chk == "not_null_when":
-                # v2: 필수 여부가 다른 컬럼의 값에 걸린다. 조건은 모두 만족해야 필수다.
-                f = fields[0]
-                sel = pd.Series(True, index=df.index); why = []
-                wc, wcode = p.get("when_column"), p.get("when_code")
-                if wc:
-                    if wc not in df.columns:
-                        st["status"] = "skipped"; st["note"] = f"조건 컬럼 {wc} 없음"; continue
-                    sel &= df[wc].map(lambda v: self.code_of_concept.get(str(v), "")) == wcode
-                    why.append(f"{wcode} 행")
-                wf = p.get("when_filled")
-                if wf:
-                    if wf not in df.columns:
-                        st["status"] = "skipped"; st["note"] = f"조건 컬럼 {wf} 없음"; continue
-                    sel &= df[wf] != ""
-                    why.append(f"{wf} 이 채워진 행")
-                wcc, wct = p.get("when_contains_column"), p.get("when_contains_text")
-                if wcc:
-                    if wcc not in df.columns:
-                        st["status"] = "skipped"; st["note"] = f"조건 컬럼 {wcc} 없음"; continue
-                    sel &= df[wcc].str.contains(wct, regex=False, na=False)
-                    why.append(f"{wcc} 에 '{wct}' 가 든 행")
-                wec, wev = p.get("when_equals_column"), p.get("when_equals_value")
-                if wec:
-                    if wec not in df.columns:
-                        st["status"] = "skipped"; st["note"] = f"조건 컬럼 {wec} 없음"; continue
-                    sel &= df[wec] == str(wev)
-                    why.append(f"{wec} 이 {wev} 인 행")
-                bad = sel & (df[f] == "")
-                for i in df.index[bad]:
-                    self.add(rule, table, f, pkcol[i], pid[i], f"{' 이고 '.join(why)} 인데 {f} 가 비어 있다")
-            elif chk == "not_null_either":
-                # v2: 참조표를 싣기 전에는 concept_id 를 채울 수 없으므로 원천값이라도 있어야 한다
-                cols = [c for c in p["columns"] if c in df.columns]
-                if not cols:
-                    st["status"] = "skipped"; st["note"] = "대상 컬럼 없음"; continue
-                sel = pd.Series(True, index=df.index)
-                if p.get("when_column") and p["when_column"] in df.columns:
-                    kind = df[p["when_column"]].map(lambda v: self.code_of_concept.get(str(v), ""))
-                    sel = kind == p["when_code"]
-                bad = sel & df[cols].eq("").all(axis=1)
-                for i in df.index[bad]:
-                    self.add(rule, table, cols[0], pkcol[i], pid[i], f"{' 와 '.join(cols)} 가 모두 비어 있다")
             elif chk == "codelist":
                 f = fields[0]; allowed = self.codelists.get(p["codelist"], set())
                 vals = df[f]
@@ -369,42 +268,8 @@ class Engine:
         con.register("_ac", pd.DataFrame(ac))
         con.execute("CREATE TABLE _ANTICANCER_DRUGS AS SELECT * FROM _ac")
 
-        if self.spec_version == "v2":
-            # 행 종류 코드를 SQL 에서도 쓸 수 있게 보조 테이블로 올린다(예: 수술 병리만 고르기)
-            con.register("_rk", pd.DataFrame([dict(concept_id=int(k), code=v) for k, v in self.code_of_concept.items()]))
-            con.execute("CREATE TABLE _ROW_KIND AS SELECT * FROM _rk")
-            # EPISODE_EVENT 가 어느 테이블을 가리키는지는 field concept 으로 정해진다.
-            # 테이블마다 id 가 1부터 따로 매겨지므로 이걸 봐야 같은 번호끼리 헷갈리지 않는다.
-            import csv as _csv2
-            seed = {r["key"]: int(r["concept_id"]) for r in
-                    _csv2.DictReader(open(os.path.join(ROOT, "spec/v2/vocab/CONCEPT.csv"), encoding="utf-8"))}
-            con.register("_sd", pd.DataFrame([dict(key=k, concept_id=v) for k, v in seed.items() if k.startswith("F_")]))
-            con.execute("CREATE TABLE _EPISODE_FIELD AS SELECT * FROM _sd")
-            subst = {"{TODAY}": f"DATE '{self.today.isoformat()}'"}
-            present = set(self.raw)
-            for rule in self.rules_sem:
-                scope = rule.get("scope", "all")
-                if scope != "all" and self.cohort not in scope:
-                    continue
-                req = set(rule.get("requires", []))
-                self.init_stat(rule, ",".join(sorted(req)) if req else "")
-                st = self.rule_stats[rule["id"]]
-                if not req.issubset(present):
-                    st["status"] = "skipped"; st["note"] = f"필요 테이블 없음: {sorted(req - present)}"; continue
-                self._run_one_sem(con, rule, subst)
-            return self
-
-        cd = self.concepts["cohort_definition"][self.cohort]
         dtab = self.disease_table
-        kcd_field = {"LUNG_CANCER": "lucn_diag_kncd", "BREAST_CANCER": "brcn_diag_kncd", "COLORECTAL_CANCER": "clcn_diag_kncd"}.get(dtab, "NULL")
-        kcd_match = " OR ".join([f"kcd LIKE '{p}%'" for p in cd["kcd_prefix"]])
-        subst = {
-            "{TODAY}": f"DATE '{self.today.isoformat()}'",
-            "{COHORT_CONDITION_IDS}": ",".join(str(x) for x in cd["condition_concept_ids"]),
-            "{DISEASE}": dtab, "{DISEASE_PK}": self.pk_of(dtab), "{DISEASE_KCD}": kcd_field, "{KCD_MATCH}": kcd_match,
-            "{FEMALE_MIN}": str(cd["female_ratio"]["min"]), "{FEMALE_MAX}": str(cd["female_ratio"]["max"]),
-            "{AGE_MIN}": str(cd["age_at_index"]["median_min"]), "{AGE_MAX}": str(cd["age_at_index"]["median_max"]),
-        }
+        subst = {"{TODAY}": f"DATE '{self.today.isoformat()}'", "{DISEASE}": dtab, "{DISEASE_PK}": self.pk_of(dtab)}
         present = set(self.raw)
         for rule in self.rules_sem:
             scope = rule.get("scope", "all")
@@ -456,6 +321,7 @@ class Engine:
             tables={t: len(df) for t, df in self.raw.items()},
             rules_total=len(stats), rules_failed=sum(s["status"] == "fail" for s in stats),
             rules_skipped=sum(s["status"] == "skipped" for s in stats), rules_error=sum(s["status"] == "error" for s in stats),
+            rules_disabled=sum(s["status"] == "disabled" for s in stats),
             violations_total=sum(s["violations"] for s in stats),
             violations_error=sum(s["violations"] for s in stats if s["severity"] == "error"),
             violations_warning=sum(s["violations"] for s in stats if s["severity"] == "warning"),
@@ -499,10 +365,9 @@ def main():
     ap.add_argument("--data", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--today", default=None)
-    ap.add_argument("--spec", default="v1", choices=["v1", "v2", "v3"])
     a = ap.parse_args()
     today = dt.date.fromisoformat(a.today) if a.today else None
-    e = Engine(a.cohort, today=today, spec=a.spec).load(a.data)
+    e = Engine(a.cohort, today=today).load(a.data)
     e.run_structural()
     e.run_semantic()
     s = e.write(a.out)

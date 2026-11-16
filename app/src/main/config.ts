@@ -14,26 +14,41 @@ export function defaultRoot(): string {
   return path.resolve(app.getAppPath(), "..");
 }
 
+interface Saved { root?: string; defaultToday?: string | null; adminAcknowledged?: boolean }
+
+function readSaved(): Saved {
+  try { return JSON.parse(fs.readFileSync(configPath(), "utf-8")); } catch { return {}; }
+}
+
+function saveSaved(s: Saved): void {
+  fs.mkdirSync(path.dirname(configPath()), { recursive: true });
+  fs.writeFileSync(configPath(), JSON.stringify(s, null, 2), "utf-8");
+}
+
+/** 관리자 모드(adminMode)는 설정 파일에 두지 않는다 — 켜 둔 채 잊는 일이 없도록 앱을 열 때마다 꺼져 있다. */
 export function readConfig(): AppConfig {
-  let saved: Partial<AppConfig> = {};
-  try { saved = JSON.parse(fs.readFileSync(configPath(), "utf-8")); } catch { /* 없으면 기본값 */ }
+  const saved = readSaved();
   return {
     root: saved.root && fs.existsSync(path.join(saved.root, "spec")) ? saved.root : defaultRoot(),
     defaultToday: saved.defaultToday ?? null,
-    specVersion: saved.specVersion === "v1" || saved.specVersion === "v2" ? saved.specVersion : "v3",
     userData: app.getPath("userData"),
+    version: app.getVersion(),
     packaged: app.isPackaged,
+    adminMode: false,
   };
 }
 
-export function writeConfig(patch: Partial<Pick<AppConfig, "root" | "defaultToday" | "specVersion">>): AppConfig {
+export function writeConfig(patch: Partial<Pick<AppConfig, "root" | "defaultToday">>): AppConfig {
+  const saved = readSaved();
   const cur = readConfig();
-  const next = {
+  saveSaved({
+    ...saved,
     root: patch.root ?? cur.root,
     defaultToday: patch.defaultToday === undefined ? cur.defaultToday : patch.defaultToday,
-    specVersion: patch.specVersion ?? cur.specVersion,
-  };
-  fs.mkdirSync(path.dirname(configPath()), { recursive: true });
-  fs.writeFileSync(configPath(), JSON.stringify(next, null, 2), "utf-8");
+  });
   return readConfig();
 }
+
+/** 관리자 모드의 첫 확인 창을 이미 봤는지 */
+export function adminAcknowledged(): boolean { return readSaved().adminAcknowledged === true; }
+export function setAdminAcknowledged(): void { saveSaved({ ...readSaved(), adminAcknowledged: true }); }

@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "noEmit": true,
     "baseUrl": ".",
-    "paths": { "@shared/*": ["src/shared/*"] }
+    "paths": { "@shared/*": ["src/shared/*"], "@engine/*": ["../dq-ts/src/*"] }
   },
-  "include": ["src/renderer/src/**/*", "src/shared/**/*", "src/renderer/env.d.ts"]
+  "include": ["src/renderer/src/**/*", "src/shared/**/*", "src/renderer/env.d.ts", "../dq-ts/src/types.ts"]
 }

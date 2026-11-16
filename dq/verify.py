@@ -4,14 +4,12 @@
 
     python dq/verify.py --cohort LUNG_CANCER
     python dq/verify.py --all
-    python dq/verify.py --spec v2 --cohort LUNG_CANCER
-    python dq/verify.py --spec v3 --all      # v3: 6개 코호트 + verification_summary_v3.md
 
 clean 실행 결과(오탐 0 확인)와 dirty 실행 결과(fault_manifest 대비 재현율)를 비교해
-  dq/reports/verification_<COHORT>.json / .md  와  dq/reports/verification_summary.md 를 만든다.
+  dq/reports/verification_<COHORT>.json / .md  와  dq/reports/verification_summary.json / .md  를 만든다.
 
 판정: manifest 의 오류 1건이 '검출' 되려면 expected_rules 중 하나의 규칙이
-  (같은 person_id) 또는 (같은 table 의 pk 가 row_key 에 포함) 또는 (테이블 수준 규칙: columns/table_present) 로 findings 에 있어야 한다.
+  (같은 person_id) 또는 (같은 table 의 pk 가 row_key 에 포함) 또는 (테이블 수준 규칙: columns/extra_columns/table_present) 로 findings 에 있어야 한다.
 """
 import argparse, io, json, os, sys
 from collections import OrderedDict, defaultdict
@@ -22,14 +20,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 COHORTS = ["LUNG_CANCER", "BREAST_CANCER", "COLORECTAL_CANCER", "MASLD", "DIABETES", "LYMPHOMA"]
 
 
-def verify(cohort, spec="v1"):
+def verify(cohort):
     rep = os.path.join(ROOT, "dq/reports")
-    tag = "" if spec == "v1" else f"{spec}_"
-    dirty_dir = "dirty" if spec == "v1" else f"dirty_{spec}"
-    clean = json.load(open(os.path.join(rep, f"clean_{tag}{cohort}/summary.json"), encoding="utf-8"))
-    dirty = json.load(open(os.path.join(rep, f"dirty_{tag}{cohort}/summary.json"), encoding="utf-8"))
-    findings = pd.read_csv(os.path.join(rep, f"dirty_{tag}{cohort}/findings.csv"), dtype=str, keep_default_na=False)
-    manifest = pd.read_csv(os.path.join(ROOT, f"synth/output/{dirty_dir}/{cohort}/fault_manifest.csv"), dtype=str, keep_default_na=False)
+    clean = json.load(open(os.path.join(rep, f"clean_{cohort}/summary.json"), encoding="utf-8"))
+    dirty = json.load(open(os.path.join(rep, f"dirty_{cohort}/summary.json"), encoding="utf-8"))
+    findings = pd.read_csv(os.path.join(rep, f"dirty_{cohort}/findings.csv"), dtype=str, keep_default_na=False)
+    manifest = pd.read_csv(os.path.join(ROOT, f"synth/output/dirty/{cohort}/fault_manifest.csv"), dtype=str, keep_default_na=False)
 
     by_rule = defaultdict(list)
     for _, f in findings.iterrows():
@@ -69,8 +65,8 @@ def verify(cohort, spec="v1"):
         by_type=by_type.to_dict(orient="records"), by_category=by_cat.to_dict(orient="records"),
         collateral_rules=collateral,
     )
-    json.dump(out, open(os.path.join(rep, f"verification_{tag}{cohort}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
-    with open(os.path.join(rep, f"verification_{tag}{cohort}.md"), "w", encoding="utf-8") as fh:
+    json.dump(out, open(os.path.join(rep, f"verification_{cohort}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+    with open(os.path.join(rep, f"verification_{cohort}.md"), "w", encoding="utf-8") as fh:
         fh.write(f"# 검출 성능 검증: {cohort}\n\n")
         fh.write(f"- clean 데이터: 규칙 {clean['rules_total']}개 실행, 위반 {clean['violations_total']}건 (오탐)\n")
         fh.write(f"- dirty 데이터: 주입 오류 {total}건 중 {det}건 검출, 재현율 {out['recall']}\n")
@@ -91,14 +87,12 @@ def verify(cohort, spec="v1"):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--cohort"); ap.add_argument("--all", action="store_true")
-    ap.add_argument("--spec", default="v1", choices=["v1", "v2", "v3"])
     a = ap.parse_args()
     cohorts = COHORTS if a.all else [a.cohort]
-    suffix = "" if a.spec == "v1" else f"_{a.spec}"
-    outs = [verify(c, a.spec) for c in cohorts]
+    outs = [verify(c) for c in cohorts]
     if a.all:
-        with open(os.path.join(ROOT, f"dq/reports/verification_summary{suffix}.md"), "w", encoding="utf-8") as fh:
+        with open(os.path.join(ROOT, "dq/reports/verification_summary.md"), "w", encoding="utf-8") as fh:
             fh.write("# 검증 프로그램 검출 성능 요약 (6개 코호트)\n\n| 코호트 | 규칙 수 | clean 오탐 | 주입 오류 | 검출 | 재현율 | 오류 유형(전부 검출/전체) |\n|---|---|---|---|---|---|---|\n")
             for o in outs:
                 fh.write(f"| {o['cohort']} | {o['dirty']['rules']} | {o['clean']['violations']} | {o['faults_total']} | {o['faults_detected']} | {o['recall']} | {o['fault_types_fully_detected']}/{o['fault_types']} |\n")
-        json.dump(outs, open(os.path.join(ROOT, f"dq/reports/verification_summary{suffix}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+        json.dump(outs, open(os.path.join(ROOT, "dq/reports/verification_summary.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)

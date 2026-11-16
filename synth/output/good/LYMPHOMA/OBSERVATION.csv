@@ -1,0 +1,2 @@
+observation_id,visit_occurrence_id,person_id,observation_concept_id,observation_date,observation_type_concept_id,value_as_number,value_as_string,unit_concept_id
+600001,600001,600001,4257895,2022-07-04,32817,1,ECOG 1,

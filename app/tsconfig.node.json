@@ -21,7 +21,10 @@
       "@shared/*": [
         "src/shared/*"
       ]
-    }
+    },
+    "lib": [
+      "ES2024"
+    ]
   },
   "include": [
     "electron.vite.config.ts",

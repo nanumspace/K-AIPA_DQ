@@ -1,6 +1,0 @@
-adverse_event_id,person_id,visit_occurrence_id,adverse_event_concept_id,adverse_event_start_date,severity_concept_id,causality_concept_id,is_serious_yn,seriousness_concept_id,outcome_concept_id,action_taken_concept_id
-400001,400033,400437,27674,2020-11-24,1,2,0,,1,1
-400002,400035,400465,27674,2022-11-02,2,2,0,,1,1
-400003,400048,400634,4055224,2023-12-28,2,3,0,,1,1
-400004,400087,401216,27674,2019-11-08,2,2,0,,1,1
-400005,400092,401290,27674,2021-05-30,2,2,0,,1,1

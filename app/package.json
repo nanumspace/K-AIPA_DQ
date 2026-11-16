@@ -59,22 +59,6 @@
         ]
       },
       {
-        "from": "../spec/v2",
-        "to": "kai/spec/v2",
-        "filter": [
-          "*.yaml",
-          "vocab/*.csv",
-          "!vocab/ref/**"
-        ]
-      },
-      {
-        "from": "../spec/v3",
-        "to": "kai/spec/v3",
-        "filter": [
-          "*.yaml"
-        ]
-      },
-      {
         "from": "../rules",
         "to": "kai/rules",
         "filter": [
@@ -83,23 +67,24 @@
       },
       {
         "from": "../synth/output/clean",
-        "to": "kai/samples",
+        "to": "kai/synth/output/clean",
         "filter": [
           "**/*.csv"
         ]
       },
       {
-        "from": "../synth/output/clean_v2",
-        "to": "kai/samples_v2",
+        "from": "../synth/output/dirty",
+        "to": "kai/synth/output/dirty",
         "filter": [
           "**/*.csv"
         ]
       },
       {
-        "from": "../synth/output/clean_v3",
-        "to": "kai/samples_v3",
+        "from": "../synth/output/good",
+        "to": "kai/synth/output/good",
         "filter": [
-          "**/*.csv"
+          "**/*.csv",
+          "**/README.md"
         ]
       }
     ],

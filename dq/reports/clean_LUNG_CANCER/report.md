@@ -1,28 +1,28 @@
 # 데이터 품질 검증 보고서: LUNG_CANCER (폐암)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 427개 (실패 0, 건너뜀 0, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 284개 (실패 0, 건너뜀 0, 오류 0)
 
 위반 0건 (error 0, warning 0)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
-| Conformance | 248 | 0 | 0 |
-| Completeness | 78 | 0 | 0 |
-| Plausibility | 101 | 0 | 0 |
+| Conformance | 178 | 0 | 0 |
+| Completeness | 63 | 0 | 0 |
+| Plausibility | 43 | 0 | 0 |
 
 ## 테이블 행수
 
 - PERSON: 100
-- VISIT_OCCURRENCE: 1867
-- PROCEDURE_OCCURRENCE: 1000
-- DRUG_EXPOSURE: 1361
-- CONDITION_OCCURRENCE: 514
-- MEASUREMENT: 7363
+- VISIT_OCCURRENCE: 1743
+- PROCEDURE_OCCURRENCE: 1065
+- DRUG_EXPOSURE: 1263
+- CONDITION_OCCURRENCE: 478
+- MEASUREMENT: 6840
 - OBSERVATION: 200
-- NOTE: 414
-- LUNG_CANCER: 2082
-- ADVERSE_EVENT: 255
-- ANTP_THERAPY: 130
+- NOTE: 379
+- LUNG_CANCER: 100
+- ADVERSE_EVENT: 210
+- SACT: 115
 
 ## 실패 규칙
 
