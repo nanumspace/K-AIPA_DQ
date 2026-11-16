@@ -1,9 +1,9 @@
 # 검출 성능 검증: MASLD
 
-- clean 데이터: 규칙 257개 실행, 위반 0건 (오탐)
-- dirty 데이터: 주입 오류 208건 중 208건 검출, 재현율 1.0
+- clean 데이터: 규칙 257개 실행, 위반 0건 (오류 0, 경고 0; 임상 차수 휴리스틱 경고는 보존)
+- dirty 데이터: 주입 오류 213건 중 213건 검출, 재현율 1.0
 - 오류 유형 26종 중 전부 검출 26종
-- 주입 오류의 부수 효과로 함께 발화한 규칙: ST-0349
+- 주입 오류의 부수 효과로 함께 발화한 규칙: ST-0359, ST-0361, ST-0366
 
 | 오류 유형 | 분류 | 주입 | 검출 | 재현율 |
 |---|---|---|---|---|
@@ -27,9 +27,9 @@
 | PERSON_WITHOUT_DISEASE_ROW | Completeness | 1 | 1 | 1.0 |
 | PK_DUP | Conformance | 9 | 9 | 1.0 |
 | PK_NULL | Completeness | 9 | 9 | 1.0 |
-| RANGE | Plausibility | 17 | 17 | 1.0 |
+| RANGE | Plausibility | 16 | 16 | 1.0 |
 | RANGE_LOW_GT_HIGH | Plausibility | 2 | 2 | 1.0 |
 | REQUIRED_NULL | Completeness | 37 | 37 | 1.0 |
-| TYPE_BAD | Conformance | 72 | 72 | 1.0 |
+| TYPE_BAD | Conformance | 78 | 78 | 1.0 |
 | VISIT_BEFORE_BIRTH | Plausibility | 1 | 1 | 1.0 |
 | VISIT_END_BEFORE_START | Plausibility | 2 | 2 | 1.0 |

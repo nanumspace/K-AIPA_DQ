@@ -506,7 +506,7 @@ export function writeCsvTemplates(tables: string[], spec: Spec, dir: string): st
     out.push(p);
   }
   fs.writeFileSync(path.join(dir, "README.txt"), [
-    "K-AI 코호트 데이터 입력 양식 (CSV)", "",
+    "K-AIPA DQ 데이터 입력 양식 (CSV)", "",
     "- 파일 하나가 테이블 하나입니다. 파일 이름은 바꾸지 마세요.",
     "- 첫 줄은 컬럼명입니다. 순서는 바꿔도 되지만 이름은 바꾸지 마세요.",
     "- 인코딩 UTF-8, 빈 값은 빈 칸, 날짜는 YYYY-MM-DD, 타임스탬프는 YYYY-MM-DD HH:MM:SS 입니다.",
@@ -517,7 +517,7 @@ export function writeCsvTemplates(tables: string[], spec: Spec, dir: string): st
 /** 시트당 테이블 하나인 엑셀 양식 (+ 명세 시트) */
 export function writeXlsxTemplate(tables: string[], spec: Spec, file: string): void {
   const wb = XLSX.utils.book_new();
-  const guide = [["K-AI 코호트 데이터 입력 양식 (엑셀)"], [""], ["시트 하나가 테이블 하나입니다. 시트 이름은 바꾸지 마세요."], ["첫 줄은 컬럼명입니다. 이름은 바꾸지 마세요."], ["빈 값은 빈 칸으로 두고, 날짜는 날짜 셀 또는 YYYY-MM-DD 문자열로 넣습니다."], ["컬럼 설명은 '명세' 시트를 보세요."]];
+  const guide = [["K-AIPA DQ 데이터 입력 양식 (엑셀)"], [""], ["시트 하나가 테이블 하나입니다. 시트 이름은 바꾸지 마세요."], ["첫 줄은 컬럼명입니다. 이름은 바꾸지 마세요."], ["빈 값은 빈 칸으로 두고, 날짜는 날짜 셀 또는 YYYY-MM-DD 문자열로 넣습니다."], ["컬럼 설명은 '명세' 시트를 보세요."]];
   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(guide), "안내");
   for (const t of tables) {
     const ws = XLSX.utils.aoa_to_sheet([spec.tables[t].fields.map((f) => f.name)]);

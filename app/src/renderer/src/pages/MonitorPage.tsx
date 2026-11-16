@@ -48,14 +48,14 @@ export function MonitorPage({ nav }: { nav: Nav }) {
             ) : <Empty>실행 기록 없음</Empty>}
           </div>
         </Card>
-        <Card title="오류율 추이 (%)" sub="위반 건수 ÷ 검사 행 수">
+        <Card title="위반율 추이 (%)" sub="위반 건수 ÷ 입력 행 수 (한 행이 여러 규칙을 위반하면 중복 집계되어 오류 행 비율과 다릅니다)">
           <div style={{ height: 240 }}>
             {series.length ? (
               <ResponsiveContainer>
                 <LineChart data={series} margin={{ top: 8, right: 12, left: -10, bottom: 0 }}>
                   <CartesianGrid stroke="#eef1f5" /><XAxis dataKey="x" tick={{ fontSize: 10 }} /><YAxis tick={{ fontSize: 10 }} unit="%" />
                   <Tooltip formatter={(v) => pct(Number(v))} labelFormatter={(_, p) => `${p?.[0]?.payload?.time ?? ""} · ${p?.[0]?.payload?.label ?? ""}`} />
-                  <Line type="monotone" dataKey="rate" name="오류율" stroke="#3b6fd6" />
+                  <Line type="monotone" dataKey="rate" name="위반율" stroke="#3b6fd6" />
                 </LineChart>
               </ResponsiveContainer>
             ) : <Empty>실행 기록 없음</Empty>}
@@ -66,7 +66,7 @@ export function MonitorPage({ nav }: { nav: Nav }) {
         <div className="tblwrap" style={{ maxHeight: "50vh" }}>
           {list.length === 0 ? <Empty>실행 기록 없음</Empty> : (
             <table className="tbl">
-              <thead><tr><th>실행 시각</th><th>코호트</th><th>실행 이름</th><th>실행일</th><th className="num">검사 행</th><th className="num">규칙</th><th className="num">실패 규칙</th><th className="num">위반</th><th className="num">오류율</th><th>상태</th><th></th></tr></thead>
+              <thead><tr><th>실행 시각</th><th>코호트</th><th>실행 이름</th><th>실행일</th><th className="num">검사 행</th><th className="num">규칙</th><th className="num">실패 규칙</th><th className="num">위반</th><th className="num" title="위반 건수 ÷ 입력 행 수. 중복 위반이 있으면 오류 행 비율과 다르며 100%를 넘을 수도 있습니다.">위반율</th><th>상태</th><th></th></tr></thead>
               <tbody>{list.map((r) => {
                 const rate = r.rows_total ? (r.violations_total / r.rows_total) * 100 : 0;
                 return (

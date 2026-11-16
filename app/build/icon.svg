@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <!-- Quality Validator 앱 아이콘. K-AIPA 브랜드 팔레트: 남색 #003B73 → 청록 #00C2D1, 보조 파랑 #275BAB -->
+  <!-- K-AIPA DQ 앱 자체 아이콘·색상. 공식 사업 로고나 브랜드 가이드 준수를 주장하지 않는다. -->
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#003B73"/>

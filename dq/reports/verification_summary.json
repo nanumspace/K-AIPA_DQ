@@ -9,11 +9,11 @@
   },
   "dirty": {
    "rules": 285,
-   "violations": 895,
-   "failed_rules": 244
+   "violations": 1795,
+   "failed_rules": 243
   },
-  "faults_total": 265,
-  "faults_detected": 265,
+  "faults_total": 263,
+  "faults_detected": 263,
   "recall": 1.0,
   "fault_types": 32,
   "fault_types_fully_detected": 32,
@@ -153,8 +153,8 @@
    },
    {
     "fault_type": "RANGE",
-    "n": 16,
-    "detected": 16,
+    "n": 15,
+    "detected": 15,
     "recall": 1.0
    },
    {
@@ -195,8 +195,8 @@
    },
    {
     "fault_type": "TYPE_BAD",
-    "n": 91,
-    "detected": 91,
+    "n": 90,
+    "detected": 90,
     "recall": 1.0
    },
    {
@@ -221,18 +221,20 @@
    },
    {
     "category": "Conformance",
-    "n": 152,
-    "detected": 152,
+    "n": 151,
+    "detected": 151,
     "recall": 1.0
    },
    {
     "category": "Plausibility",
-    "n": 47,
-    "detected": 47,
+    "n": 46,
+    "detected": 46,
     "recall": 1.0
    }
   ],
-  "collateral_rules": []
+  "collateral_rules": [
+   "ST-0333"
+  ]
  },
  {
   "cohort": "BREAST_CANCER",
@@ -244,11 +246,11 @@
   },
   "dirty": {
    "rules": 294,
-   "violations": 1472,
-   "failed_rules": 253
+   "violations": 1862,
+   "failed_rules": 252
   },
-  "faults_total": 272,
-  "faults_detected": 272,
+  "faults_total": 269,
+  "faults_detected": 269,
   "recall": 1.0,
   "fault_types": 31,
   "fault_types_fully_detected": 31,
@@ -262,8 +264,8 @@
    },
    {
     "fault_type": "CODELIST",
-    "n": 23,
-    "detected": 23,
+    "n": 22,
+    "detected": 22,
     "recall": 1.0
    },
    {
@@ -388,8 +390,8 @@
    },
    {
     "fault_type": "RANGE",
-    "n": 16,
-    "detected": 16,
+    "n": 15,
+    "detected": 15,
     "recall": 1.0
    },
    {
@@ -424,8 +426,8 @@
    },
    {
     "fault_type": "TYPE_BAD",
-    "n": 95,
-    "detected": 95,
+    "n": 94,
+    "detected": 94,
     "recall": 1.0
    },
    {
@@ -450,30 +452,33 @@
    },
    {
     "category": "Conformance",
-    "n": 158,
-    "detected": 158,
+    "n": 156,
+    "detected": 156,
     "recall": 1.0
    },
    {
     "category": "Plausibility",
-    "n": 46,
-    "detected": 46,
+    "n": 45,
+    "detected": 45,
     "recall": 1.0
    }
   ],
-  "collateral_rules": []
+  "collateral_rules": [
+   "ST-0242",
+   "ST-0333"
+  ]
  },
  {
   "cohort": "COLORECTAL_CANCER",
   "clean": {
    "rules": 277,
-   "violations": 0,
-   "failed_rules": 0,
-   "false_positive_rate": 0.0
+   "violations": 14,
+   "failed_rules": 1,
+   "false_positive_rate": null
   },
   "dirty": {
    "rules": 277,
-   "violations": 1228,
+   "violations": 1570,
    "failed_rules": 236
   },
   "faults_total": 255,
@@ -702,11 +707,11 @@
   },
   "dirty": {
    "rules": 257,
-   "violations": 921,
-   "failed_rules": 193
+   "violations": 1403,
+   "failed_rules": 199
   },
-  "faults_total": 208,
-  "faults_detected": 208,
+  "faults_total": 213,
+  "faults_detected": 213,
   "recall": 1.0,
   "fault_types": 26,
   "fault_types_fully_detected": 26,
@@ -834,8 +839,8 @@
    },
    {
     "fault_type": "RANGE",
-    "n": 17,
-    "detected": 17,
+    "n": 16,
+    "detected": 16,
     "recall": 1.0
    },
    {
@@ -852,8 +857,8 @@
    },
    {
     "fault_type": "TYPE_BAD",
-    "n": 72,
-    "detected": 72,
+    "n": 78,
+    "detected": 78,
     "recall": 1.0
    },
    {
@@ -878,19 +883,21 @@
    },
    {
     "category": "Conformance",
-    "n": 117,
-    "detected": 117,
+    "n": 123,
+    "detected": 123,
     "recall": 1.0
    },
    {
     "category": "Plausibility",
-    "n": 38,
-    "detected": 38,
+    "n": 37,
+    "detected": 37,
     "recall": 1.0
    }
   ],
   "collateral_rules": [
-   "ST-0349"
+   "ST-0359",
+   "ST-0361",
+   "ST-0366"
   ]
  },
  {
@@ -903,11 +910,11 @@
   },
   "dirty": {
    "rules": 253,
-   "violations": 868,
-   "failed_rules": 188
+   "violations": 1104,
+   "failed_rules": 187
   },
-  "faults_total": 197,
-  "faults_detected": 197,
+  "faults_total": 202,
+  "faults_detected": 202,
   "recall": 1.0,
   "fault_types": 25,
   "fault_types_fully_detected": 25,
@@ -921,8 +928,8 @@
    },
    {
     "fault_type": "CODELIST",
-    "n": 10,
-    "detected": 10,
+    "n": 14,
+    "detected": 14,
     "recall": 1.0
    },
    {
@@ -1011,14 +1018,14 @@
    },
    {
     "fault_type": "PK_DUP",
-    "n": 8,
-    "detected": 8,
+    "n": 9,
+    "detected": 9,
     "recall": 1.0
    },
    {
     "fault_type": "PK_NULL",
-    "n": 8,
-    "detected": 8,
+    "n": 9,
+    "detected": 9,
     "recall": 1.0
    },
    {
@@ -1047,8 +1054,8 @@
    },
    {
     "fault_type": "TYPE_BAD",
-    "n": 73,
-    "detected": 73,
+    "n": 72,
+    "detected": 72,
     "recall": 1.0
    },
    {
@@ -1067,14 +1074,14 @@
   "by_category": [
    {
     "category": "Completeness",
-    "n": 49,
-    "detected": 49,
+    "n": 50,
+    "detected": 50,
     "recall": 1.0
    },
    {
     "category": "Conformance",
-    "n": 114,
-    "detected": 114,
+    "n": 118,
+    "detected": 118,
     "recall": 1.0
    },
    {
@@ -1084,25 +1091,19 @@
     "recall": 1.0
    }
   ],
-  "collateral_rules": [
-   "ST-0359",
-   "ST-0361",
-   "ST-0364",
-   "ST-0366",
-   "ST-0368"
-  ]
+  "collateral_rules": []
  },
  {
   "cohort": "LYMPHOMA",
   "clean": {
    "rules": 286,
-   "violations": 0,
-   "failed_rules": 0,
-   "false_positive_rate": 0.0
+   "violations": 7,
+   "failed_rules": 1,
+   "false_positive_rate": null
   },
   "dirty": {
    "rules": 286,
-   "violations": 1115,
+   "violations": 1175,
    "failed_rules": 245
   },
   "faults_total": 265,

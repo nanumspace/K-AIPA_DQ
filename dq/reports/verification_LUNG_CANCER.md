@@ -1,9 +1,9 @@
 # 검출 성능 검증: LUNG_CANCER
 
-- clean 데이터: 규칙 285개 실행, 위반 0건 (오탐)
-- dirty 데이터: 주입 오류 265건 중 265건 검출, 재현율 1.0
+- clean 데이터: 규칙 285개 실행, 위반 0건 (오류 0, 경고 0; 임상 차수 휴리스틱 경고는 보존)
+- dirty 데이터: 주입 오류 263건 중 263건 검출, 재현율 1.0
 - 오류 유형 32종 중 전부 검출 32종
-- 주입 오류의 부수 효과로 함께 발화한 규칙: 없음
+- 주입 오류의 부수 효과로 함께 발화한 규칙: ST-0333
 
 | 오류 유형 | 분류 | 주입 | 검출 | 재현율 |
 |---|---|---|---|---|
@@ -29,13 +29,13 @@
 | PK_DUP | Conformance | 11 | 11 | 1.0 |
 | PK_NULL | Completeness | 11 | 11 | 1.0 |
 | PROGRESSION_BEFORE_START | Plausibility | 1 | 1 | 1.0 |
-| RANGE | Plausibility | 16 | 16 | 1.0 |
+| RANGE | Plausibility | 15 | 15 | 1.0 |
 | RANGE_LOW_GT_HIGH | Plausibility | 2 | 2 | 1.0 |
 | REQUIRED_NULL | Completeness | 46 | 46 | 1.0 |
 | SACT_END_BEFORE_START | Plausibility | 1 | 1 | 1.0 |
 | SACT_LINE_MISMATCH | Plausibility | 1 | 1 | 1.0 |
 | SACT_START_NE_DRUG_MIN | Plausibility | 1 | 1 | 1.0 |
 | STAGE_NOT_AJCC | Conformance | 3 | 3 | 1.0 |
-| TYPE_BAD | Conformance | 91 | 91 | 1.0 |
+| TYPE_BAD | Conformance | 90 | 90 | 1.0 |
 | VISIT_BEFORE_BIRTH | Plausibility | 1 | 1 | 1.0 |
 | VISIT_END_BEFORE_START | Plausibility | 2 | 2 | 1.0 |

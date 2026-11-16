@@ -4,7 +4,7 @@
 
 ## 동등성
 
-6개 코호트 × (clean, dirty, good) 18회 실행에서 Python 참조 구현(`dq/engine.py`)과 `findings.csv`·`report.md` 가 글자 단위로, `summary.json` 이 값과 키 순서까지 일치해야 합니다(`test/equivalence.test.ts`). clean · good 은 위반 0 · 규칙 오류 0, dirty 는 주입 오류를 전부 검출해야 합니다. Python 쪽 보고서는 `python3 dq/run_all.py` 로 만듭니다.
+6개 코호트 × (clean, dirty, good) 18회 실행에서 Python 참조 구현(`dq/engine.py`)과 `findings.csv`·`report.md` 가 글자 단위로, `summary.json` 이 값과 키 순서까지 일치해야 합니다(`test/equivalence.test.ts`). good 은 위반 0 · 규칙 오류 0, clean 은 오류 등급 위반 0 · 규칙 오류 0(임상 차수 휴리스틱 경고 `SEM-SACT-006` 은 허용), dirty 는 주입 오류를 전부 검출해야 합니다. Python 쪽 보고서는 `python3 dq/run_all.py` 로 만듭니다.
 
 명세는 2026-11-16 의뢰사 매뉴얼 하나뿐입니다(`spec/kai_cdm_spec.yaml`, `spec/codelists.yaml`, `spec/cohort_profiles.yaml`, `rules/rules_structural.yaml`, `rules/rules_semantic.yaml`, `spec/concepts.yaml`).
 

@@ -17,9 +17,14 @@ import { writeExtraOutputs, runOutputs, exportBundle, APP_VERSION } from "./outp
 import * as rs from "./ruleset";
 
 const SMOKE = process.env.KAI_SMOKE === "1";
-if (SMOKE) app.setPath("userData", path.join(process.env.KAI_SMOKE_OUT ?? app.getPath("temp"), "kai-smoke-userdata"));
+// Keep the v0.4.0 production data directory across the product rename; smoke runs stay isolated.
+const userData = SMOKE
+  ? path.join(process.env.KAI_SMOKE_OUT ?? app.getPath("temp"), "kai-smoke-userdata")
+  : path.join(app.getPath("appData"), "Quality Validator");
+fs.mkdirSync(userData, { recursive: true });
+app.setPath("userData", userData);
 
-/** 견본 데이터·SQL 시험의 검증 실행일. clean·good 이 위반 0 이 되도록 맞춰 둔 날짜다. */
+/** 견본·SQL 시험의 기준일. clean 은 오류 0(치료 차수 검토 경고 허용), good 은 위반 0. */
 const SAMPLE_TODAY = "2026-09-07";
 
 let win: BrowserWindow | null = null;
@@ -34,7 +39,7 @@ const userDir = () => app.getPath("userData");
 function createWindow(): BrowserWindow {
   const w = new BrowserWindow({
     width: 1480, height: 940, minWidth: 1100, minHeight: 700, show: false,
-    title: "Quality Validator",
+    title: "K-AIPA DQ",
     backgroundColor: "#eef2f7",
     webPreferences: { preload: path.join(__dirname, "../preload/index.js"), sandbox: true, contextIsolation: true },
   });
@@ -107,7 +112,7 @@ async function setAdminMode(on: boolean): Promise<AppConfig> {
     const r = await dialog.showMessageBox(win!, {
       type: "warning", title: "관리자 모드", buttons: ["관리자 모드 켜기", "취소"], defaultId: 1, cancelId: 1,
       message: "SQL 규칙을 직접 수정할 수 있습니다. 결과물에 기록됩니다",
-      detail: "관리자 모드에서 바꾼 SQL 은 모드를 꺼도 그대로 남고, 검증 결과(report.md · submission.json)에 '관리자 변경'으로 적혀 중앙에 전달됩니다. 변경 이력은 이 PC 에 남습니다.",
+      detail: "관리자 모드에서 바꾼 SQL 은 모드를 꺼도 그대로 남고, 검증 결과(report.md · submission.json)에 '관리자 변경'으로 기록됩니다. 앱이 파일을 자동 전송하지는 않으며, 제출할 때 함께 전달됩니다. 이 모드는 비밀번호나 권한 인증이 아니라 변경을 기록해 두는 표시입니다. 변경 이력은 이 PC 의 파일에 남으며, 위·변조를 막는 감사 기록은 아닙니다.",
     });
     if (r.response !== 0) return { ...config, adminMode };
     setAdminAcknowledged();
@@ -411,14 +416,16 @@ async function smoke(): Promise<void> {
       }
       XLSX.writeFile(wb, xlsxPath);
     }
-    // 표준 실행: clean 은 위반 0, dirty 는 위반이 있어야 한다. 설치본에도 clean · dirty · good 이 들어 있다.
+    // 표준 실행: clean 은 오류 0·허용된 치료 차수 경고만, good 은 위반 0, dirty 는 위반 발생.
     for (const [cohort, kind, label] of [["LUNG_CANCER", "clean", "clean 견본"], ["LUNG_CANCER", "good", "good 견본"], ["DIABETES", "dirty", "dirty 견본"], ["LYMPHOMA", "clean", "림프종 clean 견본"]] as const) {
       const dir = sampleDir(cohort, kind);
       if (!dir) { failures++; log(`FAIL ${cohort} ${kind} 견본 데이터가 없습니다 (${path.join(config.root, "synth/output", kind, cohort)})`); continue; }
       const rec = await runFromDir(cohort, dir, SAMPLE_TODAY, label);
       log(`run ${rec.run_id}: rules=${rec.rules_total} violations=${rec.violations_total}`);
       expect(rec.rules_error === 0, `${cohort} ${kind}: 규칙 실행 오류 ${rec.rules_error}`);
-      expect(kind === "dirty" ? rec.violations_total > 0 : rec.violations_total === 0, `${cohort} ${kind}: 위반 ${rec.violations_total}건`);
+      const summary: Summary = JSON.parse(fs.readFileSync(path.join(runsDir(), rec.run_id, "summary.json"), "utf-8"));
+      const unexpected = summary.rules.filter((r) => r.violations > 0 && !(kind === "clean" && r.rule_id === "SEM-SACT-006" && r.severity === "warning"));
+      expect(kind === "dirty" ? rec.violations_total > 0 : rec.violations_error === 0 && unexpected.length === 0, `${cohort} ${kind}: 위반 ${rec.violations_total}건`);
       expect(!rec.rule_set_modified && !rec.admin_modified, `${cohort} ${kind}: 표준 실행인데 규칙 변경으로 기록됨`);
       const sub = JSON.parse(fs.readFileSync(path.join(runsDir(), rec.run_id, "submission.json"), "utf-8"));
       expect(sub.rule_set.standard_hash === sub.rule_set.effective_hash && sub.rule_set.admin_modified === false && sub.rule_set.disabled.length === 0, `${cohort} ${kind}: 표준 실행의 rule_set 이 표준이 아님`);

@@ -3,15 +3,15 @@
  "run_date": "2026-09-07",
  "tables": {
   "PERSON": 1,
-  "VISIT_OCCURRENCE": 32,
-  "PROCEDURE_OCCURRENCE": 18,
-  "DRUG_EXPOSURE": 35,
-  "CONDITION_OCCURRENCE": 9,
-  "MEASUREMENT": 104,
+  "VISIT_OCCURRENCE": 23,
+  "PROCEDURE_OCCURRENCE": 19,
+  "DRUG_EXPOSURE": 8,
+  "CONDITION_OCCURRENCE": 7,
+  "MEASUREMENT": 89,
   "OBSERVATION": 1,
-  "NOTE": 8,
+  "NOTE": 22,
   "COLORECTAL_CANCER": 1,
-  "ADVERSE_EVENT": 8,
+  "ADVERSE_EVENT": 4,
   "SACT": 1
  },
  "rules_total": 277,
@@ -427,7 +427,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -442,7 +442,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -457,7 +457,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -472,7 +472,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -487,7 +487,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -502,7 +502,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -517,7 +517,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -532,7 +532,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -547,7 +547,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -562,7 +562,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -577,7 +577,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -592,7 +592,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -607,7 +607,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -622,7 +622,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -637,7 +637,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -652,7 +652,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -667,7 +667,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -682,7 +682,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -697,7 +697,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 32,
+   "rows_checked": 23,
    "note": ""
   },
   {
@@ -727,7 +727,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -742,7 +742,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -757,7 +757,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -772,7 +772,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -787,7 +787,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -802,7 +802,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -817,7 +817,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -832,7 +832,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -847,7 +847,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -862,7 +862,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -877,7 +877,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -892,7 +892,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -907,7 +907,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -922,7 +922,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -937,7 +937,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -952,7 +952,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -967,7 +967,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 18,
+   "rows_checked": 19,
    "note": ""
   },
   {
@@ -997,7 +997,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1012,7 +1012,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1027,7 +1027,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1042,7 +1042,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1057,7 +1057,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1072,7 +1072,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1087,7 +1087,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1102,7 +1102,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1117,7 +1117,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1132,7 +1132,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1147,7 +1147,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1162,7 +1162,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1177,7 +1177,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1192,7 +1192,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1207,7 +1207,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1222,7 +1222,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1237,7 +1237,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1252,7 +1252,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1267,7 +1267,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1282,7 +1282,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1297,7 +1297,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1312,7 +1312,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1327,7 +1327,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1342,7 +1342,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1357,7 +1357,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1372,7 +1372,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1387,7 +1387,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1402,7 +1402,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1417,7 +1417,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1432,7 +1432,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1447,7 +1447,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1462,7 +1462,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1477,7 +1477,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1492,7 +1492,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1507,7 +1507,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1522,7 +1522,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1537,7 +1537,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1552,7 +1552,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1567,7 +1567,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1582,7 +1582,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1597,7 +1597,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1612,7 +1612,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 35,
+   "rows_checked": 8,
    "note": ""
   },
   {
@@ -1642,7 +1642,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1657,7 +1657,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1672,7 +1672,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1687,7 +1687,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1702,7 +1702,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1717,7 +1717,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1732,7 +1732,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1747,7 +1747,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1762,7 +1762,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1777,7 +1777,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1792,7 +1792,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1807,7 +1807,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1822,7 +1822,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1837,7 +1837,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1852,7 +1852,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1867,7 +1867,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1882,7 +1882,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9,
+   "rows_checked": 7,
    "note": ""
   },
   {
@@ -1912,7 +1912,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -1927,7 +1927,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -1942,7 +1942,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -1957,7 +1957,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -1972,7 +1972,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -1987,7 +1987,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2002,7 +2002,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2017,7 +2017,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2032,7 +2032,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2047,7 +2047,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2062,7 +2062,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2077,7 +2077,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2092,7 +2092,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2107,7 +2107,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2122,7 +2122,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2137,7 +2137,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2152,7 +2152,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2167,7 +2167,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2182,7 +2182,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2197,7 +2197,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2212,7 +2212,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2227,7 +2227,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2242,7 +2242,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2257,7 +2257,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 104,
+   "rows_checked": 89,
    "note": ""
   },
   {
@@ -2632,7 +2632,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2647,7 +2647,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2662,7 +2662,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2677,7 +2677,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2692,7 +2692,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2707,7 +2707,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2722,7 +2722,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2737,7 +2737,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2752,7 +2752,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2767,7 +2767,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2782,7 +2782,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2797,7 +2797,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2812,7 +2812,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2827,7 +2827,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2842,7 +2842,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2857,7 +2857,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -2872,7 +2872,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 22,
    "note": ""
   },
   {
@@ -3517,7 +3517,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3532,7 +3532,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3547,7 +3547,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3562,7 +3562,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3577,7 +3577,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3592,7 +3592,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3607,7 +3607,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3622,7 +3622,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3637,7 +3637,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3652,7 +3652,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3667,7 +3667,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3682,7 +3682,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3697,7 +3697,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3712,7 +3712,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3727,7 +3727,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3742,7 +3742,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3757,7 +3757,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3772,7 +3772,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3787,7 +3787,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3802,7 +3802,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3817,7 +3817,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3832,7 +3832,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3847,7 +3847,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3862,7 +3862,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3877,7 +3877,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {
@@ -3892,7 +3892,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 8,
+   "rows_checked": 4,
    "note": ""
   },
   {

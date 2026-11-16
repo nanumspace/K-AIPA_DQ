@@ -61,6 +61,20 @@ def select_patient(tables, disease):
         if not selected:
             raise ValueError(f"No treated surgical example for {disease}")
         eligible = selected
+    if disease == "MASLD":
+        # The exemplar covers metabolic management, not transplant immunosuppression.
+        transplanted = {row["person_id"] for row in tables["PROCEDURE_OCCURRENCE"][1]
+                        if row["procedure_concept_id"] == "4321806"}
+        eligible = [(pid, n) for pid, n in eligible if pid not in transplanted]
+        if not eligible:
+            raise ValueError("No non-transplant MASLD clinical example")
+    if disease == "LYMPHOMA":
+        # CAR-T is outside this exemplar: its ancillary drugs are not fully coded.
+        cellular_therapy = {row["person_id"] for row in tables["SACT"][1]
+                            if "CAR-T" in row["regimen_source_value"]}
+        eligible = [(pid, n) for pid, n in eligible if pid not in cellular_therapy]
+        if not eligible:
+            raise ValueError("No non-CAR-T lymphoma clinical example")
     alive = {row["person_id"] for row in tables["PERSON"][1] if not row["death_date"]}
     # Breadth first, then enough repeated follow-up without selecting solely by row volume.
     def quality(item):
@@ -110,23 +124,28 @@ def export_one(cohort, source, target):
     dates = [row["visit_start_date"] for row in extracted["VISIT_OCCURRENCE"]]
     disease_fields = [(k, v) for k, v in extracted[disease][0].items()
                       if v and k not in (f"{disease.lower()}_id", "dm_id", "person_id", "visit_occurrence_id")]
-    clinical_summary = "## 이 환자에게 실제로 기록된 내용\n\n"
+    clinical_summary = "## 이 가상 사례에 기록된 내용\n\n"
     clinical_summary += "- 질환 표: " + ", ".join(f"`{k}={v}`" for k, v in disease_fields) + "\n"
     for regimen in extracted.get("SACT", []):
         clinical_summary += (f"- 요법: {regimen['regimen_source_value']} "
                              f"({regimen['regimen_start_date']} ~ {regimen['regimen_end_date']}, "
-                             f"line {regimen['line_of_therapy']})\n")
+                             f"치료 차수: {regimen['line_of_therapy'] or '미지정'})\n")
     own_notes = [row for row in extracted["NOTE"] if row["person_id"]]
     for event in (own_notes[:1] + own_notes[-1:]):
         clinical_summary += f"- 기록 ({event['note_date']}): {event['note_text'].replace(chr(10), ' ')}\n"
     if disease == "LUNG_CANCER":
         clinical_summary += "- clinical_stage는 최초 진단 시 병기이며 stage_iv_diagnosis_date는 추적 중 IV기 진단일일 수 있습니다.\n"
+    if disease == "BREAST_CANCER":
+        clinical_summary += ("- HER2 양성 선행치료 경로는 병리학적 완전반응(pCR) 사례를 의도적으로 구성합니다. "
+                             "이는 생성기에서 선택한 경과이지 실제 치료 반응률이 아닙니다. "
+                             "잔존암에 대한 별도 치료 경로는 이 사례로 설명하지 않습니다.\n")
     clinical_summary += "\n"
     note = (
         f"# Good Sample · {profile['kor']} ({cohort})\n\n"
         "매뉴얼(2026-11-16) 명세의 가상 환자 1명에서 나온 **연결된 모든 행**입니다. 실제 환자 자료가 아닙니다. "
-        "코호트별 진단·검사·진료·처방·기록·추적 경과를 여러 테이블로 제출할 때의 구조 예시입니다. "
-        "한 질환의 모든 환자에게 필요한 검사나 치료를 뜻하지 않습니다.\n\n"
+        "코호트별 진단·검사·진료·처방·기록·추적 경과를 여러 테이블로 제출하는 합성 임상 사례입니다. "
+        "실제 환자군의 분포나 치료 효과를 재현한 자료가 아니며, 임상의의 감수·승인을 받은 모범 진료 지침도 아닙니다. "
+        "한 질환의 모든 환자에게 같은 검사나 치료를 적용한다는 뜻이 아닙니다.\n\n"
         f"- 환자: 1명 (가상 ID {pid})\n"
         f"- 첫 방문 ~ 마지막 방문: {min(dates)} ~ {max(dates)}\n"
         f"- 방문 {counts['VISIT_OCCURRENCE']}건, 검사 {counts['MEASUREMENT']}건, "
@@ -134,6 +153,15 @@ def export_one(cohort, source, target):
         + (f", 요법 {counts['SACT']}건" if "SACT" in counts else "") + "\n"
         f"- 사망일: {'기록됨' if person['death_date'] else '기록 없음'}\n\n"
         + clinical_summary
+        + "## 해석과 검토 범위\n\n"
+        "용량·단위, 요법 구성, 검사·이상사례·처방 변경의 연결을 함께 검토해야 합니다. "
+        "앱의 매뉴얼 규칙 통과는 임상적 적절성의 인증이 아닙니다. "
+        "체중·체표면적 기반 용량은 환자 측정값과 처방 근거를 함께 확인하고, "
+        "산출 근거가 없는 선택 점수는 정상값이나 임의 근삿값으로 채우지 않습니다. "
+        "기관별 진료·급여 기준과 실제 어휘 매핑은 별도 확인이 필요합니다. "
+        "regimen_concept_id=0은 표준 레지멘 코드 미매핑을 뜻하며 요법 이름은 regimen_source_value에 보존합니다. "
+        "임상 치료 차수가 단순 요법 시작일 순서와 다른 경우 SEM-SACT-006 경고는 검토 후 해석해야 합니다.\n\n"
+        "참고 근거와 생성 가정: [가상 임상 사례 문서](https://github.com/nanumspace/K-AIPA_DQ/blob/main/docs/synthetic-data.md).\n\n"
         + "## 테이블별 행 수\n\n| 테이블 | 행 수 |\n|---|---:|\n"
         + "".join(f"| {table} | {counts[table]} |\n" for table in profile["tables"])
         + "\n약물의 화학 구조식(SMILES)은 매뉴얼대로 NOTE 행(note_text, person_id·note_date 비움, note_class_concept_id 0)에 담고 "

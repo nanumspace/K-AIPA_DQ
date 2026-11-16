@@ -152,9 +152,9 @@ export function RunPage({ nav }: { nav: Nav }) {
               <button className="btn sm" disabled={!!busy} onClick={() => template("xlsx")}>엑셀 양식 (시트당 테이블, 명세 포함)</button>
               <button className="btn sm" disabled={!!busy} onClick={() => template("csv")}>CSV 양식 묶음 (헤더만)</button>
               <button className="btn sm" disabled={!!busy} onClick={() => template("spec")}>컬럼 명세서 (xlsx)</button>
-              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-clean")}>견본 데이터 · clean (오류 없음, 100명)</button>
-              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-dirty")}>견본 데이터 · dirty (오류 주입 + 정답표)</button>
-              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-good")}>견본 데이터 · good (환자 1명, 설명 포함)</button>
+              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-clean")}>합성 견본 데이터 · clean (오류 없음, 100명)</button>
+              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-dirty")}>합성 견본 데이터 · dirty (오류 주입 + 정답표)</button>
+              <button className="btn sm" disabled={!!busy} onClick={() => template("sample-good")}>합성 임상 사례 예제 · good (가상 환자 1명, 설명 포함)</button>
             </div>
             <div style={{ fontSize: 11.5, color: "var(--muted)", marginTop: 8, lineHeight: 1.5 }}>병원은 이 양식대로 내보내면 됩니다. 파일명과 컬럼명은 그대로 두고, 날짜는 YYYY-MM-DD, 빈 값은 빈 칸입니다.</div>
           </div>
@@ -259,11 +259,11 @@ export function RunPage({ nav }: { nav: Nav }) {
               <Stat k="검사 행 수" v={fmt(result.rows_total)} s={`테이블 ${Object.keys(result.tables).length}개`} />
               <Stat k="실행 규칙" v={fmt(result.rules_total - result.rules_disabled)} s={`실패 ${result.rules_failed} · 건너뜀 ${result.rules_skipped}${result.rules_disabled ? ` · 꺼짐 ${result.rules_disabled}` : ""}`} />
               <Stat k="위반 건수" v={fmt(result.violations_total)} s={`오류 ${fmt(result.violations_error)} · 경고 ${fmt(result.violations_warning)}`} tone={result.violations_total ? "red" : "green"} />
-              <Stat k="오류율" v={pct(result.rows_total ? (result.violations_total / result.rows_total) * 100 : 0)} s="위반 건수 ÷ 검사 행 수" />
+              <Stat k="위반율" v={pct(result.rows_total ? (result.violations_total / result.rows_total) * 100 : 0)} s="위반 건수 ÷ 입력 행 수 (중복 집계, 오류 행 비율 아님)" />
             </div>
             {result.rule_set_modified && (
               <div className={`callout ${result.admin_modified ? "err" : "warn"}`} style={{ marginBottom: 12 }}>
-                {result.admin_modified ? "관리자가 바꾼 SQL 규칙이 포함된 실행입니다." : "표준과 다른 규칙 설정으로 실행했습니다."} 이 사실은 보고서와 제출용 집계(submission.json)에 기록되어 중앙에 전달됩니다.
+                {result.admin_modified ? "관리자가 바꾼 SQL 규칙이 포함된 실행입니다." : "표준과 다른 규칙 설정으로 실행했습니다."} 이 사실은 보고서와 제출용 집계(submission.json)에 기록됩니다. 앱이 자동으로 전송하지는 않으며, 파일을 직접 제출할 때 함께 전달됩니다.
               </div>
             )}
             <OutputList outputs={outputs} runId={result.run_id} />
@@ -305,14 +305,15 @@ export function OutputList({ outputs, runId }: { outputs: RunOutputs; runId: str
           <button className="btn sm" onClick={() => api.openPath(outputs.dir)}>실행 폴더 열기</button>
         </div>
       </div>
+      <div className="callout warn" style={{ marginBottom: 8 }}>내보내기는 이 PC의 파일을 선택한 위치로 복사할 뿐 자동 전송하지 않습니다. 전체 묶음에는 환자 단위 정보가 포함되므로 기관 내부에서만 사용하세요. submission.json도 실행명·규칙 설명 등 자유입력 내용과 소수 집계를 기관 정책에 따라 반출 검토한 뒤 제출하세요.</div>
       {msg && <div className="callout" style={{ marginBottom: 8 }}>{msg}</div>}
       <table className="tbl">
-        <thead><tr><th>파일</th><th>내용</th><th>외부 제출</th><th className="num">크기</th><th></th></tr></thead>
+        <thead><tr><th>파일</th><th>내용</th><th>권장 용도</th><th className="num">크기</th><th></th></tr></thead>
         <tbody>{outputs.files.filter((f) => f.size > 0).map((f) => (
           <tr key={f.key}>
             <td style={{ whiteSpace: "nowrap" }}><b>{f.label}</b><div className="mono" style={{ fontSize: 11, color: "var(--muted)" }}>{f.name}</div></td>
             <td>{f.desc}</td>
-            <td>{f.shareable ? <span className="pill pass">가능</span> : <span className="pill error">금지 · 환자 단위 정보</span>}</td>
+            <td>{!f.shareable ? <span className="pill error">기관 내부 전용</span> : f.name === "submission.json" ? <span className="pill warn">반출 검토 후 제출</span> : <span className="pill">기본 제출 대상 아님</span>}</td>
             <td className="num">{bytes(f.size)}</td>
             <td><button className="btn sm" onClick={() => api.exportFile(runId, f.key)}>다른 이름으로 저장</button></td>
           </tr>

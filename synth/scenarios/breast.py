@@ -3,13 +3,38 @@
 유방암 코호트 시나리오. 특화 테이블 BREAST_CANCER 는 환자당 1행(진단 방문)이며
 진단정보 등록일(diag_rgst_ymd), 폐경 상태, 임신/분만/출산 후 1년/가임력 보존 치료 여부를 담는다 (남성은 해당 항목이 모두 4=Not Applicable).
 
-여정: 진단 외래(유방촬영·침생검) → 병리/IHC → 병기 → 선행항암(AC-T / TCH) → 수술 → 보조항암/trastuzumab →
-      방사선 → 내분비치료(tamoxifen/letrozole/anastrozole) → 추적, 재발 시 전이성 요법.
-호르몬제(category 3)도 모두 SACT 로 묶는다.
+여정: 진단 외래(유방촬영·침생검) → 병리/IHC → 병기(III·IV기만 전신 영상) → 선행항암 → 수술 → 보조치료 → 방사선 → 내분비치료 → 추적,
+      재발 시 전이성 요법. 호르몬제(category 3)도 모두 SACT 로 묶는다.
+
+아형별 치료(근거: NCCN Breast Cancer / ESMO Early Breast Cancer 가이드라인 현행판)
+  선행항암 대상 = HER2+ · TNBC 의 cT2 이상 또는 cN+, HR+/HER2- 의 T3/T4·N2 일부. cT1 N0 의 HER2+ 는 수술 후 APT, TNBC(T1b/c)는 수술 후 TC.
+  HER2+  선행 TCHP(docetaxel+carboplatin AUC 6+trastuzumab+pertuzumab ×6) → 수술 → trastuzumab+pertuzumab 으로 1년 완료.
+         [시나리오 선택 편향 — 반응률이 아님] 잔존병변 표준인 T-DM1 이 약물 목록에 없어, 선행 요법을 한 HER2+ 는 병리학적 완전관해(pCR)가
+         확인된 경우만 만든다. 생성된 pCR 100% 는 이 코호트의 치료 효과·실제 pCR 비율을 뜻하지 않으며, T-DM1 없이 잔존병변에
+         trastuzumab 만 이어가는 사례를 만들지 않으려는 선택이다. 보조 APT: paclitaxel 80 mg/m2 주 1회 ×12
+         + trastuzumab(첫 주 4 mg/kg, 이후 주 2 mg/kg) → trastuzumab 6 mg/kg q3w ×13. 3주 간격 trastuzumab 8 mg/kg 부하는 프레임워크가 자동 적용.
+  TNBC   cT2 이상/cN+ 선행: carboplatin(AUC 5 q3w) + paclitaxel 80 mg/m2 주 1회 ×12 → AC ×4 → 수술. 면역항암(pembrolizumab, KEYNOTE-522; 2020 발표,
+         2021-07 FDA 승인)은 시작일이 2021-07-01 이후인 사례에만 병용·보조(×9, pCR 무관)하고 그 전에는 쓰지 않는다. 잔존병변 시 capecitabine 병용은
+         시험 근거가 부족해 만들지 않는다.
+  HR+    HER2- 는 보조 화학요법(Oncotype·림프절) 후 내분비치료 5년(폐경 후 AI, 그 외 tamoxifen). HER2+ 도 내분비치료를 이어간다.
+  심장 감시: trastuzumab 투여 전 기저 심초음파, 투여 중 12주마다 심초음파, anthracycline 전 기저 심초음파를 NOTE 로 남긴다
+         (심초음파 시술·LVEF 측정 concept 가 목록에 없어 PROCEDURE/MEASUREMENT 행은 만들지 않는다).
+  전이성  HER2+: THP ×6 → trastuzumab+pertuzumab 유지(HR+ 면 내분비 병용) → 진행 시 capecitabine+trastuzumab (T-DM1/T-DXd 는 목록에 없음).
+         HR+/HER2-: 폐경 후 palbociclib+letrozole(난소기능억제제가 목록에 없어 폐경 전은 tamoxifen 단독) → capecitabine/paclitaxel.
+         TNBC: carboplatin+paclitaxel → capecitabine.
+  뇌전이는 흉부/복부 CT·PET-CT 가 아니라 뇌 MRI 판독 NOTE 로 확인한다(뇌 MRI 시술 concept 없음).
+  carboplatin 용량은 Calvert 식(AUC × (CrCl+25), CrCl 은 직전 기록된 크레아티닌·체중·나이·성별로 Cockcroft-Gault, 크레아티닌 하한 0.7, GFR 상한 125)으로 산출한다.
+  주 1회 paclitaxel 은 80 mg/m2, 주 1회 carboplatin 은 AUC 2.
 """
 from framework import *
 
 BC_INV, BC_DCIS = 4112853, 4162253
+CT_CHEST, CT_ABD, PET_CT, LIVER_BX, CORE_BX, MMG, RT = 4059400, 4207701, 4305790, 4287806, 4249893, 4044530, 4181206
+DOXO, CYCLO, DOCETAXEL, PACLITAXEL, CARBO, CAPE = 1338512, 1310317, 1315942, 1378382, 1344905, 1337620
+TRAST, PERTU, PEMBRO = 1387104, 42801287, 45775965
+PALBO, LETROZOLE, ANASTROZOLE = 45892075, 1315946, 1348265
+DEX, ONDAN, FILGRASTIM = 1518254, 35201159, 1301125
+IO_DATE = D(2021, 7, 1)                  # KEYNOTE-522 FDA 승인: 이 날 이후 시작한 TNBC 선행요법에만 pembrolizumab
 HIST = {"IDC": "Invasive ductal carcinoma, NOS", "ILC": "Invasive lobular carcinoma", "MUC": "Mucinous carcinoma",
         "DCIS": "Ductal carcinoma in situ"}
 LOC = [("UOQ", "Upper outer quadrant"), ("UIQ", "Upper inner quadrant"), ("LOQ", "Lower outer quadrant"),
@@ -22,6 +47,9 @@ STAGE_TNM = {"I": ([("T1a", "N0"), ("T1b", "N0"), ("T1c", "N0")], [0.1, 0.25, 0.
              "III": ([("T3", "N1"), ("T2", "N2"), ("T4b", "N1")], [0.4, 0.35, 0.25]),
              "IV": ([("T2", "N1"), ("T3", "N2"), ("T4b", "N2"), ("T2", "N0")], [0.35, 0.3, 0.2, 0.15])}
 SUBTYPES = ["HR+/HER2-", "HR+/HER2+", "HR-/HER2+", "TNBC"]
+# 진단 시 병기 영상(CT·PET-CT)으로 확인 가능한 전이 부위. 뇌는 MRI 로만 확인하므로 진행/재발 때만 쓴다.
+DX_MET_SITES = [("Bone",), ("Liver",), ("Lung",), ("Distant lymph node",)]
+DX_MET_P = [0.45, 0.22, 0.22, 0.11]
 MET_SITES = [("Bone",), ("Liver",), ("Lung",), ("Brain",), ("Distant lymph node",)]
 MET_P = [0.4, 0.2, 0.2, 0.08, 0.12]
 REC_SITES = [("Ipsilateral breast / chest wall", False), ("Regional axillary lymph node", False)] + \
@@ -31,6 +59,7 @@ AE_CHEMO = ((27674, 0.18), (432791, 0.08), (301794, 0.2), (4304213, 0.06), (4397
             (4223659, 0.12), (4265412, 0.04), (196523, 0.05), (4141062, 0.03))
 AE_CAPE = ((196523, 0.3), (4265412, 0.2), (140214, 0.25), (4223659, 0.15), (27674, 0.1))
 AE_HORM = ((4223659, 0.6), (140214, 0.2), (27674, 0.2))
+AE_CDK = ((301794, 0.5), (4223659, 0.2), (27674, 0.15), (196523, 0.15))
 LAB_FEW = (3000963, 3016723)
 
 MMG_REPORT = ("Bilateral digital mammography with tomosynthesis. {lat} breast: {size} cm {shape} at the {loc}. Axilla: {ax}. "
@@ -42,6 +71,10 @@ CT_REPORT = ("CT chest, abdomen and pelvis with contrast. {lat} breast mass {siz
              "Impression: breast cancer, c{t}{n}{m}.")
 SP_REPORT = ("Breast, {lat}, {op}{slnb}: {hist}. Tumor size {size} cm. Lymphovascular invasion: {lvi}. "
              "Resection margins: {margin}. Lymph nodes: {psln}/{tsln} positive. Pathologic stage {t}{n}M0.{resp}")
+
+
+def _room(ctx, p):
+    return min(ctx.today, p.death_date) if p.death_date is not None else ctx.today
 
 
 def _plan(ctx, age, gender):
@@ -118,8 +151,9 @@ def _breast_row(ctx, p, st, vid, index, age, plan_chemo):
     return ctx.disease_row(p, vid, **f)
 
 
-def _sact(ctx, p, name, drugs, start, cycles, intent, ecog, resp, cycle_days=None, oral=False, limit=None):
-    """SACT 래퍼: 마지막 사이클 투여가 오늘/사망/limit 을 넘지 않도록 주기 수를 줄인다. 1주기도 못 넣으면 None."""
+def _sact(ctx, p, name, drugs, start, cycles, intent, ecog, resp, cycle_days=None, oral=False, limit=None, **kw):
+    """SACT 래퍼: 마지막 사이클 투여가 오늘/사망/limit 을 넘지 않도록 주기 수를 줄인다. 1주기도 못 넣으면 None.
+    kw 는 ctx.sact 로 그대로 전달(drug_days, dose_overrides)."""
     cd = cycle_days or max(CONCEPTS["drugs"][c]["cycle_days"] or 21 for c in drugs)
     hi = min(x for x in (ctx.today, p.death_date, limit) if x is not None)
     span = cd if (oral or any(CONCEPTS["drugs"][c]["route"] == "PO" for c in drugs)) else 1
@@ -127,12 +161,76 @@ def _sact(ctx, p, name, drugs, start, cycles, intent, ecog, resp, cycle_days=Non
     if room < 0:
         return None
     cycles = min(cycles, room // cd + 1)
-    sid, end, cyc = ctx.sact(p, name, drugs, start, cycles, intent, ecog=ecog, response=resp, cycle_days=cd, oral=oral)
+    sid, end, cyc = ctx.sact(p, name, drugs, start, cycles, intent, ecog=ecog, response=resp, cycle_days=cd, oral=oral, **kw)
     return sid, end, cyc
 
 
 def _mon(ctx, p, cyc, drugs, pool=AE_CHEMO, ae_p=0.45, labs=True):
-    ctx.monitor(p, cyc, drugs, ae_p=ae_p, ae_pool=pool, labs=(3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923) if labs else LAB_FEW)
+    return ctx.monitor(p, cyc, drugs, ae_p=ae_p, ae_pool=pool, labs=(3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923) if labs else LAB_FEW)
+
+
+def _premed(ctx, p, cyc, drugs, weekly=False):
+    """항암 전처치/지지요법. AC·cisplatin = 고위험 구토(ondansetron+dexamethasone 3일), carboplatin(3주 간격) = 중등도(2일),
+    docetaxel = dexamethasone 3일, paclitaxel = dexamethasone 1일. TC 는 filgrastim 1차 예방."""
+    last = _room(ctx, p)
+    high = DOXO in drugs
+    mod = CARBO in drugs and not weekly
+    dex = 3 if (high or DOCETAXEL in drugs) else 2 if mod else 1 if PACLITAXEL in drugs else 0
+    ond = 3 if high else 2 if mod else 0
+    for d in cyc:
+        vid = ctx.visit_on(p, d)
+        for c, n in ((ONDAN, ond), (DEX, dex)):
+            if n:
+                ctx.drug(p, d, c, min(n, (last - d).days + 1), vid=vid, freq=1)
+        if DOCETAXEL in drugs and CYCLO in drugs:
+            g = ctx.days(d, 2)
+            if g <= last:
+                ctx.drug(p, g, FILGRASTIM, min(3, (last - g).days + 1), vid=ctx.visit_on(p, g), freq=1)
+
+
+def _weekly_in_cycles(ctx, p, sid, cyc, concept, dose, per_cycle=3):
+    """3주 주기 요법 안의 주 1회 투여(예: KEYNOTE-522 의 paclitaxel). 마지막 투여일 반환."""
+    last, end = _room(ctx, p), None
+    for d in cyc:
+        for k in range(per_cycle):
+            dd = ctx.days(d, 7 * k)
+            if dd > last:
+                return end
+            ctx.drug(p, dd, concept, 1, vid=ctx.visit_on(p, dd), sact_id=sid, dose=dose, interval=7)
+            end = dd
+    return end
+
+
+def _echo(ctx, p, day, why):
+    if day > _room(ctx, p):
+        return
+    ctx.note(p, day, f"Transthoracic echocardiography ({why}): LVEF {ctx.randint(56, 68)}%. No regional wall motion abnormality.",
+             vid=ctx.visit_on(p, day))
+
+
+def _echo_series(ctx, p, start, end, why):
+    """심장 감시: 첫 투여 7일 전 기저 검사, 이후 12주마다."""
+    _echo(ctx, p, ctx.days(start, -7), f"baseline before {why}")
+    d = ctx.days(start, 84)
+    while d <= end:
+        _echo(ctx, p, d, "surveillance during trastuzumab")
+        d = ctx.days(d, 84)
+
+
+def _pd_imaging(ctx, p, day, site, tail):
+    """진행/재발 부위에 맞는 영상. 뇌=MRI 판독 NOTE, 뼈=PET-CT, 간=복부 CT(+조직), 폐/림프절=흉부·복부 CT."""
+    vid = ctx.visit_on(p, day)
+    if site == "Brain":
+        ctx.note(p, day, f"MRI brain with contrast (neurologic symptoms): new enhancing intracranial lesion(s). {tail}", vid=vid)
+    elif site == "Bone":
+        ctx.procedure(p, day, PET_CT, vid=vid)
+        ctx.note(p, day, f"FDG PET-CT: new hypermetabolic osseous lesion(s). {tail}", vid=vid)
+    else:
+        ctx.procedure(p, day, CT_ABD, vid=vid)
+        if site == "Lung":
+            ctx.procedure(p, day, CT_CHEST, vid=vid)
+        ctx.note(p, day, f"CT chest/abdomen/pelvis: interval increase of known lesions and new {site.lower()} metastases. {tail}", vid=vid)
+    return vid
 
 
 def _surgery(ctx, p, st, day, nact, salvage=False):
@@ -168,7 +266,8 @@ def _surg_path(ctx, p, st, op_day, nact, bcs, salvage=False):
     if salvage:
         pT, pN, psize = "T2", "NX", round(ctx.rand(1.0, 4.0), 1)
     elif nact:
-        pcr = ctx.bern({"HR+/HER2+": 0.5, "HR-/HER2+": 0.6, "TNBC": 0.45}.get(st["sub"], 0.12))
+        # HER2+ 선행요법은 pCR 만 만든다(잔존병변 표준 T-DM1 이 약물 목록에 없음)
+        pcr = True if st["her2"] else ctx.bern({"TNBC": 0.45}.get(st["sub"], 0.12))
         if pcr:
             pT, pN, psize = "yT0", "yN0", 0.0
         else:
@@ -206,7 +305,7 @@ def _surg_path(ctx, p, st, op_day, nact, bcs, salvage=False):
 
 def _rt(ctx, p, day, kind):
     rvid = ctx.visit_on(p, day)
-    ctx.procedure(p, day, 4181206, vid=rvid)
+    ctx.procedure(p, day, RT, vid=rvid)
     fx = ctx.choice([16, 25], p=[0.6, 0.4]) if kind == "WBI" else 25
     return ctx.days(day, int(fx * 1.4) + 3)
 
@@ -214,7 +313,7 @@ def _rt(ctx, p, day, kind):
 def _endocrine(ctx, p, st, start, ecog, limit=None):
     """보조 내분비치료 (84일 처방 단위, 최대 5년)."""
     if st["meno"] == 2 and ctx.bern(0.9):
-        drug, name = (1348265, "Letrozole") if ctx.bern(0.6) else (1319247, "Anastrozole")
+        drug, name = (LETROZOLE, "Letrozole") if ctx.bern(0.6) else (ANASTROZOLE, "Anastrozole")
     else:
         drug, name = 1436678, "Tamoxifen"
     cycles = ctx.randint(2, 12) if ctx.bern(0.1) else 22
@@ -225,27 +324,39 @@ def _endocrine(ctx, p, st, start, ecog, limit=None):
 
 
 def _palliative(ctx, p, st, start, ecog, first_intent=3):
-    """전이/재발 후 전신치료 순차 라인. 반환 (last_end, last_sid)."""
+    """전이/재발 후 전신치료 순차 라인. 반환 (last_end, last_sid).
+    plan 항목: (이름, 약물, 주기일, 주기수, 호르몬/경구 구분, 목적, AE풀, AE확률, 경구여부, ctx.sact 추가 인자)"""
+    ai = LETROZOLE if st["meno"] == 2 else None
     if st["her2"]:
-        plan = [("Docetaxel + Trastuzumab", [1315942, 1387104], 21, 6, 2, first_intent, AE_CHEMO, 0.45, False),
-                ("Trastuzumab maintenance", [1387104], 21, ctx.randint(4, 16), 2, 4, AE_HORM, 0.1, False),
-                ("Capecitabine", [1337620], 21, ctx.randint(4, 8), 1, 3, AE_CAPE, 0.4, True)]
+        endo = [ai if ai else 1436678] if st["hr"] else []
+        plan = [("Docetaxel + Trastuzumab + Pertuzumab (THP)", [DOCETAXEL, TRAST, PERTU], 21, 6, 2, first_intent, AE_CHEMO, 0.45, False, {}),
+                ("Trastuzumab + Pertuzumab maintenance" + (" + endocrine" if endo else ""), [TRAST, PERTU] + endo, 21,
+                 ctx.randint(6, 24), 2, 4, AE_HORM, 0.1, False, {}),
+                ("Capecitabine + Trastuzumab", [CAPE, TRAST], 21, ctx.randint(4, 8), 1, 3, AE_CAPE, 0.4, False, {})]
     elif st["hr"]:
-        drug, name = (1348265, "Letrozole") if st["meno"] == 2 else (1436678, "Tamoxifen")
-        plan = [(name, [drug], 28, ctx.randint(6, 24), 3, first_intent, AE_HORM, 0.08, True),
-                ("Weekly Paclitaxel", [1378382], 7, ctx.randint(8, 18), 1, 3, AE_CHEMO, 0.45, False),
-                ("Capecitabine", [1337620], 21, ctx.randint(4, 8), 1, 3, AE_CAPE, 0.4, True)]
+        if ai:      # 폐경 후: CDK4/6 억제제(21일 투여/7일 휴약) + letrozole
+            cdk, cdk_nm = PALBO, "Palbociclib"
+            first = (f"{cdk_nm} + Letrozole", [cdk, ai], 28, ctx.randint(6, 24), 3, first_intent, AE_CDK, 0.3, True, {"drug_days": {cdk: 21}})
+        else:       # 난소기능억제제가 목록에 없어 폐경 전/남성은 tamoxifen 단독
+            first = ("Tamoxifen", [1436678], 28, ctx.randint(6, 24), 3, first_intent, AE_HORM, 0.08, True, {})
+        plan = [first,
+                ("Capecitabine", [CAPE], 21, ctx.randint(4, 8), 1, 3, AE_CAPE, 0.4, True, {}),
+                ("Weekly Paclitaxel", [PACLITAXEL], 7, ctx.randint(8, 18), 1, 3, AE_CHEMO, 0.45, False, {"dose_overrides": {PACLITAXEL: 80}})]
     else:
-        plan = [("Weekly Paclitaxel + Carboplatin", [1378382, 1344905], 7, 12, 1, first_intent, AE_CHEMO, 0.45, False),
-                ("Capecitabine", [1337620], 21, ctx.randint(4, 8), 1, 3, AE_CAPE, 0.4, True)]
+        plan = [("Weekly Paclitaxel + Carboplatin", [PACLITAXEL, CARBO], 7, 12, 1, first_intent, AE_CHEMO, 0.45, False,
+                 {"dose_overrides": {PACLITAXEL: 80, CARBO: lambda d, v: ctx.calvert_dose(p, d, 2, v)}}),
+                ("Capecitabine", [CAPE], 21, ctx.randint(4, 8), 1, 3, AE_CAPE, 0.4, True, {})]
     last_end, last_sid, cur, cur_ecog = start, None, start, ecog
-    for i, (name, drugs, cd, cycles, cat, intent, aes, ae_p, oral) in enumerate(plan):
-        r = _sact(ctx, p, name, drugs, cur, cycles, intent, cur_ecog, "NE", cycle_days=cd, oral=oral)
+    for i, (name, drugs, cd, cycles, cat, intent, aes, ae_p, oral, kw) in enumerate(plan):
+        r = _sact(ctx, p, name, drugs, cur, cycles, intent, cur_ecog, "NE", cycle_days=cd, oral=oral, **kw)
         if r is None:
             break
         sid, e, cyc = r
+        e = _mon(ctx, p, cyc, drugs, aes, ae_p=ae_p, labs=cat != 3) or ctx.regimen_end(sid)
         last_end, last_sid = e, sid
-        _mon(ctx, p, cyc, drugs, aes, ae_p=ae_p, labs=cat != 3)
+        _premed(ctx, p, cyc, drugs, weekly=cd == 7)
+        if TRAST in drugs:
+            _echo_series(ctx, p, cyc[0], e, "trastuzumab-containing regimen")
         if i + 1 < len(plan) and plan[i + 1][5] == 4:          # 유지요법으로 이어짐
             ctx.sact_update(sid, best_overall_response=ctx.choice(["PR", "SD", "CR"], p=[0.6, 0.3, 0.1]))
             cur = ctx.days(e, 21)
@@ -254,10 +365,7 @@ def _palliative(ctx, p, st, start, ecog, first_intent=3):
         if progressed:
             pd_day = ctx.days(e, ctx.randint(0, 45))
             site = ctx.choice(MET_SITES, p=MET_P)[0]
-            pvid = ctx.visit_on(p, pd_day)
-            ctx.procedure(p, pd_day, 4207701, vid=pvid)
-            ctx.note(p, pd_day, f"CT chest/abdomen/pelvis: interval increase of known lesions and new {site.lower()} metastases. "
-                                "Progressive disease by RECIST 1.1.", vid=pvid)
+            _pd_imaging(ctx, p, pd_day, site, "Progressive disease by RECIST 1.1.")
             ctx.sact_update(sid, date_of_progression=pd_day, recurrence_anatomic_site=site,
                             best_overall_response=ctx.choice(["PR", "SD", "PD"], p=[0.35, 0.4, 0.25]))
             last_end = pd_day
@@ -295,13 +403,15 @@ def generate(ctx: Ctx, n=100):
         size = st["size"]
 
         # 치료 계획 플래그 (가임력 보존 결정에 필요하므로 미리 결정)
-        big = T not in ("Tis", "T1a", "T1b") or N != "N0"
+        nact_ind = T in ("T2", "T3", "T4b") or N != "N0"          # 선행항암 적응: cT2 이상 또는 cN+
         if M == "M1" or dcis:
             plan_nact, plan_adj_chemo = False, False
         elif st["her2"]:
-            plan_nact, plan_adj_chemo = big, not big
+            plan_nact = nact_ind
+            plan_adj_chemo = (not nact_ind) and T in ("T1b", "T1c")      # cT1a N0 는 보조 항암 없이 내분비(해당 시)
         elif sub == "TNBC":
-            plan_nact, plan_adj_chemo = big, T == "T1b"
+            plan_nact = nact_ind
+            plan_adj_chemo = (not nact_ind) and T in ("T1b", "T1c")
         else:   # HR+/HER2-
             plan_nact = (T in ("T3", "T4b") or N in ("N2", "N3")) and ctx.bern(0.5)
             st["rs"] = ctx.choice([ctx.randint(0, 15), ctx.randint(16, 25), ctx.randint(26, 60)], p=[0.5, 0.35, 0.15])
@@ -315,13 +425,13 @@ def generate(ctx: Ctx, n=100):
         if st["htn"]: ctx.condition(p, index, 320128, vid=dx_vid)
         if st["dm"]: ctx.condition(p, index, 201826, vid=dx_vid)
         if st["hl"]: ctx.condition(p, index, 432867, vid=dx_vid)
-        ctx.procedure(p, index, 4044530, vid=dx_vid)
-        ctx.procedure(p, index, 4249893, vid=dx_vid)
+        ctx.procedure(p, index, MMG, vid=dx_vid)
+        ctx.procedure(p, index, CORE_BX, vid=dx_vid)
         birads = ctx.choice(["4B", "4C", "5"], p=[0.3, 0.4, 0.3]) if dcis else ctx.choice(["4A", "4B", "4C", "5"], p=[0.08, 0.17, 0.3, 0.45])
         ctx.note(p, index, MMG_REPORT.format(
             lat=lat_en, size=size, loc=loc_nm.lower(),
-            shape="segmental pleomorphic microcalcifications" if dcis else ctx.choice(["spiculated mass", "irregular hypoechoic mass"], p=[0.7, 0.3]),
-            ax="suspicious enlarged lymph node" if N != "N0" else "no abnormal lymph node", birads=birads), vid=dx_vid)
+            shape="segmental pleomorphic microcalcifications" if dcis else ctx.choice(["spiculated high-density mass", "irregular mass with indistinct margins"], p=[0.7, 0.3]),
+            ax="enlarged dense lymph node in the axillary tail" if N != "N0" else "no abnormal lymph node", birads=birads), vid=dx_vid)
         _breast_row(ctx, p, st, dx_vid, index, age, plan_chemo)
 
         # ---- 병리/IHC 외래 (3~6일 후)
@@ -342,19 +452,21 @@ def generate(ctx: Ctx, n=100):
         if bmi >= 30: ctx.condition(p, path_day, 433736, vid=pv)
         ctx.labs(p, path_day, [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3020491, 3024128, 3028641], vid=pv)
 
-        # ---- 병기 결정
-        if st["stage"] in ("0", "I"):
+        # ---- 병기 결정: 전신 영상은 III·IV기에서만(I·II기는 증상이 없으면 시행하지 않는다)
+        if st["stage"] in ("0", "I", "II"):
             stage_day = path_day
         else:
             stage_day = ctx.days(index, ctx.randint(7, 14))
             svid_stage = ctx.visit_on(p, stage_day)
-            ctx.procedure(p, stage_day, 4207701, vid=svid_stage)
-            ctx.procedure(p, stage_day, 4305790, vid=svid_stage)
-            met = ctx.choice(MET_SITES, p=MET_P)[0] if M == "M1" else None
+            ctx.procedure(p, stage_day, CT_CHEST, vid=svid_stage)
+            ctx.procedure(p, stage_day, CT_ABD, vid=svid_stage)
+            ctx.procedure(p, stage_day, PET_CT, vid=svid_stage)
+            met = ctx.choice(DX_MET_SITES, p=DX_MET_P)[0] if M == "M1" else None
             node = "Enlarged axillary lymph nodes" if N != "N0" else "No significant lymphadenopathy"
             met_txt = f"Multiple metastatic lesions in {met.lower()}." if met else "No distant metastasis."
             ctx.note(p, stage_day, CT_REPORT.format(lat=lat_en, size=size, node=node, met=met_txt, t=T, n=N, m=M), vid=svid_stage)
-            ctx.note(p, stage_day, f"Whole body FDG PET-CT. Hypermetabolic {lat_en.lower()} breast mass (SUVmax {round(ctx.rand(3.0, 15.0), 1)}). {node}. {met_txt}", vid=svid_stage)
+            ctx.note(p, stage_day, f"Whole body FDG PET-CT. Hypermetabolic {lat_en.lower()} breast mass (SUVmax {round(ctx.rand(3.0, 15.0), 1)}). {node}. {met_txt} "
+                                   "Brain not evaluable on FDG PET.", vid=svid_stage)
 
         # ---- 2) 치료
         surgery_day = None
@@ -370,27 +482,47 @@ def generate(ctx: Ctx, n=100):
                 _die(ctx, p, last_end)
         else:
             nact = plan_nact
+            tz_start = None                                     # trastuzumab 첫 투여일(심장 감시 구간 시작)
+            use_io = False                                      # TNBC 선행요법에 pembrolizumab 을 쓴 경우만 보조 pembrolizumab
             if nact:
                 s = ctx.days(index, ctx.randint(14, 28))
                 if st["her2"]:
-                    drugs = [1315942, 1344905, 1387104]
-                    r = _sact(ctx, p, "Docetaxel + Carboplatin + Trastuzumab (TCH)", drugs, s, 6, 1, ecog,
-                              ctx.choice(["PR", "CR", "SD"], p=[0.5, 0.4, 0.1]))
-                    if r: _mon(ctx, p, r[2], drugs)
-                else:
-                    r = _sact(ctx, p, "Doxorubicin + Cyclophosphamide (AC)", [1338512, 1310317], s, 4, 1, ecog, ctx.choice(["PR", "SD"], p=[0.7, 0.3]))
+                    drugs = [DOCETAXEL, CARBO, TRAST, PERTU]
+                    r = _sact(ctx, p, "Docetaxel + Carboplatin + Trastuzumab + Pertuzumab (TCHP)", drugs, s, 6, 1, ecog,
+                              ctx.choice(["PR", "CR"], p=[0.4, 0.6]), dose_overrides={CARBO: lambda d, v: ctx.calvert_dose(p, d, 6, v)})
                     if r:
-                        _mon(ctx, p, r[2], [1338512, 1310317])
-                        drugs2 = [1378382, 1344905] if sub == "TNBC" else [1378382]
-                        r2 = _sact(ctx, p, "Weekly Paclitaxel + Carboplatin" if sub == "TNBC" else "Weekly Paclitaxel", drugs2,
-                                   ctx.days(r[1], 21), 12, 1, ecog, ctx.choice(["PR", "CR", "SD"], p=[0.5, 0.35, 0.15]), cycle_days=7)
-                        if r2: _mon(ctx, p, r2[2], drugs2); r = r2
+                        _mon(ctx, p, r[2], drugs); _premed(ctx, p, r[2], drugs)
+                        tz_start = r[2][0]
+                elif sub == "TNBC":
+                    # KEYNOTE-522: pembrolizumab + carboplatin + paclitaxel(주 1회) → pembrolizumab + AC
+                    _echo(ctx, p, ctx.days(s, -7), "baseline before anthracycline")
+                    use_io = s >= IO_DATE
+                    io = [PEMBRO] if use_io else []
+                    r = _sact(ctx, p, ("Pembrolizumab + " if use_io else "") + "Carboplatin + Weekly Paclitaxel", io + [CARBO], s, 4, 1, ecog,
+                              ctx.choice(["PR", "CR", "SD"], p=[0.5, 0.35, 0.15]), cycle_days=21,
+                              dose_overrides={CARBO: lambda d, v: ctx.calvert_dose(p, d, 5, v)})
+                    if r:
+                        pe = _weekly_in_cycles(ctx, p, r[0], r[2], PACLITAXEL, 80)       # monitor 전에 더해야 감량·휴약이 함께 적용된다
+                        _mon(ctx, p, r[2], io + [CARBO, PACLITAXEL]); _premed(ctx, p, r[2], [CARBO, PACLITAXEL])
+                        r1_end = ctx.regimen_end(r[0])
+                        r2 = _sact(ctx, p, ("Pembrolizumab + " if use_io else "") + "Doxorubicin + Cyclophosphamide (AC)", io + [DOXO, CYCLO],
+                                   ctx.days(r1_end, 7), 4, 1, ecog, ctx.choice(["PR", "CR", "SD"], p=[0.5, 0.35, 0.15]))
+                        if r2:
+                            _mon(ctx, p, r2[2], io + [DOXO, CYCLO]); _premed(ctx, p, r2[2], [DOXO, CYCLO]); r = r2
+                else:
+                    _echo(ctx, p, ctx.days(s, -7), "baseline before anthracycline")
+                    r = _sact(ctx, p, "Doxorubicin + Cyclophosphamide (AC)", [DOXO, CYCLO], s, 4, 1, ecog, ctx.choice(["PR", "SD"], p=[0.7, 0.3]))
+                    if r:
+                        _mon(ctx, p, r[2], [DOXO, CYCLO]); _premed(ctx, p, r[2], [DOXO, CYCLO])
+                        r2 = _sact(ctx, p, "Weekly Paclitaxel", [PACLITAXEL], ctx.days(ctx.regimen_end(r[0]), 21), 12, 1, ecog,
+                                   ctx.choice(["PR", "CR", "SD"], p=[0.5, 0.35, 0.15]), cycle_days=7, dose_overrides={PACLITAXEL: 80})
+                        if r2: _mon(ctx, p, r2[2], [PACLITAXEL]); _premed(ctx, p, r2[2], [PACLITAXEL], weekly=True); r = r2
                 if r is None:
                     nact = False
                     surgery_day = ctx.days(index, ctx.randint(21, 45))
                 else:
-                    chemo_end = r[1]
-                    surgery_day = ctx.days(r[1], ctx.randint(21, 42))
+                    chemo_end = ctx.regimen_end(r[0])
+                    surgery_day = ctx.days(chemo_end, ctx.randint(21, 42))
             else:
                 surgery_day = ctx.days(index, ctx.randint(21, 45))
             if surgery_day <= ctx.today:
@@ -411,29 +543,45 @@ def generate(ctx: Ctx, n=100):
                 if plan_adj_chemo and not nact:
                     s = ctx.days(last_adj_end, ctx.randint(21, 35))
                     if st["her2"]:
-                        r = _sact(ctx, p, "Weekly Paclitaxel + Trastuzumab (APT)", [1378382, 1387104], s, 12, 2, ecog, "NE", cycle_days=7)
+                        # APT: paclitaxel 80 mg/m2 주 1회 ×12 + trastuzumab 주 1회(첫 주 4 → 2 mg/kg), 이어서 q3w 6 mg/kg ×13
+                        r = _sact(ctx, p, "Weekly Paclitaxel + Trastuzumab (APT)", [PACLITAXEL, TRAST], s, 12, 2, ecog, "NE",
+                                  cycle_days=7, dose_overrides={PACLITAXEL: 80, TRAST: [4, 2]})
                         if r:
-                            _mon(ctx, p, r[2], [1378382, 1387104]); chemo_end = last_adj_end = r[1]
-                            r2 = _sact(ctx, p, "Trastuzumab", [1387104], ctx.days(r[1], 21), 13, 2, ecog, "NE")
-                            if r2: _mon(ctx, p, r2[2], [1387104], AE_HORM, ae_p=0.08, labs=False); last_adj_end = r2[1]
+                            _mon(ctx, p, r[2], [PACLITAXEL, TRAST]); _premed(ctx, p, r[2], [PACLITAXEL], weekly=True)
+                            chemo_end = last_adj_end = ctx.regimen_end(r[0])
+                            tz_start = r[2][0]
+                            r2 = _sact(ctx, p, "Trastuzumab", [TRAST], ctx.days(chemo_end, 21), 13, 2, ecog, "NE")
+                            if r2: _mon(ctx, p, r2[2], [TRAST], AE_HORM, ae_p=0.08, labs=False); last_adj_end = ctx.regimen_end(r2[0])
+                        if tz_start: _echo_series(ctx, p, tz_start, last_adj_end, "trastuzumab")
                     else:
-                        r = _sact(ctx, p, "Docetaxel + Cyclophosphamide (TC)", [1315942, 1310317], s, 4, 2, ecog, "NE")
-                        if r: _mon(ctx, p, r[2], [1315942, 1310317]); chemo_end = last_adj_end = r[1]
+                        r = _sact(ctx, p, "Docetaxel + Cyclophosphamide (TC)", [DOCETAXEL, CYCLO], s, 4, 2, ecog, "NE")
+                        if r: _mon(ctx, p, r[2], [DOCETAXEL, CYCLO]); _premed(ctx, p, r[2], [DOCETAXEL, CYCLO]); chemo_end = last_adj_end = ctx.regimen_end(r[0])
                 # 선행항암 후 보조치료
                 if nact:
                     s = ctx.days(surgery_day, ctx.randint(28, 42))
-                    if st["her2"]:
-                        r = _sact(ctx, p, "Trastuzumab", [1387104], s, 11, 2, ecog, "NE")
-                        if r: _mon(ctx, p, r[2], [1387104], AE_HORM, ae_p=0.08, labs=False); last_adj_end = r[1]
-                    elif sub == "TNBC" and not pcr:
-                        r = _sact(ctx, p, "Capecitabine", [1337620], s, 6, 2, ecog, "NE", oral=True)
-                        if r: _mon(ctx, p, r[2], [1337620], AE_CAPE, ae_p=0.4); chemo_end = last_adj_end = r[1]
+                    if st["her2"]:        # pCR 만 만든다 → trastuzumab + pertuzumab 으로 1년 완료
+                        r = _sact(ctx, p, "Trastuzumab + Pertuzumab", [TRAST, PERTU], s, 12, 2, ecog, "NE")
+                        if r:
+                            _mon(ctx, p, r[2], [TRAST, PERTU], AE_HORM, ae_p=0.08, labs=False); last_adj_end = ctx.regimen_end(r[0])
+                        if tz_start: _echo_series(ctx, p, tz_start, last_adj_end, "trastuzumab")
+                    elif sub == "TNBC" and use_io:       # KEYNOTE-522: pCR 여부와 무관하게 pembrolizumab ×9
+                        r = _sact(ctx, p, "Pembrolizumab", [PEMBRO], s, 9, 2, ecog, "NE")
+                        if r: _mon(ctx, p, r[2], [PEMBRO], AE_HORM, ae_p=0.1, labs=False); last_adj_end = ctx.regimen_end(r[0])
                 # 방사선치료
                 pmrt = (not bcs) and (T in ("T3", "T4b") or nn in ("N2", "N3") or (nn == "N1" and ctx.bern(0.5)))
                 if bcs or pmrt:
                     rt_day = ctx.days(last_adj_end, ctx.randint(21, 42)) if (chemo_end and chemo_end > surgery_day) else ctx.days(surgery_day, ctx.randint(28, 50))
                     if rt_day <= ctx.today:
                         last_adj_end = max(last_adj_end, _rt(ctx, p, rt_day, "WBI" if bcs else "PMRT"))
+                if nact and sub == "TNBC" and not use_io and not pcr:
+                    # CREATE-X: residual HER2-negative disease after neoadjuvant chemotherapy.
+                    # Complete indicated radiotherapy first; this branch does not combine with pembrolizumab.
+                    s = ctx.days(last_adj_end, 14)
+                    r = _sact(ctx, p, "Adjuvant Capecitabine (residual TNBC)", [CAPE], s, 6, 2, ecog, "NE",
+                              cycle_days=21, dose_overrides={CAPE: 1250}, drug_days={CAPE: 14})
+                    if r:
+                        _mon(ctx, p, r[2], [CAPE], AE_CAPE)
+                        last_adj_end = ctx.regimen_end(r[0])
                 p_rec = {"0": 0.03, "I": 0.06, "II": 0.13, "III": 0.28}[st["stage"]] + (0.08 if sub == "TNBC" and not dcis else 0)
                 recur_day = ctx.days(last_adj_end, ctx.randint(200, 1500)) if ctx.bern(p_rec) else None
                 if recur_day is not None and recur_day > ctx.days(ctx.today, -45):
@@ -443,21 +591,34 @@ def generate(ctx: Ctx, n=100):
                     s = ctx.days(last_adj_end, ctx.randint(14, 30))
                     _endocrine(ctx, p, st, s, ecog, limit=ctx.days(recur_day, -1) if recur_day else None)
 
-        # ---- 3) 추적 및 재발
+        # ---- 3) 추적 및 재발 (병력·진찰 6개월 간격, 유방촬영은 연 1회)
         fu = ctx.days(last_adj_end, ctx.randint(170, 200))
         recurred = M == "M1"
+        last_mmg = index
         k = 0
         while p.death_date is None and fu <= ctx.today and k < 14:
             fvid = ctx.visit_on(p, fu)
             hit = recur_day is not None and not recurred and fu >= recur_day
-            ctx.procedure(p, fu, 4207701 if recurred else 4044530, vid=fvid)
+            if recurred:
+                ctx.procedure(p, fu, CT_ABD, vid=fvid)
+            elif (fu - last_mmg).days >= 330:
+                ctx.procedure(p, fu, MMG, vid=fvid)
+                last_mmg = fu
             ctx.labs(p, fu, [3000963, 3028641, 3013721] if recurred else [3000963, 3028641], vid=fvid)
             if hit:
                 recurred = True
                 site_nm, distant = ctx.choice(REC_SITES, p=REC_P)
-                ctx.procedure(p, fu, 4207701, vid=fvid)
-                ctx.procedure(p, fu, 4305790, vid=fvid)
-                ctx.note(p, fu, f"PET-CT: new hypermetabolic lesion(s) in {site_nm.lower()}, consistent with {'distant' if distant else 'locoregional'} recurrence of breast cancer.", vid=fvid)
+                if distant:
+                    _pd_imaging(ctx, p, fu, site_nm, f"Consistent with distant recurrence of breast cancer in {site_nm.lower()}.")
+                    if site_nm == "Liver":
+                        ctx.procedure(p, fu, LIVER_BX, vid=fvid)
+                        ctx.note(p, fu, "Liver, percutaneous core needle biopsy: metastatic carcinoma consistent with breast primary; "
+                                        "receptor status re-tested.", note_type=44814640, note_class=36716165, vid=fvid)
+                else:
+                    ctx.procedure(p, fu, PET_CT, vid=fvid)
+                    ctx.procedure(p, fu, CORE_BX, vid=fvid)
+                    ctx.note(p, fu, f"PET-CT: new hypermetabolic lesion(s) in {site_nm.lower()}; core needle biopsy confirms locoregional recurrence of breast cancer.",
+                             vid=fvid)
                 start = ctx.days(fu, ctx.randint(7, 21))
                 if not distant and site_nm.startswith("Ipsilateral"):
                     sd = ctx.days(fu, ctx.randint(14, 28))

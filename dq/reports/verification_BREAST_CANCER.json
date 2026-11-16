@@ -8,11 +8,11 @@
  },
  "dirty": {
   "rules": 294,
-  "violations": 1472,
-  "failed_rules": 253
+  "violations": 1862,
+  "failed_rules": 252
  },
- "faults_total": 272,
- "faults_detected": 272,
+ "faults_total": 269,
+ "faults_detected": 269,
  "recall": 1.0,
  "fault_types": 31,
  "fault_types_fully_detected": 31,
@@ -26,8 +26,8 @@
   },
   {
    "fault_type": "CODELIST",
-   "n": 23,
-   "detected": 23,
+   "n": 22,
+   "detected": 22,
    "recall": 1.0
   },
   {
@@ -152,8 +152,8 @@
   },
   {
    "fault_type": "RANGE",
-   "n": 16,
-   "detected": 16,
+   "n": 15,
+   "detected": 15,
    "recall": 1.0
   },
   {
@@ -188,8 +188,8 @@
   },
   {
    "fault_type": "TYPE_BAD",
-   "n": 95,
-   "detected": 95,
+   "n": 94,
+   "detected": 94,
    "recall": 1.0
   },
   {
@@ -214,16 +214,19 @@
   },
   {
    "category": "Conformance",
-   "n": 158,
-   "detected": 158,
+   "n": 156,
+   "detected": 156,
    "recall": 1.0
   },
   {
    "category": "Plausibility",
-   "n": 46,
-   "detected": 46,
+   "n": 45,
+   "detected": 45,
    "recall": 1.0
   }
  ],
- "collateral_rules": []
+ "collateral_rules": [
+  "ST-0242",
+  "ST-0333"
+ ]
 }

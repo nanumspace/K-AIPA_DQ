@@ -45,13 +45,13 @@ function notes(cohort) {
 function readme(kind, cohort, sum, manifestRows) {
   const kor = profiles[cohort].kor;
   const lines = [
-    `K-AI 코호트 데이터 품질검증 견본 데이터 · ${kor} (${cohort}) · ${kind} · v${version}`,
+    `K-AIPA DQ ${kind === "good" ? "합성 임상 사례 예제" : "합성 견본 데이터"} · ${kor} (${cohort}) · ${kind} · v${version}`,
     "",
     kind === "good"
       ? "이 폴더는 가상 환자 1명의 종단 기록입니다. 표 간 참조와 일부 임상 불변식을 점검했지만 임상전문가 감수·실제 환자 자료는 아닙니다."
       : "이 폴더는 의뢰사 매뉴얼(2026-11-16)의 명세로 만든 규칙 회귀시험용 100명 가상데이터입니다. 실제 환자나 병원과 무관합니다.",
     "환자 표와 질환 본표 등이 폴더 하나에 들어 있어 그대로 검증할 수 있습니다.",
-    "Quality Validator 의 동작을 확인하는 용도이며, 폴더째 앱의 '검증 실행' 화면에 끌어다 놓으면 됩니다.",
+    "K-AIPA DQ(K-AIPA 임상 데이터 품질검증)의 동작을 확인하는 용도이며, 폴더째 앱의 '검증 실행' 화면에 끌어다 놓으면 됩니다.",
     "",
     "파일",
     "  <TABLE>.csv            테이블별 CSV (UTF-8, 헤더 포함, 빈 값은 빈 문자열, 날짜 YYYY-MM-DD)",
@@ -62,7 +62,9 @@ function readme(kind, cohort, sum, manifestRows) {
   if (kind === "dirty") {
     lines.push("기대 결과", `  규칙에서 역으로 만든 오류를 ${manifestRows}건 주입했습니다(실제 병원 데이터 검출률이 아닙니다). 주입한 오류마다 해당 규칙이 발화해야 하며, 한 오류가 여러 규칙에 걸리므로 위반 건수는 주입 건수보다 많습니다.`);
   } else {
-    lines.push("기대 결과", `  ${kind === "good" ? "환자 1명의 연결된 표 예시" : "규칙 시험용 clean 데이터"}입니다. 위반 0건이 나와야 합니다.`);
+    lines.push("기대 결과", kind === "good"
+      ? "  환자 1명의 연결된 표 예시입니다. 위반 0건이 나와야 합니다."
+      : "  규칙 시험용 clean 데이터입니다. 오류는 0건이며, 임상 치료 차수와 요법 시작 순서가 다른 경우 SEM-SACT-006 경고가 포함될 수 있습니다.");
   }
   if (sum) lines.push(`  검증 실행일 ${sum.run_date} 기준 참조 결과: 실행 규칙 ${sum.rules}개, 실패 규칙 ${sum.failed}개, 위반 ${sum.violations}건`);
   lines.push(
@@ -74,8 +76,8 @@ function readme(kind, cohort, sum, manifestRows) {
     "  엑셀로 시험: excel/ 안의 .xlsx 파일 하나만 넣습니다. 시트 이름이 테이블에 자동 대응됩니다.",
     "  두 방법의 결과는 같아야 합니다.",
     "",
-    "저장소: https://github.com/nanumspace/KAI_DQ_App",
-    "설명서: https://github.com/nanumspace/KAI_DQ_App/blob/main/manual/README.md",
+    "저장소: https://github.com/nanumspace/K-AIPA_DQ",
+    "설명서: https://github.com/nanumspace/K-AIPA_DQ/blob/main/manual/README.md",
     "라이선스: Apache-2.0",
     ""
   );
@@ -129,11 +131,11 @@ for (const cohort of COHORTS) for (const kind of KINDS) {
 const allZip = path.join(outDir, `SampleData-${version}-all.zip`);
 fs.rmSync(allZip, { force: true });
 fs.writeFileSync(path.join(stage, "README.txt"), [
-  `K-AI 코호트 데이터 품질검증 견본 데이터 전체 묶음 · v${version}`, "",
+  `K-AIPA DQ 합성 견본 데이터·합성 임상 사례 예제 전체 묶음 · v${version}`, "",
   "6개 코호트 × clean/dirty(100명 규칙 시험용) + good(가상 환자 1명, 연결된 임상 흐름) = 18개 폴더입니다.",
   "폴더마다 README.txt 에 파일 구성과 기대 결과가 있습니다.",
   "모두 가상데이터이며 실제 환자와 무관합니다. 폴더 하나를 앱의 '검증 실행' 화면에 끌어다 놓으면 됩니다.", "",
-  "https://github.com/nanumspace/KAI_DQ_App", ""].join("\n"));
+  "https://github.com/nanumspace/K-AIPA_DQ", ""].join("\n"));
 execFileSync("zip", ["-r", "-q", "-X", allZip, "README.txt", ...allDirs], { cwd: stage });
 console.log(`  ${path.basename(allZip)}  ${(fs.statSync(allZip).size / 1048576).toFixed(1)} MB`);
 fs.rmSync(stage, { recursive: true, force: true });

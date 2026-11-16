@@ -19,10 +19,10 @@ python dq/engine.py --cohort <COHORT> --data <csv 디렉터리> --out <보고서
 
 `python dq/run_all.py` 가 6개 코호트 전부에 대해 생성 → clean 검증 → 오류 주입 → dirty 검증 → Good Sample 검증 → 정답 대조를 실행하고, 결과를 `dq/reports/verification_<COHORT>.{json,md}` 와 `verification_summary.{json,md}` 에 씁니다. 판정 기준은 다음과 같습니다.
 
-- clean 과 Good Sample: 위반(경고 포함) 0건, 규칙 오류 0건 (검증 실행일 `--today 2026-09-07`).
+- clean 과 Good Sample: 오류 등급 위반과 규칙 실행 오류는 0건 (검증 실행일 `--today 2026-09-07`). Good Sample 은 위반이 전혀 없어야 합니다. clean 에서는 임상 치료 차수가 단순 시작일 순서와 다를 때의 `SEM-SACT-006` 경고(임상 휴리스틱)가 남을 수 있으며 그대로 출력합니다. 그 외 경고는 생성 파이프라인에서 실패시킵니다.
 - dirty: 주입한 오류가 모두 검출. 검출 판정은 "기대 규칙 중 하나가 같은 person_id 또는 같은 pk로 findings에 있음"입니다. 주입 오류의 부수 효과로 함께 발화한 규칙(collateral)은 별도로 기록합니다.
 
-기대 결과 값(적용 규칙 수, 위반 건수 등)은 위 보고서와 `dq/reports/<clean|dirty|good>_<COHORT>/summary.json` 에 있고, 자료실([resources.html](https://nanumspace.github.io/KAI_DQ_App/resources.html))이 이를 읽어 보여 줍니다.
+기대 결과 값(적용 규칙 수, 위반 건수 등)은 위 보고서와 `dq/reports/<clean|dirty|good>_<COHORT>/summary.json` 에 있고, 자료실([resources.html](https://nanumspace.github.io/K-AIPA_DQ/resources.html))이 이를 읽어 보여 줍니다.
 
 **해석의 한계.** 위 판정을 통과하는 것은 가상데이터가 규칙을 만족하도록 만들어졌고 오류가 규칙에서 역으로 만들어졌기 때문입니다. 프로그램이 규칙을 정확히 구현했다는 증거이지 **실제 병원 데이터에서의 민감도나 오탐률의 예측이 아닙니다.** Good Sample 은 합성한 자료이며 임상의의 감수를 받지 않았습니다. 실제 병원 데이터의 오탐률과 새 오류 유형은 파일럿에서 측정해 규칙과 주입 카탈로그에 추가하고, 같은 방식으로 회귀 시험합니다.
 
@@ -40,9 +40,9 @@ cd dq-ts && npm install && npm run run-all    # 6개 코호트 clean/dirty 실�
 
 TypeScript 엔진은 `EngineOptions` 의 `overrides`(`RuleOverrides`)와 `adminMode` 를 받아 표준 규칙 묶음을 조정해 실행합니다. 켜고 끄기, 심각도·범위·정규식·허용 코드 조정, 양식으로 만든 사용자 규칙(`USR-###`), 관리자 모드의 SQL 교체와 SQL 규칙(`ADM-###`)을 지원하며, 규칙이 표준에서 얼마나 벗어났는지 `origin`(`standard`·`modified`·`custom`·`admin`)과 규칙 묶음 해시로 남깁니다. 조정이 있거나 관리자 모드를 쓴 실행의 `report.md` 에는 `## 규칙 설정` 절이 붙습니다. 구조와 기록 위치는 [명세와 규칙 카탈로그](spec-and-rules.md#규칙-편집-앱의-규칙-설정)에, 사용법은 [사용자 설명서 6장](../manual/06-rules.md)에 있습니다. Python 참조 구현은 표준 규칙만 실행합니다.
 
-## 데스크톱 앱 Quality Validator (`app/`)
+## 데스크톱 앱 K-AIPA DQ (`app/`)
 
-Electron + React + TypeScript로 만든 검증 프로그램입니다. Windows 11과 macOS에서 같은 소스로 빌드하며, 병원 DB에 접속하지 않고 네트워크 통신도 없습니다.
+Electron + React + TypeScript로 만든 검증 프로그램입니다. Windows 11과 macOS에서 같은 소스로 빌드하며, 검증 중 병원 DB에 접속하지 않고 입력 데이터를 외부로 보내는 기능이 없습니다. 중앙에 제출하는 것은 사용자가 직접 보내는 집계 파일(`submission.json`)뿐입니다. 앱 이름이 이전 릴리스의 Quality Validator 에서 K-AIPA DQ 로 바뀌었습니다.
 
 **입력.** 코호트 테이블 파일(병원이 직접 채운 질환 본표와 공통 표)을 세 가지 형태로 받습니다: CSV 여러 개(UTF-8 또는 EUC-KR, EUC-KR은 자동 변환), 시트당 테이블 하나인 엑셀 한 파일(날짜 셀은 YYYY-MM-DD로 변환), 또는 파일들이 든 폴더. 파일·시트 이름이 테이블 이름과 달라도 이름 포함 여부와 헤더 유사도(명세 컬럼의 60% 이상)로 자동 대응하고, 대응표에서 직접 바꿀 수 있습니다. 실행 전 사전 점검이 기본키·person_id 누락(오류, 실행 차단), 명세 컬럼 불일치, 날짜 형식 표본(주의)을 알려 줍니다. 실행을 막는 표는 PERSON 과 질환 본표입니다. `NULL`·`NA`·`N/A` 같은 글자는 빈 값으로 읽되, `LYMPHOMA.cell_of_origin` 열의 글자 `NA` 는 매뉴얼이 정한 값이므로 그대로 둡니다.
 

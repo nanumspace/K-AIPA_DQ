@@ -3,24 +3,24 @@
  "run_date": "2026-09-07",
  "tables": {
   "PERSON": 100,
-  "VISIT_OCCURRENCE": 1386,
-  "PROCEDURE_OCCURRENCE": 333,
-  "DRUG_EXPOSURE": 2338,
-  "CONDITION_OCCURRENCE": 311,
-  "MEASUREMENT": 10762,
-  "OBSERVATION": 894,
-  "NOTE": 438,
+  "VISIT_OCCURRENCE": 1950,
+  "PROCEDURE_OCCURRENCE": 340,
+  "DRUG_EXPOSURE": 3146,
+  "CONDITION_OCCURRENCE": 335,
+  "MEASUREMENT": 10312,
+  "OBSERVATION": 904,
+  "NOTE": 1111,
   "MASLD": 99,
-  "ADVERSE_EVENT": 5
+  "ADVERSE_EVENT": 13
  },
  "rules_total": 257,
- "rules_failed": 193,
+ "rules_failed": 199,
  "rules_skipped": 9,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 921,
- "violations_error": 868,
- "violations_warning": 53,
+ "violations_total": 1403,
+ "violations_error": 1348,
+ "violations_warning": 55,
  "by_category": {
   "Completeness": {
    "rules": 53,
@@ -29,13 +29,13 @@
   },
   "Conformance": {
    "rules": 164,
-   "failed": 117,
-   "violations": 572
+   "failed": 125,
+   "violations": 737
   },
   "Plausibility": {
    "rules": 40,
-   "failed": 34,
-   "violations": 296
+   "failed": 32,
+   "violations": 613
   }
  },
  "rules": [
@@ -426,7 +426,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -441,7 +441,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -456,7 +456,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -471,7 +471,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -486,7 +486,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -501,7 +501,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -515,8 +515,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 34,
-   "rows_checked": 1386,
+   "violations": 53,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -531,7 +531,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -546,7 +546,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -561,7 +561,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -576,7 +576,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -591,7 +591,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -606,7 +606,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -621,7 +621,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -636,7 +636,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -651,7 +651,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -666,7 +666,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -681,7 +681,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -696,7 +696,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 1386,
+   "rows_checked": 1950,
    "note": ""
   },
   {
@@ -726,7 +726,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -741,7 +741,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -756,7 +756,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -771,7 +771,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -786,7 +786,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -800,8 +800,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 2,
-   "rows_checked": 333,
+   "violations": 1,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -816,7 +816,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -831,7 +831,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -845,8 +845,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 10,
-   "rows_checked": 333,
+   "violations": 16,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -861,7 +861,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -876,7 +876,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -891,7 +891,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -906,7 +906,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -921,7 +921,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -936,7 +936,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -951,7 +951,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -966,7 +966,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 333,
+   "rows_checked": 340,
    "note": ""
   },
   {
@@ -996,7 +996,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1011,7 +1011,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1026,7 +1026,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1041,7 +1041,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1056,7 +1056,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1071,7 +1071,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1086,7 +1086,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 5,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1101,7 +1101,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1116,7 +1116,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1130,8 +1130,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 79,
-   "rows_checked": 2338,
+   "violations": 68,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1146,7 +1146,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1161,7 +1161,7 @@
    "origin": "standard",
    "status": "skipped",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": "참조 테이블 SACT 코호트에 없음"
   },
   {
@@ -1176,7 +1176,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1191,7 +1191,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1206,7 +1206,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1221,7 +1221,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1236,7 +1236,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1251,7 +1251,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1266,7 +1266,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1281,7 +1281,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1296,7 +1296,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1311,7 +1311,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1326,7 +1326,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1341,7 +1341,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1356,7 +1356,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1371,7 +1371,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1386,7 +1386,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1401,7 +1401,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1416,7 +1416,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1431,7 +1431,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1446,7 +1446,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1461,7 +1461,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1476,7 +1476,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1491,7 +1491,7 @@
    "origin": "standard",
    "status": "skipped",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": "컬럼 없음: ['denominator_value']"
   },
   {
@@ -1506,7 +1506,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1521,7 +1521,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1536,7 +1536,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1551,7 +1551,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1566,7 +1566,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1581,7 +1581,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1596,7 +1596,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1611,7 +1611,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1626,7 +1626,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 2338,
+   "rows_checked": 3146,
    "note": ""
   },
   {
@@ -1656,7 +1656,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1671,7 +1671,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1686,7 +1686,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1701,7 +1701,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1716,7 +1716,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1730,8 +1730,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 5,
-   "rows_checked": 311,
+   "violations": 1,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1746,7 +1746,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1761,7 +1761,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1775,8 +1775,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 14,
-   "rows_checked": 311,
+   "violations": 10,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1791,7 +1791,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1806,7 +1806,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1821,7 +1821,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1836,7 +1836,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1851,7 +1851,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1866,7 +1866,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1881,7 +1881,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1896,7 +1896,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 311,
+   "rows_checked": 335,
    "note": ""
   },
   {
@@ -1926,7 +1926,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -1941,7 +1941,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -1956,7 +1956,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -1971,7 +1971,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -1986,7 +1986,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2000,8 +2000,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 33,
-   "rows_checked": 10762,
+   "violations": 1,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2016,7 +2016,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2031,7 +2031,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2045,8 +2045,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 201,
-   "rows_checked": 10762,
+   "violations": 315,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2061,7 +2061,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2076,7 +2076,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2091,7 +2091,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2106,7 +2106,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2121,7 +2121,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2136,7 +2136,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2151,7 +2151,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2166,7 +2166,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2181,7 +2181,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2196,7 +2196,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2211,7 +2211,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2226,7 +2226,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2241,7 +2241,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2256,7 +2256,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2271,7 +2271,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 10762,
+   "rows_checked": 10312,
    "note": ""
   },
   {
@@ -2301,7 +2301,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2316,7 +2316,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2331,7 +2331,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2346,7 +2346,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2361,7 +2361,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2376,7 +2376,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2390,8 +2390,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 4,
-   "rows_checked": 894,
+   "violations": 1,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2406,7 +2406,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2421,7 +2421,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2435,8 +2435,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 20,
-   "rows_checked": 894,
+   "violations": 28,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2451,7 +2451,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2466,7 +2466,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2481,7 +2481,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2496,7 +2496,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2511,7 +2511,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2526,7 +2526,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2541,7 +2541,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2556,7 +2556,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2571,7 +2571,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2586,7 +2586,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2601,7 +2601,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2616,7 +2616,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 894,
+   "rows_checked": 904,
    "note": ""
   },
   {
@@ -2644,9 +2644,9 @@
    "fields": "",
    "check": "columns",
    "origin": "standard",
-   "status": "fail",
-   "violations": 1,
-   "rows_checked": 438,
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2661,7 +2661,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2676,7 +2676,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2691,7 +2691,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2706,7 +2706,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2720,8 +2720,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 3,
-   "rows_checked": 438,
+   "violations": 1,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2736,7 +2736,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2750,8 +2750,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 13,
-   "rows_checked": 438,
+   "violations": 40,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2766,7 +2766,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2781,7 +2781,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2796,7 +2796,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2811,7 +2811,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2826,7 +2826,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2841,7 +2841,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2856,7 +2856,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2871,7 +2871,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 438,
+   "rows_checked": 1111,
    "note": ""
   },
   {
@@ -2884,10 +2884,10 @@
    "fields": "file_id",
    "check": "type",
    "origin": "standard",
-   "status": "skipped",
+   "status": "pass",
    "violations": 0,
-   "rows_checked": 438,
-   "note": "컬럼 없음: ['file_id']"
+   "rows_checked": 1111,
+   "note": ""
   },
   {
    "rule_id": "ST-0257",
@@ -2914,8 +2914,8 @@
    "fields": "",
    "check": "columns",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
+   "status": "fail",
+   "violations": 1,
    "rows_checked": 99,
    "note": ""
   },
@@ -3050,7 +3050,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 2,
+   "violations": 1,
    "rows_checked": 99,
    "note": ""
   },
@@ -3154,8 +3154,8 @@
    "fields": "safe_score",
    "check": "type",
    "origin": "standard",
-   "status": "fail",
-   "violations": 1,
+   "status": "pass",
+   "violations": 0,
    "rows_checked": 99,
    "note": ""
   },
@@ -3169,8 +3169,8 @@
    "fields": "safe_score",
    "check": "range",
    "origin": "standard",
-   "status": "fail",
-   "violations": 1,
+   "status": "pass",
+   "violations": 0,
    "rows_checked": 99,
    "note": ""
   },
@@ -3184,10 +3184,10 @@
    "fields": "liverrisk_score",
    "check": "type",
    "origin": "standard",
-   "status": "fail",
-   "violations": 1,
+   "status": "skipped",
+   "violations": 0,
    "rows_checked": 99,
-   "note": ""
+   "note": "컬럼 없음: ['liverrisk_score']"
   },
   {
    "rule_id": "ST-0342",
@@ -3216,7 +3216,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3231,7 +3231,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3246,7 +3246,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3261,7 +3261,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3276,7 +3276,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3289,9 +3289,9 @@
    "fields": "person_id",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3304,9 +3304,9 @@
    "fields": "person_id",
    "check": "fk",
    "origin": "standard",
-   "status": "fail",
-   "violations": 2,
-   "rows_checked": 5,
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3321,7 +3321,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3334,9 +3334,9 @@
    "fields": "visit_occurrence_id",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3351,7 +3351,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3366,7 +3366,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3379,9 +3379,9 @@
    "fields": "adverse_event_concept_id",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3396,7 +3396,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3409,9 +3409,9 @@
    "fields": "adverse_event_start_date",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3426,7 +3426,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3439,9 +3439,9 @@
    "fields": "severity_concept_id",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3454,9 +3454,9 @@
    "fields": "severity_concept_id",
    "check": "codelist",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3469,9 +3469,9 @@
    "fields": "causality_concept_id",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3484,9 +3484,9 @@
    "fields": "causality_concept_id",
    "check": "codelist",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3499,9 +3499,9 @@
    "fields": "is_serious_yn",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3516,7 +3516,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3531,7 +3531,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3544,9 +3544,9 @@
    "fields": "outcome_concept_id",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3559,9 +3559,9 @@
    "fields": "outcome_concept_id",
    "check": "codelist",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 5,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3576,7 +3576,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3591,7 +3591,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 5,
+   "rows_checked": 13,
    "note": ""
   },
   {
@@ -3620,7 +3620,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 10,
+   "violations": 20,
    "rows_checked": 0,
    "note": ""
   },
@@ -3635,7 +3635,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 245,
+   "violations": 554,
    "rows_checked": 0,
    "note": ""
   },
@@ -3650,7 +3650,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 11,
+   "violations": 52,
    "rows_checked": 0,
    "note": ""
   },
@@ -3740,7 +3740,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 2,
+   "violations": 3,
    "rows_checked": 0,
    "note": ""
   },
@@ -3754,8 +3754,8 @@
    "fields": "",
    "check": "sql",
    "origin": "standard",
-   "status": "fail",
-   "violations": 1,
+   "status": "pass",
+   "violations": 0,
    "rows_checked": 0,
    "note": ""
   },

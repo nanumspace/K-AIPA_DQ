@@ -8,11 +8,11 @@
  },
  "dirty": {
   "rules": 285,
-  "violations": 895,
-  "failed_rules": 244
+  "violations": 1795,
+  "failed_rules": 243
  },
- "faults_total": 265,
- "faults_detected": 265,
+ "faults_total": 263,
+ "faults_detected": 263,
  "recall": 1.0,
  "fault_types": 32,
  "fault_types_fully_detected": 32,
@@ -152,8 +152,8 @@
   },
   {
    "fault_type": "RANGE",
-   "n": 16,
-   "detected": 16,
+   "n": 15,
+   "detected": 15,
    "recall": 1.0
   },
   {
@@ -194,8 +194,8 @@
   },
   {
    "fault_type": "TYPE_BAD",
-   "n": 91,
-   "detected": 91,
+   "n": 90,
+   "detected": 90,
    "recall": 1.0
   },
   {
@@ -220,16 +220,18 @@
   },
   {
    "category": "Conformance",
-   "n": 152,
-   "detected": 152,
+   "n": 151,
+   "detected": 151,
    "recall": 1.0
   },
   {
    "category": "Plausibility",
-   "n": 47,
-   "detected": 47,
+   "n": 46,
+   "detected": 46,
    "recall": 1.0
   }
  ],
- "collateral_rules": []
+ "collateral_rules": [
+  "ST-0333"
+ ]
 }

@@ -1,1 +1,15 @@
 ﻿rule_id,rule_name,category,severity,table,field,row_key,person_id,detail
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300021,300022,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300029,300029,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300030,300029,line_of_therapy=2 이나 시작일 순서=3
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300034,300032,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300036,300034,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300049,300044,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300053,300048,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300071,300063,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300074,300064,line_of_therapy=1 이나 시작일 순서=3
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300075,300064,line_of_therapy=2 이나 시작일 순서=4
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300079,300067,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300089,300077,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300108,300094,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300109,300094,line_of_therapy=2 이나 시작일 순서=3

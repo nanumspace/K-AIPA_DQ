@@ -57,7 +57,7 @@ export function Dashboard({ nav }: { nav: Nav }) {
                   </PieChart>
                 </ResponsiveContainer>
                 <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", pointerEvents: "none", textAlign: "center", fontSize: 11, color: "var(--muted)" }}>
-                  <div>총 오류 건수<br /><b style={{ fontSize: 15, color: "var(--navy)" }}>{fmt(totalViolations)}</b></div>
+                  <div>총 위반 건수<br /><b style={{ fontSize: 15, color: "var(--navy)" }}>{fmt(totalViolations)}</b></div>
                 </div>
               </div>
               <div className="legend">
@@ -83,10 +83,10 @@ export function Dashboard({ nav }: { nav: Nav }) {
         </Card>
 
         {/* ② 질환별 검증 결과 */}
-        <Card num={2} title="질환별 검증 결과" sub="질환별 발생 오류 현황 요약 (최신 실행)">
+        <Card num={2} title="질환별 검증 결과" sub="질환별 규칙 위반 현황 요약 (최신 실행). 위반율 = 위반 건수 ÷ 입력 행 수">
           {d.latestByCohort.length === 0 ? <Empty>실행 기록 없음</Empty> : (
             <table className="tbl">
-              <thead><tr><th>질환명</th><th className="num">데이터 건수</th><th className="num">오류 건수</th><th className="num">오류율(%)</th><th>상태</th></tr></thead>
+              <thead><tr><th>질환명</th><th className="num" title="검사한 입력 행의 합계">데이터 건수(행)</th><th className="num" title="오류(High)와 경고(Medium) 위반을 모두 센 건수">위반 건수</th><th className="num" title="위반 건수 ÷ 입력 행 수. 한 행이 여러 규칙을 위반하면 중복해서 세므로 오류 행의 비율이 아니며 100%를 넘을 수도 있습니다.">위반율(%)</th><th>상태</th></tr></thead>
               <tbody>
                 {d.latestByCohort.map((r) => (
                   <tr key={r.run_id} className="click" onClick={() => nav.go("findings", r.run_id)} title={`${r.label} · ${fmtTime(r.created_at)}`}>
@@ -99,7 +99,7 @@ export function Dashboard({ nav }: { nav: Nav }) {
               </tbody>
             </table>
           )}
-          <div className="sub" style={{ marginTop: 12 }}>오류율 기준</div>
+          <div className="sub" style={{ marginTop: 12 }} title="위반 건수 ÷ 입력 행 수 기준의 구간입니다. 임상적 품질 판정이나 인증 기준이 아닙니다.">위반율 구간</div>
           <div style={{ display: "flex", gap: 14, fontSize: 12 }}>
             {[["우수 (<1%)", 0.5], ["양호 (1~2%)", 1.5], ["주의 (2~5%)", 3], ["위험 (≥5%)", 6]].map(([l, v]) => (
               <span key={String(l)}><span className="dot" style={{ background: rateStatus(Number(v)).color, marginRight: 5 }} />{l}</span>
@@ -154,10 +154,10 @@ export function Dashboard({ nav }: { nav: Nav }) {
 
       {/* ⑤ 검증 결과 모니터링 */}
       <div style={{ marginTop: 14 }}>
-        <Card num={5} title="검증 결과 모니터링" sub="실행 이력에 따른 오류 추이">
+        <Card num={5} title="검증 결과 모니터링" sub="이 PC 의 실행 이력에 따른 위반 추이">
           <div className="grid" style={{ gridTemplateColumns: "1fr 1fr 1.1fr" }}>
             <div>
-              <div className="sub" style={{ fontWeight: 600, color: "var(--navy)" }}>실행별 오류 건수 추이</div>
+              <div className="sub" style={{ fontWeight: 600, color: "var(--navy)" }}>실행별 위반 건수 추이</div>
               <div style={{ height: 210 }}>
                 {trend.length ? (
                   <ResponsiveContainer>
@@ -174,7 +174,7 @@ export function Dashboard({ nav }: { nav: Nav }) {
               </div>
             </div>
             <div>
-              <div className="sub" style={{ fontWeight: 600, color: "var(--navy)" }}>오류율 추이 (%)</div>
+              <div className="sub" style={{ fontWeight: 600, color: "var(--navy)" }} title="위반 건수 ÷ 입력 행 수. 중복 위반이 있으면 오류 행 비율과 다릅니다.">위반율 추이 (%)</div>
               <div style={{ height: 210 }}>
                 {trend.length ? (
                   <ResponsiveContainer>
@@ -182,7 +182,7 @@ export function Dashboard({ nav }: { nav: Nav }) {
                       <CartesianGrid stroke="#eef1f5" vertical={false} />
                       <XAxis dataKey="x" tick={{ fontSize: 10 }} /><YAxis tick={{ fontSize: 10 }} unit="%" />
                       <Tooltip formatter={(v) => pct(Number(v))} labelFormatter={(_, p) => (p?.[0]?.payload?.time ?? "")} />
-                      <Bar dataKey="error_rate" name="오류율" fill="#3b6fd6" radius={[3, 3, 0, 0]} />
+                      <Bar dataKey="error_rate" name="위반율" fill="#3b6fd6" radius={[3, 3, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : <Empty>실행 기록 없음</Empty>}
@@ -192,8 +192,8 @@ export function Dashboard({ nav }: { nav: Nav }) {
               <div className="sub" style={{ fontWeight: 600, color: "var(--navy)" }}>검증 상태 요약</div>
               <div className="grid c3" style={{ gap: 8 }}>
                 <Stat k="총 검증 데이터 건수" v={fmt(d.totals.rows)} s="건" />
-                <Stat k="전체 오류 건수" v={fmt(d.totals.violations)} s="건" tone="red" />
-                <Stat k="전체 오류율" v={pct(d.totals.error_rate)} tone={d.totals.error_rate < 2 ? "green" : "orange"} />
+                <Stat k="전체 위반 건수" v={fmt(d.totals.violations)} s="건" tone="red" />
+                <Stat k="전체 위반율" v={pct(d.totals.error_rate)} s="위반 ÷ 입력 행" tone={d.totals.error_rate < 2 ? "green" : "orange"} />
               </div>
               <div style={{ display: "flex", gap: 10, marginTop: 10, alignItems: "stretch" }}>
                 <div className={`callout ${latestRun ? "" : "warn"}`} style={{ flex: 1 }}>

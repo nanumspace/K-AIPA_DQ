@@ -1,9 +1,31 @@
 note_id,visit_occurrence_id,person_id,note_date,note_text,note_type_concept_id,note_class_concept_id,file_id
-300001,300001,300001,2019-06-25,"Colonoscopy: Ulceroinfiltrative mass at Ascending colon, 4.7 cm in size, occupying about 79% of the lumen. Multiple biopsies taken. Impression: Ascending colon cancer, r/o adenocarcinoma. Biopsy pending.",32831,36716177,
-300002,300001,300001,2019-06-28,"Colon, Ascending colon, endoscopic biopsy: Adenocarcinoma, NOS, moderately differentiated.",44814640,36716165,
-300003,300002,300001,2019-06-30,"CT abdomen and pelvis (contrast). Wall thickening of the ascending colon (4.7 cm) with no significant regional lymphadenopathy. No distant metastasis. Impression: ascending colon cancer, c300.",44814637,36716164,
-300004,300003,300001,2019-08-02,Discharge summary. Right hemicolectomy (laparoscopic) on 2019-07-23 for ascending colon cancer. EBL 225 mL. Postoperative course uneventful. Discharged on POD 10.,44814641,36716213,
-300005,300003,300001,2019-07-31,"Colon, resection: Adenocarcinoma, NOS, moderately differentiated. Tumor size 3.6 cm, gross type ulceroinfiltrative. Depth of invasion: Subserosa / perirectal fat. Lymph nodes: 0/32 positive. Pathologic stage pT3N0M0.",44814640,36716165,
-300006,300007,300001,2021-08-14,"CT abdomen and pelvis: new bone lesion, suspicious for recurrence.",44814637,36716164,
-300007,,,,O=C1O[Pt]2(OC1=O)NC1CCCCC1N2,32817,0,
-300008,,,,O=C1NC(=O)NC=C1F,32817,0,
+300038,300042,300002,2022-12-22,"Colonoscopy: Ulcerofungating mass at Rectosigmoid junction, 5.8 cm in size, occupying about 50% of the lumen. Multiple biopsies taken. Impression: Rectosigmoid junction cancer, r/o adenocarcinoma. Biopsy pending.",32831,36716177,
+300039,300043,300002,2022-12-24,"Rectosigmoid junction, endoscopic biopsy: Adenocarcinoma, NOS, moderately differentiated. Mismatch repair protein IHC: MLH1, MSH2, MSH6 and PMS2 expression intact (pMMR / MSS).",44814640,36716165,
+300040,300044,300002,2022-12-29,"CT abdomen and pelvis (contrast). Wall thickening of the rectosigmoid junction (5.8 cm) with enlarged regional lymph nodes. No distant metastasis in the abdomen and pelvis. Impression: rectosigmoid junction cancer, cT3N1aM0.",44814637,36716164,
+300041,300044,300002,2022-12-29,CT chest (contrast). No pulmonary metastasis.,44814637,36716164,
+300042,300044,300002,2022-12-29,"Rectal MRI. Tumor lower margin 12.25 cm from anal verge. mrT3, mrN1a. Shortest distance to mesorectal fascia 14.8 mm.",44814637,36716164,
+300043,300045,300002,2023-02-08,"Discharge summary. Anterior resection (laparoscopic, converted to open) on 2023-01-31 for rectosigmoid junction cancer. EBL 299 mL. Postoperative course uneventful. Discharged on POD 8.",44814641,36716213,
+300044,300045,300002,2023-02-07,"Rectosigmoid colon, resection: Adenocarcinoma, NOS, moderately differentiated. Tumor size 4.7 cm, gross type ulcerofungating. Depth of invasion: Subserosa / pericolic fat. Lymphovascular invasion: not identified. Lymph nodes: 1/17 positive. Mismatch repair protein IHC: MLH1, MSH2, MSH6 and PMS2 expression intact (pMMR / MSS). Pathologic stage pT3N1aM0.",44814640,36716165,
+300046,300047,300002,2023-03-20,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=300067 drug=capecitabine drug_concept_id=1337620 normalized_dose=1250 mg/m2 height_cm=158.3 (measured 2022-12-22) weight_kg=73.8 (measured 2023-03-20) bsa_m2=1.80 amount_value=2250 mg",44814645,3040218,
+300047,300048,300002,2023-04-10,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=300068 drug=capecitabine drug_concept_id=1337620 normalized_dose=1250 mg/m2 height_cm=158.3 (measured 2022-12-22) weight_kg=73.8 (measured 2023-03-20) bsa_m2=1.80 amount_value=2250 mg",44814645,3040218,
+300048,300049,300002,2023-05-01,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=300069 drug=capecitabine drug_concept_id=1337620 normalized_dose=1250 mg/m2 height_cm=158.3 (measured 2022-12-22) weight_kg=73.8 (measured 2023-03-20) bsa_m2=1.80 amount_value=2250 mg",44814645,3040218,
+300049,300050,300002,2023-05-22,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=300070 drug=capecitabine drug_concept_id=1337620 normalized_dose=1250 mg/m2 height_cm=158.3 (measured 2022-12-22) weight_kg=73.8 (measured 2023-03-20) bsa_m2=1.80 amount_value=2250 mg",44814645,3040218,
+300050,300051,300002,2023-06-12,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=300071 drug=capecitabine drug_concept_id=1337620 normalized_dose=1250 mg/m2 height_cm=158.3 (measured 2022-12-22) weight_kg=73.8 (measured 2023-03-20) bsa_m2=1.80 amount_value=2250 mg",44814645,3040218,
+300051,300052,300002,2023-07-03,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=300072 drug=capecitabine drug_concept_id=1337620 normalized_dose=1250 mg/m2 height_cm=158.3 (measured 2022-12-22) weight_kg=73.8 (measured 2023-03-20) bsa_m2=1.80 amount_value=2250 mg",44814645,3040218,
+300052,300053,300002,2023-07-24,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=300073 drug=capecitabine drug_concept_id=1337620 normalized_dose=1250 mg/m2 height_cm=158.3 (measured 2022-12-22) weight_kg=73.8 (measured 2023-03-20) bsa_m2=1.80 amount_value=2250 mg",44814645,3040218,
+300053,300054,300002,2023-08-14,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=300074 drug=capecitabine drug_concept_id=1337620 normalized_dose=1250 mg/m2 height_cm=158.3 (measured 2022-12-22) weight_kg=73.8 (measured 2023-03-20) bsa_m2=1.80 amount_value=2250 mg",44814645,3040218,
+300054,300059,300002,2024-02-23,"CT chest, abdomen and pelvis: no evidence of recurrence.",44814637,36716164,
+300055,300060,300002,2024-08-22,"CT chest, abdomen and pelvis: no evidence of recurrence.",44814637,36716164,
+300056,300061,300002,2025-02-28,"CT chest, abdomen and pelvis: no evidence of recurrence.",44814637,36716164,
+300057,300062,300002,2025-08-25,"CT chest, abdomen and pelvis: no evidence of recurrence.",44814637,36716164,
+300058,300063,300002,2026-02-28,"CT chest, abdomen and pelvis: no evidence of recurrence.",44814637,36716164,
+300059,300064,300002,2026-08-31,"CT chest, abdomen and pelvis: no evidence of recurrence.",44814637,36716164,
+300045,,,,CCCCCOC(=O)Nc1nc(=O)n(C2OC(C)C(O)C2O)cc1F,32817,0,

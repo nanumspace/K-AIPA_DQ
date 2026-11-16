@@ -49,20 +49,20 @@ export function ReportPage({ nav }: { nav: Nav }) {
         <>
           <div className="grid c4" style={{ marginBottom: 14 }}>
             <Stat k="코호트 · 실행 이름" v={run.cohort_kor} s={run.label} />
-            <Stat k="검사 행 수" v={fmt(run.rows_total)} s={`테이블 ${Object.keys(run.tables).length}개`} />
+            <Stat k="입력 행 수" v={fmt(run.rows_total)} s={`테이블 ${Object.keys(run.tables).length}개`} />
             <Stat k="위반 건수" v={fmt(run.violations_total)} s={`오류 ${fmt(run.violations_error)} · 경고 ${fmt(run.violations_warning)}`} tone={run.violations_total ? "red" : "green"} />
-            <Stat k="규칙" v={`${fmt(run.rules_failed)} / ${fmt(run.rules_total - run.rules_disabled)}`} s={`실패 / 실행 · 건너뜀 ${run.rules_skipped}${run.rules_disabled ? ` · 꺼짐 ${run.rules_disabled}` : ""} · 오류율 ${pct(run.rows_total ? (run.violations_total / run.rows_total) * 100 : 0)}`} />
+            <Stat k="규칙" v={`${fmt(run.rules_failed)} / ${fmt(run.rules_total - run.rules_disabled)}`} s={`실패 / 실행 · 건너뜀 ${run.rules_skipped}${run.rules_disabled ? ` · 꺼짐 ${run.rules_disabled}` : ""} · 위반율 ${pct(run.rows_total ? (run.violations_total / run.rows_total) * 100 : 0)} (위반 ÷ 입력 행)`} />
           </div>
           {run.rule_set_modified && (
             <div className={`callout ${run.admin_modified ? "err" : "warn"}`} style={{ marginBottom: 14 }}>
               {run.admin_modified ? "관리자가 바꾼 SQL 규칙이 포함된 실행입니다." : "표준과 다른 규칙 설정으로 실행했습니다."} 변경 내용은 아래 보고서 원문의 '규칙 설정' 절과 제출용 집계(submission.json)에 기록되어 있습니다.
             </div>
           )}
-          {outputs && <div style={{ marginBottom: 14 }}><Card title="출력물" sub="이 실행이 만든 파일. 중앙에는 제출용 집계만 보냅니다."><OutputList outputs={outputs} runId={run.run_id} /></Card></div>}
+          {outputs && <div style={{ marginBottom: 14 }}><Card title="출력물" sub="앱은 파일을 자동 전송하지 않습니다. 중앙 제출은 기관의 반출 검토를 거친 submission.json과 지정된 피드백 양식만 사용하세요."><OutputList outputs={outputs} runId={run.run_id} /></Card></div>}
           <div className="grid c21">
             <Card title="실패 규칙" sub={`${failed.length}개 · 위반 수 내림차순`} className="pad0">
               <div className="tblwrap" style={{ maxHeight: "48vh" }}>
-                {failed.length === 0 ? <Empty>모든 규칙 통과</Empty> : (
+                {failed.length === 0 ? <Empty>위반이 보고된 규칙이 없습니다. 건너뜀·꺼짐·실행 오류는 별도로 확인하세요.</Empty> : (
                   <table className="tbl">
                     <thead><tr><th>규칙</th><th>출처</th><th>분류</th><th>유형</th><th>심각도</th><th>테이블</th><th className="num">위반</th><th className="num">검사 행</th></tr></thead>
                     <tbody>{failed.map((r) => (

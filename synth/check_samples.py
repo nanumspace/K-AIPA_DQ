@@ -6,6 +6,8 @@ that the synthetic data previously violated. It never claims to validate real EH
 """
 import argparse
 import csv
+import math
+import re
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
@@ -16,6 +18,7 @@ ROOT = Path(__file__).resolve().parent.parent
 PROFILES = yaml.safe_load((ROOT / "spec/cohort_profiles.yaml").read_text(encoding="utf-8"))["cohorts"]
 AJCC_STAGES = {"0", "IA", "IA1", "IA2", "IA3", "IB", "IIA", "IIB", "IIIA", "IIIB", "IIIC", "IV", "IVA", "IVB"}
 DLBCL_CONDITION = "4300704"
+DRUGS = yaml.safe_load((ROOT / "spec/concepts.yaml").read_text(encoding="utf-8"))["drugs"]
 COO_DLBCL = {"GCB", "ABC/non-GCB", "unclassifiable"}
 
 
@@ -59,6 +62,40 @@ def check(cohort, base, good=False):
         require(not d["sact_id"] or sact_owner.get(d["sact_id"]) == d["person_id"],
                 "drug: SACT belongs to another patient")
         require(not d["note_id"] or note_text.get(d["note_id"]), "drug: note_id without a NOTE that has note_text")
+    measurements_by_value = {(r["person_id"], r["measurement_concept_id"], r["measurement_date"],
+                              float(r["value_as_number"])) for r in measures if r["value_as_number"]}
+    dose_evidence = {}
+    for note in notes_all:
+        for line in note["note_text"].splitlines():
+            if not line.startswith("drug_exposure_id="):
+                continue
+            fields = dict(re.findall(r"(\w+)=([^\s]+)", line))
+            dates = re.findall(r"\(measured (\d{4}-\d{2}-\d{2})\)", line)
+            dose_evidence[fields["drug_exposure_id"]] = (fields, dates)
+    for row in drugs:
+        metadata = DRUGS.get(int(row["drug_concept_id"]), {})
+        unit = metadata.get("dose_unit_label")
+        if unit not in ("mg/kg", "mg/m2", "unit/m2"):
+            continue
+        evidence = dose_evidence.get(row["drug_exposure_id"])
+        require(evidence is not None, "normalized drug dose lacks auditable calculation")
+        if evidence is None:
+            continue
+        fields, dates = evidence
+        require(len(dates) == 2, "dose basis lacks measurement dates")
+        if len(dates) != 2:
+            continue
+        height, weight = float(fields["height_cm"]), float(fields["weight_kg"])
+        for concept, day, value in (("3036277", dates[0], height), ("3025315", dates[1], weight)):
+            require((row["person_id"], concept, day, value) in measurements_by_value,
+                    "dose basis not present in exported measurements")
+            require(day <= row["drug_exposure_start_date"], "dose basis measured after administration")
+        raw = float(fields["normalized_dose"]) * (weight if unit == "mg/kg" else math.sqrt(height * weight / 3600))
+        raw = min(raw, metadata.get("max_dose_mg", raw))
+        step = metadata.get("dose_round", 1)
+        expected = round(raw / step) * step
+        require(abs(float(row["amount_value"]) - expected) < 0.02,
+                "absolute drug amount differs from recorded normalized dose and body size")
     if good:
         for r in sact:
             require(any(d["sact_id"] == r["sact_id"] for d in drugs), "SACT without drug")
@@ -75,7 +112,7 @@ def check(cohort, base, good=False):
         cid = r["measurement_concept_id"]
         if cid == "3013721":
             require(float(r["value_as_number"]) > 0, "zero AST")
-        if cid in ("3010813", "3017732"):
+        if r["value_as_number"]:
             key = (r["person_id"], r["visit_occurrence_id"], r["measurement_date"])
             lab[key].setdefault(cid, []).append(float(r["value_as_number"]))
     paired = 0
@@ -85,6 +122,12 @@ def check(cohort, base, good=False):
             require(0 < values["3017732"][0] <= values["3010813"][0], "ANC > WBC or zero ANC")
     if cohort in ("LUNG_CANCER", "BREAST_CANCER", "COLORECTAL_CANCER", "LYMPHOMA"):
         require(paired > 0, "no paired CBC to validate")
+    # Independent relationships in exported values, not the generator's helper output.
+    for values in lab.values():
+        if all(len(values.get(c, [])) == 1 for c in ("3036277", "3025315", "3038553")):
+            height, weight, bmi = (values[c][0] for c in ("3036277", "3025315", "3038553"))
+            require(height > 0 and abs(bmi - weight / (height / 100) ** 2) <= 0.15,
+                    "BMI differs from recorded height and weight")
 
     if cohort == "LUNG_CANCER":
         require(all(r["clinical_stage"] in AJCC_STAGES for r in disease), "clinical_stage is not an AJCC stage group")
@@ -108,7 +151,7 @@ def check(cohort, base, good=False):
         for r in sact:
             if r["regimen_source_value"] == "ABVD":
                 ids = {d["drug_concept_id"] for d in drugs if d["sact_id"] == r["sact_id"]}
-                require({"1338512", "1329033", "19008264", "1319193"}.issubset(ids), "incomplete ABVD")
+                require({"1338512", "1329033", "19008264", "1311409"}.issubset(ids), "incomplete ABVD")
     if cohort == "DIABETES":
         by_index = {(r["person_id"], r["visit_occurrence_id"], r["condition_start_date"]) for r in disease}
         baseline = defaultdict(dict)
@@ -124,6 +167,31 @@ def check(cohort, base, good=False):
         adverse = table(base, cohort, "ADVERSE_EVENT")
         require(all(r["adverse_event_concept_id"] != "24609" for r in adverse),
                 "hypoglycemia without glucose-lowering exposure evidence")
+        person_by_id = {r["person_id"]: r for r in people}
+        visit_by_id = {r["visit_occurrence_id"]: r for r in visits}
+        for r in disease:
+            pid, vid = r["person_id"], r["visit_occurrence_id"]
+            day = visit_by_id[vid]["visit_start_date"]
+            values = lab.get((pid, vid, day), {})
+            needed = ("3013721", "3006923", "3024929")
+            require(all(len(values.get(c, [])) == 1 for c in needed),
+                    "fibrosis scores lack unique same-day AST/ALT/platelets")
+            if not all(len(values.get(c, [])) == 1 for c in needed):
+                continue
+            ast, alt, platelets = (values[c][0] for c in needed)
+            p = person_by_id[pid]
+            birth = date(int(p["year_of_birth"]), int(p["month_of_birth"]), int(p["day_of_birth"]))
+            index = date.fromisoformat(day)
+            age = index.year - birth.year - ((index.month, index.day) < (birth.month, birth.day))
+            if alt > 0 and platelets > 0 and r["fib4_score"]:
+                require(abs(float(r["fib4_score"]) - age * ast / (platelets * math.sqrt(alt))) < 0.03,
+                        "FIB-4 does not match recorded input values")
+            ast_row = next(m for m in measures if m["person_id"] == pid and
+                           m["visit_occurrence_id"] == vid and m["measurement_date"] == day and
+                           m["measurement_concept_id"] == "3013721")
+            if platelets > 0 and ast_row["range_high"] and r["apri_score"]:
+                require(abs(float(r["apri_score"]) - 100 * ast / float(ast_row["range_high"]) / platelets) < 0.03,
+                        "APRI does not match recorded AST upper limit and platelets")
     if cohort in ("MASLD", "DIABETES"):
         by_drug = defaultdict(list)
         for r in drugs:

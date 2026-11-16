@@ -16,7 +16,7 @@ const FILES: Omit<OutputFile, "path" | "size">[] = [
   { key: "report", name: "report.md", label: "검증 보고서", desc: "요약, 분류별 집계와 실패 규칙별 건수. 입력 원문과 DB 오류 원문은 포함하지 않습니다.", shareable: true },
   { key: "findings", name: "findings.csv", label: "위반 행 목록 (CSV)", desc: "규칙, 테이블, 행 키, 환자 ID, 상세. 병원 내부에서 데이터를 고칠 때 씁니다.", shareable: false },
   { key: "rules", name: "rule_results.csv", label: "규칙별 결과 (CSV)", desc: "규칙 전체의 통과·실패·건너뜀·꺼짐과 위반 수, 검사 행 수, 규칙의 출처(표준·변경·사용자·관리자).", shareable: true },
-  { key: "submission", name: "submission.json", label: "중앙 제출용 집계", desc: "환자 단위 정보를 뺀 규칙별 건수와 테이블 행 수, 규칙 설정(표준 여부). 병원 밖으로 보내는 유일한 파일.", shareable: true },
+  { key: "submission", name: "submission.json", label: "제출용 집계", desc: "환자 단위 정보를 뺀 규칙별 건수와 테이블 행 수, 규칙 설정(표준 여부). 제출이 필요할 때 전달하는 파일이며 앱이 자동으로 보내지는 않습니다.", shareable: true },
   { key: "summary", name: "summary.json", label: "실행 요약 (JSON)", desc: "규칙 단위 요약. DB 오류 원문을 제외한 프로그램 간 비교용 결과.", shareable: true },
 ];
 
@@ -70,9 +70,10 @@ export function exportBundle(runDir: string, runId: string, destRoot: string): s
   fs.mkdirSync(dest, { recursive: true });
   for (const f of runOutputs(runDir).files) if (f.size > 0) fs.copyFileSync(f.path, path.join(dest, f.name));
   fs.writeFileSync(path.join(dest, "README.txt"), [
-    `K-AI 코호트 데이터 품질검증 결과 · ${runId}`, "",
+    `K-AIPA DQ 결과 · ${runId}`, "",
     ...FILES.map((f) => `- ${f.name}: ${f.label}. ${f.desc}${f.shareable ? "" : " [외부 제출 금지]"}`), "",
-    "중앙에 제출할 때는 submission.json 만 보냅니다. findings.csv 는 환자 단위 정보가 있어 병원 밖으로 내보내지 않습니다.", ""].join("\n"), "utf-8");
+    "이 폴더는 앱이 로컬에 복사한 파일입니다. 앱은 어떤 파일도 자동 전송하지 않습니다. 제출이 필요하면 submission.json 만 직접 전달하세요.",
+    "findings.csv 는 환자 단위 정보(환자 ID, 행 키)가 있으므로 보안이 확보된 기관 내부 위치에만 보관하고 외부로 내보내지 않습니다.", ""].join("\n"), "utf-8");
   return dest;
 }
 

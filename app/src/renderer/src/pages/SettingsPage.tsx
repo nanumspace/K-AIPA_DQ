@@ -54,7 +54,7 @@ export function SettingsPage() {
             </div>
           </div>
         </Card>
-        <Card title="관리자 모드" sub="표준 교차 규칙의 SQL 을 고치거나 SQL 규칙을 추가할 수 있는 모드. 비밀번호는 없으며 쓴 흔적이 남습니다">
+        <Card title="관리자 모드" sub="표준 교차 규칙의 SQL 을 고치거나 SQL 규칙을 추가할 수 있는 모드. 비밀번호·인증이 없으며 변경을 기록해 두는 용도입니다">
           <div className="form">
             <div className="rowflex">
               <span className={`pill ${cfg.adminMode ? "admin" : "gray"}`}>{cfg.adminMode ? "켜짐" : "꺼짐"}</span>
@@ -63,7 +63,7 @@ export function SettingsPage() {
             <p className="hint">
               켜 있는 동안 화면 위쪽에 '관리자 모드' 띠가 표시되고, 검증 규칙 관리 화면에서 SQL 을 바꿀 수 있습니다.
               저장 전에 내장 견본(clean · dirty)으로 SQL 을 시험해 오류와 오탐을 확인합니다.
-              모드를 켜고 끈 시각과 모든 변경은 이 PC 의 변경 이력(rule-history.jsonl)에 남고, SQL 을 바꾼 규칙이 있으면 검증 결과의 보고서와 제출용 집계에 '관리자 변경'으로 기록됩니다.
+              모드를 켜고 끈 시각과 모든 변경은 이 PC 의 변경 이력(rule-history.jsonl)에 남고, SQL 을 바꾼 규칙이 있으면 검증 결과의 보고서와 제출용 집계에 '관리자 변경'으로 기록됩니다. 이력은 위·변조를 막는 감사 기록이 아닙니다.
               모드를 꺼도 이미 바꾼 SQL 은 되돌아가지 않습니다. 되돌리려면 검증 규칙 관리에서 '표준으로 되돌리기'를 쓰세요. 앱을 다시 열면 꺼진 채로 시작합니다.
             </p>
           </div>
@@ -73,7 +73,7 @@ export function SettingsPage() {
             <div className="row"><input type="date" value={today} onChange={(e) => setToday(e.target.value)} /><button className="btn primary" onClick={saveToday}>저장</button><button className="btn" onClick={() => setToday("")}>비우기</button></div>
           </div>
         </Card>
-        <Card title="데이터 위치" sub="실행 이력 DB 와 실행별 보고서 파일">
+        <Card title="데이터 위치" sub="실행 이력 DB 와 실행별 보고서 파일. 모두 이 PC 에만 저장되며 앱이 외부로 전송하지 않습니다. findings.csv 에는 환자 단위 정보가 있습니다">
           <div className="kv">
             <span className="k">앱 데이터</span><span className="mono">{cfg.userData}</span>
             <span className="k">이력 DB</span><span className="mono">history.duckdb</span>
@@ -84,7 +84,7 @@ export function SettingsPage() {
         </Card>
         <Card title="정보">
           <div className="kv">
-            <span className="k">프로그램</span><span>Quality Validator v{cfg.version}</span>
+            <span className="k">프로그램</span><span>K-AIPA DQ v{cfg.version}</span>
             <span className="k">엔진</span><span>kai-dq-engine (TypeScript) · DuckDB</span>
             <span className="k">규칙 체계</span><span>Kahn 3축 (적합성 · 완전성 · 타당성) · 심각도 오류/경고</span>
           </div>

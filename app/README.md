@@ -1,4 +1,4 @@
-# Quality Validator · K-AI 코호트 데이터 품질검증 앱
+# K-AIPA DQ · K-AIPA 임상 데이터 품질검증 앱 (K-AIPA Clinical Data Quality Validator)
 
 Electron + React + TypeScript 데스크톱 앱입니다. 검증 엔진은 `../dq-ts`(TypeScript, DuckDB)를 그대로 번들하며, 명세·규칙은 저장소의 `spec/`, `rules/` YAML 을 읽습니다. Windows 11 과 macOS 양쪽에서 같은 소스로 빌드합니다.
 
@@ -137,9 +137,9 @@ npm run build          # out/ 생성
 npm run smoke          # 빌드 후 자동 점검 (아래)
 ```
 
-`npm run smoke` 는 번들된 견본 데이터(`synth/output/{clean,dirty,good}`)로 폐암 clean·good, 당뇨 dirty, 림프종 clean, 폐암 dirty 엑셀, 폴더 2곳 입력을 실행해 위반 수를 확인하고(clean·good 은 0, dirty 는 1 이상), 규칙 설정(끄기 · 심각도 · 범위 · 사용자 규칙 · 관리자 SQL 시험 · SQL 교체 · ADM 규칙)을 적용한 실행의 `rule_results.csv` `origin` 컬럼과 `submission.json` `rule_set` 을 확인한 뒤, 되돌리기까지 점검하고 화면을 PNG 로 찍습니다. 실패가 하나라도 있으면 종료 코드 1 입니다. `KAI_SMOKE_OUT=<폴더>` 로 PNG·로그 위치를 지정합니다. 설치본에서도 돌며(`KAI_SMOKE=1 "release/mac-arm64/Quality Validator.app/Contents/MacOS/Quality Validator"`) 이때는 내장 견본을 씁니다.
+`npm run smoke` 는 번들된 견본 데이터(`synth/output/{clean,dirty,good}`)로 폐암 clean·good, 당뇨 dirty, 림프종 clean, 폐암 dirty 엑셀, 폴더 2곳 입력을 실행해 위반 수를 확인하고(good 은 0, clean 은 오류 0이며 임상 휴리스틱 경고 `SEM-SACT-006` 만 허용, dirty 는 1 이상), 규칙 설정(끄기 · 심각도 · 범위 · 사용자 규칙 · 관리자 SQL 시험 · SQL 교체 · ADM 규칙)을 적용한 실행의 `rule_results.csv` `origin` 컬럼과 `submission.json` `rule_set` 을 확인한 뒤, 되돌리기까지 점검하고 화면을 PNG 로 찍습니다. 실패가 하나라도 있으면 종료 코드 1 입니다. `KAI_SMOKE_OUT=<폴더>` 로 PNG·로그 위치를 지정합니다. 설치본에서도 돌며(`KAI_SMOKE=1 "release/mac-arm64/K-AIPA DQ.app/Contents/MacOS/K-AIPA DQ"`) 이때는 내장 견본을 씁니다.
 
-개발 모드에서는 명세 위치가 저장소 루트(`app/..`)이고, 실행 이력과 규칙 설정은 OS 의 앱 데이터 폴더(`~/Library/Application Support/kai-quality-validator` 또는 `%APPDATA%`)에 저장됩니다.
+설치본의 실행 이력과 규칙 설정은 OS 의 앱 데이터 폴더 아래 `Quality Validator` 폴더(macOS `~/Library/Application Support/Quality Validator`, Windows `%APPDATA%\Quality Validator`)에 저장됩니다. 앱 이름을 K-AIPA DQ 로 바꿨지만 v0.4.0 설치의 이력과 규칙 설정이 이어지도록 이 폴더 이름은 코드에서 고정했습니다. 개발 모드의 명세 위치는 저장소 루트(`app/..`)입니다. Windows 에서의 업그레이드 연속성은 같은 제품 이름 기본값에서 추정한 것으로 설치 파일로 시험하지 않았습니다.
 
 ## 배포 빌드와 릴리스
 
@@ -153,7 +153,7 @@ npm run dist:win             # Windows 빌드만 (토큰 서명 훅 build/sign-w
 
 - `build/icon.svg` 가 앱 아이콘 원본이고 `build/icon.png`(1024×1024)를 electron-builder 가 macOS icns 와 Windows ico 로 변환합니다. SVG 를 고치면 `qlmanage -t -s 1024 -o build build/icon.svg && mv build/icon.svg.png build/icon.png` 으로 다시 만듭니다. 색은 K-AIPA 브랜드(남색 `#003B73`, 파랑 `#275BAB`, 청록 `#00C2D1`)를 따릅니다.
 - `build/sign-win.cjs` 는 Windows exe 서명 훅, `build/globalsign-*.pem` 은 서명에 첨부하는 중간 인증서와 검증용 루트 인증서입니다.
-- `package.json > build.extraResources` 가 `../spec/*.yaml`, `../rules/*.yaml`, 견본 데이터 `../synth/output/{clean,dirty,good}`(CSV, good 은 README.md 포함)를 `resources/kai/` 아래 저장소와 같은 경로(`spec/`, `rules/`, `synth/output/…`)로 복사하므로 설치본은 명세와 견본을 내장합니다. 견본 zip 은 `node build/pack-samples.cjs <출력> <버전>` 으로 만듭니다: `SampleData-<버전>-<COHORT>-<clean|dirty|good>.zip` 18개와 `SampleData-<버전>-all.zip`. good 은 `README.md` 와 위반 0 인 `dq/reports/good_<COHORT>/summary.json` 이 없으면 만들지 않습니다.
+- `package.json > build.extraResources` 가 `../spec/*.yaml`, `../rules/*.yaml`, 견본 데이터 `../synth/output/{clean,dirty,good}`(CSV, good 은 README.md 포함)를 `resources/kai/` 아래 저장소와 같은 경로(`spec/`, `rules/`, `synth/output/…`)로 복사하므로 설치본은 명세와 견본을 내장합니다. 설치 파일 이름은 `K-AIPA-DQ-<버전>-<os>-<arch>.<확장자>` 입니다. 견본 zip 은 `node build/pack-samples.cjs <출력> <버전>` 으로 만듭니다: `SampleData-<버전>-<COHORT>-<clean|dirty|good>.zip` 18개와 `SampleData-<버전>-all.zip` (견본 이름은 바꾸지 않았습니다). good 은 `README.md` 와 위반 0 인 `dq/reports/good_<COHORT>/summary.json` 이 없으면 만들지 않습니다.
 - DuckDB 는 네이티브 모듈이라 `asarUnpack` 으로 풀어 둡니다. 설치본에는 대상 플랫폼의 바이너리만 들어가며(`release.sh` 가 교체), Windows 32비트는 바이너리가 없어 만들지 않습니다.
 
 ## 이후 할 일

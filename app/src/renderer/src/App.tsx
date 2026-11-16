@@ -55,13 +55,13 @@ export function App() {
       {admin && (
         <div className="adminbar" role="status">
           <b>관리자 모드</b>
-          <span>SQL 규칙을 직접 수정할 수 있습니다. 바꾼 내용은 이 PC 의 변경 이력과 검증 결과물(보고서 · 제출용 집계)에 기록됩니다.</span>
+          <span>SQL 규칙을 직접 수정할 수 있습니다. 바꾼 내용은 이 PC 의 변경 이력과 검증 결과물(보고서 · 제출용 집계)에 기록됩니다. 인증·권한 통제가 아니라 기록용 표시입니다.</span>
           <button className="btn sm" onClick={adminOff}>관리자 모드 끄기</button>
         </div>
       )}
       <div className="app">
         <aside className="sidebar">
-          <div className="brand">Quality Validator<small>K-AI 코호트 데이터 품질검증</small></div>
+          <div className="brand">K-AIPA DQ<small>K-AIPA 임상 데이터 품질검증</small></div>
           {MENU.map((m) => (
             <button key={m.id} className={page === m.id ? "active" : ""} onClick={() => setPage(m.id)}>
               <span className="icon">{m.icon}</span>{m.label}

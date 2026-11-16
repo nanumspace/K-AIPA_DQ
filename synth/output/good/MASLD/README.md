@@ -1,30 +1,36 @@
 # Good Sample · 대사이상지방간 (MASLD)
 
-매뉴얼(2026-11-16) 명세의 가상 환자 1명에서 나온 **연결된 모든 행**입니다. 실제 환자 자료가 아닙니다. 코호트별 진단·검사·진료·처방·기록·추적 경과를 여러 테이블로 제출할 때의 구조 예시입니다. 한 질환의 모든 환자에게 필요한 검사나 치료를 뜻하지 않습니다.
+매뉴얼(2026-11-16) 명세의 가상 환자 1명에서 나온 **연결된 모든 행**입니다. 실제 환자 자료가 아닙니다. 코호트별 진단·검사·진료·처방·기록·추적 경과를 여러 테이블로 제출하는 합성 임상 사례입니다. 실제 환자군의 분포나 치료 효과를 재현한 자료가 아니며, 임상의의 감수·승인을 받은 모범 진료 지침도 아닙니다. 한 질환의 모든 환자에게 같은 검사나 치료를 적용한다는 뜻이 아닙니다.
 
-- 환자: 1명 (가상 ID 400087)
-- 첫 방문 ~ 마지막 방문: 2019-10-28 ~ 2022-02-26
-- 방문 14건, 검사 76건, 약물 44건, 문서 9건
+- 환자: 1명 (가상 ID 400020)
+- 첫 방문 ~ 마지막 방문: 2023-11-13 ~ 2026-08-01
+- 방문 20건, 검사 91건, 약물 51건, 문서 13건
 - 사망일: 기록 없음
 
-## 이 환자에게 실제로 기록된 내용
+## 이 가상 사례에 기록된 내용
 
-- 질환 표: `fib4_score=0.5`, `apri_score=0.31`, `bard_score=1`, `safe_score=-45`, `liverrisk_score=4.88`
-- 기록 (2019-10-28): Abdomen ultrasonography. Liver: diffusely increased parenchymal echogenicity with moderate posterior attenuation, compatible with moderate hepatic steatosis. Liver contour smooth. Spleen normal in size. No focal hepatic lesion. Gallbladder and bile ducts unremarkable. Impression: 중등도 지방간.
-- 기록 (2021-11-28): Transient elastography (FibroScan). Liver stiffness measurement 6.7 kPa (IQR/median 11%, 10 valid measurements), CAP 289 dB/m. Interpretation: fibrosis stage F1, steatosis S2.
+- 질환 표: `fib4_score=2.14`, `apri_score=0.71`, `bard_score=3`
+- 기록 (2023-11-13): Abdomen ultrasonography. Liver: diffusely increased parenchymal echogenicity with mild posterior attenuation, compatible with mild hepatic steatosis. Liver contour smooth. Spleen normal in size. No focal hepatic lesion. Gallbladder and bile ducts unremarkable. Impression: 경도 지방간.
+- 기록 (2026-05-29): Follow-up visit, 31 months after diagnosis. Weight 65.8 kg (BMI 24.9; -13.1% from baseline). AST/ALT 35/27 U/L, platelets 203 x10^3/uL, FIB-4 1.82. Semaglutide 2.4 mg SC weekly continued. Lifestyle therapy continued (target weight loss 7-10%).
+
+## 해석과 검토 범위
+
+용량·단위, 요법 구성, 검사·이상사례·처방 변경의 연결을 함께 검토해야 합니다. 앱의 매뉴얼 규칙 통과는 임상적 적절성의 인증이 아닙니다. 체중·체표면적 기반 용량은 환자 측정값과 처방 근거를 함께 확인하고, 산출 근거가 없는 선택 점수는 정상값이나 임의 근삿값으로 채우지 않습니다. 기관별 진료·급여 기준과 실제 어휘 매핑은 별도 확인이 필요합니다. regimen_concept_id=0은 표준 레지멘 코드 미매핑을 뜻하며 요법 이름은 regimen_source_value에 보존합니다. 임상 치료 차수가 단순 요법 시작일 순서와 다른 경우 SEM-SACT-006 경고는 검토 후 해석해야 합니다.
+
+참고 근거와 생성 가정: [가상 임상 사례 문서](https://github.com/nanumspace/K-AIPA_DQ/blob/main/docs/synthetic-data.md).
 
 ## 테이블별 행 수
 
 | 테이블 | 행 수 |
 |---|---:|
 | PERSON | 1 |
-| VISIT_OCCURRENCE | 14 |
-| PROCEDURE_OCCURRENCE | 5 |
-| DRUG_EXPOSURE | 44 |
+| VISIT_OCCURRENCE | 20 |
+| PROCEDURE_OCCURRENCE | 4 |
+| DRUG_EXPOSURE | 51 |
 | CONDITION_OCCURRENCE | 5 |
-| MEASUREMENT | 76 |
-| OBSERVATION | 7 |
-| NOTE | 9 |
+| MEASUREMENT | 91 |
+| OBSERVATION | 8 |
+| NOTE | 13 |
 | MASLD | 1 |
 | ADVERSE_EVENT | 1 |
 

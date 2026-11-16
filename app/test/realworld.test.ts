@@ -91,6 +91,11 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
 
   it("EUC-KR 인코딩 (한글 노트 포함): 변환되어 원본과 같다", async () => {
     const d = copyClean("euckr");
+    // Clinical sample notes may all be English; make this encoding fixture explicitly non-ASCII.
+    const koreanNote = "합성 사례: 흉부 CT 추적검사에서 새로운 병변이 관찰되지 않았습니다.";
+    const notes = parse(read(d, "NOTE")) as string[][];
+    notes[1][notes[0].indexOf("note_text")] = koreanNote;
+    write(d, "NOTE", notes.map((row) => row.map(csvCell).join(",")).join("\n") + "\n");
     // Node 에는 EUC-KR 인코더가 없다. python 의 cp949 로 NOTE(한글 본문)를 다시 쓴다. python 이 없으면 건너뛴다.
     let py = false;
     try { execFileSync("python3", ["-c", "import sys; t=open(sys.argv[1],encoding='utf-8').read(); open(sys.argv[1],'wb').write(t.encode('cp949'))", path.join(d, "NOTE.csv")]); py = true; } catch { /* python 없음 */ }
@@ -98,6 +103,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const { plan, staged } = stage([d], "euckr");
     expect(plan.ok).toBe(true);
     expect(plan.candidates.find((c) => c.name === "NOTE.csv")?.encoding).toContain("EUC-KR");
+    expect(parse(read(staged, "NOTE"), { columns: true })[0].note_text).toBe(koreanNote);
     expect((await validate(staged, "euckr")).summary.violations_total).toBe(0);
   });
 

@@ -90,7 +90,7 @@ export function RulesPage() {
       </div>
       <div className="callout" style={{ marginBottom: 12 }}>
         표준 규칙은 바꿀 수 없습니다. 이 PC 에서만 규칙을 <b>끄거나</b>, <b>심각도 · 허용 범위 · 패턴 · 코드</b>를 조정하거나, <b>사용자 규칙</b>을 더할 수 있습니다.
-        표준과 달라진 규칙은 검증 결과의 보고서와 제출용 집계에 '변경 · 사용자 · 관리자'로 기록되어 중앙에 전달됩니다.
+        표준과 달라진 규칙은 검증 결과의 보고서와 제출용 집계에 '변경 · 사용자 · 관리자'로 기록됩니다 (앱이 자동 전송하지는 않으며, 제출할 때 함께 전달됩니다).
         {changed ? <> 지금 표준과 다른 점 <b>{changed}건</b> (표준 {state?.standardHash.slice(0, 8)} → 적용 {state?.effectiveHash.slice(0, 8)}).</> : <> 지금은 표준 그대로입니다.</>}
       </div>
       {err && <div className="callout err" style={{ marginBottom: 12 }}>{err}</div>}

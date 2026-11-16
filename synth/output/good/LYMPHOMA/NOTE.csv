@@ -1,14 +1,33 @@
 note_id,visit_occurrence_id,person_id,note_date,note_text,note_type_concept_id,note_class_concept_id,file_id
-600001,600001,600001,2022-07-06,"Lymph node, inguinal lymph node, excisional biopsy: Diffuse large B-cell lymphoma. Immunohistochemistry: CD20 positive, CD10 positive, BCL6 positive, MUM1 negative. Cell of origin by Hans algorithm: GCB. MYC/BCL2 protein co-expression absent. Ki-67 74%. Specimen adequate for ancillary studies.",44814640,36716165,
-600002,600001,600001,2022-07-05,"FDG PET/CT (baseline). Hypermetabolic lymphadenopathy in 3 nodal regions including inguinal lymph node, SUVmax 19.7. Non-contiguous extranodal involvement: liver. Impression: Lymphoma, Lugano stage IV.",44814637,36716164,
-600007,600010,600001,2022-08-25,FDG PET/CT (interim PET2). Deauville score 3. Complete metabolic response.,44814637,36716164,
-600008,600011,600001,2022-11-23,FDG PET/CT (end of treatment). Deauville score 2. Complete metabolic response.,44814637,36716164,
-600009,600017,600001,2024-07-14,FDG PET/CT: new hypermetabolic lesions (retroperitoneal lymph node). Relapsed lymphoma.,44814637,36716164,
-600013,600022,600001,2024-10-03,FDG PET/CT (end of treatment). Deauville score 3. Complete metabolic response.,44814637,36716164,
-600003,,,,ClCCN(CCCl)P1(=O)NCCCO1,32817,0,
-600004,,,,COc1cccc2C(=O)c3c(O)c4CC(O)(CC(OC5CC(N)C(O)C(C)O5)c4c(O)c3C(=O)c12)C(=O)CO,32817,0,
-600005,,,,CCC1(CC2CC(C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)C78CCN9C7C(C=CC9)(C(C(C8N6C=O)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O,32817,0,
-600006,,,,CC12CC(=O)C3C(C1CCC2(C(=O)CO)O)CCC4=CC(=O)C=CC34C,32817,0,
-600010,,,,NC1=NC(=O)N(C=C1)C1OC(CO)C(O)C1(F)F,32817,0,
-600011,,,,CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C,32817,0,
-600012,,,,N.N.Cl[Pt]Cl,32817,0,
+600001,600001,600001,2021-01-06,"Lymph node, mediastinal lymph node, excisional biopsy: Diffuse large B-cell lymphoma. Immunohistochemistry: CD20 positive, CD10 negative, BCL6 positive, MUM1 positive. Cell of origin by Hans algorithm: ABC/non-GCB. MYC/BCL2 protein co-expression present (double-expressor). Ki-67 68%. Specimen adequate for ancillary studies.",44814640,36716165,
+600002,600001,600001,2021-01-05,"FDG PET/CT (baseline). Hypermetabolic lymphadenopathy in 3 nodal regions including mediastinal lymph node, all on the same side of the diaphragm, SUVmax 11.0. No extranodal involvement. Impression: Lymphoma, Lugano stage II.",44814637,36716164,
+600003,600001,600001,2021-01-06,"HBV screening before rituximab: HBsAg negative, anti-HBc IgG negative. Recorded in this note only (no structured laboratory rows in this extract).",44814637,36716164,
+600004,600001,600001,2021-01-07,"Echocardiography: LVEF 61%, no regional wall motion abnormality (pre-anthracycline evaluation). Recorded in this note only (no structured procedure row).",44814637,36716164,
+600005,600001,600001,2021-01-07,"Febrile neutropenia risk assessment (R-CHOP-21, age 59): intermediate; primary G-CSF prophylaxis not planned, G-CSF reserved for neutropenic complications.",44814637,36716164,
+600006,600002,600001,2021-01-22,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=600001 drug=rituximab drug_concept_id=1314273 normalized_dose=375 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=715 mg
+drug_exposure_id=600002 drug=cyclophosphamide drug_concept_id=1310317 normalized_dose=750 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=1431 mg
+drug_exposure_id=600003 drug=doxorubicin drug_concept_id=1338512 normalized_dose=50 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=95 mg
+drug_exposure_id=600004 drug=vincristine drug_concept_id=1308290 normalized_dose=1.4 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=2 mg capped_at=2 mg",44814645,3040218,
+600011,600003,600001,2021-02-12,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=600006 drug=rituximab drug_concept_id=1314273 normalized_dose=375 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=715 mg
+drug_exposure_id=600007 drug=cyclophosphamide drug_concept_id=1310317 normalized_dose=750 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=1431 mg
+drug_exposure_id=600008 drug=doxorubicin drug_concept_id=1338512 normalized_dose=50 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=95 mg
+drug_exposure_id=600009 drug=vincristine drug_concept_id=1308290 normalized_dose=1.4 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=2 mg capped_at=2 mg",44814645,3040218,
+600012,600004,600001,2021-03-05,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=600011 drug=rituximab drug_concept_id=1314273 normalized_dose=375 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=715 mg
+drug_exposure_id=600012 drug=cyclophosphamide drug_concept_id=1310317 normalized_dose=750 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=1431 mg
+drug_exposure_id=600013 drug=doxorubicin drug_concept_id=1338512 normalized_dose=50 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=95 mg
+drug_exposure_id=600014 drug=vincristine drug_concept_id=1308290 normalized_dose=1.4 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=2 mg capped_at=2 mg",44814645,3040218,
+600013,600005,600001,2021-03-26,"DOSE-CALC v1; BSA = Mosteller sqrt(height_cm * weight_kg / 3600); amount_value = normalized_dose * (bsa_m2 for mg/m2 and unit/m2, weight_kg for mg/kg), capped and rounded per drug
+drug_exposure_id=600016 drug=rituximab drug_concept_id=1314273 normalized_dose=375 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=715 mg
+drug_exposure_id=600017 drug=cyclophosphamide drug_concept_id=1310317 normalized_dose=750 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=1431 mg
+drug_exposure_id=600018 drug=doxorubicin drug_concept_id=1338512 normalized_dose=50 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=95 mg
+drug_exposure_id=600019 drug=vincristine drug_concept_id=1308290 normalized_dose=1.4 mg/m2 height_cm=175.4 (measured 2021-01-04) weight_kg=74.7 (measured 2021-01-22) bsa_m2=1.91 amount_value=2 mg capped_at=2 mg",44814645,3040218,
+600014,600010,600001,2021-03-04,FDG PET/CT (interim PET2). Deauville score 3. Complete metabolic response.,44814637,36716164,
+600015,600011,600001,2021-04-24,"Involved-site radiotherapy to mediastinal lymph node, 36 Gy in 18 fractions started.",32831,36716177,
+600016,600012,600001,2021-06-19,FDG PET/CT (end of treatment). Deauville score 1. Complete metabolic response.,44814637,36716164,
+600007,,,,ClCCN(CCCl)P1(=O)NCCCO1,32817,0,
+600008,,,,COc1cccc2C(=O)c3c(O)c4CC(O)(CC(OC5CC(N)C(O)C(C)O5)c4c(O)c3C(=O)c12)C(=O)CO,32817,0,
+600009,,,,CCC1(CC2CC(C3=C(CCN(C2)C1)C4=CC=CC=C4N3)(C5=C(C=C6C(=C5)C78CCN9C7C(C=CC9)(C(C(C8N6C=O)(C(=O)OC)O)OC(=O)C)CC)OC)C(=O)OC)O,32817,0,
+600010,,,,CC12CC(=O)C3C(C1CCC2(C(=O)CO)O)CCC4=CC(=O)C=CC34C,32817,0,

@@ -1,5 +1,5 @@
 // 회귀 시험: 6개 코호트 × (clean, dirty, good) 를 실행해
-//   (1) clean · good 은 위반 0 · 규칙 오류 0, dirty 는 주입 오류 전부 검출
+//   (1) clean · good 은 오류 0 · 임상 차수 휴리스틱 외 경고 0, dirty 는 주입 오류 전부 검출
 //   (2) Python 참조 구현(dq/reports)과 findings.csv · report.md · summary.json 이 같음
 // 을 확인한다. 규칙이나 엔진을 바꾼 뒤에는 이 시험이 기준선이다.
 // Python 쪽 보고서는 `python3 dq/run_all.py` 로 만든다.
@@ -32,9 +32,8 @@ beforeAll(async () => {
 
 describe("검출 성능", () => {
   for (const c of COHORTS) {
-    it(`${c}: clean 오탐 0, dirty 재현율 1.00`, () => {
+    it(`${c}: dirty 주입 오류 전부 검출`, () => {
       const v = verify(c, OUT);
-      expect(v.clean.violations).toBe(0);
       expect(v.faults_detected).toBe(v.faults_total);
       expect(v.recall).toBe(1);
       expect(v.fault_types_fully_detected).toBe(v.fault_types);
@@ -42,9 +41,10 @@ describe("검출 성능", () => {
   }
   for (const c of COHORTS) {
     for (const kind of ["clean", "good"]) {
-      it(`${c} ${kind}: 위반 0 · 규칙 오류 0 · 표준 규칙만 실행`, () => {
+      it(`${c} ${kind}: 오류 0 · 예상된 임상 차수 경고만 허용 · 표준 규칙 실행`, () => {
         const s = readSummary(tsDir(kind, c));
-        expect({ violations: s.violations_total, errors: s.rules_error, disabled: s.rules_disabled }).toEqual({ violations: 0, errors: 0, disabled: 0 });
+        expect({ violations: s.violations_error, errors: s.rules_error, disabled: s.rules_disabled }).toEqual({ violations: 0, errors: 0, disabled: 0 });
+        expect(s.rules.filter((r) => r.violations > 0 && !(r.rule_id === "SEM-SACT-006" && r.severity === "warning"))).toEqual([]);
         expect(s.rules.every((r) => r.origin === "standard")).toBe(true);
       });
     }

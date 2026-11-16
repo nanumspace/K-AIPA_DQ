@@ -8,11 +8,11 @@
  },
  "dirty": {
   "rules": 253,
-  "violations": 868,
-  "failed_rules": 188
+  "violations": 1104,
+  "failed_rules": 187
  },
- "faults_total": 197,
- "faults_detected": 197,
+ "faults_total": 202,
+ "faults_detected": 202,
  "recall": 1.0,
  "fault_types": 25,
  "fault_types_fully_detected": 25,
@@ -26,8 +26,8 @@
   },
   {
    "fault_type": "CODELIST",
-   "n": 10,
-   "detected": 10,
+   "n": 14,
+   "detected": 14,
    "recall": 1.0
   },
   {
@@ -116,14 +116,14 @@
   },
   {
    "fault_type": "PK_DUP",
-   "n": 8,
-   "detected": 8,
+   "n": 9,
+   "detected": 9,
    "recall": 1.0
   },
   {
    "fault_type": "PK_NULL",
-   "n": 8,
-   "detected": 8,
+   "n": 9,
+   "detected": 9,
    "recall": 1.0
   },
   {
@@ -152,8 +152,8 @@
   },
   {
    "fault_type": "TYPE_BAD",
-   "n": 73,
-   "detected": 73,
+   "n": 72,
+   "detected": 72,
    "recall": 1.0
   },
   {
@@ -172,14 +172,14 @@
  "by_category": [
   {
    "category": "Completeness",
-   "n": 49,
-   "detected": 49,
+   "n": 50,
+   "detected": 50,
    "recall": 1.0
   },
   {
    "category": "Conformance",
-   "n": 114,
-   "detected": 114,
+   "n": 118,
+   "detected": 118,
    "recall": 1.0
   },
   {
@@ -189,11 +189,5 @@
    "recall": 1.0
   }
  ],
- "collateral_rules": [
-  "ST-0359",
-  "ST-0361",
-  "ST-0364",
-  "ST-0366",
-  "ST-0368"
- ]
+ "collateral_rules": []
 }

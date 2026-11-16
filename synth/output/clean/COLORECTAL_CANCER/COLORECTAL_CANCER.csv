@@ -1,101 +1,101 @@
 colorectal_cancer_id,person_id,visit_occurrence_id,diag_rgst_ymd,ostm_frsn_clsf_etc_cont,inap_dsnt_mtst_site_etc_cont,anes_mthd_etc_cont,afop_asmt_item_etc_cont,inva_dgre_nm,radi_rsmg_invl_yn_spnm,tme_qlt_dgre_spnm
-300001,300001,300001,2019-06-25,,,Intracorporeal side-to-side stapled anastomosis,,Subserosa / perirectal fat,침범 없음,
-300002,300002,300033,2022-11-18,Obstruction / perforation (Hartmann),,,,Subserosa / perirectal fat,침범 없음,
-300003,300003,300043,2020-09-17,,,,,,,
-300004,300004,300056,2023-08-26,,,,,Subserosa / perirectal fat,침범 없음,
-300005,300005,300093,2021-01-31,,,,,Subserosa / perirectal fat,침범 없음,
-300006,300006,300139,2024-02-22,,,,,Subserosa / perirectal fat,침범 없음,
-300007,300007,300159,2022-01-15,,,Intracorporeal side-to-side stapled anastomosis,,Muscularis propria,침범 없음,
-300008,300008,300171,2019-07-26,,,,,Subserosa / perirectal fat,침범 없음,
-300009,300009,300196,2021-04-02,,,,,Serosa (visceral peritoneum),침범 없음,
-300010,300010,300222,2022-10-19,,,,,,,
-300011,300011,300232,2023-08-20,,,,,Subserosa / perirectal fat,침범 없음,
-300012,300012,300250,2022-02-28,,,,,,,
-300013,300013,300275,2020-03-27,,,,,Serosa (visceral peritoneum),침범 없음,
-300014,300014,300288,2019-05-15,,,,,,,
-300015,300015,300314,2021-09-27,,,,,Serosa (visceral peritoneum),침범 없음,
-300016,300016,300326,2021-11-18,,,,,Muscularis propria,침범 없음,
-300017,300017,300360,2022-10-06,,,,,Muscularis propria,침범 없음,
-300018,300018,300383,2023-02-21,,,,,Subserosa / perirectal fat,침범 없음,
-300019,300019,300412,2023-05-09,,,,,Serosa (visceral peritoneum),침범 없음,
-300020,300020,300435,2019-05-27,,,,,Subserosa / perirectal fat,침범 없음,
-300021,300021,300469,2023-08-15,,,Stapled end-to-end with reinforcing sutures,,Subserosa / perirectal fat,침범 없음,
-300022,300022,300477,2023-05-10,,,,,Subserosa / perirectal fat,침범 없음,
-300023,300023,300495,2019-03-01,,,,,,,
-300024,300024,300509,2022-12-28,,,,,Muscularis propria,침범 없음,
-300025,300025,300530,2021-03-15,,,Stapled end-to-end with reinforcing sutures,,No residual tumor,침범 없음,Nearly complete
-300026,300026,300547,2019-12-25,,,,,,,
-300027,300027,300560,2024-01-31,,,,,Subserosa / perirectal fat,침범 없음,
-300028,300028,300591,2022-11-06,,,,,Subserosa / perirectal fat,침범 없음,
-300029,300029,300608,2024-02-29,,,,Converted to open surgery due to adhesion; R0 resection,Muscularis propria,침범 없음,Complete
-300030,300030,300615,2024-03-16,,,Stapled end-to-end with reinforcing sutures,,Muscularis propria,침범 없음,
-300031,300031,300630,2021-01-29,,,,,Subserosa / perirectal fat,침범 없음,Complete
-300032,300032,300660,2020-03-30,,,,,Subserosa / perirectal fat,침범 없음,
-300033,300033,300691,2019-01-28,,,,,Adjacent organ,침범 없음,
-300034,300034,300708,2019-06-05,,,,,Subserosa / perirectal fat,침범 없음,
-300035,300035,300735,2021-07-01,,,,,Subserosa / perirectal fat,침범 없음,
-300036,300036,300748,2022-12-07,,,,,Muscularis propria,침범 없음,
-300037,300037,300758,2021-03-27,,,Double stapling technique (side-to-end),,Muscularis propria,침범 없음,
-300038,300038,300782,2019-03-12,,,Colonic J-pouch anastomosis,,Muscularis propria,침범 없음,Nearly complete
-300039,300039,300795,2019-09-05,,,,,Subserosa / perirectal fat,침범 없음,Complete
-300040,300040,300825,2022-04-16,,,Stapled end-to-end with reinforcing sutures,,Serosa (visceral peritoneum),침범 없음,
-300041,300041,300860,2020-10-26,,,Stapled end-to-end with reinforcing sutures,,Subserosa / perirectal fat,침범 없음,Complete
-300042,300042,300877,2021-06-01,,,,,Subserosa / perirectal fat,침범 없음,
-300043,300043,300890,2023-08-30,,,,,,,
-300044,300044,300915,2023-08-27,,,,,,,
-300045,300045,300936,2023-12-02,,,,Converted to open surgery due to adhesion; R0 resection,Subserosa / perirectal fat,침범 없음,
-300046,300046,300963,2019-07-11,,,,,Muscularis propria,침범 없음,
-300047,300047,300976,2020-04-30,,,,,Subserosa / perirectal fat,침범 없음,
-300048,300048,301006,2020-06-17,,,,,Submucosa,침범 없음,
-300049,300049,301019,2022-10-28,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,,,Subserosa / perirectal fat,침범 없음,Nearly complete
-300050,300050,301032,2021-05-30,,,,,Muscularis propria,침범 없음,Complete
-300051,300051,301047,2022-04-10,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,Stapled end-to-end with reinforcing sutures,,Muscularis propria,침범 없음,Nearly complete
-300052,300052,301069,2021-04-13,,,,,Muscularis propria,침범 없음,
-300053,300053,301082,2024-03-13,,,,,,,
-300054,300054,301103,2020-04-28,Permanent end colostomy (APR),,,,Subserosa / perirectal fat,침범 없음,Complete
-300055,300055,301119,2021-01-05,,,Intracorporeal side-to-side stapled anastomosis,,Subserosa / perirectal fat,침범 없음,
-300056,300056,301132,2023-07-03,,,,,Subserosa / perirectal fat,침범 없음,
-300057,300057,301145,2019-04-25,,,,,,,
-300058,300058,301169,2022-02-25,,,Stapled end-to-end with reinforcing sutures,,Serosa (visceral peritoneum),침범 없음,
-300059,300059,301183,2023-09-19,,,,,Muscularis propria,침범 없음,
-300060,300060,301191,2023-11-13,,,,,Submucosa,침범 없음,Nearly complete
-300061,300061,301212,2024-01-29,,,Double stapling technique (side-to-end),,Muscularis propria,침범 없음,
-300062,300062,301236,2019-02-16,,,Stapled end-to-end with reinforcing sutures,,Serosa (visceral peritoneum),침범 없음,
-300063,300063,301258,2020-07-20,,,Colonic J-pouch anastomosis,,Adjacent organ,침범,Complete
-300064,300064,301285,2022-11-07,,,,,Subserosa / perirectal fat,침범 없음,
-300065,300065,301320,2021-01-26,,,,,Submucosa,침범 없음,
-300066,300066,301333,2024-03-18,,,,,Submucosa,침범 없음,
-300067,300067,301353,2020-02-07,,,,,Subserosa / perirectal fat,침범 없음,
-300068,300068,301394,2024-03-09,,,,,Muscularis propria,침범 없음,Complete
-300069,300069,301401,2020-08-19,,,,,Subserosa / perirectal fat,침범 없음,
-300070,300070,301426,2022-06-02,,,Double stapling technique (side-to-end),Converted to open surgery due to adhesion; R0 resection,Subserosa / perirectal fat,침범 없음,
-300071,300071,301437,2020-10-11,,,,,Serosa (visceral peritoneum),침범 없음,Complete
-300072,300072,301455,2022-01-10,,,,,,,
-300073,300073,301480,2024-04-03,,Liver and para-aortic lymph node metastases,,,,,
-300074,300074,301497,2024-04-01,,,Intracorporeal side-to-side stapled anastomosis,,Subserosa / perirectal fat,침범 없음,
-300075,300075,301520,2020-11-06,,,,,Subserosa / perirectal fat,침범 없음,
-300076,300076,301545,2024-03-06,,,Stapled end-to-end with reinforcing sutures,,Subserosa / perirectal fat,침범 없음,Complete
-300077,300077,301555,2019-09-07,,,,,Muscularis propria,침범 없음,Complete
-300078,300078,301568,2023-03-26,,,,,,,
-300079,300079,301577,2020-03-23,,,,Converted to open surgery due to adhesion; R0 resection,Muscularis propria,침범 없음,
-300080,300080,301590,2022-03-06,,,,,,,
-300081,300081,301602,2023-12-06,,,,,,,
-300082,300082,301636,2022-10-10,,Liver and para-aortic lymph node metastases,,,,,
-300083,300083,301666,2019-04-06,,,Intracorporeal side-to-side stapled anastomosis,,Serosa (visceral peritoneum),침범 없음,
-300084,300084,301699,2021-12-19,,,,,,,
-300085,300085,301715,2023-10-18,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,,,Muscularis propria,침범 없음,Complete
-300086,300086,301735,2019-03-01,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,,,No residual tumor,침범 없음,Complete
-300087,300087,301752,2019-09-03,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,,,Muscularis propria,침범 없음,Complete
-300088,300088,301769,2022-06-30,,,Stapled end-to-end with reinforcing sutures,,Subserosa / perirectal fat,침범 없음,
-300089,300089,301796,2022-10-07,,,Colonic J-pouch anastomosis,,Subserosa / perirectal fat,침범 없음,Complete
-300090,300090,301830,2023-08-25,,,,,Muscularis propria,침범 없음,
-300091,300091,301852,2020-11-29,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,Double stapling technique (side-to-end),,Subserosa / perirectal fat,침범 없음,Complete
-300092,300092,301882,2023-06-21,,,Stapled end-to-end with reinforcing sutures,,Subserosa / perirectal fat,침범 없음,
-300093,300093,301909,2020-03-22,Obstruction / perforation (Hartmann),,,,Serosa (visceral peritoneum),침범 없음,
-300094,300094,301950,2019-11-07,,,,,Submucosa,침범 없음,Complete
-300095,300095,301963,2020-06-09,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,,,Adjacent organ,침범 없음,Nearly complete
-300096,300096,302004,2020-05-13,,,,,Muscularis propria,침범 없음,Complete
-300097,300097,302029,2023-01-11,,,,,No residual tumor,침범 없음,Complete
-300098,300098,302041,2019-07-12,,,,,Serosa (visceral peritoneum),침범 없음,
-300099,300099,302054,2020-01-05,,,,,Subserosa / perirectal fat,침범 없음,
-300100,300100,302074,2020-12-24,Obstruction / perforation (Hartmann),,,,Serosa (visceral peritoneum),침범 없음,
+300001,300001,300001,2019-06-25,,,,,Subserosa / pericolic fat,침범 없음,
+300002,300002,300042,2022-12-22,,,,Converted to open surgery due to adhesion; R0 resection,Subserosa / pericolic fat,침범 없음,
+300003,300003,300065,2023-07-27,,,Intracorporeal side-to-side stapled anastomosis,,Muscularis propria,침범 없음,
+300004,300004,300089,2023-07-11,Obstruction / perforation (Hartmann),,,,Muscularis propria,침범 없음,
+300005,300005,300135,2024-02-26,,,,,Muscularis propria,침범 없음,
+300006,300006,300154,2020-07-18,,,,,Serosa (visceral peritoneum),침범 없음,
+300007,300007,300192,2024-04-10,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,,,No residual tumor,침범 없음,Complete
+300008,300008,300207,2019-03-23,,,,,Serosa (visceral peritoneum),침범 없음,
+300009,300009,300221,2020-06-05,,,Double stapling technique (side-to-end),,Muscularis propria,침범 없음,
+300010,300010,300235,2019-07-21,,,,,,,
+300011,300011,300246,2024-04-13,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,Double stapling technique (side-to-end),,Perirectal soft tissue (through muscularis propria),침범 없음,Complete
+300012,300012,300275,2023-12-28,,,,,Muscularis propria,침범 없음,
+300013,300013,300284,2022-06-24,,,,,,,
+300014,300014,300314,2022-07-04,,,,,Serosa (visceral peritoneum),침범 없음,
+300015,300015,300335,2020-01-27,,,,,,,
+300016,300016,300347,2023-07-30,,,,,Muscularis propria,침범 없음,Complete
+300017,300017,300370,2022-03-16,,,,,Muscularis propria,침범 없음,
+300018,300018,300382,2022-11-14,,,,,Muscularis propria,침범 없음,
+300019,300019,300393,2021-02-01,,,,,Serosa (visceral peritoneum),침범 없음,
+300020,300020,300420,2024-02-27,,"Peritoneal carcinomatosis, multiple sites",,,,,
+300021,300021,300459,2020-01-08,,,,,Serosa (visceral peritoneum),침범 없음,
+300022,300022,300495,2023-07-31,,,,,Subserosa / pericolic fat,침범 없음,
+300023,300023,300535,2022-09-02,,,,,Subserosa / pericolic fat,침범 없음,
+300024,300024,300568,2024-05-25,,,,,Serosa (visceral peritoneum),침범 없음,
+300025,300025,300593,2019-05-06,,,,,,,
+300026,300026,300628,2024-03-16,,,Intracorporeal side-to-side stapled anastomosis,,Serosa (visceral peritoneum),침범 없음,
+300027,300027,300652,2022-11-01,,,,,Subserosa / pericolic fat,침범 없음,
+300028,300028,300673,2023-05-03,,,,,Serosa (visceral peritoneum),침범 없음,
+300029,300029,300699,2020-12-05,,,,,Subserosa / pericolic fat,침범 없음,
+300030,300030,300765,2022-04-22,,"Peritoneal carcinomatosis, multiple sites",,,,,
+300031,300031,300819,2022-04-15,,,,,Submucosa,침범 없음,
+300032,300032,300831,2021-08-09,,,,,Subserosa / pericolic fat,침범 없음,
+300033,300033,300891,2023-05-19,,,,,Subserosa / pericolic fat,침범 없음,
+300034,300034,300901,2023-08-19,,,Double stapling technique (side-to-end),,Subserosa / pericolic fat,침범 없음,
+300035,300035,300926,2024-04-26,,,,"Palliative resection, R2 (macroscopic residual disease)",Subserosa / pericolic fat,침범 없음,
+300036,300036,300974,2019-06-26,,,Intracorporeal side-to-side stapled anastomosis,,Subserosa / pericolic fat,침범 없음,
+300037,300037,301008,2024-03-23,,,,,Subserosa / pericolic fat,침범 없음,
+300038,300038,301029,2020-02-13,,,Double stapling technique (side-to-end),,Subserosa / pericolic fat,침범 없음,
+300039,300039,301051,2021-07-28,,,,,,,
+300040,300040,301098,2021-01-24,,,,,,,
+300041,300041,301128,2022-09-14,,,Double stapling technique (side-to-end),,Subserosa / pericolic fat,침범 없음,
+300042,300042,301139,2019-03-07,,,,,Serosa (visceral peritoneum),침범 없음,
+300043,300043,301170,2022-02-08,Obstruction / perforation (Hartmann),,Intracorporeal side-to-side stapled anastomosis,,Subserosa / pericolic fat,침범 없음,
+300044,300044,301199,2023-04-30,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,,,Perirectal soft tissue (through muscularis propria),침범 없음,Complete
+300045,300045,301235,2022-11-10,,,,,Submucosa,침범 없음,
+300046,300046,301246,2019-01-06,,,Double stapling technique (side-to-end),,Serosa (visceral peritoneum),침범 없음,
+300047,300047,301260,2022-05-02,,,,,Muscularis propria,침범 없음,Complete
+300048,300048,301291,2023-05-29,,,,,Subserosa / pericolic fat,침범 없음,
+300049,300049,301338,2024-05-11,,,,,Subserosa / pericolic fat,침범 없음,
+300050,300050,301354,2019-02-12,,,,,Serosa (visceral peritoneum),침범 없음,
+300051,300051,301381,2020-06-20,,,,,,,
+300052,300052,301421,2022-08-26,,,,,Subserosa / pericolic fat,침범 없음,
+300053,300053,301433,2020-01-19,,,,,,,
+300054,300054,301473,2023-01-09,,,,,,,
+300055,300055,301515,2023-12-22,,,,,Muscularis propria,침범 없음,
+300056,300056,301539,2022-07-26,,,,,Muscularis propria,침범 없음,
+300057,300057,301568,2020-09-18,,,,,,,
+300058,300058,301580,2022-12-11,,"Peritoneal carcinomatosis, multiple sites",,,,,
+300059,300059,301609,2024-05-13,,,,,No residual tumor,침범 없음,Complete
+300060,300060,301635,2023-07-31,,"Peritoneal carcinomatosis, multiple sites",Colonic J-pouch anastomosis,"Palliative resection, R2 (macroscopic residual disease)",Serosa (visceral peritoneum),침범 없음,Complete
+300061,300061,301661,2023-07-01,,,,,Muscularis propria,침범 없음,
+300062,300062,301687,2023-07-05,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion","Peritoneal carcinomatosis, multiple sites",,"Palliative resection, R2 (macroscopic residual disease)",Serosa (visceral peritoneum),침범 없음,Complete
+300063,300063,301738,2021-07-20,,,,,Subserosa / pericolic fat,침범 없음,
+300064,300064,301784,2020-07-19,,,,,Perirectal soft tissue (through muscularis propria),침범 없음,Incomplete
+300065,300065,301839,2020-05-26,,Liver and para-aortic lymph node metastases,,,,,
+300066,300066,301882,2020-05-30,,,,,,,
+300067,300067,301894,2019-10-12,,,Double stapling technique (side-to-end),,Serosa (visceral peritoneum),침범 없음,
+300068,300068,301930,2023-07-03,,,,,Subserosa / pericolic fat,침범 없음,
+300069,300069,301952,2022-02-13,,,,,Submucosa,침범 없음,
+300070,300070,301964,2023-02-25,,,,,Perirectal soft tissue (through muscularis propria),침범 없음,Complete
+300071,300071,301982,2021-11-08,Obstruction / perforation (Hartmann),,,,Subserosa / pericolic fat,침범 없음,
+300072,300072,302007,2019-03-24,,,,,Subserosa / pericolic fat,침범 없음,
+300073,300073,302032,2023-01-24,,,,,Subserosa / pericolic fat,침범 없음,
+300074,300074,302058,2021-02-26,,,,,Muscularis propria,침범 없음,
+300075,300075,302078,2023-05-18,"Anastomosis protection (diverting ileostomy), low anastomosis with poor tissue perfusion",,,,Perirectal soft tissue (through muscularis propria),침범 없음,Nearly complete
+300076,300076,302102,2019-04-07,,,,,Muscularis propria,침범 없음,Nearly complete
+300077,300077,302116,2021-03-22,,,,,No residual tumor,침범 없음,Complete
+300078,300078,302151,2021-09-02,,,Stapled end-to-end with reinforcing sutures,,Subserosa / pericolic fat,침범 없음,
+300079,300079,302171,2024-05-27,,,,,Subserosa / pericolic fat,침범 없음,
+300080,300080,302189,2022-12-11,,,,,Subserosa / pericolic fat,침범 없음,
+300081,300081,302210,2024-01-25,,,,,,,
+300082,300082,302238,2023-03-28,,,Stapled end-to-end with reinforcing sutures,,Subserosa / pericolic fat,침범 없음,
+300083,300083,302259,2022-10-22,Obstruction / perforation (Hartmann),,,"Palliative resection, R2 (macroscopic residual disease)",Subserosa / pericolic fat,침범 없음,
+300084,300084,302299,2020-12-01,,,,Converted to open surgery due to adhesion; R0 resection,Subserosa / pericolic fat,침범 없음,
+300085,300085,302322,2020-07-13,,,,"Palliative resection, R2 (macroscopic residual disease)",Perirectal soft tissue (through muscularis propria),침범 없음,Nearly complete
+300086,300086,302357,2022-07-17,,,,,Muscularis propria,침범 없음,Complete
+300087,300087,302376,2021-04-29,,,,,Muscularis propria,침범 없음,
+300088,300088,302399,2024-03-27,,,,,Subserosa / pericolic fat,침범 없음,
+300089,300089,302423,2020-12-10,,"Peritoneal carcinomatosis, multiple sites",,,,,
+300090,300090,302458,2021-04-06,,,,,,,
+300091,300091,302506,2019-06-16,,,Stapled end-to-end with reinforcing sutures,,Serosa (visceral peritoneum),침범 없음,
+300092,300092,302539,2024-03-25,,,,,,,
+300093,300093,302551,2023-05-29,,,,,Subserosa / pericolic fat,침범 없음,
+300094,300094,302576,2019-02-03,,,,,Subserosa / pericolic fat,침범 없음,
+300095,300095,302629,2023-11-27,,,,,Subserosa / pericolic fat,침범 없음,
+300096,300096,302646,2019-11-17,,,Stapled end-to-end with reinforcing sutures,Converted to open surgery due to adhesion; R0 resection,Subserosa / pericolic fat,침범 없음,
+300097,300097,302674,2023-10-23,,,,,Perirectal soft tissue (through muscularis propria),침범 없음,Complete
+300098,300098,302697,2021-12-18,,,,,Muscularis propria,침범 없음,Complete
+300099,300099,302717,2019-06-23,,,Double stapling technique (side-to-end),,Perirectal soft tissue (through muscularis propria),침범 없음,Complete
+300100,300100,302748,2021-04-11,,,,,,,

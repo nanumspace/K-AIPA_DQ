@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Quality Validator 릴리스: 빌드 → 코드 서명 → 공증 → 검증 → GitHub Release
+# K-AIPA DQ 릴리스: 빌드 → 코드 서명 → 공증 → 검증 → GitHub Release
 #
 # 사용법
 #   ./release.sh                 package.json 의 버전으로 릴리스
-#   ./release.sh 0.2.0           버전을 0.2.0 으로 올리고(커밋) 릴리스
+#   ./release.sh 1.0.0           커밋된 앱 버전이 1.0.0 인지 확인한 뒤 릴리스
 #   옵션  --skip-mac  --skip-win  macOS / Windows 빌드 생략
 #         --no-publish            빌드·서명·공증·검증까지만 (태그·Release 안 만듦)
 #         --publish-only          release/ 에 이미 있는 산출물로 태그·Release 만
@@ -20,9 +20,9 @@
 #     qlmanage -t -s 1024 -o app/build app/build/icon.svg && mv app/build/icon.svg.png app/build/icon.png
 #
 # 산출물 (app/release/)
-#   QualityValidator-<버전>-mac-arm64.dmg     Developer ID 서명 + 공증 + staple
-#   QualityValidator-<버전>-win-x64.exe       GlobalSign EV 서명 (SafeNet 토큰)
-#   QualityValidator-<버전>-win-arm64.exe
+#   K-AIPA-DQ-<버전>-mac-arm64.dmg     Developer ID 서명 + 공증 + staple
+#   K-AIPA-DQ-<버전>-win-x64.exe       GlobalSign EV 서명 (SafeNet 토큰)
+#   K-AIPA-DQ-<버전>-win-arm64.exe
 #   SampleData-<버전>-<COHORT>-<clean|dirty|good>.zip ×18, SampleData-<버전>-all.zip   견본 데이터 (가상데이터, app/build/pack-samples.cjs)
 #   SHA256SUMS.txt
 
@@ -30,6 +30,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 APP="$ROOT/app"
+REPOSITORY="nanumspace/K-AIPA_DQ"
 NOTARY_PROFILE="${KAI_NOTARY_PROFILE:-kai-notary}"
 PIN_SERVICE="${KAI_PIN_SERVICE:-kai-safenet-pin}"
 PKCS11_MODULE="${KAI_PKCS11_MODULE:-/opt/homebrew/lib/opensc-pkcs11.so}"
@@ -87,26 +88,22 @@ fi
 
 # ---------------------------------------------------------------- 2. 버전
 cd "$APP"
-if [ -n "$NEW_VERSION" ]; then
-  log "버전 올리기: $NEW_VERSION"
-  npm version "$NEW_VERSION" --no-git-tag-version >/dev/null
-  (cd "$ROOT/dq-ts" && npm version "$NEW_VERSION" --no-git-tag-version >/dev/null) || true
-  git -C "$ROOT" add app/package.json app/package-lock.json dq-ts/package.json dq-ts/package-lock.json 2>/dev/null || true
-  git -C "$ROOT" commit -q -m "버전 $NEW_VERSION" && ok "커밋: 버전 $NEW_VERSION"
-fi
 VERSION="$(node -p "require('./package.json').version")"
+if [ -n "$NEW_VERSION" ] && [ "$NEW_VERSION" != "$VERSION" ]; then
+  fail "요청 버전 $NEW_VERSION 과 앱 버전 $VERSION 이 다릅니다. package.json·lockfile 버전을 먼저 수정하고 커밋하세요."
+fi
 TAG="v$VERSION"
 OUT="$APP/release"
 log "릴리스 버전 $TAG"
 if [ "$PUBLISH" = 1 ] || [ "$PUBLISH_ONLY" = 1 ]; then
   [ -z "$(git -C "$ROOT" status --porcelain)" ] || fail "커밋되지 않은 변경이 있습니다. 먼저 커밋하세요 (git status)."
   if [ "$REPLACE" = 1 ]; then
-    gh release view "$TAG" >/dev/null 2>&1 && gh release delete "$TAG" --yes --cleanup-tag >/dev/null && ok "기존 Release $TAG 삭제"
+    gh release view "$TAG" --repo "$REPOSITORY" >/dev/null 2>&1 && gh release delete "$TAG" --repo "$REPOSITORY" --yes --cleanup-tag >/dev/null && ok "기존 Release $TAG 삭제"
     git -C "$ROOT" tag -d "$TAG" >/dev/null 2>&1 || true
     git -C "$ROOT" push -q --delete origin "$TAG" >/dev/null 2>&1 || true
   else
     git -C "$ROOT" rev-parse "$TAG" >/dev/null 2>&1 && fail "태그 $TAG 가 이미 있습니다. 새 버전을 지정하거나 --replace 를 쓰세요."
-    gh release view "$TAG" >/dev/null 2>&1 && fail "Release $TAG 가 이미 GitHub 에 있습니다. 다시 게시하려면 --replace 를 쓰세요."
+    gh release view "$TAG" --repo "$REPOSITORY" >/dev/null 2>&1 && fail "Release $TAG 가 이미 GitHub 에 있습니다. 다시 게시하려면 --replace 를 쓰세요."
   fi
 fi
 
@@ -222,7 +219,7 @@ log "GitHub Release $TAG"
 ASSETS=("$OUT"/*.dmg "$OUT"/*.exe "$OUT"/SampleData-*.zip "$OUT"/SHA256SUMS.txt)
 NOTES="$(mktemp)"
 {
-  echo "## Quality Validator $TAG"
+  echo "## K-AIPA DQ $TAG"
   echo
   # 버전별 변경 사항이 있으면 맨 앞에 싣는다 (docs/release-notes/<태그>.md)
   if [ -f "$ROOT/docs/release-notes/$TAG.md" ]; then cat "$ROOT/docs/release-notes/$TAG.md"; echo; fi
@@ -234,9 +231,9 @@ NOTES="$(mktemp)"
   echo
   echo "### 견본 데이터 (가상데이터)"
   echo
-  echo "앱 동작을 확인할 때 쓰는 가상데이터이며 의뢰사 매뉴얼 2026-11-16 기준입니다. 실제 환자와 무관합니다. \`SampleData-$VERSION-all.zip\` 은 6개 코호트 × clean/dirty(각 100명 규칙 시험용) / good(질환별 가상 환자 1명의 연결된 표 예시) 18개 폴더 전체입니다. 코호트별 zip 에는 CSV 와 동일한 내용을 시트별로 담은 엑셀 파일이 있고, README.txt 에 기대 결과를 적었습니다. dirty 의 오류는 규칙에서 역으로 만든 것이라 «모두 검출»이 실제 병원 데이터에서의 민감도는 아니며, Good Sample 은 합성한 자료로 임상의의 감수를 받지 않았습니다. 폴더째 앱의 검증 실행 화면에 끌어다 놓으면 됩니다."
+  echo "기관 내부 점검과 앱 동작 확인을 위한 합성데이터이며, 「질환별 데이터 테이블」 매뉴얼 2026-11-16 기준입니다. 실제 환자와 무관합니다. \`SampleData-$VERSION-all.zip\` 은 6개 코호트 × clean/dirty(각 100명 규칙 시험용) / good(질환별 가상 환자 1명의 합성 임상 사례 예제) 18개 폴더 전체입니다. 각 zip 에는 CSV·엑셀·기대 결과 안내가 있습니다. dirty 오류의 전부 검출은 실제 병원 데이터의 민감도를 뜻하지 않으며, 합성 임상 사례는 임상의 감수·승인을 받은 진료 지침이 아닙니다."
   echo
-  echo "설치와 사용 방법은 [사용자 설명서](https://github.com/$(gh repo view --json nameWithOwner -q .nameWithOwner)/blob/main/manual/README.md)를 보세요."
+  echo "설치와 사용 방법은 [사용자 설명서](https://github.com/$REPOSITORY/blob/$TAG/manual/README.md)를 보세요."
   echo
   echo "### SHA-256"
   echo '```'
@@ -244,9 +241,9 @@ NOTES="$(mktemp)"
   echo '```'
 } > "$NOTES"
 if ! git -C "$ROOT" rev-parse "$TAG" >/dev/null 2>&1; then
-  git -C "$ROOT" tag -a "$TAG" -m "Quality Validator $TAG"
+  git -C "$ROOT" tag -a "$TAG" -m "K-AIPA DQ $TAG"
 fi
 git -C "$ROOT" push -q origin main "$TAG" && ok "push: main, $TAG"
-gh release create "$TAG" "${ASSETS[@]}" --title "Quality Validator $TAG" --notes-file "$NOTES" --latest
+gh release create "$TAG" "${ASSETS[@]}" --repo "$REPOSITORY" --title "K-AIPA DQ $TAG" --notes-file "$NOTES" --latest
 rm -f "$NOTES"
-ok "Release: $(gh release view "$TAG" --json url -q .url)"
+ok "Release: $(gh release view "$TAG" --repo "$REPOSITORY" --json url -q .url)"

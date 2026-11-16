@@ -300,10 +300,10 @@ class Injector:
             # SACT-001 종료일 < 시작일 (오류), SACT-006 line 번호가 시작일 순서와 다름 (경고, 휴리스틱)
             for i in self.rows("SACT", mask=S["regimen_start_date"] != ""):
                 self.put("SACT_END_BEFORE_START", "Plausibility", "SACT", i, "regimen_end_date", day(S.at[i, "regimen_start_date"], -1), "SEM-SACT-001")
-            for i in self.rows("SACT", mask=S["line_of_therapy"] != ""):
-                self.put("SACT_LINE_MISMATCH", "Plausibility", "SACT", i, "line_of_therapy", "9", "SEM-SACT-006")
-            # SACT-002 시작일이 연결 약물 최소 시작일과 다름 (1차 요법을 앞으로 당기면 line 순서는 그대로)
-            for i in self.rows("SACT", mask=S["line_of_therapy"] == "1"):
+            for i in self.rows("SACT", mask=S["regimen_start_date"] != ""):
+                self.put("SACT_LINE_MISMATCH", "Plausibility", "SACT", i, "line_of_therapy", str(len(S) + 1), "SEM-SACT-006")
+            # SACT-002 시작일이 연결 약물 최소 시작일과 다름. 임상 차수는 선택 값이라 빈 값도 대상이다.
+            for i in self.rows("SACT", mask=S["regimen_start_date"] != ""):
                 self.put("SACT_START_NE_DRUG_MIN", "Plausibility", "SACT", i, "regimen_start_date", day(S.at[i, "regimen_start_date"], -3), "SEM-SACT-002")
             # SACT-003 진행일 < 시작일
             for i in self.rows("SACT", mask=S["regimen_start_date"] != ""):

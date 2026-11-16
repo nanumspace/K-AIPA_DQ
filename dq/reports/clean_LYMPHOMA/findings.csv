@@ -1,1 +1,8 @@
 ﻿rule_id,rule_name,category,severity,table,field,row_key,person_id,detail
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,600021,600015,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,600023,600016,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,600026,600018,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,600048,600037,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,600067,600054,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,600108,600089,line_of_therapy=1 이나 시작일 순서=2
+SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,600119,600098,line_of_therapy=1 이나 시작일 순서=2

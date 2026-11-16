@@ -1,4 +1,22 @@
-K-AI Quality Validator
+K-AIPA DQ (K-AIPA Clinical Data Quality Validator)
 Copyright 2026 K-AI 코호트 구축 TF
 
 Licensed under the Apache License, Version 2.0. See LICENSE.
+
+Scope of this notice
+- The copyright line above is carried over unchanged from earlier releases
+  (formerly "Quality Validator"). Renaming the application to K-AIPA DQ and
+  publishing it in the nanumspace/K-AIPA_DQ repository does not assign
+  copyright to anyone new and does not change the license terms.
+- K-AIPA (https://k-aipa.org) is referred to only to describe the context in
+  which this validator is used. This notice and the project do not claim
+  endorsement, sponsorship, or ownership by K-AIPA or any of its organizations,
+  and grant no right to use K-AIPA names or logos.
+- The client manual (raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx) is the
+  specification source supplied by the client, kept as provided. The Apache
+  License in LICENSE applies to this software as stated there and is not a
+  statement about permissions for third-party materials such as the manual, the
+  OMOP/OHDSI vocabularies, or third-party dependencies, which remain under
+  their own terms.
+- All sample data in this repository is synthetic and unrelated to real
+  patients. It is not clinically approved or certified.

@@ -1,4 +1,6 @@
-# 기여 안내
+# 기여 안내 (K-AIPA DQ)
+
+K-AIPA DQ(K-AIPA 임상 데이터 품질검증, K-AIPA Clinical Data Quality Validator)는 여섯 질환 코호트 임상 테이블의 검증만 다룹니다. 전임상·오믹스·AI 모델 검증이나 임상 인증은 범위 밖입니다. 기여는 [nanumspace/K-AIPA_DQ](https://github.com/nanumspace/K-AIPA_DQ)에서 받습니다. 기여한 내용은 저장소의 Apache License 2.0 에 따릅니다([NOTICE](NOTICE)).
 
 ## 저장소 구성
 
@@ -11,7 +13,7 @@
 | `dq/` | Python 참조 엔진, 검출 성능 평가 | `dq-ts` 동등성 시험 |
 | `dq-ts/` | TypeScript 엔진 | `npm test` |
 | `app/` | 데스크톱 앱 | `npm run typecheck`, `npm run build`, `npm run smoke` |
-| `docs/`, `manual/`, `pilot/` | 공개 문서, 사용자 설명서, 파일럿 키트 | 화면이나 출력물이 바뀌면 설명서를 같이 고침 |
+| `docs/`, `manual/`, `pilot/` | 공개 문서, 사용자 설명서, 파일럿 키트 | 화면이나 출력물이 바뀌면 설명서를 같이 고침. `docs/` 의 소개 페이지·자료실은 릴리스 태그 기준으로 배포되므로 릴리스된 자산과 어긋나는 설명을 main 에 미리 쓰지 않음 |
 
 검증 기준은 의뢰사 매뉴얼 2026-11-16 하나입니다. 판을 나누거나 매뉴얼에 없는 표·열을 더하지 않습니다.
 

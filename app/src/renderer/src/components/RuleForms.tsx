@@ -256,7 +256,7 @@ export function HistoryModal({ onClose }: { onClose: () => void }) {
   useEffect(() => { api.getRuleHistory(500).then(setRows).catch((e) => setErr(errText(e))); }, []);
   return (
     <Modal title="규칙 변경 이력" onClose={onClose} wide>
-      <p className="hint">이 PC 의 <span className="mono">rule-history.jsonl</span> 에 남은 기록입니다 (최근 500건). 바꾸기 전과 후의 값이 SQL 까지 그대로 들어 있습니다.</p>
+      <p className="hint">이 PC 의 <span className="mono">rule-history.jsonl</span> 에 남은 기록입니다 (최근 500건). 바꾸기 전과 후의 값이 SQL 까지 그대로 들어 있습니다. 이 PC 의 일반 파일이라 위·변조를 막는 감사 기록이 아니며, '관리자' 표시는 인증된 신원이 아니라 관리자 모드였다는 뜻입니다.</p>
       {err && <div className="callout err">{err}</div>}
       <div className="tblwrap" style={{ maxHeight: "62vh" }}>
         {rows && rows.length === 0 ? <div className="empty">기록이 없습니다</div> : (

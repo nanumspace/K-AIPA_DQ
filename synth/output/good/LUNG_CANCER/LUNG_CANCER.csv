@@ -1,2 +1,2 @@
 lung_cancer_id,person_id,visit_occurrence_id,diag_rgst_ymd,histologic_diagnosis,histologic_diagnosis_source_value,clinical_stage,stage_iv_diagnosis_date
-100004,100004,100028,2022-08-12,1,Adenocarcinoma,IA3,2023-03-16
+100002,100002,100011,2021-11-27,1,Adenocarcinoma,IB,
