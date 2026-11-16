@@ -12,6 +12,10 @@ on:
         required: true
         default: "v1.0.0"
         type: string
+      refresh_intro:
+        description: "실행한 커밋의 소개 페이지 문구만 반영 (명세·규칙은 릴리스 기준 유지)"
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -43,6 +47,17 @@ jobs:
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
           test "$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)" = false
           python -c 'import json,os; assert "v"+json.load(open("app/package.json"))["version"] == os.environ["RELEASE_TAG"]'
+      # 문구 수정은 설치본 재배포 없이 허용하되 자료실의 검증 기준은 바꾸지 않는다.
+      - uses: actions/checkout@v4
+        if: github.event_name == 'workflow_dispatch' && inputs.refresh_intro
+        with:
+          ref: ${{ github.sha }}
+          path: intro-source
+          sparse-checkout: docs/index.html
+          sparse-checkout-cone-mode: false
+      - name: Refresh introduction copy only
+        if: github.event_name == 'workflow_dispatch' && inputs.refresh_intro
+        run: cp intro-source/docs/index.html docs/index.html
       - uses: actions/configure-pages@v5
       - uses: actions/setup-python@v5
         with:

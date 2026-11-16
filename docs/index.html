@@ -307,7 +307,6 @@
           <div class="chips">
             <span><b class="tick">✓</b> <span data-i18n="hero.chip1">CSV(UTF-8·EUC-KR) · 엑셀 · 폴더</span></span>
             <span><b class="tick">✓</b> <span data-i18n="hero.chip2">환자 단위 정보는 밖으로 나가지 않음</span></span>
-            <span><b class="tick">✓</b> <span data-i18n="hero.chip3">코드 서명 · 공증</span></span>
           </div>
         </div>
 
@@ -480,7 +479,7 @@
           <div class="ministats">
             <div class="ms"><b>0</b><span data-i18n="band.ms1">DB 접속 · 입력 데이터 전송</span></div>
             <div class="ms"><b>submission.json</b><span data-i18n="band.ms2">병원 밖으로 보내는 유일한 파일. 환자 단위 정보 없음</span></div>
-            <div class="ms"><b data-i18n="band.ms3b">코드 서명 · 공증</b><span data-i18n="band.ms3">Windows 는 EV 인증서, macOS 는 Developer ID 와 Apple 공증</span></div>
+            <div class="ms"><b data-i18n="band.ms3b">규칙 변경 기록</b><span data-i18n="band.ms3">적용 규칙과 관리자 모드 사용 여부를 결과에 기록</span></div>
           </div>
         </div>
       </div>
@@ -508,7 +507,7 @@
           </div>
           <div class="dl reveal">
             <div class="arch"><span class="archname">macOS</span><span class="pill">Apple Silicon</span></div>
-            <p class="for" data-i18n="dl.macfor">M1 이후 Mac. Developer ID 서명과 Apple 공증을 거쳐 경고 없이 열립니다.</p>
+            <p class="for" data-i18n="dl.macfor">M1 이후 Apple Silicon Mac용입니다.</p>
             <div class="row"><a class="btn btn-accent" id="dl-mac-arm64" href="https://github.com/nanumspace/K-AIPA_DQ/releases/download/v1.0.0/K-AIPA-DQ-1.0.0-mac-arm64.dmg" data-i18n="dl.dmg">디스크 이미지 (.dmg)</a></div>
             <div class="sz">K-AIPA-DQ-1.0.0-mac-arm64.dmg</div>
           </div>
@@ -538,7 +537,7 @@
           </div>
         </div>
         <p class="dl-note" data-i18n="dl.note">
-          Windows 설치 파일은 GlobalSign EV 인증서로, macOS 는 Apple Developer ID 로 서명하고 공증했습니다. 32비트 Windows 와 Intel Mac 은 제공하지 않습니다.<br>
+          32비트 Windows 와 Intel Mac 은 제공하지 않습니다.<br>
           <code>SHA256SUMS.txt</code> 로 파일을 대조할 수 있습니다. · <a href="https://github.com/nanumspace/K-AIPA_DQ/releases">모든 릴리스 보기</a>
         </p>
       </div>
@@ -559,7 +558,7 @@
           <a class="doc reveal" href="https://github.com/nanumspace/K-AIPA_DQ/blob/v1.0.0/docs/engine.md"><b data-i18n="docs.d5b">엔진과 검출 성능</b><span data-i18n="docs.d5">Python 참조 구현, TypeScript 엔진, 앱 구조, 재현율과 해석의 한계.</span></a>
           <a class="doc reveal" href="https://github.com/nanumspace/K-AIPA_DQ/blob/v1.0.0/manual/06-rules.md"><b data-i18n="docs.d7b">규칙 편집</b><span data-i18n="docs.d7">규칙 켜고 끄기, 값 조정, 양식으로 규칙 추가, 관리자 모드(SQL), 조정 기록과 중앙 집계.</span></a>
           <a class="doc reveal" href="https://github.com/nanumspace/K-AIPA_DQ/blob/v1.0.0/pilot/README.md"><b data-i18n="docs.d8b">파일럿 키트</b><span data-i18n="docs.d8">파일럿 안내서, 피드백 양식, 중앙용 submission 집계 도구.</span></a>
-          <a class="doc reveal" href="https://github.com/nanumspace/K-AIPA_DQ/blob/v1.0.0/docs/reproduce.md"><b data-i18n="docs.d6b">재현과 빌드</b><span data-i18n="docs.d6">파이프라인 재현, 앱 개발·빌드, 서명 릴리스 절차.</span></a>
+          <a class="doc reveal" href="https://github.com/nanumspace/K-AIPA_DQ/blob/v1.0.0/docs/reproduce.md"><b data-i18n="docs.d6b">재현과 빌드</b><span data-i18n="docs.d6">파이프라인 재현과 앱 개발·빌드 방법.</span></a>
         </div>
       </div>
     </section>
@@ -596,7 +595,7 @@
         'hero.title': { ko: '코호트 데이터,<br>병원 안에서 <span class="grad">먼저 검증</span>합니다.', en: 'Validate cohort data<br><span class="grad">inside the hospital</span>, first.' },
         'hero.lede': { ko: 'K-AI 신약개발 전임상·임상 모델개발 사업의 6개 질환 임상 코호트 데이터를 점검합니다. 지정 매뉴얼(2026-11-16)과 교차 테이블 규칙 등 390개 규칙으로 로컬 검증 보고서와 제출용 집계를 만듭니다. 데이터는 자동 전송하지 않으며, 임상적 적절성이나 AI 모델 성능을 인증하지 않습니다.', en: 'Check six clinical disease cohorts built for the K-AI preclinical and clinical drug-development project. Apply 390 specification, cross-table and review rules based on the designated manual (2026-11-16), producing local reports and aggregates for submission. The app does not automatically transmit data or certify clinical appropriateness or AI model performance.' },
         'hero.dl': { ko: '설치 파일 받기', en: 'Download' }, 'hero.manual': { ko: '사용자 설명서', en: 'User manual' },
-        'hero.chip1': { ko: 'CSV(UTF-8·EUC-KR) · 엑셀 · 폴더', en: 'CSV (UTF-8 · EUC-KR) · Excel · folder' }, 'hero.chip2': { ko: '입력 데이터 전송 기능 없음', en: 'No upload of input data' }, 'hero.chip3': { ko: '코드 서명 · 공증', en: 'Code-signed · notarized' },
+        'hero.chip1': { ko: 'CSV(UTF-8·EUC-KR) · 엑셀 · 폴더', en: 'CSV (UTF-8 · EUC-KR) · Excel · folder' }, 'hero.chip2': { ko: '입력 데이터 전송 기능 없음', en: 'No upload of input data' },
         'mock.sub': { ko: 'K-AIPA 임상 데이터 품질검증', en: 'K-AIPA clinical data quality' }, 'mock.m1': { ko: '▶ 검증 실행', en: '▶ Run validation' }, 'mock.m2': { ko: '▤ 결과 보고서', en: '▤ Report' }, 'mock.m3': { ko: '⌕ 오류 현황 조회', en: '⌕ Findings' }, 'mock.m4': { ko: '⌂ 대시보드', en: '⌂ Dashboard' }, 'mock.m5': { ko: '▥ 통계 모니터링', en: '▥ Monitoring' }, 'mock.m6': { ko: '☰ 검증 규칙 관리', en: '☰ Rules' },
         'mock.ft': { ko: '매뉴얼 2026-11-16 · 규칙 390개 · 코호트 6개<br>v1.0.0', en: 'Manual 2026-11-16 · 390 rules · 6 cohorts<br>v1.0.0' }, 'mock.hd': { ko: '검증 실행 · 폐암 (LUNG_CANCER)', en: 'Run · Lung cancer (LUNG_CANCER)' },
         'mock.s1': { ko: '코호트와 파일', en: 'Cohort & files' }, 'mock.s2': { ko: '대응 · 사전 점검', en: 'Mapping · pre-check' }, 'mock.s3': { ko: '검증 실행', en: 'Run' }, 'mock.s4': { ko: '결과와 출력물', en: 'Results' },
@@ -626,11 +625,11 @@
         'scr.c2b': { ko: '결과 보고서.', en: 'Report.' }, 'scr.c2': { ko: '규칙을 조정한 실행의 보고서. 규칙 출처(표준·변경·사용자·관리자), 실패 규칙, 분류별 집계.', en: 'Report of a run with adjusted rules: rule origin (standard, modified, custom, admin), failed rules, per-axis totals.' },
         'scr.c3b': { ko: '대시보드.', en: 'Dashboard.' }, 'scr.c3': { ko: '오류 유형별 통계와 질환별 최신 결과, 실행 추이.', en: 'Error-type statistics, latest result per cohort, run trend.' },
         'band.title': { ko: '입력 데이터는 병원 안에서 처리됩니다.', en: 'Input data is processed inside the hospital.' }, 'band.p': { ko: '로컬 데스크톱 앱입니다. 내보낸 파일만 읽고 결과를 사용자 컴퓨터에 저장하며, 검증에 서버나 클라우드가 필요하지 않고 입력 데이터를 전송하는 기능이 없습니다. 중앙에 보내는 파일은 사용자가 직접 보내는, 규칙별 건수와 테이블 행 수만 담은 집계 하나입니다.', en: 'A local desktop app. It reads exported files and stores results on your computer; validation needs no server or cloud and the app has no feature that uploads input data. The only file for the center holds per-rule counts and table row counts, and you send it yourself.' },
-        'band.ms1': { ko: 'DB 접속 · 입력 데이터 전송', en: 'DB connections · input uploads' }, 'band.ms2': { ko: '병원 밖으로 보내는 유일한 파일. 환자 단위 정보 없음', en: 'The only file that leaves. No patient-level data' }, 'band.ms3b': { ko: '코드 서명 · 공증', en: 'Code-signed · notarized' }, 'band.ms3': { ko: 'Windows 는 EV 인증서, macOS 는 Developer ID 와 Apple 공증', en: 'EV certificate on Windows, Developer ID + Apple notarization on macOS' },
+        'band.ms1': { ko: 'DB 접속 · 입력 데이터 전송', en: 'DB connections · input uploads' }, 'band.ms2': { ko: '병원 밖으로 보내는 유일한 파일. 환자 단위 정보 없음', en: 'The only file that leaves. No patient-level data' }, 'band.ms3b': { ko: '규칙 변경 기록', en: 'Rule change records' }, 'band.ms3': { ko: '적용 규칙과 관리자 모드 사용 여부를 결과에 기록', en: 'Results record applied rules and administrator-mode use' },
         'dl.eyebrow': { ko: '다운로드', en: 'Download' }, 'dl.lede': { ko: '운영체제와 아키텍처에 맞는 파일을 받으세요. 명세와 검증 규칙, 견본 데이터가 설치 파일에 들어 있어 따로 받을 것이 없습니다.', en: 'Pick the file for your OS and architecture. The spec, rules and sample data are bundled; nothing else to download.' },
         'dl.x64pill': { ko: '대부분의 PC', en: 'Most PCs' }, 'dl.x64for': { ko: 'Intel · AMD 64비트 Windows 10/11. 병원 업무용 PC 는 대부분 여기에 해당합니다.', en: 'Intel · AMD 64-bit Windows 10/11. Most hospital PCs.' },
         'dl.armpill': { ko: 'ARM PC', en: 'ARM PCs' }, 'dl.armfor': { ko: 'Snapdragon 등 ARM 기반 Windows 11. Surface Pro X · Copilot+ PC.', en: 'Snapdragon and other ARM Windows 11. Surface Pro X · Copilot+ PCs.' },
-        'dl.macfor': { ko: 'M1 이후 Mac. Developer ID 서명과 Apple 공증을 거쳐 경고 없이 열립니다.', en: 'M1 and later Macs. Developer ID signed and Apple notarized; opens without warnings.' },
+        'dl.macfor': { ko: 'M1 이후 Apple Silicon Mac용입니다.', en: 'For Apple Silicon Macs, M1 and later.' },
         'dl.exe': { ko: '설치 파일 (.exe)', en: 'Installer (.exe)' },
         'dl.samples': { ko: '견본 데이터', en: 'Sample data' }, 'dl.samplespill': { ko: '가상데이터 · 실제 환자 무관', en: 'Synthetic · no real patients' },
         'dl.samplesfor': { ko: '6개 질환 × clean/dirty(각 100명, 규칙 시험용) / Good Sample(각 가상 환자 1명의 연결된 표) 18개 폴더입니다. CSV·엑셀과 사용법·기대 결과를 담았습니다. dirty 의 오류는 규칙에서 역으로 만든 것이라 모두 검출되는 것이 실제 병원 데이터에서의 민감도를 뜻하지 않습니다. Good Sample은 합성한 자료이며 임상의의 감수를 받지 않았습니다.', en: 'Eighteen folders: six cohorts × clean/dirty (100 patients each for rule testing) / Good Sample (one linked synthetic patient per cohort). CSV, Excel, instructions, and expected results are included. The dirty faults are derived from the rules themselves, so detecting all of them says nothing about sensitivity on real hospital data. Good Samples are synthetic and not clinician-reviewed.' },
@@ -639,7 +638,7 @@
         'dl.goodfor': { ko: '진단·검사·치료·추적 경과와 표 사이의 연결을 보여 주는 합성 임상 사례입니다. 각 zip의 README.md에서 사례의 가정·근거·한계를 확인하세요. 규칙 통과가 임상적 적절성을 인증하는 것은 아니며, 임상의의 감수·승인을 받은 표준 진료 지침은 아닙니다.', en: 'Synthetic clinical cases illustrating diagnosis, tests, treatment, follow-up, and links across tables. Read each ZIP’s README.md for assumptions, references, and limitations. Passing validation does not certify clinical appropriateness; these are not clinician-approved standards of care.' },
         'good.lung': { ko: '폐암', en: 'Lung cancer' }, 'good.breast': { ko: '유방암', en: 'Breast cancer' }, 'good.colorectal': { ko: '대장암', en: 'Colorectal cancer' },
         'good.masld': { ko: '대사이상지방간', en: 'MASLD' }, 'good.diabetes': { ko: '당뇨병', en: 'Diabetes' }, 'good.lymphoma': { ko: '림프종', en: 'Lymphoma' },
-        'dl.note': { ko: 'Windows 설치 파일은 GlobalSign EV 인증서로, macOS 는 Apple Developer ID 로 서명하고 공증했습니다. 32비트 Windows 와 Intel Mac 은 제공하지 않습니다. 이전 이름(Quality Validator)의 v0.x 릴리스는 이전 저장소에 남아 있습니다.<br><code>SHA256SUMS.txt</code> 로 파일을 대조할 수 있습니다. · <a href="https://github.com/nanumspace/K-AIPA_DQ/releases">모든 릴리스 보기</a>', en: 'Windows installers are signed with a GlobalSign EV certificate; macOS with Apple Developer ID and notarized. No 32-bit Windows or Intel Mac builds. Earlier v0.x releases (named Quality Validator) remain in the previous repository.<br>Verify files against <code>SHA256SUMS.txt</code>. · <a href="https://github.com/nanumspace/K-AIPA_DQ/releases">All releases</a>' },
+        'dl.note': { ko: '32비트 Windows 와 Intel Mac 은 제공하지 않습니다. 이전 이름(Quality Validator)의 v0.x 릴리스는 이전 저장소에 남아 있습니다.<br><code>SHA256SUMS.txt</code> 로 파일을 대조할 수 있습니다. · <a href="https://github.com/nanumspace/K-AIPA_DQ/releases">모든 릴리스 보기</a>', en: 'No 32-bit Windows or Intel Mac builds. Earlier v0.x releases (named Quality Validator) remain in the previous repository.<br>Verify files against <code>SHA256SUMS.txt</code>. · <a href="https://github.com/nanumspace/K-AIPA_DQ/releases">All releases</a>' },
         'docs.eyebrow': { ko: '문서', en: 'Docs' }, 'docs.title': { ko: '설명서와 설계 문서', en: 'Manual and design documents' },
         'docs.d1b': { ko: '사용자 설명서', en: 'User manual' }, 'docs.d1': { ko: '설치, 입력 파일 준비, 검증 실행, 출력물 읽기와 제출, 자주 묻는 질문.', en: 'Install, prepare input files, run, read outputs and submit, FAQ.' },
         'docs.d2b': { ko: '개요와 설계 원칙', en: 'Overview and principles' }, 'docs.d2': { ko: 'K-AIPA 사업 안에서의 범위, 코호트 DB 구조, 규칙은 사전에서 나온다는 원칙, 5단계 계획.', en: 'Scope within the K-AIPA program, cohort DB structure, rules-from-the-dictionary principle, five-stage plan.' },
@@ -648,7 +647,7 @@
         'docs.d5b': { ko: '엔진과 검출 성능', en: 'Engine and detection' }, 'docs.d5': { ko: 'Python 참조 구현, TypeScript 엔진, 앱 구조, 재현율과 해석의 한계.', en: 'Python reference, TypeScript engine, app structure, recall and its limits.' },
         'docs.d7b': { ko: '규칙 편집', en: 'Rule editing' }, 'docs.d7': { ko: '규칙 켜고 끄기, 값 조정, 양식으로 규칙 추가, 관리자 모드(SQL), 조정 기록과 중앙 집계.', en: 'Turning rules on and off, adjusting values, adding rules from a form, admin mode (SQL), records of changes and central aggregation.' },
         'docs.d8b': { ko: '파일럿 키트', en: 'Pilot kit' }, 'docs.d8': { ko: '파일럿 안내서, 피드백 양식, 중앙용 submission 집계 도구.', en: 'Pilot guide, feedback form and the central submission aggregation tool.' },
-        'docs.d6b': { ko: '재현과 빌드', en: 'Reproduce and build' }, 'docs.d6': { ko: '파이프라인 재현, 앱 개발·빌드, 서명 릴리스 절차.', en: 'Pipeline reproduction, app development and build, signed release procedure.' }
+        'docs.d6b': { ko: '재현과 빌드', en: 'Reproduce and build' }, 'docs.d6': { ko: '파이프라인 재현과 앱 개발·빌드 방법.', en: 'Pipeline reproduction and app development and build instructions.' }
       };
       var langBtn = document.getElementById('lang');
       function applyLang(lang) {
