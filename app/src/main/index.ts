@@ -15,6 +15,12 @@ import * as db from "./db";
 import * as input from "./input";
 import { writeExtraOutputs, runOutputs, exportBundle, APP_VERSION } from "./outputs";
 import * as rs from "./ruleset";
+import { createHash } from "node:crypto";
+import { loadCodelists } from "@engine/load.js";
+import { defaultRoot } from "./config";
+import { inspectCriteria, stageCriteriaPackage, createCriteriaPackage } from "./criteria";
+import { writeCriteriaSnapshot, readCriteriaSnapshot, criteriaSnapshotRoot } from "./snapshot";
+import type { CriteriaInfo, CriteriaPreview } from "@shared/criteria";
 
 const SMOKE = process.env.KAI_SMOKE === "1";
 // Keep the v0.4.0 production data directory across the product rename; smoke runs stay isolated.
@@ -35,6 +41,10 @@ let adminMode = false;
 
 function runsDir(): string { return path.join(app.getPath("userData"), "runs"); }
 const userDir = () => app.getPath("userData");
+/** 기준 전환과 기관 조정은 하나의 config 포인터로 함께 전환한다. */
+function settingsDir(root = config.root): string {
+  return root === defaultRoot() ? userDir() : path.join(userDir(), "criteria-settings", createHash("sha256").update(root).digest("hex"));
+}
 
 function createWindow(): BrowserWindow {
   const w = new BrowserWindow({
@@ -63,6 +73,25 @@ function ruleCtx(): rs.RuleContext {
   return baseCache.ctx;
 }
 
+function specTables(): SpecTableInfo[] {
+  setRoot(config.root);
+  const codes = loadCodelists();
+  return Object.entries(spec().tables).map(([table, t]) => ({ table, kor: t.kor, category: t.category,
+    fields: t.fields.map((f) => ({ name: f.name, type: f.type, required: f.required, desc: String(f.desc ?? ""),
+      codes: f.codelist ? [...(codes.get(String(f.codelist)) ?? [])] : [],
+      ...(f.codelist ? { codelist: String(f.codelist) } : {}), ...(Array.isArray(f.range) ? { range: f.range as number[] } : {}),
+      ...(f.ref ? { ref: String(f.ref) } : {}) })) }));
+}
+function criteriaInfo(): CriteriaInfo { return inspectCriteria(config.root, config.root === defaultRoot() ? "builtin" : "imported", APP_VERSION); }
+let pendingCriteria: { root: string; preview: CriteriaPreview; rootAtPreview: string; overridesAtPreview: string } | null = null;
+function cancelCriteria(token?: string): void {
+  if (pendingCriteria && (!token || token === pendingCriteria.preview.token)) {
+    fs.rmSync(pendingCriteria.root, { recursive: true, force: true });
+    pendingCriteria = null;
+  }
+}
+function requireIdle(): void { if (running) throw new Error("검증 실행이 끝난 뒤 기준을 변경하세요."); }
+
 function cohorts(): CohortInfo[] {
   setRoot(config.root);
   return Object.entries(loadProfiles()).map(([id, p]) => ({ id, kor: p.kor, tables: p.tables }));
@@ -88,7 +117,7 @@ function ruleSetState(): RuleSetState {
 /** 변경을 검증·적용하고 저장한 뒤 이력에 남긴다 */
 function changeRules(ch: RuleChange): RuleSetState {
   const r = rs.applyChange(ruleCtx(), overrides, ch, adminMode);
-  rs.saveOverrides(userDir(), r.overrides);
+  rs.saveOverrides(settingsDir(), r.overrides);
   rs.appendHistory(userDir(), r.history, adminMode);
   overrides = r.overrides;
   return ruleSetState();
@@ -96,9 +125,9 @@ function changeRules(ch: RuleChange): RuleSetState {
 
 /** 앱을 열 때 저장된 설정을 읽는다. 읽을 수 없으면 표준으로 시작하고 깨진 파일은 치워 둔다 (잘못된 설정으로 검증하지 않는다). */
 function loadSavedOverrides(): void {
-  try { overrides = rs.loadOverrides(userDir(), ruleCtx()); }
+  try { overrides = rs.loadOverrides(settingsDir(), ruleCtx()); }
   catch (e) {
-    const f = path.join(userDir(), rs.OVERRIDES_FILE);
+    const f = path.join(settingsDir(), rs.OVERRIDES_FILE);
     if (fs.existsSync(f)) fs.renameSync(f, `${f}.invalid-${Date.now()}`);
     rs.appendHistory(userDir(), [{ action: "invalid_overrides", rule_id: "", before: String((e as Error).message), after: null }], false);
     if (!SMOKE) dialog.showErrorBox("규칙 설정을 읽을 수 없습니다", `${(e as Error).message}\n\n표준 규칙으로 시작합니다. 깨진 파일은 이름을 바꿔 보관했습니다.`);
@@ -124,7 +153,7 @@ async function setAdminMode(on: boolean): Promise<AppConfig> {
 
 /** 견본 데이터 위치: 개발 중에는 저장소의 synth/output, 설치본은 resources/kai/synth/output (같은 구조) */
 function sampleDir(cohort: string, kind: "clean" | "dirty" | "good"): string | null {
-  const d = path.join(config.root, "synth/output", kind, cohort);
+  const d = path.join(defaultRoot(), "synth/output", kind, cohort);
   return fs.existsSync(path.join(d, "PERSON.csv")) ? d : null;
 }
 
@@ -184,7 +213,7 @@ async function exportTemplate(cohort: string, kind: TemplateKind): Promise<strin
 // ------------------------------------------------------------------ 검증 실행
 let running = false;
 
-interface WorkerRun { cohort: string; dataDir: string; outDir: string; today?: string; overrides?: RuleOverrides; adminMode: boolean }
+interface WorkerRun { cohort: string; dataDir: string; outDir: string; today?: string; overrides?: RuleOverrides; adminMode: boolean; root?: string }
 
 type WorkerMsg =
   | { type: "progress"; stage: string; done: number; total: number; text: string }
@@ -229,17 +258,20 @@ async function runValidation(req: RunRequest): Promise<RunRecord> {
   const progress = (stage: string, done: number, total: number, text: string, pct: number) =>
     win?.webContents.send("run:progress", { runId, stage, done, total, text, pct });
   try {
+    writeCriteriaSnapshot(config.root, outDir, { schema: "kai-criteria-snapshot/1", createdAt: now.toISOString(),
+      criteria: criteriaInfo(), standardHash: ruleSet.standardHash, effectiveHash: ruleSet.effectiveHash,
+      adminMode: usedAdminMode, today, overrides: usedOverrides ?? {}, tables: specTables(), rules: rules() });
     progress("stage", 0, 1, "입력 파일을 UTF-8 CSV 로 정규화하는 중", 2);
     const norm = input.stageInputs(req.candidates, req.mapping, inputDir, spec());
     fs.writeFileSync(path.join(outDir, "normalization.json"), JSON.stringify(norm, null, 2), "utf-8");
-    const summary = await runInWorker({ cohort: req.cohort, dataDir: inputDir, outDir, today, overrides: usedOverrides, adminMode: usedAdminMode }, (m) => {
+    const summary = await runInWorker({ root: criteriaSnapshotRoot(outDir), cohort: req.cohort, dataDir: inputDir, outDir, today, overrides: usedOverrides, adminMode: usedAdminMode }, (m) => {
       const order = { load: 0, structural: 1, semantic: 2, write: 3 } as Record<string, number>;
       const base = [5, 12, 55, 95][order[m.stage] ?? 0]; const span = [7, 43, 40, 4][order[m.stage] ?? 0];
       progress(m.stage, m.done, m.total, m.text, Math.min(99, Math.round(base + (m.total ? (m.done / m.total) * span : 0))));
     });
     const used = usedOverrides ?? {};
     const ruleSetInfo = rs.buildRuleSetInfo(used, usedAdminMode, { standard: ruleSet.standardHash, effective: ruleSet.effectiveHash }, ruleSet.changes);
-    writeExtraOutputs(outDir, summary, { cohortKor: info.kor, label, runId, ruleSet: ruleSetInfo }, norm);
+    writeExtraOutputs(outDir, summary, { cohortKor: info.kor, label, runId, ruleSet: ruleSetInfo, criteria: readCriteriaSnapshot(outDir)!.criteria }, norm);
     const findings = readCsv(path.join(outDir, "findings.csv"));
     const rec = await db.insertRun({
       runId, cohort: req.cohort, cohortKor: info.kor, label, dataDir: firstPath ? path.dirname(firstPath) : inputDir, createdAt: now.toISOString(),
@@ -309,11 +341,53 @@ async function testSqlRule(req: SqlTestRequest): Promise<SqlTestResult> {
 function registerIpc(): void {
   ipcMain.handle("config:get", () => ({ ...config, adminMode }));
   ipcMain.handle("config:set", (_e, patch) => {
-    config = writeConfig(patch);
+    config = writeConfig({ defaultToday: patch.defaultToday });
     return { ...config, adminMode };
   });
   ipcMain.handle("cohorts:list", () => cohorts());
-  ipcMain.handle("spec:tables", (): SpecTableInfo[] => Object.entries(spec().tables).map(([table, t]) => ({ table, kor: t.kor, category: t.category, fields: t.fields.map((f) => ({ name: f.name, type: f.type })) })));
+  ipcMain.handle("spec:tables", () => specTables());
+  ipcMain.handle("criteria:get", () => criteriaInfo());
+  ipcMain.handle("criteria:preview", async () => {
+    requireIdle();
+    const r = await dialog.showOpenDialog(win!, { title: "중앙 배포 검증 기준 패키지 선택", properties: ["openFile"], filters: [{ name: "검증 기준 패키지", extensions: ["zip"] }] });
+    if (r.canceled) return null;
+    requireIdle(); cancelCriteria();
+    const zipPath = r.filePaths[0];
+    if (fs.statSync(zipPath).size > 25 * 1024 * 1024) throw new Error("기준 패키지는 25 MB 이하만 가져올 수 있습니다.");
+    const staged = stageCriteriaPackage(fs.readFileSync(zipPath), path.join(userDir(), "criteria-packages"), config.root, overrides, APP_VERSION);
+    pendingCriteria = { ...staged, rootAtPreview: config.root, overridesAtPreview: JSON.stringify(overrides) };
+    return staged.preview;
+  });
+  ipcMain.handle("criteria:cancel", (_e, token: string) => cancelCriteria(token));
+  ipcMain.handle("criteria:apply", (_e, token: string, resetOverrides: boolean) => {
+    requireIdle();
+    const p = pendingCriteria;
+    if (!p || p.preview.token !== token) throw new Error("기준 패키지를 다시 선택해 미리보기를 확인하세요.");
+    if (p.rootAtPreview !== config.root || p.overridesAtPreview !== JSON.stringify(overrides)) throw new Error("미리보기 뒤 기준 또는 기관 조정이 변경되었습니다. 패키지를 다시 선택하세요.");
+    if (p.preview.conflicts.length && resetOverrides !== true) throw new Error("기관 조정과 충돌합니다. 취소하거나 기관 조정 초기화를 명시적으로 선택하세요.");
+    if (!p.preview.conflicts.length && resetOverrides) throw new Error("충돌이 없는 기관 조정은 유지합니다.");
+    const verified = inspectCriteria(p.root, "imported", APP_VERSION);
+    if (verified.hash !== p.preview.info.hash || JSON.stringify(verified.manifest) !== JSON.stringify(p.preview.info.manifest)) throw new Error("미리보기 뒤 패키지가 변경되었습니다. 다시 가져오세요.");
+    const next = resetOverrides ? {} : overrides;
+    // 새 기준의 설정을 먼저 준비하고 config 포인터를 원자적으로 바꾼다.
+    rs.saveOverrides(settingsDir(p.root), next);
+    config = writeConfig({ root: p.root });
+    overrides = next; baseCache = null; pendingCriteria = null; setRoot(config.root);
+    rs.appendHistory(userDir(), [{ action: "criteria_apply", rule_id: "", before: { root: p.rootAtPreview, overrides: JSON.parse(p.overridesAtPreview) }, after: { criteria: p.preview.info, overrides: next } }], adminMode);
+    return criteriaInfo();
+  });
+  ipcMain.handle("criteria:export", async () => {
+    const root = config.root;
+    const info = criteriaInfo();
+    const r = await dialog.showSaveDialog(win!, { defaultPath: `K-AIPA-DQ-Criteria-${info.manifest.version}.zip`, filters: [{ name: "검증 기준 패키지", extensions: ["zip"] }] });
+    if (r.canceled || !r.filePath) return null;
+    fs.writeFileSync(r.filePath, createCriteriaPackage(root, info.manifest));
+    return r.filePath;
+  });
+  ipcMain.handle("runs:criteria", async (_e, runId: string) => {
+    if (!await db.getRun(runId)) throw new Error("실행 기록이 없습니다");
+    return readCriteriaSnapshot(path.join(runsDir(), runId));
+  });
   ipcMain.handle("rules:list", () => rules());
   ipcMain.handle("ruleset:get", () => ruleSetState());
   ipcMain.handle("ruleset:change", (_e, ch: RuleChange) => changeRules(ch));
@@ -332,7 +406,7 @@ function registerIpc(): void {
     // 검증이 통과해야만 바꾼다. 통과하지 못하면 지금 설정은 그대로다.
     const next = rs.validateOverrides(raw, ruleCtx(), { allowSql: adminMode });
     rs.appendHistory(userDir(), [{ action: "import", rule_id: "", before: overrides, after: next }], adminMode);
-    rs.saveOverrides(userDir(), next);
+    rs.saveOverrides(settingsDir(), next);
     overrides = next;
     return ruleSetState();
   });

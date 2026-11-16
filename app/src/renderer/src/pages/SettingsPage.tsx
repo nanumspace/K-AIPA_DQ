@@ -1,27 +1,21 @@
 import { useEffect, useState } from "react";
-import type { AppConfig, CohortInfo } from "@shared/types";
+import type { AppConfig } from "@shared/types";
 import { api } from "../api";
 import { Card } from "../components/ui";
+import { CriteriaCard } from "../components/CriteriaCard";
 
 export function SettingsPage() {
   const [cfg, setCfg] = useState<AppConfig | null>(null);
   const [today, setToday] = useState("");
-  const [cohorts, setCohorts] = useState<CohortInfo[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   const refresh = () => {
     window.dispatchEvent(new Event("kai:config"));
     api.getConfig().then((c) => { setCfg(c); setToday(c.defaultToday ?? ""); }).catch((e) => setErr(String(e)));
-    api.listCohorts().then(setCohorts).catch((e) => setErr(String(e)));
   };
   useEffect(refresh, []);
 
-  const chooseRoot = async () => {
-    const d = await api.chooseDirectory("명세(spec/)와 규칙(rules/)이 있는 디렉터리 선택");
-    if (!d) return;
-    try { setCfg(await api.setConfig({ root: d })); setMsg("명세 위치를 저장했습니다."); refresh(); } catch (e) { setErr(String(e)); }
-  };
   const toggleAdmin = async () => {
     if (!cfg) return;
     try {
@@ -42,18 +36,7 @@ export function SettingsPage() {
       {err && <div className="callout err" role="alert">{err} <button className="btn sm" onClick={() => setErr(null)}>닫기</button></div>}
       {msg && <div className="callout" style={{ marginBottom: 12 }}>{msg}</div>}
       <div className="grid c2">
-        <Card title="명세와 규칙" sub="검증 규칙은 이 위치의 spec/ 과 rules/ YAML 에서 읽습니다">
-          <div className="form">
-            <label>위치
-              <div className="row"><input type="text" value={cfg.root} readOnly /><button className="btn" onClick={chooseRoot}>변경</button></div>
-            </label>
-            <div className="kv">
-              <span className="k">명세</span><span>의뢰사 매뉴얼 2026-11-16</span>
-              <span className="k">코호트</span><span>{cohorts.length ? cohorts.map((c) => c.kor).join(", ") : "읽을 수 없음 (위치를 확인하세요)"}</span>
-              <span className="k">패키징</span><span>{cfg.packaged ? "설치본 (내장 명세)" : "개발 모드 (저장소)"}</span>
-            </div>
-          </div>
-        </Card>
+        <CriteriaCard onApplied={refresh} />
         <Card title="관리자 모드" sub="표준 교차 규칙의 SQL 을 고치거나 SQL 규칙을 추가할 수 있는 모드. 비밀번호·인증이 없으며 변경을 기록해 두는 용도입니다">
           <div className="form">
             <div className="rowflex">

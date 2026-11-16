@@ -11,6 +11,12 @@ function on<T>(channel: string, cb: (v: T) => void): () => void {
 const api: Api = {
   getConfig: () => ipcRenderer.invoke("config:get"),
   setConfig: (patch) => ipcRenderer.invoke("config:set", patch),
+  getCriteria: () => ipcRenderer.invoke("criteria:get"),
+  previewCriteria: () => ipcRenderer.invoke("criteria:preview"),
+  applyCriteria: (token, resetOverrides) => ipcRenderer.invoke("criteria:apply", token, resetOverrides),
+  cancelCriteria: (token) => ipcRenderer.invoke("criteria:cancel", token),
+  exportCriteria: () => ipcRenderer.invoke("criteria:export"),
+  getRunCriteria: (runId) => ipcRenderer.invoke("runs:criteria", runId),
   listCohorts: () => ipcRenderer.invoke("cohorts:list"),
   listSpecTables: () => ipcRenderer.invoke("spec:tables"),
   listRules: () => ipcRenderer.invoke("rules:list"),

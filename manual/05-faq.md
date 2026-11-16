@@ -22,9 +22,10 @@
 | 무엇 | 어디에 |
 |---|---|
 | 실행 요약, 규칙별 결과, 위반 행 목록 | `history.duckdb` (DuckDB 파일 하나) |
-| 정규화된 입력 사본, 출력 파일 5종, 정규화 기록 | `runs/<실행 ID>/` 폴더 |
-| 규칙 설정과 변경 이력 | `rule-overrides.json`, `rule-history.jsonl` |
-| 앱 설정(명세 위치, 검증 기준일 기본값 등) | `config.json` |
+| 정규화된 입력 사본, 기본 출력 5종, 기준 ZIP·스냅샷, 정규화 기록 | `runs/<실행 ID>/` 폴더 |
+| 내장 기준의 규칙 설정과 공통 변경 이력 | `rule-overrides.json`, `rule-history.jsonl` |
+| 가져온 기준과 기준별 기관 조정 | `criteria-packages/`, `criteria-settings/` |
+| 앱 설정(적용 기준, 검증 기준일 기본값 등) | `config.json` |
 
 앱이 다른 곳으로 전송하지는 않습니다. 그러나 이 폴더에는 위반 행의 환자 ID 와 정규화된 입력 사본이 있어 환자 단위 정보가 들어 있습니다. 폴더 이름이 `Quality Validator` 인 것은 이전 판의 이력을 그대로 보이게 하려고 옛 이름을 유지한 것입니다([1장](01-install.md)).
 

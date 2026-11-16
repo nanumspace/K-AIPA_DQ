@@ -9,6 +9,7 @@ import { Card, SeverityPill, OriginPill, Empty } from "../components/ui";
 import { CustomRuleModal, ChangePreview, HistoryModal, SqlGateControls, SqlRuleModal, useSqlGate } from "../components/RuleForms";
 import { confirmDiscard, DISCARD_MESSAGE, useDirtyRef } from "../components/Modal";
 import "./rules.css";
+import { SpecBrowser } from "../components/SpecBrowser";
 
 const ORIGIN_FILTER: Record<string, string> = { standard: "표준", modified: "변경됨", custom: "사용자 규칙", admin: "관리자 규칙", disabled: "꺼 둔 규칙" };
 const sevText = (s: string) => (s === "error" ? "오류 (High)" : "경고 (Medium)");
@@ -33,6 +34,7 @@ export function RulesPage() {
   const [editId, setEditId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadErr, setLoadErr] = useState<string | null>(null);
+  const [showSpec, setShowSpec] = useState(false);
   const [saving, setSaving] = useState(false);
   /** 저장하지 않은 입력이 있는지: 오른쪽 상세 패널 / 열려 있는 편집 창 */
   const detailDirty = useRef(false);
@@ -160,6 +162,13 @@ export function RulesPage() {
       {loadErr && <div className="callout err" role="alert" style={{ marginBottom: 12 }}>일부 정보를 불러오지 못했습니다: {loadErr}<div className="error-actions"><button type="button" className="btn sm" onClick={() => void load()}>다시 시도</button></div></div>}
       {err && <div className="callout err" role="alert" style={{ marginBottom: 12 }}>{err}</div>}
       <div role="status" aria-live="polite">{msg && <div className="callout ok" style={{ marginBottom: 12 }}>{msg}</div>}</div>
+      <div className="actions" style={{ marginBottom: 12 }}>
+        <button type="button" className="btn" aria-expanded={showSpec} onClick={() => setShowSpec(!showSpec)}>{showSpec ? "명세 조회 닫기" : "적용 명세 · 컬럼별 규칙 보기"}</button>
+      </div>
+      {showSpec && <SpecBrowser tables={tables} rules={rules} onRule={(id) => {
+        if (!confirmDiscard(detailDirty.current || modalDirty.current)) return;
+        clearFilters(); setSelId(id); setShowSpec(false);
+      }} />}
       <div className="toolbar actions">
         <button type="button" className="btn primary" onClick={() => { setEditId(null); setModal("custom"); }} disabled={!tables.length}>사용자 규칙 추가</button>
         <button type="button" className="btn" onClick={() => { setEditId(null); setModal("sql"); }} disabled={!admin || !tables.length} title={admin ? "" : "설정에서 관리자 모드를 켜면 쓸 수 있습니다"}>SQL 규칙 추가 (관리자)</button>

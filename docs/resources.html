@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>자료실 · K-AIPA DQ</title>
-  <meta name="description" content="K-AIPA DQ(K-AIPA 임상 데이터 품질검증 앱) v1.0.0의 명세(의뢰사 매뉴얼 2026-11-16) 자료: 입력 양식, 컬럼 명세서, 검증 규칙 목록, 견본 데이터 기대 결과.">
+  <meta name="description" content="K-AIPA DQ v1.0.1의 명세(매뉴얼 2026-11-16), 검증 기준 패키지, 입력 양식, 컬럼 명세서, 검증 규칙 목록, 견본 데이터 기대 결과.">
   <style>
     :root { --bg:#f4f6f9; --card:#fff; --ink:#132033; --mut:#5b6b80; --line:#dbe2ea; --acc:#275BAB; --acc2:#00C2D1; --err:#b42318; --warn:#9a5b00; --code:#eef2f7; color-scheme: light; }
     @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#101623; --card:#172033; --ink:#e6edf6; --mut:#9aabc2; --line:#2a3750; --acc:#7aa7f0; --code:#1f2b42; --err:#ff8a7a; --warn:#f0b35a; color-scheme: dark; } }
@@ -56,19 +56,21 @@
 </div></header>
 <main class="wrap">
   <h1>자료실 <span id="ed" class="tag"></span></h1>
-  <p class="lede">의뢰사 매뉴얼(2026-11-16)에서 그대로 만든 자료이며 릴리스된 K-AIPA DQ v1.0.0 기준입니다. 병원은 앱을 설치하기 전에 입력 양식을 받고, 어떤 규칙으로 검사받는지 미리 볼 수 있습니다. 이 자료실은 새 릴리스가 공개될 때 그 릴리스 기준으로 다시 배포됩니다. 여섯 질환 코호트 테이블 검증에 한정된 자료이며 K-AIPA 의 공식 승인물이 아닙니다.</p>
+  <p class="lede">매뉴얼(2026-11-16)의 명세와 보완 검토 규칙을 포함한 K-AIPA DQ v1.0.1 기준 자료입니다. 병원은 입력 양식을 받고 검증 기준을 미리 확인할 수 있습니다. 공개 릴리스 기준으로 배포되며, 여섯 질환 코호트 테이블 검증에 한정된 자료로 K-AIPA의 공식 승인물이 아닙니다.</p>
   <div class="stats" id="stats"></div>
 
   <section class="card" id="downloads">
     <h2>내려받기</h2>
     <p class="sub">엑셀 양식은 시트 하나가 테이블 하나이고 '명세' 시트에 컬럼 설명이 있습니다. CSV 묶음은 테이블마다 헤더만 있는 파일입니다. 앱의 '입력 양식 내려받기'와 같은 모양입니다. 코호트마다 공통 8표 + 질환 본표 + ADVERSE_EVENT 를 내고, 폐암·유방암·대장암·림프종은 SACT 를 더합니다.</p>
     <div class="btns" style="margin-bottom:14px" id="common"></div>
+    <p><a class="btn" href="https://github.com/nanumspace/K-AIPA_DQ/releases/download/v1.0.1/K-AIPA-DQ-Criteria-1.0.1.zip">검증 기준 패키지 (ZIP)</a> · <a href="https://github.com/nanumspace/K-AIPA_DQ/blob/v1.0.1/manual/06-rules.md#검증-기준-패키지">적용 방법</a></p>
+    <p class="note">명세·규칙·코드표 전체 묶음입니다. 기본 기준은 앱에 내장되어 있으며, 별도로 받은 기준은 설정에서 가져와 변경 사항·기관 조정 충돌을 확인하고 적용합니다. 환자 데이터와 기관 조정은 포함하지 않습니다.</p>
     <div style="overflow:auto"><table>
       <thead><tr><th>코호트</th><th class="num">표</th><th class="num">적용 규칙</th><th>입력 양식</th><th>견본 데이터 기대 결과 <span class="note">(clean / dirty / good 위반 수)</span></th></tr></thead>
       <tbody id="cohorts"></tbody>
     </table></div>
     <p class="note">견본 데이터(clean · dirty 는 100명 가상 코호트, good 은 가상 환자 1명)는 <a href="https://github.com/nanumspace/K-AIPA_DQ/releases/latest">최신 릴리스</a>에서 받습니다. 폴더째 앱의 검증 실행 화면에 넣고 폴더의 README.txt 에 적힌 검증 실행일로 맞추면 위 기대 결과와 같은 수가 나와야 합니다. dirty 의 오류는 규칙에서 역으로 만든 것이라 모두 검출되는 것이 실제 병원 데이터에서의 민감도를 뜻하지 않으며, Good Sample 은 합성한 임상 사례 예시로 임상의의 감수·승인을 받지 않았습니다.</p>
-    <p class="note">clean 자료에서도 임상 치료 차수와 요법 시작 순서가 다르면 SEM-SACT-006 경고(임상 휴리스틱)가 표시될 수 있습니다. 유지요법 등을 새 차수로 바꿔 경고를 숨기지 않습니다. 규칙 통과는 임상적 적절성의 인증이 아니며 Athena 어휘판이 없어 concept_id 의 존재 여부는 검사하지 않습니다. 자세한 범위는 <a href="https://github.com/nanumspace/K-AIPA_DQ/blob/v1.0.0/docs/synthetic-data.md">가상 임상 사례 문서</a>를 보세요.</p>
+    <p class="note">clean 자료에서도 임상 치료 차수와 요법 시작 순서가 다르면 SEM-SACT-006 경고(임상 휴리스틱)가 표시될 수 있습니다. 유지요법 등을 새 차수로 바꿔 경고를 숨기지 않습니다. 규칙 통과는 임상적 적절성의 인증이 아니며 Athena 어휘판이 없어 concept_id 의 존재 여부는 검사하지 않습니다. 자세한 범위는 <a href="https://github.com/nanumspace/K-AIPA_DQ/blob/v1.0.1/docs/synthetic-data.md">가상 임상 사례 문서</a>를 보세요.</p>
   </section>
 
   <section class="card" id="rules">

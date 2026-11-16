@@ -2,9 +2,10 @@
 import type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule } from "@engine/types.js";
 
 export type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule };
+import type { CriteriaInfo, CriteriaPreview, CriteriaSnapshot } from "./criteria";
 
 export interface AppConfig {
-  /** 명세(spec/)와 규칙(rules/)이 있는 디렉터리 */
+  /** 앱이 관리하는 현재 기준 위치 (사용자가 직접 지정하지 않음) */
   root: string;
   /** 검증 실행일 기본값 (null 이면 오늘) */
   defaultToday: string | null;
@@ -20,7 +21,7 @@ export interface AppConfig {
 export interface CohortInfo { id: string; kor: string; tables: string[] }
 
 /** 규칙 서식(사용자 규칙 추가)에서 테이블 → 필드를 고르기 위한 명세 요약 */
-export interface SpecTableInfo { table: string; kor: string; category: string; fields: { name: string; type: string }[] }
+export interface SpecTableInfo { table: string; kor: string; category: string; fields: { name: string; type: string; required: boolean; desc: string; codes: string[]; codelist?: string; range?: number[]; ref?: string }[] }
 
 /** 규칙 하나에서 사용자가 조정할 수 있는 값의 종류 */
 export type ParamKind = "range" | "pattern" | "codelist";
@@ -191,7 +192,7 @@ export interface RunDetail { run: RunRecord; rules: RuleResultRow[]; report: str
 
 // ------------------------------------------------------------------ 출력
 export interface OutputFile {
-  key: "report" | "findings" | "rules" | "submission" | "summary";
+  key: "report" | "findings" | "rules" | "submission" | "summary" | "criteria" | "criteriaSnapshot";
   name: string;
   label: string;
   desc: string;
@@ -215,7 +216,13 @@ export interface Dashboard {
 
 export interface Api {
   getConfig(): Promise<AppConfig>;
-  setConfig(patch: Partial<Pick<AppConfig, "root" | "defaultToday">>): Promise<AppConfig>;
+  setConfig(patch: Partial<Pick<AppConfig, "defaultToday">>): Promise<AppConfig>;
+  getCriteria(): Promise<CriteriaInfo>;
+  previewCriteria(): Promise<CriteriaPreview | null>;
+  applyCriteria(token: string, resetOverrides: boolean): Promise<CriteriaInfo>;
+  cancelCriteria(token: string): Promise<void>;
+  exportCriteria(): Promise<string | null>;
+  getRunCriteria(runId: string): Promise<CriteriaSnapshot | null>;
   listCohorts(): Promise<CohortInfo[]>;
   listSpecTables(): Promise<SpecTableInfo[]>;
   listRules(): Promise<RuleInfo[]>;

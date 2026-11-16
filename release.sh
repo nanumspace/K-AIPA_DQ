@@ -93,7 +93,7 @@ if [ -n "$NEW_VERSION" ] && [ "$NEW_VERSION" != "$VERSION" ]; then
   fail "요청 버전 $NEW_VERSION 과 앱 버전 $VERSION 이 다릅니다. package.json·lockfile 버전을 먼저 수정하고 커밋하세요."
 fi
 TAG="v$VERSION"
-OUT="$APP/release"
+OUT="$APP/release/$TAG"
 log "릴리스 버전 $TAG"
 if [ "$PUBLISH" = 1 ] || [ "$PUBLISH_ONLY" = 1 ]; then
   [ -z "$(git -C "$ROOT" status --porcelain)" ] || fail "커밋되지 않은 변경이 있습니다. 먼저 커밋하세요 (git status)."
@@ -158,9 +158,9 @@ if [ "$PUBLISH_ONLY" = 0 ]; then
     log "macOS arm64 빌드·서명·공증"
     select_binding node-bindings-darwin-arm64
     if [ "$UNSIGNED" = 1 ]; then
-      CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --arm64 --publish never -c.mac.notarize=false
+      CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --arm64 --publish never -c.mac.notarize=false "-c.directories.output=$OUT"
     else
-      APPLE_KEYCHAIN_PROFILE="$NOTARY_PROFILE" npx electron-builder --mac --arm64 --publish never
+      APPLE_KEYCHAIN_PROFILE="$NOTARY_PROFILE" npx electron-builder --mac --arm64 --publish never "-c.directories.output=$OUT"
       DMG="$(ls "$OUT"/*.dmg)"
       log "DMG 공증과 staple: $(basename "$DMG")"
       xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait | tail -3
@@ -175,9 +175,9 @@ if [ "$PUBLISH_ONLY" = 0 ]; then
       ensure_win_binding "$arch"
       select_binding "node-bindings-win32-$arch"
       if [ "$UNSIGNED" = 1 ]; then
-        KAI_SKIP_WIN_SIGN=1 npx electron-builder --win "--$arch" --publish never
+        KAI_SKIP_WIN_SIGN=1 npx electron-builder --win "--$arch" --publish never "-c.directories.output=$OUT"
       else
-        npx electron-builder --win "--$arch" --publish never
+        npx electron-builder --win "--$arch" --publish never "-c.directories.output=$OUT"
       fi
       # 설치본에 든 DuckDB 바이너리가 이 아키텍처 것인지 확인
       unpacked="$OUT/win-unpacked"; [ "$arch" = "arm64" ] && unpacked="$OUT/win-arm64-unpacked"
@@ -195,6 +195,8 @@ fi
   log "견본 데이터 묶음 (가상데이터)"
   rm -f "$OUT"/SampleData-*.zip
   node "$APP/build/pack-samples.cjs" "$OUT" "$VERSION"
+  log "검증 기준 패키지"
+  node "$APP/out/main/packCriteria.js" "$ROOT" "$OUT/K-AIPA-DQ-Criteria-$VERSION.zip" "$VERSION"
   log "산출물 검증"
   rm -rf "$OUT"/*.blockmap "$OUT"/builder-*.yml "$OUT"/latest*.yml "$OUT"/*-unpacked "$OUT"/mac-* "$OUT"/.icon-* 2>/dev/null || true
   if [ "$UNSIGNED" = 0 ]; then
@@ -218,7 +220,7 @@ if [ "$PUBLISH" = 0 ] && [ "$PUBLISH_ONLY" = 0 ]; then
   exit 0
 fi
 log "GitHub Release $TAG"
-ASSETS=("$OUT"/*.dmg "$OUT"/*.exe "$OUT"/SampleData-*.zip "$OUT"/SHA256SUMS.txt)
+ASSETS=("$OUT"/*.dmg "$OUT"/*.exe "$OUT"/SampleData-*.zip "$OUT"/K-AIPA-DQ-Criteria-*.zip "$OUT"/SHA256SUMS.txt)
 NOTES="$(mktemp)"
 {
   echo "## K-AIPA DQ $TAG"
@@ -234,6 +236,10 @@ NOTES="$(mktemp)"
   echo "### 견본 데이터 (가상데이터)"
   echo
   echo "기관 내부 점검과 앱 동작 확인을 위한 합성데이터이며, 「질환별 데이터 테이블」 매뉴얼 2026-11-16 기준입니다. 실제 환자와 무관합니다. \`SampleData-$VERSION-all.zip\` 은 6개 코호트 × clean/dirty(각 100명 규칙 시험용) / good(질환별 가상 환자 1명의 합성 임상 사례 예제) 18개 폴더 전체입니다. 각 zip 에는 CSV·엑셀·기대 결과 안내가 있습니다. dirty 오류의 전부 검출은 실제 병원 데이터의 민감도를 뜻하지 않으며, 합성 임상 사례는 임상의 감수·승인을 받은 진료 지침이 아닙니다."
+  echo
+  echo "### 검증 기준 패키지"
+  echo
+  echo "\`K-AIPA-DQ-Criteria-$VERSION.zip\` 은 명세·규칙·코드표·보조 목록 전체입니다. 앱의 **설정 → 검증 기준 패키지 → 기준 패키지 가져오기**에서 적용합니다. 기관 조정과 환자 데이터는 포함하지 않습니다. 기본 기준은 설치본에 내장되어 별도로 가져올 필요가 없습니다."
   echo
   echo "설치와 사용 방법은 [사용자 설명서](https://github.com/$REPOSITORY/blob/$TAG/manual/README.md)를 보세요."
   echo

@@ -103,7 +103,7 @@ Electron + React + TypeScript 데스크톱 앱입니다. 검증 엔진은 `../dq
 | 위반 상세 | 필터·쪽 넘김, 상세 전문·기대 조건·확인 방법, 현재 조건 전체 쪽 CSV/해당 실행 전체 CSV 저장 |
 | 결과 보고서 | 오류·경고·실행 오류·미검사 요약 → 사유와 위반 규칙 → 제출용/기관 내부용 저장. 규칙에서 필터된 위반 상세로 이동 |
 | 통계 모니터링 | 실행 이력, 오류·경고 건수 추이, 접힌 보조 계산 지표, 실행 기록 삭제 |
-| 설정 | 명세·규칙 위치, 관리자 모드, 검증 기준일 기본값, 데이터 위치 |
+| 설정 | 검증 기준 패키지 ZIP 내보내기·검사·변경 비교·기관 조정 충돌 확인·적용, 관리자 모드, 검증 기준일 기본값, 데이터 위치 |
 
 ## 구조
 
@@ -113,7 +113,9 @@ app/
 │  ├─ index.ts     창 · IPC · 엔진 워커 실행 · 규칙 설정 적용 · SQL 시험 · 스모크 모드
 │  ├─ ruleset.ts   규칙 설정(덧씌우기): 목록 만들기 · 변경 검증·적용 · 저장 · 변경 이력 · rule_set (Electron 없이 시험 가능)
 │  ├─ input.ts     파일 인식(CSV·엑셀) · 인코딩 감지 · 자동 대응 · 사전 점검 · 정규화 · 양식 생성
-│  ├─ outputs.ts   출력물 5종 정의 · rule_results.csv · submission.json · 묶음 내보내기
+│  ├─ criteria.ts  기준 ZIP 생성·검사·비교·기관 조정 충돌 검사 (Electron 없이 시험 가능)
+│  ├─ snapshot.ts  실행 당시 기준 원본·실효 규칙 보관과 조회
+│  ├─ outputs.ts   기본 출력 5종 + 기준 보관 2종 · rule_results.csv · submission.json · 묶음 내보내기
 │  ├─ worker.ts    utilityProcess 에서 엔진 실행 (화면이 멈추지 않음), 진행률 전송
 │  ├─ db.ts        실행 이력 DuckDB (runs · rule_results · findings)
 │  └─ config.ts    userData/config.json

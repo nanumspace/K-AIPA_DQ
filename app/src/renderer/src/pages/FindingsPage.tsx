@@ -88,7 +88,7 @@ function DetailPanel(props: {
           <div style={{ margin: "4px 0 10px" }}>
             {info?.desc && <div>{info.desc}</div>}
             {expected && <div>{expected}</div>}
-            <div style={{ color: "var(--muted)", fontSize: 12 }}>이 PC 의 현재 규칙 설정 기준입니다. 실행 뒤에 규칙을 바꿨다면 당시 기준과 다를 수 있습니다.</div>
+            <div style={{ color: "var(--muted)", fontSize: 12 }}>이 실행 당시 보관한 규칙 기준입니다. 이후 기관 조정과 무관합니다.</div>
           </div>
         </>
       )}
@@ -119,7 +119,6 @@ export function FindingsPage({ nav }: { nav: Nav }) {
   const [queryTick, setQueryTick] = useState(0);
   const [exporting, setExporting] = useState<"filtered" | "all" | null>(null);
   const [exportMsg, setExportMsg] = useState<{ kind: "ok" | "info" | "err"; text: string } | null>(null);
-  const [ruleInfos, setRuleInfos] = useState<Map<string, RuleInfo> | null>(null);
   const panelRef = useRef<HTMLElement | null>(null);
   const openerRef = useRef<HTMLElement | null>(null);
 
@@ -148,11 +147,8 @@ export function FindingsPage({ nav }: { nav: Nav }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [runsLoad.status, runsLoad.data, runId]);
 
-  useEffect(() => {
-    let live = true;
-    api.listRules().then((rs) => { if (live) setRuleInfos(new Map(rs.map((r) => [r.id, r]))); }).catch(() => { /* 규칙 설명은 보조 정보 */ });
-    return () => { live = false; };
-  }, []);
+  const criteriaLoad = useLoad(runId || null, () => api.getRunCriteria(runId), detailTick);
+  const ruleInfos = useMemo(() => new Map((criteriaLoad.status === "ok" ? criteriaLoad.data?.rules ?? [] : []).map((r) => [r.id, r])), [criteriaLoad]);
 
   const runKnown = runsLoad.status === "ok" && runs.some((r) => r.run_id === runId);
   const detailLoad = useLoad(runKnown ? runId : null, () => api.getRun(runId), detailTick);
@@ -250,6 +246,8 @@ export function FindingsPage({ nav }: { nav: Nav }) {
   return (
     <div className="findings-page">
       {title}
+      {criteriaLoad.status === "ok" && !criteriaLoad.data && <div className="callout warn" role="status">이 실행은 당시 명세·규칙 원본이 보관되지 않았습니다. 현재 기준으로 기대 조건을 대신 표시하지 않습니다.</div>}
+      {criteriaLoad.status === "error" && <ErrorBox text={`실행 당시 기준을 읽지 못했습니다: ${criteriaLoad.error}`} onRetry={() => setDetailTick((t) => t + 1)} />}
       {notice && (
         <div className="callout warn fnd-notice" role="status"><span>{notice}</span><button type="button" className="btn sm" onClick={() => setNotice(null)}>닫기</button></div>
       )}

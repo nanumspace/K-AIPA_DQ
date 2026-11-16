@@ -14,6 +14,7 @@ export default defineConfig({
         input: {
           index: resolve(__dirname, "src/main/index.ts"),
           worker: resolve(__dirname, "src/main/worker.ts"),
+          packCriteria: resolve(__dirname, "src/main/packCriteria.ts"),
         },
       },
     },

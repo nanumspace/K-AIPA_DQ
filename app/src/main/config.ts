@@ -22,14 +22,16 @@ function readSaved(): Saved {
 
 function saveSaved(s: Saved): void {
   fs.mkdirSync(path.dirname(configPath()), { recursive: true });
-  fs.writeFileSync(configPath(), JSON.stringify(s, null, 2), "utf-8");
+  const file = configPath();
+  fs.writeFileSync(`${file}.tmp`, JSON.stringify(s, null, 2), "utf-8");
+  fs.renameSync(`${file}.tmp`, file);
 }
 
 /** 관리자 모드(adminMode)는 설정 파일에 두지 않는다 — 켜 둔 채 잊는 일이 없도록 앱을 열 때마다 꺼져 있다. */
 export function readConfig(): AppConfig {
   const saved = readSaved();
   return {
-    root: saved.root && fs.existsSync(path.join(saved.root, "spec")) ? saved.root : defaultRoot(),
+    root: saved.root && path.dirname(saved.root) === path.join(app.getPath("userData"), "criteria-packages") && fs.existsSync(path.join(saved.root, "manifest.json")) ? saved.root : defaultRoot(),
     defaultToday: saved.defaultToday ?? null,
     userData: app.getPath("userData"),
     version: app.getVersion(),
