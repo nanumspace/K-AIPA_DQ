@@ -7,6 +7,7 @@
 | [overview.md](overview.md) | 배경, 코호트 DB 구조, 설계 원칙 세 가지, 5단계 계획과 현재 상태 |
 | [spec-and-rules.md](spec-and-rules.md) | 의뢰사 매뉴얼 2026-11-16 의 기계 판독 명세, 매뉴얼 해석, 심각도 원칙, 규칙 카탈로그(390개), 규칙 편집 구조와 기록 |
 | [synthetic-data.md](synthetic-data.md) | 가상데이터(clean·dirty·good) 생성 프레임워크, 환자 여정 시나리오, 오류 주입과 정답 manifest, 한계 |
+| [data-sufficiency.md](data-sufficiency.md) | 데이터 충실도(있어야 할 기록이 실제로 있는가) 선행 근거와 6개 질환 기대 데이터 후보 초안. 검토용, 앱에 미구현 |
 | [engine.md](engine.md) | 검증 엔진 세 층(Python · TypeScript · 앱), 검출 성능과 해석의 한계, 앱 구조 |
 | [reproduce.md](reproduce.md) | 환경 준비, 전체 파이프라인 재현, 앱 개발·빌드·배포, CI |
 | [`../manual/06-rules.md`](../manual/06-rules.md) | 병원 담당자용 규칙 편집 안내(수준 1~4) |
