@@ -41,6 +41,8 @@ Domain·Vocabulary·Concept Class·Relationship 같은 어휘 메타데이터는
 
 매핑하지 못한 원천 코드는 `0` 으로 적재합니다(매뉴얼 2.9.1). 기관 자체 개념은 2,000,000,000 초과 ID 를 씁니다(매뉴얼 2.1.1).
 
+**기준 배포판: OHDSI 표준 어휘 v20260829** ([릴리스 노트](https://github.com/OHDSI/Vocabulary-v5.0/releases)). SNOMED CT 국제판 2026-02-01, LOINC 2.82, RxNorm Extension 2026-06 정리분, EDI 2026-01판(v20260227 에서 반영)을 포함합니다. 사업 기간 동안 고정하며, 새 배포판(다음 예상 2027-02)으로는 의뢰사 승인이 있을 때만 모든 병원이 함께 교체합니다.
+
 ## 3. 앱에 반영할 것
 
 1. **필드별 허용 용어 명세**: 2절을 `spec/constraints.yaml` 에 넣습니다.
@@ -55,5 +57,5 @@ Domain·Vocabulary·Concept Class·Relationship 같은 어휘 메타데이터는
 1. **원천 코드 필드 추가**: KCD·EDI 원코드를 보존하려면 CONDITION_OCCURRENCE 에 `condition_source_value`·`condition_source_concept_id` 를 추가해야 합니다. 시술·약물에도 같은 필드를 권장합니다. 없으면 매뉴얼 1.2 ⑦ "원본 코드 유지"와 충돌합니다.
 2. **이상사례 코드 필드 설명**: 이름은 `concept_id` 이지만 값은 자체 코드입니다. 매뉴얼에 "코드값"이라고 분명히 적어 두면 혼동을 줄일 수 있습니다.
 3. **`note_class_concept_id` 의 어휘**.
-4. **기준 Athena 배포판 버전**.
+4. ~~기준 Athena 배포판 버전~~: v20260829 로 결정, 사업 기간 고정 (2026-11-18).
 5. **표준 용어 테이블 제출 범위**: 병원이 사용한 개념만 담은 CONCEPT·CONCEPT_ANCESTOR 일부를 함께 제출할지(권장), 앱에 고정 버전 일부를 내장할지(SNOMED·MedDRA 재배포 조건 확인 필요).
