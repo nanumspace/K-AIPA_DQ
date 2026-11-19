@@ -1,4 +1,4 @@
-item_id,person_id,unit_key,detail
+﻿item_id,person_id,unit_key,detail
 EXP-DM-03,500003,PERSON:500003,"1년 구간 4개 중 미충족 1개 (혈압 0, 신기능 1, 지질 1, 체중 0)"
 EXP-DM-03,500011,PERSON:500011,"1년 구간 4개 중 미충족 1개 (혈압 0, 신기능 1, 지질 1, 체중 0)"
 EXP-DM-03,500012,PERSON:500012,"1년 구간 4개 중 미충족 1개 (혈압 0, 신기능 1, 지질 1, 체중 0)"

@@ -1,4 +1,4 @@
-item_id,person_id,unit_key,detail
+﻿item_id,person_id,unit_key,detail
 EXP-COM-01,300006,PERSON:300006,기준일 없음
 EXP-COM-01,300009,PERSON:300009,기준일 2099-01-01 전후 구간에 키 없음
 EXP-COM-01,300011,PERSON:300011,기준일 없음
