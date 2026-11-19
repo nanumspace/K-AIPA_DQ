@@ -36,3 +36,6 @@ pilot/out/
 
 # GitHub Pages 자료실 생성물 (배포 때 docs/build_resources.py 가 만든다)
 docs/resources/
+
+# Athena 표준 어휘 (라이선스: 저장소에 넣지 않음)
+raw/vocab/
