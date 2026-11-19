@@ -13,7 +13,7 @@ ETL은 `raw/매뉴얼_20261116.docx`(K-AI 공통데이터모델 매뉴얼 V1.0)�
 | RxNorm, RxNorm Extension | 표준: 약물 | 국내 제품은 RxNorm Extension 에 있음 |
 | UCUM | 표준: 단위 | 현재 앱 단위 목록이 이미 UCUM 개념 |
 | HemOnc | 항암 요법 | `SACT.regimen_concept_id` |
-| MedDRA | 이상사례 | 라이선스 보유. OMOP 에서는 분류 어휘(비표준) |
+| ~~MedDRA~~ | 사용하지 않음 (2026-11-19 변경) | Athena 의 MedDRA 는 [OHDSI MedDRA EULA](https://www.ohdsi.org/meddra-eula/) 동의가 필요하고, 이용 범위가 미국 내 약물 결과 연구로 한정됨. 국내 사업에 맞지 않아 이상사례도 SNOMED CT 로 기록 |
 | OMOP 자체 어휘 | 성별(Gender), 방문 유형(Visit), 기록 출처(Type Concept) | |
 | KCD | 원천: 진단 | 저장 시 SNOMED 로 매핑 ("Maps to") |
 | EDI | 원천: 시술·약제 | 저장 시 SNOMED / RxNorm Extension 으로 매핑 |
@@ -35,7 +35,7 @@ Domain·Vocabulary·Concept Class·Relationship 같은 어휘 메타데이터는
 | `OBSERVATION.observation_concept_id` | SNOMED, LOINC | 예 |
 | 모든 단위 필드 (`unit_concept_id`, `*_unit_concept_id`) | UCUM | 예 |
 | `SACT.regimen_concept_id` | HemOnc | 예 |
-| `ADVERSE_EVENT.adverse_event_concept_id` | MedDRA | **아니요** (분류 어휘이므로 예외) |
+| `ADVERSE_EVENT.adverse_event_concept_id` | SNOMED CT | 예 |
 | `ADVERSE_EVENT` 의 `severity`·`causality`·`seriousness`·`outcome`·`action_taken` `_concept_id` | 매뉴얼 자체 코드값 (1~6) | 해당 없음. **표준 개념으로 바꾸지 않음** |
 | `NOTE.note_class_concept_id` | 미정 | 4절 |
 
@@ -46,7 +46,7 @@ Domain·Vocabulary·Concept Class·Relationship 같은 어휘 메타데이터는
 ## 3. 앱에 반영할 것
 
 1. **필드별 허용 용어 명세**: 2절을 `spec/constraints.yaml` 에 넣습니다.
-2. **개념 검증 규칙**: 개념 존재, 허용 어휘, 테이블 영역 일치, 표준·유효(`invalid_reason` 없음) 여부, 단위의 UCUM 여부. MedDRA 필드는 표준 여부 검사를 뺍니다. 이상사례 코드값 필드는 지금처럼 코드 목록으로 검사합니다.
+2. **개념 검증 규칙**: 개념 존재, 허용 어휘, 테이블 영역 일치, 표준·유효(`invalid_reason` 없음) 여부, 단위의 UCUM 여부. 이상사례 코드값 필드는 지금처럼 코드 목록으로 검사합니다.
 3. **매핑률 지표**: 필드별 `concept_id = 0` 비율. 기록 누락과 매핑 실패를 구분하는 데 씁니다.
 4. **어휘 버전 확인**: VOCABULARY 테이블의 `vocabulary_id = 'None'` 행이 기준 배포판과 같은지 확인합니다.
 5. **가상데이터 재검증**: `spec/concepts.yaml` 의 개념 ID 를 기준 배포판과 대조해 고칩니다.
@@ -58,4 +58,4 @@ Domain·Vocabulary·Concept Class·Relationship 같은 어휘 메타데이터는
 2. **이상사례 코드 필드 설명**: 이름은 `concept_id` 이지만 값은 자체 코드입니다. 매뉴얼에 "코드값"이라고 분명히 적어 두면 혼동을 줄일 수 있습니다.
 3. **`note_class_concept_id` 의 어휘**.
 4. ~~기준 Athena 배포판 버전~~: v20260829 로 결정, 사업 기간 고정 (2026-11-18).
-5. **표준 용어 테이블 제출 범위**: 병원이 사용한 개념만 담은 CONCEPT·CONCEPT_ANCESTOR 일부를 함께 제출할지(권장), 앱에 고정 버전 일부를 내장할지(SNOMED·MedDRA 재배포 조건 확인 필요).
+5. **표준 용어 테이블 제출 범위**: 병원이 사용한 개념만 담은 CONCEPT·CONCEPT_ANCESTOR 일부를 함께 제출할지(권장), 앱에 고정 버전 일부를 내장할지(SNOMED 재배포 조건 확인 필요).
