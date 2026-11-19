@@ -28,12 +28,12 @@
 """
 from framework import *
 
-BC_INV, BC_DCIS = 4112853, 4162253
-CT_CHEST, CT_ABD, PET_CT, LIVER_BX, CORE_BX, MMG, RT = 4059400, 4207701, 4305790, 4287806, 4249893, 4044530, 4181206
+BC_INV, BC_DCIS = 4112853, 81250
+CT_CHEST, CT_ABD, PET_CT, LIVER_BX, CORE_BX, MMG, RT = 4058335, 4304092, 42872445, 4314001, 4195312, 4324693, 1242725
 DOXO, CYCLO, DOCETAXEL, PACLITAXEL, CARBO, CAPE = 1338512, 1310317, 1315942, 1378382, 1344905, 1337620
 TRAST, PERTU, PEMBRO = 1387104, 42801287, 45775965
 PALBO, LETROZOLE, ANASTROZOLE = 45892075, 1315946, 1348265
-DEX, ONDAN, FILGRASTIM = 1518254, 35201159, 1301125
+DEX, ONDAN, FILGRASTIM = 1518254, 1000560, 1304850
 IO_DATE = D(2021, 7, 1)                  # KEYNOTE-522 FDA 승인: 이 날 이후 시작한 TNBC 선행요법에만 pembrolizumab
 HIST = {"IDC": "Invasive ductal carcinoma, NOS", "ILC": "Invasive lobular carcinoma", "MUC": "Mucinous carcinoma",
         "DCIS": "Ductal carcinoma in situ"}
@@ -55,11 +55,11 @@ MET_P = [0.4, 0.2, 0.2, 0.08, 0.12]
 REC_SITES = [("Ipsilateral breast / chest wall", False), ("Regional axillary lymph node", False)] + \
             [(s[0], True) for s in MET_SITES]
 REC_P = [0.2, 0.1, 0.28, 0.14, 0.14, 0.06, 0.08]
-AE_CHEMO = ((27674, 0.18), (432791, 0.08), (301794, 0.2), (4304213, 0.06), (439777, 0.12), (4166735, 0.12),
-            (4223659, 0.12), (4265412, 0.04), (196523, 0.05), (4141062, 0.03))
-AE_CAPE = ((196523, 0.3), (4265412, 0.2), (140214, 0.25), (4223659, 0.15), (27674, 0.1))
-AE_HORM = ((4223659, 0.6), (140214, 0.2), (27674, 0.2))
-AE_CDK = ((301794, 0.5), (4223659, 0.2), (27674, 0.15), (196523, 0.15))
+AE_CHEMO = ((31967, 0.18), (441408, 0.08), (320073, 0.2), (4250734, 0.06), (439777, 0.12), (4117779, 0.12),
+            (4223659, 0.12), (138455, 0.04), (196523, 0.05), (432870, 0.03))
+AE_CAPE = ((196523, 0.3), (138455, 0.2), (140214, 0.25), (4223659, 0.15), (31967, 0.1))
+AE_HORM = ((4223659, 0.6), (140214, 0.2), (31967, 0.2))
+AE_CDK = ((320073, 0.5), (4223659, 0.2), (31967, 0.15), (196523, 0.15))
 LAB_FEW = (3000963, 3016723)
 
 MMG_REPORT = ("Bilateral digital mammography with tomosynthesis. {lat} breast: {size} cm {shape} at the {loc}. Axilla: {ax}. "
@@ -246,10 +246,10 @@ def _surgery(ctx, p, st, day, nact, salvage=False):
         bcs = T in ("T1a", "T1b", "T1c", "T2") and st["size"] <= 3.0 and ctx.bern(0.7)
     los = 3 if bcs else 6
     svid = ctx.visit(p, day, INPATIENT, los=los)
-    ctx.procedure(p, day, 4118029 if bcs else 4234573, vid=svid)
+    ctx.procedure(p, day, 4275911 if bcs else 37164749, vid=svid)
     slnb = not (st["hist"] == "DCIS" and bcs) and not salvage
     if slnb:
-        ctx.procedure(p, day, 4090256, vid=svid)
+        ctx.procedure(p, day, 4263386, vid=svid)
     st["slnb"] = slnb
     ctx.labs(p, ctx.days(day, 1), [3000963, 3010813, 3016723], vid=svid)
     if ctx.bern(0.15):
@@ -299,7 +299,7 @@ def _surg_path(ctx, p, st, op_day, nact, bcs, salvage=False):
         slnb=" with sentinel lymph node biopsy" if st["slnb"] else "",
         hist="No residual invasive carcinoma (pathologic complete response)" if pcr else HIST[st["hist"]], size=psize,
         lvi="present" if lvi else "absent", margin=ctx.choice(["negative margin (>= 2 mm)", "close margin (< 2 mm)"], p=[0.85, 0.15]),
-        psln=pos, tsln=tot, t=pT, n=pN, resp=resp), note_type=44814640, note_class=36716165, vid=pvid)
+        psln=pos, tsln=tot, t=pT, n=pN, resp=resp), note_type=32835, note_class=3031451, vid=pvid)
     return path_day, pN, pcr
 
 
@@ -443,14 +443,14 @@ def generate(ctx: Ctx, n=100):
                                                 er=st["er"], erp="positive" if st["hr"] else "negative", pr=st["pr"],
                                                 prp="positive" if st["pr"] > 0 else "negative", her2=her2_txt, fish=fish_txt,
                                                 ki=st["ki67"], sub=sub if not dcis else ("ER-positive DCIS" if st["hr"] else "ER-negative DCIS")),
-                 note_type=44814640, note_class=36716165, vid=pv)
-        ctx.observation(p, path_day, 4257895, vid=pv, value_number=ecog, value_string=f"ECOG {ecog}")
+                 note_type=32835, note_class=3031451, vid=pv)
+        ctx.observation(p, path_day, 36303470, vid=pv, value_number=ecog, value_string=f"ECOG {ecog}")
         ht = ctx.normal(170 if gender == MALE else 158, 5.5, 140, 190)
         wt = ctx.normal(70 if gender == MALE else 58, 9, 38, 110)
         bmi = round(wt / (ht / 100) ** 2, 1)
         ctx.measure(p, path_day, 3036277, ht, vid=pv); ctx.measure(p, path_day, 3025315, wt, vid=pv); ctx.measure(p, path_day, 3038553, bmi, vid=pv)
         if bmi >= 30: ctx.condition(p, path_day, 433736, vid=pv)
-        ctx.labs(p, path_day, [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3020491, 3024128, 3028641], vid=pv)
+        ctx.labs(p, path_day, [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3024561, 3024128, 3003785], vid=pv)
 
         # ---- 병기 결정: 전신 영상은 III·IV기에서만(I·II기는 증상이 없으면 시행하지 않는다)
         if st["stage"] in ("0", "I", "II"):
@@ -537,7 +537,7 @@ def generate(ctx: Ctx, n=100):
                         rs = st["rs"]
                         risk = "low" if rs <= 15 else ("intermediate" if rs <= 25 else "high")
                         ctx.note(p, g_day, f"Oncotype DX Breast Recurrence Score assay (surgical specimen): Recurrence Score {rs} ({risk} risk).",
-                                 note_type=44814640, note_class=36716165, vid=ctx.visit_on(p, g_day))
+                                 note_type=32835, note_class=3031451, vid=ctx.visit_on(p, g_day))
                         last_adj_end = max(last_adj_end, g_day)
                 # 보조항암 (수술 선행군)
                 if plan_adj_chemo and not nact:
@@ -604,7 +604,7 @@ def generate(ctx: Ctx, n=100):
             elif (fu - last_mmg).days >= 330:
                 ctx.procedure(p, fu, MMG, vid=fvid)
                 last_mmg = fu
-            ctx.labs(p, fu, [3000963, 3028641, 3013721] if recurred else [3000963, 3028641], vid=fvid)
+            ctx.labs(p, fu, [3000963, 3003785, 3013721] if recurred else [3000963, 3003785], vid=fvid)
             if hit:
                 recurred = True
                 site_nm, distant = ctx.choice(REC_SITES, p=REC_P)
@@ -613,7 +613,7 @@ def generate(ctx: Ctx, n=100):
                     if site_nm == "Liver":
                         ctx.procedure(p, fu, LIVER_BX, vid=fvid)
                         ctx.note(p, fu, "Liver, percutaneous core needle biopsy: metastatic carcinoma consistent with breast primary; "
-                                        "receptor status re-tested.", note_type=44814640, note_class=36716165, vid=fvid)
+                                        "receptor status re-tested.", note_type=32835, note_class=3031451, vid=fvid)
                 else:
                     ctx.procedure(p, fu, PET_CT, vid=fvid)
                     ctx.procedure(p, fu, CORE_BX, vid=fvid)

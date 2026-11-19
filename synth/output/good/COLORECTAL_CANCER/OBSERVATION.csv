@@ -1,2 +1,2 @@
 observation_id,visit_occurrence_id,person_id,observation_concept_id,observation_date,observation_type_concept_id,value_as_number,value_as_string,unit_concept_id
-300003,300042,300002,4257895,2022-12-22,32817,2,ECOG 2,
+300003,300042,300002,36303470,2022-12-22,32817,2,ECOG 2,

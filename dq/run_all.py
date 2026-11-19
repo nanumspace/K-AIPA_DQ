@@ -60,4 +60,8 @@ if __name__ == "__main__":
             sh("dq/engine.py", "--cohort", c, "--data", f"synth/output/good/{c}", "--out", f"dq/reports/good_{c}", "--today", a.today)
             must_be_clean(f"dq/reports/good_{c}", "Good Sample")
         sh("synth/check_samples.py")
+        if os.path.exists(os.path.join(ROOT, "raw/vocab/v20260829/CONCEPT.csv")):
+            sh("synth/check_vocab.py")
+        else:   # 어휘는 라이선스 때문에 저장소에 없다. 받아 둔 개발 환경에서만 대조한다.
+            print("어휘 대조 생략: raw/vocab/v20260829 없음 (docs/vocabulary.md)")
         print(open(os.path.join(ROOT, "dq/reports/verification_summary.md"), encoding="utf-8").read())

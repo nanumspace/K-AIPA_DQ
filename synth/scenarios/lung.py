@@ -34,13 +34,13 @@
 from framework import *
 
 
-LC = 4115276
+LC = 258369
 CISPLATIN, CARBOPLATIN, PEMETREXED, PACLITAXEL, DOCETAXEL, GEMCITABINE = 1397599, 1344905, 1304919, 1378382, 1315942, 1314924
 OSIMERTINIB, PEMBROLIZUMAB, ETOPOSIDE = 35605522, 45775965, 1350504
-DEXAMETHASONE, ONDANSETRON = 1518254, 35201159
+DEXAMETHASONE, ONDANSETRON = 1518254, 1000560
 DURVALUMAB = 1594034
 ADAURA_DATE = D(2021, 1, 1)             # 보조 osimertinib 은 2020-12 승인 → 이 날 이후 시작한 사례에만
-CT_CHEST, PET_CT, CT_ABD, RT, LIVER_BX = 4059400, 4305790, 4207701, 4181206, 4287806
+CT_CHEST, PET_CT, CT_ABD, RT, LIVER_BX = 4058335, 42872445, 4304092, 1242725, 4314001
 
 HIST = {1: "Adenocarcinoma", 2: "Squamous cell carcinoma", 3: "Large cell carcinoma", 4: "Small cell carcinoma",
         5: "Carcinoma tumor 계열", 6: "NSCLC NOS", 7: "기타"}
@@ -285,23 +285,23 @@ def generate(ctx: Ctx, n=100):
         # ---- 1) 진단 입원 (3일)
         dx_vid = ctx.visit(p, index, INPATIENT, los=3)
         ctx.condition(p, index, LC, vid=dx_vid)
-        ctx.condition(p, index, 258375 if hist == 4 else 4311499, vid=dx_vid)
+        ctx.condition(p, index, 4110591 if hist == 4 else 4115276, vid=dx_vid)
         if smoker and ctx.bern(0.4): ctx.condition(p, index, 255573, vid=dx_vid)     # COPD
         if ctx.bern(0.35): ctx.condition(p, index, 320128, vid=dx_vid)               # HTN
         if ctx.bern(0.2): ctx.condition(p, index, 201826, vid=dx_vid)                # T2DM
         ctx.procedure(p, index, CT_CHEST, vid=dx_vid)                                 # chest CT
         bx_day = ctx.days(index, 1)
-        ctx.procedure(p, bx_day, 4032404, vid=dx_vid)                                 # bronchoscopy biopsy
+        ctx.procedure(p, bx_day, 4206027, vid=dx_vid)                                 # bronchoscopy biopsy
         pet_day = ctx.days(index, 2)
         ctx.procedure(p, pet_day, PET_CT, vid=dx_vid)                                 # PET-CT
         need_mri = hist == 4 or base in ("IIA", "IIB", "IIIA", "IIIB", "IV")          # 뇌 MRI: II~IV기와 소세포 전부
         mri_day = ctx.days(index, 2)
-        ctx.labs(p, index, [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3020491, 3022250], vid=dx_vid)
+        ctx.labs(p, index, [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3024561, 3022250], vid=dx_vid)
         ht = ctx.normal(170 if gender == MALE else 157, 6, 145, 190); wt = ctx.normal(66 if gender == MALE else 56, 9, 38, 110)
         ctx.measure(p, index, 3036277, ht, vid=dx_vid); ctx.measure(p, index, 3025315, wt, vid=dx_vid)
         ctx.measure(p, index, 3038553, round(wt / (ht / 100) ** 2, 1), vid=dx_vid)
-        ctx.observation(p, index, 4257895, vid=dx_vid, value_number=ecog, value_string=f"ECOG {ecog}")
-        ctx.observation(p, index, 4275495, vid=dx_vid, value_string="Current smoker" if cur_smok else ("Ex-smoker" if smoker else "Never smoker"))
+        ctx.observation(p, index, 36303470, vid=dx_vid, value_number=ecog, value_string=f"ECOG {ecog}")
+        ctx.observation(p, index, 43054909, vid=dx_vid, value_string="Current smoker" if cur_smok else ("Ex-smoker" if smoker else "Never smoker"))
 
         node_txt = ("Mediastinal lymphadenopathy" if nn in ("N2", "N3") else
                     "Ipsilateral hilar lymphadenopathy" if nn == "N1" else "No significant lymphadenopathy")
@@ -329,11 +329,11 @@ def generate(ctx: Ctx, n=100):
             diff = ctx.choice(["well", "moderately", "poorly"]) + " differentiated"
         bx_note_day = ctx.days(index, 3)
         ctx.note(p, bx_note_day, BX_REPORT.format(lobe=lobe_nm, hist=hist_txt, diff=diff),
-                 note_type=44814640, note_class=36716165, vid=dx_vid)
+                 note_type=32835, note_class=3031451, vid=dx_vid)
         liver_bx = "Liver" in mets and stage == "IVA"               # 단독 간전이는 조직으로 확인
         if liver_bx:
             ctx.procedure(p, bx_day, LIVER_BX, vid=dx_vid)
-            ctx.note(p, bx_note_day, LIVER_BX_REPORT.format(hist=hist_txt), note_type=44814640, note_class=36716165, vid=dx_vid)
+            ctx.note(p, bx_note_day, LIVER_BX_REPORT.format(hist=hist_txt), note_type=32835, note_class=3031451, vid=dx_vid)
         ctx.note(p, bx_note_day, STAGE_NOTE.format(t=t, n=nn, m=m, stage=stage, mri=mri_phrase,
                                                     bx=", liver core biopsy" if liver_bx else "", hist=hist_txt), vid=dx_vid)
         row = ctx.disease_row(p, dx_vid, diag_rgst_ymd=index, histologic_diagnosis=hist, histologic_diagnosis_source_value=HIST[hist],
@@ -346,7 +346,7 @@ def generate(ctx: Ctx, n=100):
             kras = (not egfr) and ctx.bern(0.2)
             ctx.note(p, gmt_day, f"Molecular pathology (NGS panel): EGFR {ctx.choice(['exon 19 deletion', 'L858R']) if egfr else 'wild type'}; ALK IHC "
                                  f"negative; KRAS {'G12C' if kras else 'wild type'}; PD-L1 TPS {pdl1}%.",
-                     note_type=44814640, note_class=36716165, vid=gvid)
+                     note_type=32835, note_class=3031451, vid=gvid)
 
         # ---- 2) 치료
         last = ctx.days(index, 3)
@@ -357,14 +357,14 @@ def generate(ctx: Ctx, n=100):
         if resectable and ecog <= 2:
             surgery_day = ctx.days(index, ctx.randint(21, 45))
             svid = ctx.visit(p, surgery_day, INPATIENT, los=7)
-            ctx.procedure(p, surgery_day, 4033181, vid=svid)
+            ctx.procedure(p, surgery_day, 4070879, vid=svid)
             path_day = ctx.days(surgery_day, ctx.randint(3, 7))
             pn = nn if ctx.bern(0.75) else ctx.choice(["N0", "N1", "N2"])
             tot_ln = ctx.randint(8, 30); pos_ln = 0 if pn == "N0" else ctx.randint(1, min(6, tot_ln))
             vpi = ctx.bern(0.3)
             ctx.note(p, path_day, PATH_REPORT.format(lobe=lobe_nm, hist=hist_txt, diff=diff,
                                                      vpi="present" if vpi else "absent", ln=f"{pos_ln}/{tot_ln} positive", t=t, n=pn, m="M0"),
-                     note_type=44814640, note_class=36716165, vid=svid)
+                     note_type=32835, note_class=3031451, vid=svid)
             ctx.labs(p, ctx.days(surgery_day, 1), [3000963, 3010813, 3016723], vid=svid)
             last = ctx.days(surgery_day, 7)
             st["resected"] = True
@@ -449,7 +449,7 @@ def generate(ctx: Ctx, n=100):
             while fu <= ctx.today and k < 8:
                 fvid = ctx.visit_on(p, fu)
                 ctx.procedure(p, fu, CT_CHEST, vid=fvid)
-                ctx.labs(p, fu, [3000963, 3028641], vid=fvid)
+                ctx.labs(p, fu, [3000963, 3003785], vid=fvid)
                 if brain_surv and (fu - index).days <= 730:
                     ctx.note(p, fu, "MRI brain with contrast (surveillance): no new intracranial metastasis.", vid=fvid)
                 p_rec = {"IA": 0.03, "IB": 0.05, "IIA": 0.08, "IIB": 0.09, "IIIA": 0.12}.get(base, 0.08)
@@ -460,7 +460,7 @@ def generate(ctx: Ctx, n=100):
                     _imaging(ctx, p, fu, note_site, f"new {site.lower()} lesion(s) suspicious for recurrence of lung cancer.", procedure=note_site != "Lung")
                     if site == "Liver":
                         ctx.procedure(p, fu, LIVER_BX, vid=fvid)
-                        ctx.note(p, fu, LIVER_BX_REPORT.format(hist=hist_txt), note_type=44814640, note_class=36716165, vid=fvid)
+                        ctx.note(p, fu, LIVER_BX_REPORT.format(hist=hist_txt), note_type=32835, note_class=3031451, vid=fvid)
                     row["stage_iv_diagnosis_date"] = fu
                     if sacts:    # 보조요법 후 재발이면 직전 요법에 진행일을 남긴다
                         ctx.sact_update(sacts[-1], date_of_progression=fu, recurrence_anatomic_site=site)

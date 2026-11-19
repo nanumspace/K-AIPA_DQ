@@ -31,7 +31,7 @@
 """
 from framework import *
 
-COLON, RECTOSIG, RECTUM = 4180790, 443381, 4164337
+COLON, RECTOSIG, RECTUM = 197500, 438699, 74582
 SITES = [  # (kcd, site name, cohort concept, side)
     ("C18.0", "Cecum", COLON, "R"), ("C18.2", "Ascending colon", COLON, "R"), ("C18.4", "Transverse colon", COLON, "R"),
     ("C18.6", "Descending colon", COLON, "L"), ("C18.7", "Sigmoid colon", COLON, "L"),
@@ -66,8 +66,8 @@ SGPT_REPORT = ("{organ}, resection: {hist}, {grade}. Tumor size {size} cm, gross
                "Lymphovascular invasion: {lvi}. Lymph nodes: {pos}/{tot} positive. Mismatch repair protein IHC: {mmr}. "
                "Pathologic stage {tnm}.")
 
-AE_BASE = {27674: 0.15, 196523: 0.10, 301794: 0.15, 439777: 0.10, 4223659: 0.12, 4166735: 0.05, 140214: 0.02, 4304213: 0.03,
-           4141062: 0.08, 4265412: 0.06, 432791: 0.08}
+AE_BASE = {31967: 0.15, 196523: 0.10, 320073: 0.15, 439777: 0.10, 4223659: 0.12, 4117779: 0.05, 140214: 0.02, 4250734: 0.03,
+           432870: 0.08, 138455: 0.06, 441408: 0.08}
 
 # 약물 concept 은 이름으로 찾는다(concepts.yaml 의 id 교정에 영향받지 않게).
 _DRUG_ID = {v["name"]: k for k, v in CONCEPTS["drugs"].items()}
@@ -116,11 +116,11 @@ def _adjuvant(ctx, age, ecog, hi, after_crt):
 
 def _pool(drugs):
     w = dict(AE_BASE)
-    if OXALI in drugs: w[4166735] += 0.30        # oxaliplatin: 말초신경병증
+    if OXALI in drugs: w[4117779] += 0.30        # oxaliplatin: 말초신경병증
     if IRI in drugs:
-        w[196523] += 0.25; w[301794] += 0.15     # irinotecan: 설사, 호중구감소
+        w[196523] += 0.25; w[320073] += 0.15     # irinotecan: 설사, 호중구감소
     if FU in drugs or CAPE in drugs:
-        w[196523] += 0.10; w[4265412] += 0.08
+        w[196523] += 0.10; w[138455] += 0.08
     if CAPE in drugs: w[140214] += 0.08          # hand-foot syndrome 을 rash 로 대표
     return tuple(w.items())
 
@@ -202,9 +202,9 @@ def _cap_cycles(ctx, start, cycles, cd):
 # --------------------------------------------------------------------------------------------- 영상·완화·사망
 def _ct(ctx, p, day, text):
     vid = ctx.visit_on(p, day)
-    ctx.procedure(p, day, 4207701, vid=vid)
-    ctx.procedure(p, day, 4059400, vid=vid)
-    ctx.note(p, day, text, note_type=44814637, note_class=36716164, vid=vid)
+    ctx.procedure(p, day, 4304092, vid=vid)
+    ctx.procedure(p, day, 4058335, vid=vid)
+    ctx.note(p, day, text, note_type=32841, note_class=46235057, vid=vid)
     return vid
 
 
@@ -214,7 +214,7 @@ def _death(ctx, p, dd, cause="progressive metastatic colorectal cancer"):
     ctx.set_death(p, dd)
     vid = ctx.visit(p, ctx.days(dd, -2), INPATIENT, los=2)
     ctx.note(p, dd, f"Terminal admission for {cause}; best supportive care. Died on {dd.isoformat()}.",
-             note_type=44814641, note_class=36716213, vid=vid)
+             note_type=32824, note_class=3020091, vid=vid)
     return True
 
 
@@ -224,7 +224,7 @@ def _bsc_course(ctx, p, day, p_death, lo, hi):
     stop = ctx.today if dd is None else min(ctx.today, ctx.days(dd, -3))
     t, k = ctx.days(day, ctx.randint(30, 60)), 0
     while t <= stop and k < 8:
-        ctx.labs(p, t, [3000963, 3020491], vid=ctx.visit_on(p, t))
+        ctx.labs(p, t, [3000963, 3024561], vid=ctx.visit_on(p, t))
         t = ctx.days(t, ctx.randint(30, 60)); k += 1
     if dd is not None:
         _death(ctx, p, dd)
@@ -237,9 +237,9 @@ def _bsc(ctx, p, st, pd_day, reason):
         return
     ecog = min(st["ecog"] + 1, 3)
     vid = ctx.visit_on(p, day)
-    ctx.observation(p, day, 4257895, vid=vid, value_number=ecog, value_string=f"ECOG {ecog}, best supportive care")
+    ctx.observation(p, day, 36303470, vid=vid, value_number=ecog, value_string=f"ECOG {ecog}, best supportive care")
     ctx.note(p, day, f"Progressive disease. {reason} Referred to palliative care; best supportive care.",
-             note_type=32831, note_class=36716177, vid=vid)
+             note_type=32831, note_class=3000735, vid=vid)
     _bsc_course(ctx, p, day, 0.75, 30, 210)
 
 
@@ -252,7 +252,7 @@ def _progress(ctx, p, st, day):
     where = ", ".join(s.lower() for s in known)
     vid = _ct(ctx, p, day, f"CT chest, abdomen and pelvis (RECIST 1.1): interval increase of the known lesions ({where})"
                            + (f" and new {new.lower()} lesions" if new else "") + f". Progressive disease. CEA {cea} ng/mL.")
-    ctx.measure(p, day, 3028641, cea, vid=vid)
+    ctx.measure(p, day, 3003785, cea, vid=vid)
     st["sites"] = known + ([new] if new else [])
     return "; ".join(known) + (f"; {new} (new)" if new else "")
 
@@ -263,7 +263,7 @@ def _restage(ctx, p, st, day, label):
            "SD": "Stable disease: no new lesions and no significant change in the target lesions.",
            "HOLD": "No interval progression and no new lesions."}[label]
     vid = _ct(ctx, p, day, f"CT chest, abdomen and pelvis (RECIST 1.1): {txt} CEA {cea} ng/mL.")
-    ctx.measure(p, day, 3028641, cea, vid=vid)
+    ctx.measure(p, day, 3003785, cea, vid=vid)
 
 
 def _run_line(ctx, p, st, backbone, line, start):
@@ -325,7 +325,7 @@ def _metastatic(ctx, p, st, start, backbone):
         plan_day, s2 = ctx.days(pd1, ctx.randint(2, 6)), ctx.days(pd1, ctx.randint(7, 21))
         if plan_day <= ctx.today:
             ctx.note(p, plan_day, f"Disease progression on first-line therapy. Plan: second-line {_reg(nxt, BEV)['name']}.",
-                     note_type=32831, note_class=36716177)
+                     note_type=32831, note_class=3000735)
         if s2 <= ctx.today:
             last2, pd2, ran2 = _run_line(ctx, p, st, nxt, 2, s2)
             if ran2:
@@ -344,10 +344,10 @@ def _surgery(ctx, p, row, day, kcd, site_nm, side, rectal, low, obstruction, per
     los = ctx.randint(6, 10) if purpose == "CUR" else ctx.randint(8, 14)
     svid = ctx.visit(p, day, INPATIENT, los=los)
     if rectal:
-        ctx.procedure(p, day, 4148096, vid=svid)
+        ctx.procedure(p, day, 4151121, vid=svid)
         op_nm = "Low anterior resection" + (" (ultra-low, coloanal anastomosis)" if low else "")
     else:
-        ctx.procedure(p, day, 4050470, vid=svid)
+        ctx.procedure(p, day, 4079713, vid=svid)
         op_nm = ("Anterior resection" if kcd == "C19" else "Right hemicolectomy" if side == "R"
                  else "Left hemicolectomy" if site_nm == "Descending colon" else "Anterior resection (sigmoidectomy)")
     lap = ctx.bern(0.8) and not perforation
@@ -380,7 +380,7 @@ def _surgery(ctx, p, row, day, kcd, site_nm, side, rectal, low, obstruction, per
     ctx.note(p, dsch, f"Discharge summary. {op_nm} ({'laparoscopic' if lap else 'open'}{', converted to open' if conv else ''}) on {day.isoformat()} "
                       f"for {site_nm.lower()} cancer. EBL {ebl} mL. Postoperative course "
                       f"{'complicated by fever, treated conservatively' if compl else 'uneventful'}. Discharged on POD {los}.",
-             note_type=44814641, note_class=36716213, vid=svid)
+             note_type=32824, note_class=3020091, vid=svid)
     return dsch, ostomy
 
 
@@ -397,7 +397,7 @@ def _pathology(ctx, p, row, surgery_day, rectal, kcd, hist_cd, grade, pt, pn, pm
     ctx.note(p, read_day, SGPT_REPORT.format(organ=organ, hist=HIST[hist_cd], grade=GRADE[grade].lower(), size=psize, gross=ctx.choice(GROSS),
                                              depth=_depth(pt, rectal), lvi="present" if lvi else "not identified", pos=pos_ln, tot=tot_ln,
                                              mmr=mmr, tnm=stage_txt),
-             note_type=44814640, note_class=36716165, vid=svid)
+             note_type=32835, note_class=3031451, vid=svid)
     row["inva_dgre_nm"] = _depth(pt, rectal)
     row["radi_rsmg_invl_yn_spnm"] = "침범" if rm_pos else "침범 없음"
     if rectal:
@@ -436,47 +436,47 @@ def generate(ctx: Ctx, n=100):
         ctx.condition(p, index, dx_concept, vid=dx_vid)
         for prob, cid in ((0.35, 320128), (0.2, 201826), (0.15, 432867), (0.02, 81893)):
             if ctx.bern(prob): ctx.condition(p, index, cid, vid=dx_vid)
-        ctx.procedure(p, index, 4179986, vid=dx_vid)
+        ctx.procedure(p, index, 40489328, vid=dx_vid)
         circ = ctx.randint(25, 95) if t != "T1" else ctx.randint(10, 30)
         ctx.note(p, index, COLONO_REPORT.format(desc=ctx.choice(["Ulcerofungating", "Ulceroinfiltrative", "Polypoid"]), site=site_nm, size=size, circ=circ),
-                 note_type=32831, note_class=36716177, vid=dx_vid)
+                 note_type=32831, note_class=3000735, vid=dx_vid)
         ctx.note(p, ctx.days(index, ctx.randint(2, 4)), BX_REPORT.format(bx_site=organ_bx, hist=HIST[hist_cd], grade=GRADE[grade].lower(), mmr=mmr),
-                 note_type=44814640, note_class=36716165)
+                 note_type=32835, note_class=3031451)
         ht = ctx.normal(168 if gender == MALE else 156, 6, 145, 190); wt = ctx.normal(67 if gender == MALE else 57, 9, 38, 110)
         ctx.measure(p, index, 3036277, ht, vid=dx_vid); ctx.measure(p, index, 3025315, wt, vid=dx_vid)
         ctx.measure(p, index, 3038553, round(wt / (ht / 100) ** 2, 1), vid=dx_vid)
-        ctx.observation(p, index, 4257895, vid=dx_vid, value_number=ecog, value_string=f"ECOG {ecog}")
+        ctx.observation(p, index, 36303470, vid=dx_vid, value_number=ecog, value_string=f"ECOG {ecog}")
         row = ctx.disease_row(p, dx_vid, diag_rgst_ymd=index)
 
         # ---- 병기 결정 검사 (흉부·복부·골반 CT / MRI / CEA)
         ct_day = ctx.days(index, ctx.randint(3, 8))
         wvid = ctx.visit_on(p, ct_day)
-        ctx.procedure(p, ct_day, 4207701, vid=wvid)
-        ctx.procedure(p, ct_day, 4059400, vid=wvid)
+        ctx.procedure(p, ct_day, 4304092, vid=wvid)
+        ctx.procedure(p, ct_day, 4058335, vid=wvid)
         node_txt = "enlarged regional lymph nodes" if nn != "N0" else "no significant regional lymphadenopathy"
         abd_mets = [s for s in mets if s != "Lung"]
         met_txt = " ".join(MET_TXT[s] for s in abd_mets) if abd_mets else "No distant metastasis in the abdomen and pelvis."
         ctx.note(p, ct_day, CT_REPORT.format(site=site_nm.lower(), size=size, node=node_txt, met=met_txt, tnm=f"c{t}{nn}{m}"),
-                 note_type=44814637, note_class=36716164, vid=wvid)
+                 note_type=32841, note_class=46235057, vid=wvid)
         chest_txt = ("Multiple bilateral pulmonary nodules (largest 1.2 cm), compatible with lung metastases." if "Lung" in mets
                      else "No pulmonary metastasis.")
-        ctx.note(p, ct_day, CT_CHEST_REPORT.format(chest=chest_txt), note_type=44814637, note_class=36716164, vid=wvid)
+        ctx.note(p, ct_day, CT_CHEST_REPORT.format(chest=chest_txt), note_type=32841, note_class=46235057, vid=wvid)
         low = False
         if rectal or kcd == "C19":
-            ctx.procedure(p, ct_day, 4123795, vid=wvid)
+            ctx.procedure(p, ct_day, 4097527, vid=wvid)
             anvg = round(ctx.rand(2.0, 12.0), 2) if rectal else round(ctx.rand(12.0, 16.0), 2)
             low = anvg < 5
             ctx.note(p, ct_day, f"Rectal MRI. Tumor lower margin {anvg} cm from anal verge. mrT{t[1:]}, mrN{nn[1:]}. "
                                 f"Shortest distance to mesorectal fascia {round(ctx.rand(0.5, 15), 1)} mm.",
-                     note_type=44814637, note_class=36716164, vid=wvid)
-        ctx.labs(p, ct_day, [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3020491, 3024128], vid=wvid)
+                     note_type=32841, note_class=46235057, vid=wvid)
+        ctx.labs(p, ct_day, [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3024561, 3024128], vid=wvid)
         cea0 = _cea0(ctx)
         cea = _cea_dx(ctx, cea0, stage)
-        ctx.measure(p, ct_day, 3028641, cea, vid=wvid)
+        ctx.measure(p, ct_day, 3003785, cea, vid=wvid)
         stag_day = ct_day
         if stage == "IV" and (ctx.bern(0.6) or "Bone" in mets):
             stag_day = ctx.days(ct_day, ctx.randint(2, 6)); pv = ctx.visit_on(p, stag_day)
-            ctx.procedure(p, stag_day, 4305790, vid=pv)
+            ctx.procedure(p, stag_day, 42872445, vid=pv)
         if "Peritoneum" in mets and ctx.bern(0.5):
             row["inap_dsnt_mtst_site_etc_cont"] = ("Peritoneal seeding with liver metastasis" if "Liver" in mets
                                                    else "Peritoneal carcinomatosis, multiple sites")
@@ -504,18 +504,18 @@ def generate(ctx: Ctx, n=100):
                         e = max(e, ee)
                 e = ctx.monitor(p, cyc, [CAPE], ae_p=0.3, ae_pool=_pool([CAPE]))      # 일정 변경이 반영된 실제 종료일
                 rvid = ctx.visit_on(p, s)
-                ctx.procedure(p, s, 4181206, vid=rvid)
+                ctx.procedure(p, s, 1242725, vid=rvid)
                 ctx.note(p, s, "Preoperative long-course chemoradiotherapy: 50.4 Gy in 28 fractions (Monday-Friday) to the pelvis concurrent "
-                               "with capecitabine 825 mg/m2 twice daily on radiation days only.", note_type=32831, note_class=36716177, vid=rvid)
+                               "with capecitabine 825 mg/m2 twice daily on radiation days only.", note_type=32831, note_class=3000735, vid=rvid)
                 for wk in (14, 28):                              # 주간 혈액검사
                     ld = ctx.days(s, wk)
                     if ld <= ctx.today:
                         ctx.labs(p, ld, [3000963, 3010813, 3017732, 3024929], vid=ctx.visit_on(p, ld))
                 # 방사선 치료 중 설사 등 이상사례는 ctx.monitor 가 기록한다.
                 rs_day = ctx.days(e, ctx.randint(35, 50))
-                ctx.procedure(p, rs_day, 4123795, vid=ctx.visit_on(p, rs_day))
+                ctx.procedure(p, rs_day, 4097527, vid=ctx.visit_on(p, rs_day))
                 trg = ctx.choice(["1", "2", "3", "4"], p=[0.15, 0.35, 0.35, 0.15])
-                ctx.note(p, rs_day, f"Rectal MRI after CCRT. mrTRG {trg} ({TRG_TXT[trg]}).", note_type=44814637, note_class=36716164)
+                ctx.note(p, rs_day, f"Rectal MRI after CCRT. mrTRG {trg} ({TRG_TXT[trg]}).", note_type=32841, note_class=46235057)
                 ctx.sact_update(sid, best_overall_response={"1": "CR", "2": "PR", "3": "PR", "4": "SD"}[trg])
                 surgery_day = ctx.days(rs_day, ctx.randint(7, 21))
                 if trg == "1": pt, pn = "T0", "N0"
@@ -539,7 +539,7 @@ def generate(ctx: Ctx, n=100):
                 s = ctx.days(surgery_day, ctx.randint(28, 50))
                 po = ctx.days(s, -2)                             # 보조 시작 전 외래: 수술 후 CEA 정상화 확인
                 if po <= ctx.today:
-                    ctx.measure(p, po, 3028641, _cea_follow(ctx, cea0), vid=ctx.visit_on(p, po))
+                    ctx.measure(p, po, 3003785, _cea_follow(ctx, cea0), vid=ctx.visit_on(p, po))
                 hi = pt in ("T4a", "T4b") or pn in ("N2a", "N2b")
                 reg, ncy = _adjuvant(ctx, p.age_on(s), ecog, hi, ccrt)
                 ncy = _cap_cycles(ctx, s, ncy, reg["cd"])
@@ -556,7 +556,7 @@ def generate(ctx: Ctx, n=100):
                     ctx.labs(p, ctx.days(rd, 1), [3000963, 3010813, 3016723], vid=rvid)
                     last = max(last, ctx.days(rd, 5))
         elif stage == "IV":
-            ctx.note(p, ctx.days(stag_day, ctx.randint(5, 9)), _molecular_text(ctx, mmr), note_type=44814640, note_class=36716165)
+            ctx.note(p, ctx.days(stag_day, ctx.randint(5, 9)), _molecular_text(ctx, mmr), note_type=32835, note_class=3031451)
             st = dict(ecog=ecog, cea0=cea0, cea=cea, sites=list(mets))
             if obstruction and ctx.bern(0.7):
                 sd = ctx.days(last, ctx.randint(3, 14))
@@ -570,10 +570,10 @@ def generate(ctx: Ctx, n=100):
             if ecog <= 2:
                 _metastatic(ctx, p, st, s, "FOLFOX")
             else:
-                ctx.observation(p, s, 4257895, vid=ctx.visit_on(p, s), value_number=ecog, value_string=f"ECOG {ecog}, best supportive care")
+                ctx.observation(p, s, 36303470, vid=ctx.visit_on(p, s), value_number=ecog, value_string=f"ECOG {ecog}, best supportive care")
                 _bsc_course(ctx, p, s, 0.6, 30, 240)
         else:
-            ctx.observation(p, last, 4257895, vid=ctx.visit_on(p, last), value_number=ecog, value_string=f"ECOG {ecog}, not a surgical candidate")
+            ctx.observation(p, last, 36303470, vid=ctx.visit_on(p, last), value_number=ecog, value_string=f"ECOG {ecog}, not a surgical candidate")
             _bsc_course(ctx, p, last, 0.3, 180, 900)
 
         # ---- 3) 추적 및 재발 (근치 치료를 받은 환자)
@@ -585,35 +585,35 @@ def generate(ctx: Ctx, n=100):
                 # 재발은 확인·치료까지 이어지도록 검증일 45일 전까지의 추적에서만 만든다. dMMR 재발은 면역항암제 대상이라 만들지 않는다.
                 recur = (not mmr_def) and ctx.days(fu, 45) <= ctx.today and ctx.bern(rec_p)
                 fvid = ctx.visit_on(p, fu)
-                ctx.procedure(p, fu, 4207701, vid=fvid)
-                ctx.procedure(p, fu, 4059400, vid=fvid)
+                ctx.procedure(p, fu, 4304092, vid=fvid)
+                ctx.procedure(p, fu, 4058335, vid=fvid)
                 cea_v = round(cea0 * ctx.rand(1.8, 6.0), 1) if recur else _cea_follow(ctx, cea0)
-                ctx.measure(p, fu, 3028641, cea_v, vid=fvid)
+                ctx.measure(p, fu, 3003785, cea_v, vid=fvid)
                 if k in (1, 5):                                  # 대장내시경 1·3년
-                    ctx.procedure(p, fu, 4179986, vid=fvid)
+                    ctx.procedure(p, fu, 40489328, vid=fvid)
                 if not recur:
-                    ctx.note(p, fu, "CT chest, abdomen and pelvis: no evidence of recurrence.", note_type=44814637, note_class=36716164, vid=fvid)
+                    ctx.note(p, fu, "CT chest, abdomen and pelvis: no evidence of recurrence.", note_type=32841, note_class=46235057, vid=fvid)
                     fu = ctx.days(fu, ctx.randint(170, 190)); k += 1
                     continue
                 site_r = "Anastomotic site (local recurrence)" if ctx.bern(0.25) else ctx.choice(MET_SITES, p=MET_P)
                 ctx.note(p, fu, f"CT chest, abdomen and pelvis: new {site_r.lower()} lesion, suspicious for recurrence. CEA {cea_v} ng/mL.",
-                         note_type=44814637, note_class=36716164, vid=fvid)
+                         note_type=32841, note_class=46235057, vid=fvid)
                 conf = ctx.days(fu, ctx.randint(4, 10))
                 cvid = ctx.visit_on(p, conf)
                 if site_r.startswith("Anastomotic"):
-                    ctx.procedure(p, conf, 4179986, vid=cvid)
+                    ctx.procedure(p, conf, 40489328, vid=cvid)
                     ctx.note(p, conf, "Anastomosis, endoscopic biopsy: adenocarcinoma, consistent with recurrence.",
-                             note_type=44814640, note_class=36716165, vid=cvid)
+                             note_type=32835, note_class=3031451, vid=cvid)
                 elif site_r == "Liver":
-                    ctx.procedure(p, conf, 4287806, vid=cvid)
+                    ctx.procedure(p, conf, 4314001, vid=cvid)
                     ctx.note(p, conf, "Liver, needle biopsy: metastatic adenocarcinoma, compatible with colorectal origin (CK20+, CDX2+).",
-                             note_type=44814640, note_class=36716165, vid=cvid)
+                             note_type=32835, note_class=3031451, vid=cvid)
                 else:
-                    ctx.procedure(p, conf, 4305790, vid=cvid)
+                    ctx.procedure(p, conf, 42872445, vid=cvid)
                     ctx.note(p, conf, f"FDG PET/CT: FDG-avid {site_r.lower()} lesion (SUVmax {round(ctx.rand(5, 14), 1)}), consistent with recurrence.",
-                             note_type=44814637, note_class=36716164, vid=cvid)
+                             note_type=32841, note_class=46235057, vid=cvid)
                 mol = ctx.days(conf, ctx.randint(3, 6))
-                ctx.note(p, mol, _molecular_text(ctx, mmr), note_type=44814640, note_class=36716165)
+                ctx.note(p, mol, _molecular_text(ctx, mmr), note_type=32835, note_class=3031451)
                 if adj_sid is not None:
                     ctx.sact_update(adj_sid, date_of_progression=fu, recurrence_anatomic_site=site_r)
                 st = dict(ecog=ecog, cea0=cea0, cea=cea_v, sites=[site_r])

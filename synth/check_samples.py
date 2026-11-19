@@ -17,7 +17,7 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 PROFILES = yaml.safe_load((ROOT / "spec/cohort_profiles.yaml").read_text(encoding="utf-8"))["cohorts"]
 AJCC_STAGES = {"0", "IA", "IA1", "IA2", "IA3", "IB", "IIA", "IIB", "IIIA", "IIIB", "IIIC", "IV", "IVA", "IVB"}
-DLBCL_CONDITION = "4300704"
+DLBCL_CONDITION = "432574"
 DRUGS = yaml.safe_load((ROOT / "spec/concepts.yaml").read_text(encoding="utf-8"))["drugs"]
 COO_DLBCL = {"GCB", "ABC/non-GCB", "unclassifiable"}
 
@@ -103,7 +103,7 @@ def check(cohort, base, good=False):
                 "unreferenced SMILES NOTE")
         if cohort in ("LUNG_CANCER", "BREAST_CANCER"):
             procedures = table(base, cohort, "PROCEDURE_OCCURRENCE")
-            surgery = {"4033181"} if cohort == "LUNG_CANCER" else {"4118029", "4234573"}
+            surgery = {"4070879"} if cohort == "LUNG_CANCER" else {"4275911", "37164749"}
             require(any(r["procedure_concept_id"] in surgery for r in procedures), "Good Sample without resection")
             require(not people[0]["death_date"], "Good Sample without surviving follow-up")
 
@@ -151,7 +151,7 @@ def check(cohort, base, good=False):
         for r in sact:
             if r["regimen_source_value"] == "ABVD":
                 ids = {d["drug_concept_id"] for d in drugs if d["sact_id"] == r["sact_id"]}
-                require({"1338512", "1329033", "19008264", "1311409"}.issubset(ids), "incomplete ABVD")
+                require({"1338512", "1329241", "19008264", "1311409"}.issubset(ids), "incomplete ABVD")
     if cohort == "DIABETES":
         by_index = {(r["person_id"], r["visit_occurrence_id"], r["condition_start_date"]) for r in disease}
         baseline = defaultdict(dict)

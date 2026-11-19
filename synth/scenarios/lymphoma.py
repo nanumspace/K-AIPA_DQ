@@ -6,7 +6,7 @@
   cell_of_origin(필수)은 DLBCL 이면 GCB / ABC/non-GCB / unclassifiable, DLBCL 이 아니면 문자 그대로 NA (SEM-LY-001).
   아형별 선택 항목: MIPI·MIPI-c(외투세포), IPS(호지킨 진행기), PIT(PTCL), double-expressor/double-hit(DLBCL),
   t(14;18)(DLBCL·여포성), t(11;14)(외투세포), MRD·ctDNA(일부).
-  아형은 CONDITION_OCCURRENCE 의 진단 concept(DLBCL 4300704 등)과 병리 노트에 남는다(특화 테이블에는 아형 열이 없다).
+  아형은 CONDITION_OCCURRENCE 의 진단 concept(DLBCL 432574 등)과 병리 노트에 남는다(특화 테이블에는 아형 열이 없다).
 여정: 진단 입원(5일, 생검·PET·골수검사·심초음파) → 아형별 1차 요법(R-CHOP / ABVD / R-CVP / CHOP) →
       중간·종료 PET → (일부) 리툭시맙 유지 → 재발·불응 시 조직 확인 → 구제요법(R-GDP / GDP) →
       자가이식 / CAR-T / 진행(완화의료)·사망 → 추적.
@@ -41,7 +41,7 @@ from framework import *
 DLBCL, HL, MCL, PTCL, FL, MZL = "DLBCL", "HL", "MCL", "PTCL", "FL", "MZL"
 SUBS = [DLBCL, HL, MCL, PTCL, FL, MZL]
 SUB_P = [0.45, 0.15, 0.10, 0.10, 0.10, 0.10]
-CONDITION = {DLBCL: 4300704, HL: 438090, MCL: 4038836, PTCL: 4038838, FL: 4147411,
+CONDITION = {DLBCL: 432574, HL: 4038835, MCL: 40481901, PTCL: 434881, FL: 4147411,
              MZL: 4147411}          # 변연부 림프종 전용 개념이 concepts.yaml 에 없어 같은 저등급 B세포 개념(여포성)으로 대용
 LABEL = {DLBCL: "Diffuse large B-cell lymphoma", HL: "Classical Hodgkin lymphoma", MCL: "Mantle cell lymphoma",
          PTCL: "Peripheral T-cell lymphoma, NOS", FL: "Follicular lymphoma", MZL: "Marginal zone lymphoma"}
@@ -67,7 +67,7 @@ REG = {
     "GDP": dict(drugs=[GEM, DEX, CDDP], dose={GEM: 1000, DEX: 40, CDDP: 75}, cd=21, drug_days={DEX: 4}, extra=(7, [GEM])),
 }
 RT_FRACTIONS = {20: 10, 30: 15, 36: 18}      # Gy -> 분할 수 (2 Gy/회)
-BASE_LABS = [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3020491, 3024128, 3022250, 3006315]
+BASE_LABS = [3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923, 3024561, 3024128, 3022250, 3013201]
 RESP_OF_DS = {1: "CR", 2: "CR", 3: "CR", 4: "PR", 5: "PD"}
 
 PATH_REPORT = ("Lymph node, {site}, excisional biopsy: {hist}. Immunohistochemistry: {ihc}. Ki-67 {ki67}%. "
@@ -109,14 +109,14 @@ def generate(ctx: Ctx, n=100):
         ldh0 = ctx.normal(190, 25, 130, 240)          # 관해기 환자 고유 LDH (정상범위 안). 진단 시점 값은 여기에 shift 를 더한 것
         ctx.lab_baseline(p, 3022250, ldh0)
         labs = ctx.labs(p, index, BASE_LABS, vid=dx_vid,
-                        shifts={3022250: 150 if (adv and (dlbcl or ptcl)) else (40 if adv else 0), 3006315: 1.0 if adv else 0})
+                        shifts={3022250: 150 if (adv and (dlbcl or ptcl)) else (40 if adv else 0), 3013201: 1.0 if adv else 0})
         ht = ctx.normal(171 if gender == MALE else 158, 6, 145, 190); wt = ctx.normal(67 if gender == MALE else 56, 9, 38, 110)
         ctx.measure(p, index, 3036277, ht, vid=dx_vid); ctx.measure(p, index, 3025315, wt, vid=dx_vid)
-        ctx.observation(p, index, 4257895, vid=dx_vid, value_number=ecog, value_string=f"ECOG {ecog}")
-        ctx.procedure(p, index, 4306780, vid=dx_vid)                       # 절제 림프절 생검
+        ctx.observation(p, index, 36303470, vid=dx_vid, value_number=ecog, value_string=f"ECOG {ecog}")
+        ctx.procedure(p, index, 4145401, vid=dx_vid)                       # 절제 림프절 생검
         pet_day, bm_day = ctx.days(index, 1), ctx.days(index, 2)
-        ctx.procedure(p, pet_day, 4305790, vid=dx_vid)
-        ctx.procedure(p, bm_day, 4023083, vid=dx_vid)
+        ctx.procedure(p, pet_day, 42872445, vid=dx_vid)
+        ctx.procedure(p, bm_day, 4119553, vid=dx_vid)
         ki67 = int(ctx.normal(70 if (dlbcl or ptcl) else (25 if mcl else (12 if (fl or mzl) else 40)), 12, 3, 99, 0))
         leuk = labs[3010813]
         ldh_high = labs[3022250] > 250
@@ -124,7 +124,7 @@ def generate(ctx: Ctx, n=100):
         fields = _subtype_fields(ctx, sub, p.age_at_index, ecog, ldh_high, leuk, ki67, adv, extranodal)
         ctx.note(p, bm_day, PATH_REPORT.format(site=primary, hist=label, ki67=ki67,
                                                ihc=_ihc_text(ctx, sub, fields)),
-                 note_type=44814640, note_class=36716165, vid=dx_vid)
+                 note_type=32835, note_class=3031451, vid=dx_vid)
         suv = ctx.normal(18 if (dlbcl or hl or ptcl) else 9, 5, 3, 40)
         if stage == "I":
             n_reg, dist = 1, ""
@@ -156,7 +156,7 @@ def generate(ctx: Ctx, n=100):
         end1, resp_ok, regimen = None, False, None
         if watch_wait:
             ctx.note(p, bm_day, "Low tumor burden indolent lymphoma (GELF criteria not met). Plan: watch and wait with 3-monthly follow-up.",
-                     note_type=32831, note_class=36716177, vid=dx_vid)
+                     note_type=32831, note_class=3000735, vid=dx_vid)
             outcome = "cured"
         else:
             s1 = ctx.days(index, ctx.randint(10, 25))
@@ -206,9 +206,9 @@ def generate(ctx: Ctx, n=100):
                 if rt:
                     rt_day = ctx.days(e1, ctx.randint(21, 35))
                     gy = (30 if bulky else 20) if hl else 36
-                    ctx.procedure(p, rt_day, 4181206, vid=ctx.visit_on(p, rt_day))
+                    ctx.procedure(p, rt_day, 1242725, vid=ctx.visit_on(p, rt_day))
                     ctx.note(p, rt_day, f"Involved-site radiotherapy to {primary}, {gy} Gy in {RT_FRACTIONS[gy]} fractions started.",
-                             note_type=32831, note_class=36716177)
+                             note_type=32831, note_class=3000735)
                     eot_base = ctx.days(rt_day, math.ceil(RT_FRACTIONS[gy] * 7 / 5))
                     last = max(last, rt_day)
                 eot = ctx.days(eot_base, ctx.randint(21, 35))
@@ -230,7 +230,7 @@ def generate(ctx: Ctx, n=100):
                 fu_from = _followups(ctx, p, last, rel, ldh0)
                 site = ctx.choice(NODAL_SITES) + ("; " + ctx.choice(EXTRANODAL) if ctx.bern(0.4) else "")
                 rvid = ctx.visit_on(p, rel)
-                ctx.procedure(p, rel, 4305790, vid=rvid)
+                ctx.procedure(p, rel, 42872445, vid=rvid)
                 ctx.note(p, rel, f"FDG PET/CT: new hypermetabolic lesions ({site}). Relapsed lymphoma.", vid=rvid)
                 ctx.sact_update(first_sid, date_of_progression=rel, recurrence_anatomic_site=site.split(";")[0])
                 last = max(last, fu_from, rel)
@@ -325,7 +325,7 @@ def _followups(ctx, p, start, until, ldh0):
     fu = ctx.days(start, ctx.randint(80, 120)); last = start; k = 0
     while fu < ctx.days(until, -20) and fu <= ctx.today and k < 12:
         fvid = ctx.visit_on(p, fu)
-        ctx.procedure(p, fu, 4207701, vid=fvid)
+        ctx.procedure(p, fu, 4304092, vid=fvid)
         ctx.labs(p, fu, [3000963], vid=fvid)
         ctx.measure(p, fu, 3022250, ctx.lab_next(p, fu, 3022250, hi=249.0), vid=fvid)    # 환자 기준 LDH 주변의 종단 값
         last = fu
@@ -336,7 +336,7 @@ def _followups(ctx, p, start, until, ldh0):
 def _response(ctx, p, day, timepoint, ds):
     """PET 반응평가(처치 + 판독 노트)."""
     vid = ctx.visit_on(p, day)
-    ctx.procedure(p, day, 4305790, vid=vid)
+    ctx.procedure(p, day, 42872445, vid=vid)
     resp = {1: "Complete metabolic response", 2: "Complete metabolic response", 3: "Complete metabolic response",
             4: "Partial metabolic response", 5: "Progressive metabolic disease"}[ds]
     ctx.note(p, day, RESP_REPORT.format(tp=timepoint, ds=ds, resp=resp), vid=vid)
@@ -346,14 +346,14 @@ def _response(ctx, p, day, timepoint, ds):
 def _confirm(ctx, p, sub, day, kind):
     """재발·불응 시 구제요법 전 조직 확인. 여포성·변연부의 재발은 대세포 전환(R-GDP 의 근거)으로 기록한다."""
     vid = ctx.visit_on(p, day)
-    ctx.procedure(p, day, 4306780, vid=vid)
+    ctx.procedure(p, day, 4145401, vid=vid)
     txt = {DLBCL: f"{kind} diffuse large B-cell lymphoma, CD20 positive.",
            HL: f"{kind} classical Hodgkin lymphoma, CD30 positive.",
            PTCL: f"{kind} peripheral T-cell lymphoma, CD3 positive.",
            MCL: f"{kind} mantle cell lymphoma with pleomorphic features, Cyclin D1 positive, Ki-67 70%.",
            FL: f"Histologic transformation to diffuse large B-cell lymphoma, CD20 positive, Ki-67 80%.",
            MZL: f"Histologic transformation to diffuse large B-cell lymphoma, CD20 positive, Ki-67 80%."}[sub]
-    ctx.note(p, day, f"Lymph node, excisional biopsy: {txt}", note_type=44814640, note_class=36716165, vid=vid)
+    ctx.note(p, day, f"Lymph node, excisional biopsy: {txt}", note_type=32835, note_class=3031451, vid=vid)
 
 
 def _salvage(ctx, p, sub, ecog, primary, pd_day, last, refractory):
@@ -382,12 +382,12 @@ def _salvage(ctx, p, sub, ecog, primary, pd_day, last, refractory):
     if sensitive and p.age_at_index <= 68 and ecog <= 2 and ctx.days(resp_day, 120) <= ctx.today:
         # 자가조혈모세포이식 (입원 21일)
         coll = ctx.days(resp_day, ctx.randint(20, 30))
-        ctx.procedure(p, coll, 4283893, vid=ctx.visit_on(p, coll))                    # 조혈모세포 채집
+        ctx.procedure(p, coll, 37151268, vid=ctx.visit_on(p, coll))                    # 조혈모세포 채집
         sct = ctx.days(coll, ctx.randint(10, 20))
         svid = ctx.visit(p, sct, INPATIENT, los=21)
-        ctx.procedure(p, sct, 4030027, vid=svid)
+        ctx.procedure(p, sct, 46271079, vid=svid)
         ctx.note(p, sct, "High-dose chemotherapy (BEAM) followed by autologous peripheral blood stem cell infusion (day 0).",
-                 note_type=32831, note_class=36716177, vid=svid)
+                 note_type=32831, note_class=3000735, vid=svid)
         # 이식 후 호중구 최저점: 발열성 호중구감소증 3등급과 같은 날 ANC < 1.0 (WBC >= ANC), 혈소판·Hb 저하
         nadir = ctx.days(sct, 6)
         anc = round(ctx.rand(0.1, 0.9), 2)
@@ -395,8 +395,8 @@ def _salvage(ctx, p, sub, ecog, primary, pd_day, last, refractory):
         ctx.measure(p, nadir, 3017732, anc, vid=svid)
         ctx.measure(p, nadir, 3024929, round(ctx.rand(8, 45)), vid=svid)
         ctx.measure(p, nadir, 3000963, round(ctx.rand(7.5, 9.5), 1), vid=svid)
-        ctx.ae(p, nadir, 4304213, 3, vid=svid, action=1)
-        ctx.condition(p, ctx.days(sct, 6), 4304213, vid=svid)
+        ctx.ae(p, nadir, 4250734, 3, vid=svid, action=1)
+        ctx.condition(p, ctx.days(sct, 6), 4250734, vid=svid)
         ctx.drug(p, ctx.days(sct, 5), _DRUG_ID["filgrastim"], 7, vid=svid, freq=1)
         last = max(last, ctx.days(sct, 21))
         post = ctx.days(sct, ctx.randint(90, 110))
@@ -407,7 +407,7 @@ def _salvage(ctx, p, sub, ecog, primary, pd_day, last, refractory):
     if dlbcl and not sensitive and ecog <= 1 and p.age_at_index <= 75 and ctx.days(resp_day, 120) <= ctx.today:
         # CAR-T(화학요법 불응 DLBCL, 2차 이상 치료 후): 성분채집 -> 림프구감소(입원 16일) -> 주입 -> CRS
         leuk = ctx.days(resp_day, ctx.randint(7, 14))
-        ctx.procedure(p, leuk, 4283893, vid=ctx.visit_on(p, leuk))
+        ctx.procedure(p, leuk, 37151268, vid=ctx.visit_on(p, leuk))
         ld = ctx.days(leuk, ctx.randint(24, 35))
         cvid = ctx.visit(p, ld, INPATIENT, los=16)
         # 림프구감소: fludarabine 30 + cyclophosphamide 500 mg/m2 을 -5~-3일. fludarabine concept 이 없어 cyclophosphamide 행만 기록.
@@ -416,22 +416,22 @@ def _salvage(ctx, p, sub, ecog, primary, pd_day, last, refractory):
         for d in (1, 2):
             ctx.drug(p, ctx.days(ld, d), CY, 1, vid=cvid, sact_id=sid3, dose=500, interval=1, number=1)
         inf = ctx.days(ld, 5)
-        ctx.procedure(p, inf, 4053096, vid=cvid)
+        ctx.procedure(p, inf, 608175, vid=cvid)
         ctx.note(p, ctx.days(ld, 2), "Lymphodepleting chemotherapy on days -5 to -3: fludarabine 30 mg/m2 and cyclophosphamide 500 mg/m2. "
                                      "RESTRICTED-COVERAGE RECORD: only the cyclophosphamide component is itemized in the structured drug records "
                                      "(no fludarabine drug concept in this extract); this CAR-T episode is not a complete clinical sample.",
-                 note_type=32831, note_class=36716177, vid=cvid)
+                 note_type=32831, note_class=3000735, vid=cvid)
         ctx.note(p, inf, "CD19-directed CAR-T infused on day 0 after fludarabine/cyclophosphamide lymphodepletion.",
-                 note_type=32831, note_class=36716177, vid=cvid)
+                 note_type=32831, note_class=3000735, vid=cvid)
         crs_day = ctx.days(inf, ctx.randint(1, 5))
         g = ctx.choice([1, 2, 3], p=[0.55, 0.35, 0.10])
-        ctx.ae(p, crs_day, 4185711, g, vid=cvid, action=5, causality=1, serious=False if g < 3 else None)
-        ctx.condition(p, crs_day, 4185711, vid=cvid)
+        ctx.ae(p, crs_day, 46271778, g, vid=cvid, action=5, causality=1, serious=False if g < 3 else None)
+        ctx.condition(p, crs_day, 46271778, vid=cvid)
         ctx.labs(p, crs_day, [3020460, 3010813, 3017732], vid=cvid, shifts={3020460: 60 * g, 3017732: -3.0})
         if g >= 2:
             ctx.note(p, crs_day, f"Cytokine release syndrome grade {g} managed with tocilizumab 8 mg/kg and close monitoring "
                                  "(tocilizumab is not itemized in the structured drug records of this extract).",
-                     note_type=32831, note_class=36716177, vid=cvid)
+                     note_type=32831, note_class=3000735, vid=cvid)
         last = max(last, ctx.days(ld, 16))
         d30 = ctx.days(inf, 30)
         ds30 = ctx.choice([1, 2, 3], p=[0.4, 0.35, 0.25]) if ctx.bern(0.55) else 5
@@ -456,7 +456,7 @@ def _disease_death(ctx, p, last):
     dd = ctx.days(last, ctx.randint(30, 150))
     if day <= ctx.today:
         ctx.note(p, day, "Progressive lymphoma after salvage therapy; no further curative option. Referred to palliative care; "
-                         "best supportive care.", note_type=32831, note_class=36716177)
+                         "best supportive care.", note_type=32831, note_class=3000735)
     if dd > ctx.today:
         return last, False
     ctx.visit(p, ctx.days(dd, -3), INPATIENT, los=3)

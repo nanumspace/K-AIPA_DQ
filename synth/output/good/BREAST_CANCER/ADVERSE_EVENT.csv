@@ -1,5 +1,5 @@
 adverse_event_id,person_id,visit_occurrence_id,adverse_event_concept_id,adverse_event_start_date,severity_concept_id,causality_concept_id,is_serious_yn,seriousness_concept_id,outcome_concept_id,action_taken_concept_id
-200004,200003,200063,27674,2019-02-16,1,2,0,,1,1
-200005,200003,200064,4166735,2019-03-12,1,2,0,,1,1
-200006,200003,200065,27674,2019-03-29,1,2,0,,1,1
+200004,200003,200063,31967,2019-02-16,1,2,0,,1,1
+200005,200003,200064,4117779,2019-03-12,1,2,0,,1,1
+200006,200003,200065,31967,2019-03-29,1,2,0,,1,1
 200007,200003,200079,4223659,2020-01-09,1,3,0,,1,1

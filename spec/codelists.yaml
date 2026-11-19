@@ -70,7 +70,7 @@ omop:
     '8718': IU
     '9551': mg/m2
     '8504': mg/kg
-    '8573': mmol
+    '9573': mmol
   OMOP.numerator_unit_concept_id:
     '8576': mg
     '9655': ug
@@ -105,7 +105,7 @@ omop:
     '8876': mmHg
     '8713': g/dL
     '8555': ng/mL
-    '8847': 10^6/uL
+    '8815': 10^6/uL
     '8629': ug/L
     '8749': umol/L
     '9550': mL/min/1.73m2
@@ -118,18 +118,18 @@ omop:
     '32879': Registry
   OMOP.note_type_concept_id:
     '32817': EHR
-    '44814637': Radiology report
-    '44814640': Pathology report
-    '44814641': Discharge summary
-    '44814645': Outpatient note
     '32831': EHR note
+    '32841': EHR radiology report
+    '32835': EHR Pathology report
+    '32824': EHR discharge summary
+    '32834': EHR outpatient note
   OMOP.note_class_concept_id:
-    '36716164': Radiology note
-    '36716165': Pathology note
-    '36716213': Discharge summary
-    '36716177': Progress note
-    '44814641': Discharge summary
-    '3040218': Oncology note
+    '46235057': Radiology Note
+    '3031451': Pathology Note
+    '3020091': Discharge summary
+    '3000735': Progress note
+    '3030624': Outpatient Note
+    '3032377': Oncology Note
     '0': No matching concept (표준 분류가 없는 노트, 예 약물 구조식 SMILES)
   OMOP.severity_concept_id:
     '1': CTCAE Grade 1

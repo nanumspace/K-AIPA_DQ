@@ -44,7 +44,7 @@ MALE, FEMALE = 8507, 8532
 SMILES_NOTE_TYPE, SMILES_NOTE_CLASS = 32817, 0      # 표준 분류가 없는 노트(구조식)
 HT, WT, BMI = 3036277, 3025315, 3038553             # 신장·체중·BMI (MEASUREMENT concept)
 WT_FRESH_DAYS = 7                                      # 투여일 기준 이 일수 안의 체중 기록이 없으면 투여일에 새로 잰다
-NOTE_OPD, NOTE_CLASS_ONC = 44814645, 3040218           # 용량 계산 NOTE: Outpatient note / Oncology note (codelists 값)
+NOTE_OPD, NOTE_CLASS_ONC = 32834, 3032377           # 용량 계산 NOTE: Outpatient note / Oncology note (codelists 값)
 REGIMEN_UNMAPPED = 0                                   # regimen_concept_id: No matching concept
 
 _DRUG_ID = {v["name"]: k for k, v in CONCEPTS["drugs"].items()}
@@ -81,12 +81,12 @@ SMILES = {
     1311409: "CN(C)N=NC1=C(NC=N1)C(=O)N",                                      # dacarbazine
     1597756: "CCC1=C(C)CN(C1=O)C(=O)NCCc1ccc(cc1)S(=O)(=O)NC(=O)NC1CCC(C)CC1",  # glimepiride
     1580747: "Fc1cc(F)c(F)cc1CC(N)CC(=O)N1CCn2c(nnc2C(F)(F)F)C1",              # sitagliptin
-    45774435: "OCC1OC(c2ccc(Cl)c(Cc3ccc(OC4CCOC4)cc3)c2)C(O)C(O)C1O",          # empagliflozin
+    45774751: "OCC1OC(c2ccc(Cl)c(Cc3ccc(OC4CCOC4)cc3)c2)C(O)C(O)C1O",          # empagliflozin
     1545958: "CC(C)c1c(C(=O)Nc2ccccc2)c(-c2ccccc2)c(-c2ccc(F)cc2)n1CCC(O)CC(O)CC(=O)O",  # atorvastatin
     1308216: "NCCCCC(NC(CCc1ccccc1)C(=O)O)C(=O)N1CCCC1C(=O)O",                 # lisinopril
-    1584910: "CCc1ccc(CCOc2ccc(CC3SC(=O)NC3=O)cc2)nc1",                         # pioglitazone
+    1525215: "CCc1ccc(CCOc2ccc(CC3SC(=O)NC3=O)cc2)nc1",                         # pioglitazone
     1518254: "CC1CC2C3CCC4=CC(=O)C=CC4(C3(C(CC2(C1(C(=O)CO)O)C)O)F)C",          # dexamethasone
-    35201159: "Cc1nccn1CC1CCc2c(C1=O)c1ccccc1n2C",                             # ondansetron
+    1000560: "Cc1nccn1CC1CCc2c(C1=O)c1ccccc1n2C",                             # ondansetron
     1388796: "C1C(N(C2=C(N1)N=C(NC2=O)N)C=O)CNC3=CC=C(C=C3)C(=O)NC(CCC(=O)O)C(=O)O",  # leucovorin
     45892075: "CC(=O)C1=C(C)C2=CN=C(Nc3ccc(cn3)N3CCNCC3)N=C2N(C2CCCC2)C1=O",   # palbociclib
 }
@@ -250,7 +250,7 @@ class Ctx:
                                              value_as_string=None if value_string is None else str(value_string)[:60], unit_concept_id=unit))
         return oid
 
-    def note(self, p, date, text, note_type=44814637, note_class=36716164, vid=None):
+    def note(self, p, date, text, note_type=32841, note_class=46235057, vid=None):
         vid = vid or self.visit_on(p, date)
         nid = self.nid("NOTE")
         self.rows["NOTE"].append(dict(note_id=nid, visit_occurrence_id=vid, person_id=p.person_id, note_date=date, note_text=text,
@@ -631,7 +631,7 @@ class Ctx:
             observation_period_start_date=p.obs_start, death_date=p.death_date))
 
     # ------------------------------------------------------------ 이상사례
-    LIFE_THREATENING = {4304213, 4185711, 4329847}      # 발열성 호중구감소증·CRS·심근경색: 4등급이면 생명을 위협
+    LIFE_THREATENING = {4250734, 46271778, 4329847}      # 발열성 호중구감소증·CRS·심근경색: 4등급이면 생명을 위협
 
     @staticmethod
     def _visit_kind(p, vid):
@@ -753,7 +753,7 @@ class Ctx:
         out = {}
 
         def nd(c):
-            return 2 if c in (self.CREA, 3004410, 3024128, 3020491) else 1
+            return 2 if c in (self.CREA, 3004410, 3024128, 3024561) else 1
 
         def lo(c):
             f = floors.get(c)
@@ -798,8 +798,8 @@ class Ctx:
         return {c: out[c] for c in want}
 
     # -------------------------------------------------- 항암 치료 중 모니터링과 이상사례
-    TOX = {301794: "myelo", 4304213: "myelo", 439777: "myelo", 4141062: "myelo", 27674: "emesis", 432791: "emesis",
-           196523: "diarrhea", 4166735: "neuropathy", 140214: "rash", 4055224: "hepatic", 4265412: "mucositis"}
+    TOX = {320073: "myelo", 4250734: "myelo", 439777: "myelo", 432870: "myelo", 31967: "emesis", 441408: "emesis",
+           196523: "diarrhea", 4117779: "neuropathy", 140214: "rash", 4055224: "hepatic", 138455: "mucositis"}
     # CTCAE v5.0 검사 기준(단위: ANC·혈소판 10^3/uL, Hb g/dL, ALT 는 ULN(40 U/L) 배수): 이상사례 날 근거 검사값의 범위
     EV_ANC = {1: (1.5, 1.99), 2: (1.0, 1.49), 3: (0.5, 0.99), 4: (0.1, 0.49)}
     EV_HB = {1: (10.0, 11.9), 2: (8.0, 9.9), 3: (6.5, 7.9), 4: (5.0, 6.4)}
@@ -969,10 +969,10 @@ class Ctx:
         if tox == "myelo":
             if concept == 439777:
                 return (1, 0, *none, False)
-            if concept in (301794, 4304213) and reducible and self.bern(0.4):
+            if concept in (320073, 4250734) and reducible and self.bern(0.4):
                 return (1, 0, *none, True)
             if reducible:
-                return (2, 7 if (grade >= 4 or concept == 4304213) else 0, reducible, set(), False)
+                return (2, 7 if (grade >= 4 or concept == 4250734) else 0, reducible, set(), False)
             return (3, 7, *none, False)
         if grade >= 4:
             return (4, 0, set(), set(later_c), False)
@@ -995,7 +995,7 @@ class Ctx:
                 return vid
         kind, los = OUTPATIENT, 0
         if grade >= 3:
-            if concept == 4304213 or grade >= 4:
+            if concept == 4250734 or grade >= 4:
                 kind, los = INPATIENT, self.randint(4, 8)
             elif tox in ("emesis", "diarrhea", "mucositis"):
                 kind, los = (INPATIENT, self.randint(2, 5)) if self.bern(0.5) else (ER, 0)
@@ -1014,7 +1014,7 @@ class Ctx:
     def _ae_evidence(self, p, day, vid, concept, grade):
         """이상사례 등급과 맞는 근거 검사(CTCAE v5.0 기준 범위): 호중구감소·발열성 호중구감소=ANC(WBC 는 ANC 이상), 빈혈=Hb, 혈소판감소=혈소판,
         간독성=ALT·AST."""
-        if concept in (301794, 4304213):
+        if concept in (320073, 4250734):
             lo, hi = self.EV_ANC[grade]
             anc = round(self.rand(lo, hi), 2)
             wbc = max(round(anc / self.rand(0.40, 0.70), 1), math.ceil(anc * 10) / 10, 0.3)
@@ -1023,7 +1023,7 @@ class Ctx:
         elif concept == 439777:
             lo, hi = self.EV_HB[grade]
             self.measure(p, day, self.HB, round(self.rand(lo, hi), 1), vid=vid)
-        elif concept == 4141062:
+        elif concept == 432870:
             lo, hi = self.EV_PLT[grade]
             self.measure(p, day, self.PLT, round(self.rand(lo, hi)), vid=vid)
         elif concept == 4055224:
@@ -1062,7 +1062,7 @@ class Ctx:
                 outcome=3 if (tox == "neuropathy" and grade >= 2) else None)
         self.condition(p, ae_day, concept, vid=avid)
         self._ae_evidence(p, ae_day, avid, concept, grade)
-        if concept == 4304213 or (concept == 301794 and grade >= 4):
+        if concept == 4250734 or (concept == 320073 and grade >= 4):
             self._gcsf(p, ae_day, avid, self.randint(3, 5))                 # 치료적 G-CSF: 발열성·4등급 호중구감소
         if tox == "emesis" and grade >= 2:
             self.drug(p, ae_day, drug_id("ondansetron"), self._clamp_days(p, ae_day, 3), vid=avid, freq=2)
@@ -1076,7 +1076,7 @@ class Ctx:
                 self._gcsf(p, start, self.visit_on(p, start), 5)
 
     def monitor(self, p, cycle_dates, drugs, ae_p=0.45, labs=(3000963, 3010813, 3017732, 3024929, 3016723, 3013721, 3006923),
-                ae_pool=((27674, 0.2), (301794, 0.2), (439777, 0.15), (4223659, 0.15), (196523, 0.1), (4166735, 0.1), (140214, 0.05), (4304213, 0.05)),
+                ae_pool=((31967, 0.2), (320073, 0.2), (439777, 0.15), (4223659, 0.15), (196523, 0.1), (4117779, 0.1), (140214, 0.05), (4250734, 0.05)),
                 sact_id=None):
         """사이클마다 혈액·신장·간기능(환자 기준값을 따르는 종단 값, 골수억제 약이 있으면 사이클이 쌓일수록 Hb·혈소판·WBC 가 완만히 감소하되
         투여일에는 호중구 >= 1.0, 혈소판 >= 75, Hb >= 8 투여 기준을 만족), 일부 사이클 뒤 이상사례(+ 같은 날 CONDITION).

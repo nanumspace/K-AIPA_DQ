@@ -51,8 +51,8 @@ def select_patient(tables, disease):
     # Resected cancer examples demonstrate diagnosis → operation → treatment → follow-up,
     # rather than selecting a terminal patient solely by row volume.
     preferred_procedures = {
-        "LUNG_CANCER": {"4033181"},
-        "BREAST_CANCER": {"4118029", "4234573"},
+        "LUNG_CANCER": {"4070879"},
+        "BREAST_CANCER": {"4275911", "37164749"},
     }.get(disease)
     if preferred_procedures:
         operated = {row["person_id"] for row in tables["PROCEDURE_OCCURRENCE"][1]
@@ -64,7 +64,7 @@ def select_patient(tables, disease):
     if disease == "MASLD":
         # The exemplar covers metabolic management, not transplant immunosuppression.
         transplanted = {row["person_id"] for row in tables["PROCEDURE_OCCURRENCE"][1]
-                        if row["procedure_concept_id"] == "4321806"}
+                        if row["procedure_concept_id"] == "4076862"}
         eligible = [(pid, n) for pid, n in eligible if pid not in transplanted]
         if not eligible:
             raise ValueError("No non-transplant MASLD clinical example")
@@ -169,7 +169,7 @@ def export_one(cohort, source, target):
         "diag_rgst_ymd 는 진단일이 아니라 진단정보 등록일입니다. "
         "원천 시스템 코드·파일 ID 등은 원본이 없는 가상데이터이므로 임의로 꾸며 넣지 않았습니다. "
         "빈 선택 컬럼은 실제 제출 시 해당 자료가 있으면 원천 값을 채우고, 없으면 비워 두어야 합니다. "
-        "OMOP concept_id의 기관별 Athena 매핑도 확정되지 않았습니다. "
+        "concept_id는 기준 어휘 OHDSI v20260829의 표준 개념입니다. 병원 원천 코드를 어느 개념으로 매핑할지는 병원 ETL이 정합니다. "
         "CSV는 UTF-8, 날짜는 YYYY-MM-DD입니다. 검증 실행일은 2026-09-07로 맞추세요.\n"
     )
     (dest / "README.md").write_text(note, encoding="utf-8")
