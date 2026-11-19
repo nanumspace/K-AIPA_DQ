@@ -9,11 +9,11 @@
   },
   "dirty": {
    "rules": 328,
-   "violations": 1795,
-   "failed_rules": 243
+   "violations": 1474,
+   "failed_rules": 244
   },
-  "faults_total": 263,
-  "faults_detected": 263,
+  "faults_total": 264,
+  "faults_detected": 264,
   "recall": 1.0,
   "fault_types": 32,
   "fault_types_fully_detected": 32,
@@ -195,8 +195,8 @@
    },
    {
     "fault_type": "TYPE_BAD",
-    "n": 90,
-    "detected": 90,
+    "n": 91,
+    "detected": 91,
     "recall": 1.0
    },
    {
@@ -221,8 +221,8 @@
    },
    {
     "category": "Conformance",
-    "n": 151,
-    "detected": 151,
+    "n": 152,
+    "detected": 152,
     "recall": 1.0
    },
    {
@@ -246,11 +246,11 @@
   },
   "dirty": {
    "rules": 337,
-   "violations": 1862,
-   "failed_rules": 252
+   "violations": 1153,
+   "failed_rules": 253
   },
-  "faults_total": 269,
-  "faults_detected": 269,
+  "faults_total": 270,
+  "faults_detected": 270,
   "recall": 1.0,
   "fault_types": 31,
   "fault_types_fully_detected": 31,
@@ -426,8 +426,8 @@
    },
    {
     "fault_type": "TYPE_BAD",
-    "n": 94,
-    "detected": 94,
+    "n": 95,
+    "detected": 95,
     "recall": 1.0
    },
    {
@@ -452,8 +452,8 @@
    },
    {
     "category": "Conformance",
-    "n": 156,
-    "detected": 156,
+    "n": 157,
+    "detected": 157,
     "recall": 1.0
    },
    {
@@ -478,11 +478,11 @@
   },
   "dirty": {
    "rules": 320,
-   "violations": 1570,
-   "failed_rules": 236
+   "violations": 1537,
+   "failed_rules": 237
   },
-  "faults_total": 255,
-  "faults_detected": 255,
+  "faults_total": 256,
+  "faults_detected": 256,
   "recall": 1.0,
   "fault_types": 31,
   "fault_types_fully_detected": 31,
@@ -658,8 +658,8 @@
    },
    {
     "fault_type": "TYPE_BAD",
-    "n": 89,
-    "detected": 89,
+    "n": 90,
+    "detected": 90,
     "recall": 1.0
    },
    {
@@ -684,8 +684,8 @@
    },
    {
     "category": "Conformance",
-    "n": 146,
-    "detected": 146,
+    "n": 147,
+    "detected": 147,
     "recall": 1.0
    },
    {

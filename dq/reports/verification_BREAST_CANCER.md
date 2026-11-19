@@ -1,7 +1,7 @@
 # 검출 성능 검증: BREAST_CANCER
 
 - clean 데이터: 규칙 337개 실행, 위반 0건 (오류 0, 경고 0; 임상 차수 휴리스틱 경고는 보존)
-- dirty 데이터: 주입 오류 269건 중 269건 검출, 재현율 1.0
+- dirty 데이터: 주입 오류 270건 중 270건 검출, 재현율 1.0
 - 오류 유형 31종 중 전부 검출 31종
 - 주입 오류의 부수 효과로 함께 발화한 규칙: ST-0242, ST-0333
 
@@ -35,6 +35,6 @@
 | SACT_END_BEFORE_START | Plausibility | 1 | 1 | 1.0 |
 | SACT_LINE_MISMATCH | Plausibility | 1 | 1 | 1.0 |
 | SACT_START_NE_DRUG_MIN | Plausibility | 1 | 1 | 1.0 |
-| TYPE_BAD | Conformance | 94 | 94 | 1.0 |
+| TYPE_BAD | Conformance | 95 | 95 | 1.0 |
 | VISIT_BEFORE_BIRTH | Plausibility | 1 | 1 | 1.0 |
 | VISIT_END_BEFORE_START | Plausibility | 2 | 2 | 1.0 |

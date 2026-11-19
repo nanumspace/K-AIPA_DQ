@@ -8,11 +8,11 @@
  },
  "dirty": {
   "rules": 328,
-  "violations": 1795,
-  "failed_rules": 243
+  "violations": 1474,
+  "failed_rules": 244
  },
- "faults_total": 263,
- "faults_detected": 263,
+ "faults_total": 264,
+ "faults_detected": 264,
  "recall": 1.0,
  "fault_types": 32,
  "fault_types_fully_detected": 32,
@@ -194,8 +194,8 @@
   },
   {
    "fault_type": "TYPE_BAD",
-   "n": 90,
-   "detected": 90,
+   "n": 91,
+   "detected": 91,
    "recall": 1.0
   },
   {
@@ -220,8 +220,8 @@
   },
   {
    "category": "Conformance",
-   "n": 151,
-   "detected": 151,
+   "n": 152,
+   "detected": 152,
    "recall": 1.0
   },
   {
