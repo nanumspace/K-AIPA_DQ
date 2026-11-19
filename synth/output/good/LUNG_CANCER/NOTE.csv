@@ -3,6 +3,6 @@ note_id,visit_occurrence_id,person_id,note_date,note_text,note_type_concept_id,n
 100024,100011,100002,2021-11-29,FDG PET-CT (skull base to mid-thigh). Hypermetabolic right upper lobe mass. No distant metastasis. The brain is not evaluable on FDG PET (physiologic cortical uptake).,32841,46235057,
 100025,100011,100002,2021-11-30,"Lung, right upper lobe, bronchoscopic biopsy: Adenocarcinoma, lepidic pattern. Differentiation: poorly differentiated. Pathologic TNM is not assigned on a biopsy specimen.",32835,3031451,
 100026,100011,100002,2021-11-30,"Clinical staging summary (AJCC 8th): cT2aN0M0, stage IB. Basis: chest CT, FDG PET-CT. Tissue diagnosis: Adenocarcinoma, lepidic pattern.",32841,46235057,
-100027,100012,100002,2021-12-08,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK IHC negative; KRAS wild type; PD-L1 TPS 25%.,32835,3031451,
+100027,100012,100002,2021-12-08,Molecular pathology (NGS panel): EGFR exon 19 deletion; ALK FISH negative; KRAS wild type; PD-L1 TPS 25%.,32835,3031451,
 100028,100013,100002,2022-01-10,"Lung, right upper lobe, lobectomy: Adenocarcinoma, lepidic pattern. Differentiation: poorly differentiated. Visceral pleural invasion: absent. Lymph nodes: 0/10 positive. Pathologic stage pT2aN0M0.",32835,3031451,
 100029,,,,COc1cc(N(C)CCN(C)C)c(NC(=O)C=C)cc1Nc1nccc(-c2cn(C)c3ccccc23)n1,32817,0,

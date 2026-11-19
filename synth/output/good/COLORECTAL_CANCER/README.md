@@ -4,7 +4,7 @@
 
 - 환자: 1명 (가상 ID 300002)
 - 첫 방문 ~ 마지막 방문: 2022-12-22 ~ 2026-08-31
-- 방문 23건, 검사 89건, 약물 8건, 문서 22건, 요법 1건
+- 방문 23건, 검사 90건, 약물 8건, 문서 22건, 요법 1건
 - 사망일: 기록 없음
 
 ## 이 가상 사례에 기록된 내용
@@ -29,7 +29,7 @@
 | PROCEDURE_OCCURRENCE | 19 |
 | DRUG_EXPOSURE | 8 |
 | CONDITION_OCCURRENCE | 7 |
-| MEASUREMENT | 89 |
+| MEASUREMENT | 90 |
 | OBSERVATION | 1 |
 | NOTE | 22 |
 | COLORECTAL_CANCER | 1 |

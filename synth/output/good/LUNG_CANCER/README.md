@@ -4,7 +4,7 @@
 
 - 환자: 1명 (가상 ID 100002)
 - 첫 방문 ~ 마지막 방문: 2021-11-27 ~ 2026-08-13
-- 방문 48건, 검사 292건, 약물 39건, 문서 7건, 요법 1건
+- 방문 48건, 검사 294건, 약물 39건, 문서 7건, 요법 1건
 - 사망일: 기록 없음
 
 ## 이 가상 사례에 기록된 내용
@@ -30,7 +30,7 @@
 | PROCEDURE_OCCURRENCE | 6 |
 | DRUG_EXPOSURE | 39 |
 | CONDITION_OCCURRENCE | 6 |
-| MEASUREMENT | 292 |
+| MEASUREMENT | 294 |
 | OBSERVATION | 2 |
 | NOTE | 7 |
 | LUNG_CANCER | 1 |

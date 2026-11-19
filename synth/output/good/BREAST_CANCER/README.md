@@ -4,7 +4,7 @@
 
 - 환자: 1명 (가상 ID 200003)
 - 첫 방문 ~ 마지막 방문: 2019-01-15 ~ 2026-05-25
-- 방문 44건, 검사 164건, 약물 46건, 문서 37건, 요법 3건
+- 방문 44건, 검사 168건, 약물 46건, 문서 37건, 요법 3건
 - 사망일: 기록 없음
 
 ## 이 가상 사례에 기록된 내용
@@ -32,7 +32,7 @@
 | PROCEDURE_OCCURRENCE | 11 |
 | DRUG_EXPOSURE | 46 |
 | CONDITION_OCCURRENCE | 5 |
-| MEASUREMENT | 164 |
+| MEASUREMENT | 168 |
 | OBSERVATION | 1 |
 | NOTE | 37 |
 | BREAST_CANCER | 1 |
