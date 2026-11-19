@@ -14,14 +14,14 @@
   "ADVERSE_EVENT": 362,
   "SACT": 181
  },
- "rules_total": 340,
- "rules_failed": 0,
+ "rules_total": 341,
+ "rules_failed": 1,
  "rules_skipped": 43,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 0,
+ "violations_total": 7,
  "violations_error": 0,
- "violations_warning": 0,
+ "violations_warning": 7,
  "by_category": {
   "Completeness": {
    "rules": 72,
@@ -34,9 +34,9 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 45,
-   "failed": 0,
-   "violations": 0
+   "rules": 46,
+   "failed": 1,
+   "violations": 7
   }
  },
  "rules": [
@@ -5006,6 +5006,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-MEAS-006",
+   "name": "같은 검사 결과가 PK만 다르게 중복된 후보",
+   "category": "Plausibility",
+   "subcategory": "atemporal",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 7,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-003",
    "name": "HbA1c·UACR·크레아티닌 단위 부적합",
    "category": "Plausibility",
@@ -5307,6 +5322,87 @@
   {
    "id": "EXP-BC-02",
    "title": "ER·PR 검사 결과",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 36,
+     "met": 36
+    },
+    {
+     "band": "50-64",
+     "eligible": 48,
+     "met": 48
+    },
+    {
+     "band": "65+",
+     "eligible": 16,
+     "met": 16
+    }
+   ]
+  },
+  {
+   "id": "EXP-BC-04",
+   "title": "HER2 표준 결과 coverage",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 36,
+     "met": 36
+    },
+    {
+     "band": "50-64",
+     "eligible": 48,
+     "met": 48
+    },
+    {
+     "band": "65+",
+     "eligible": 16,
+     "met": 16
+    }
+   ]
+  },
+  {
+   "id": "EXP-BC-05",
+   "title": "ER 표준 결과 coverage",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 36,
+     "met": 36
+    },
+    {
+     "band": "50-64",
+     "eligible": 48,
+     "met": 48
+    },
+    {
+     "band": "65+",
+     "eligible": 16,
+     "met": 16
+    }
+   ]
+  },
+  {
+   "id": "EXP-BC-06",
+   "title": "PR 표준 결과 coverage",
    "unit": "환자",
    "status": "ok",
    "note": "",

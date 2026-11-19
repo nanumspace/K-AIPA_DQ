@@ -14,14 +14,14 @@
   "ADVERSE_EVENT": 311,
   "SACT": 142
  },
- "rules_total": 331,
- "rules_failed": 0,
+ "rules_total": 332,
+ "rules_failed": 1,
  "rules_skipped": 43,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 0,
+ "violations_total": 9,
  "violations_error": 0,
- "violations_warning": 0,
+ "violations_warning": 9,
  "by_category": {
   "Completeness": {
    "rules": 70,
@@ -34,9 +34,9 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 46,
-   "failed": 0,
-   "violations": 0
+   "rules": 47,
+   "failed": 1,
+   "violations": 9
   }
  },
  "rules": [
@@ -4856,6 +4856,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-MEAS-006",
+   "name": "같은 검사 결과가 PK만 다르게 중복된 후보",
+   "category": "Plausibility",
+   "subcategory": "atemporal",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 9,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-003",
    "name": "HbA1c·UACR·크레아티닌 단위 부적합",
    "category": "Plausibility",
@@ -5199,6 +5214,60 @@
   {
    "id": "EXP-LC-04",
    "title": "첫 요법 전 ALK 결과",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 23,
+   "met": 23,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 1,
+     "met": 1
+    },
+    {
+     "band": "50-64",
+     "eligible": 9,
+     "met": 9
+    },
+    {
+     "band": "65+",
+     "eligible": 13,
+     "met": 13
+    }
+   ]
+  },
+  {
+   "id": "EXP-LC-05",
+   "title": "EGFR 표준 결과 coverage",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 23,
+   "met": 23,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 1,
+     "met": 1
+    },
+    {
+     "band": "50-64",
+     "eligible": 9,
+     "met": 9
+    },
+    {
+     "band": "65+",
+     "eligible": 13,
+     "met": 13
+    }
+   ]
+  },
+  {
+   "id": "EXP-LC-06",
+   "title": "ALK 표준 결과 coverage",
    "unit": "환자",
    "status": "ok",
    "note": "",

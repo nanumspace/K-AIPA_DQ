@@ -1,1 +1,8 @@
 ﻿rule_id,rule_name,category,severity,table,field,row_key,person_id,detail
+SEM-MEAS-006,같은 검사 결과가 PK만 다르게 중복된 후보,Plausibility,warning,MEASUREMENT,,200683,200008,measurement_id 200659 와 환자·방문 200226·검사일 2021-11-22·개념 3016723·결과·단위가 같음
+SEM-MEAS-006,같은 검사 결과가 PK만 다르게 중복된 후보,Plausibility,warning,MEASUREMENT,,201520,200015,measurement_id 201438 와 환자·방문 200539·검사일 2025-01-08·개념 3016723·결과·단위가 같음
+SEM-MEAS-006,같은 검사 결과가 PK만 다르게 중복된 후보,Plausibility,warning,MEASUREMENT,,201661,200016,measurement_id 201625 와 환자·방문 200572·검사일 2022-01-29·개념 3016723·결과·단위가 같음
+SEM-MEAS-006,같은 검사 결과가 PK만 다르게 중복된 후보,Plausibility,warning,MEASUREMENT,,205625,200050,measurement_id 205610 와 환자·방문 201823·검사일 2025-01-04·개념 3016723·결과·단위가 같음
+SEM-MEAS-006,같은 검사 결과가 PK만 다르게 중복된 후보,Plausibility,warning,MEASUREMENT,,205632,200050,measurement_id 205612 와 환자·방문 201824·검사일 2025-01-25·개념 3016723·결과·단위가 같음
+SEM-MEAS-006,같은 검사 결과가 PK만 다르게 중복된 후보,Plausibility,warning,MEASUREMENT,,208805,200082,measurement_id 208785 와 환자·방문 202856·검사일 2023-09-13·개념 3016723·결과·단위가 같음
+SEM-MEAS-006,같은 검사 결과가 PK만 다르게 중복된 후보,Plausibility,warning,MEASUREMENT,,210465,200098,measurement_id 210429 와 환자·방문 203478·검사일 2021-09-09·개념 3016723·결과·단위가 같음

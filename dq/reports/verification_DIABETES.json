@@ -1,13 +1,13 @@
 {
  "cohort": "DIABETES",
  "clean": {
-  "rules": 299,
+  "rules": 300,
   "violations": 0,
   "failed_rules": 0,
   "false_positive_rate": 0.0
  },
  "dirty": {
-  "rules": 299,
+  "rules": 300,
   "violations": 1106,
   "failed_rules": 189
  },

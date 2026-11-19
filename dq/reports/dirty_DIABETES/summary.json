@@ -12,7 +12,7 @@
   "DIABETES": 99,
   "ADVERSE_EVENT": 39
  },
- "rules_total": 299,
+ "rules_total": 300,
  "rules_failed": 189,
  "rules_skipped": 75,
  "rules_error": 0,
@@ -32,7 +32,7 @@
    "violations": 999
   },
   "Plausibility": {
-   "rules": 41,
+   "rules": 42,
    "failed": 32,
    "violations": 57
   }
@@ -4370,6 +4370,21 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-006",
+   "name": "같은 검사 결과가 PK만 다르게 중복된 후보",
+   "category": "Plausibility",
+   "subcategory": "atemporal",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
    "rows_checked": 0,
    "note": ""
   },

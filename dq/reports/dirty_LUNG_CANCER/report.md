@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: LUNG_CANCER (폐암)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 331개 (실패 245, 건너뜀 44, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 332개 (실패 246, 건너뜀 44, 오류 0)
 
-위반 1475건 (error 1396, warning 79)
+위반 1484건 (error 1396, warning 88)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 215 | 149 | 933 |
 | Completeness | 70 | 52 | 65 |
-| Plausibility | 46 | 44 | 477 |
+| Plausibility | 47 | 45 | 486 |
 
 ## 테이블 행수
 
@@ -266,6 +266,7 @@
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 4 |
 | SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |
+| SEM-MEAS-006 같은 검사 결과가 PK만 다르게 중복된 후보 | Plausibility | warning | MEASUREMENT | 9 |
 | SEM-SACT-001 항암요법 종료일 >= 시작일 | Plausibility | error | SACT | 2 |
 | SEM-SACT-006 항암요법 line 번호와 시작일 순서 확인 | Plausibility | warning | SACT | 1 |
 | SEM-SACT-002 항암요법 기간이 연결 약물 기간과 일치 | Plausibility | warning | DRUG_EXPOSURE,SACT | 8 |
@@ -288,6 +289,8 @@
 | EXP-LC-01 EGFR·ALK 검사 결과 | 환자 | 22 | 22 | 100.0% | - | 1/1 | 7/7 | 13/13 | 1/1 |
 | EXP-LC-03 첫 요법 전 EGFR 결과 | 환자 | 22 | 22 | 100.0% | - | 1/1 | 7/7 | 13/13 | 1/1 |
 | EXP-LC-04 첫 요법 전 ALK 결과 | 환자 | 22 | 22 | 100.0% | - | 1/1 | 7/7 | 13/13 | 1/1 |
+| EXP-LC-05 EGFR 표준 결과 coverage | 환자 | 22 | 21 | 95.5% | - | 1/1 | 6/7 | 13/13 | 1/1 |
+| EXP-LC-06 ALK 표준 결과 coverage | 환자 | 22 | 22 | 100.0% | - | 1/1 | 7/7 | 13/13 | 1/1 |
 | EXP-LC-02 진단 시 흉부 CT | 환자 | 97 | 90 | 92.8% | - | 2/2 | 36/40 | 50/53 | 2/2 |
 
 ## 표준 용어 매핑률

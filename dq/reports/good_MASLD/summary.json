@@ -13,7 +13,7 @@
   "MASLD": 1,
   "ADVERSE_EVENT": 1
  },
- "rules_total": 302,
+ "rules_total": 303,
  "rules_failed": 0,
  "rules_skipped": 49,
  "rules_error": 0,
@@ -33,7 +33,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 42,
+   "rules": 43,
    "failed": 0,
    "violations": 0
   }
@@ -4426,6 +4426,21 @@
    "subcategory": "temporal",
    "severity": "warning",
    "table": "MEASUREMENT,VISIT_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-006",
+   "name": "같은 검사 결과가 PK만 다르게 중복된 후보",
+   "category": "Plausibility",
+   "subcategory": "atemporal",
+   "severity": "warning",
+   "table": "MEASUREMENT",
    "fields": "",
    "check": "sql",
    "origin": "standard",

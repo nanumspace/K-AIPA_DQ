@@ -79,8 +79,10 @@
 |---|---|---|---|---|---|
 | EXP-LC-01 | EGFR·ALK 검사 결과 | 선암(`histologic_diagnosis`=1) 중 진행 병기(`clinical_stage` IV 또는 `stage_iv_diagnosis_date` 있음) | 1회 이상 | [CAP/IASLC/AMP 분자검사 지침 (ASCO 인정)](https://pubmed.ncbi.nlm.nih.gov/29589987) | **구현(MEASUREMENT)**: EGFR·ALK LOINC 검사 |
 | EXP-LC-02 | 진단 시 흉부 CT (`4058335`) | 전 환자 | 기준일 전후 1회 이상 (구간 `제안`) | 병기 결정 검사. **지침 조항 확인 필요** | 가능 |
-| EXP-LC-03 | 첫 요법 전 EGFR 결과 | LC-01 대상 중 `regimen_start_date` 가 있는 `SACT` 요법이 있는 환자 | 첫 요법일(가장 이른 시작일) 이전 `measurement_date` 의 EGFR 검사 1회 이상 | LC-01 과 같음. 시점 정의는 **임상 확인 필요** | 가능 (분류 pre/day/post/none, 미충족 사유에 day·post·none) |
+| EXP-LC-03 | 첫 요법 전 EGFR 결과 | LC-01 대상 중 `regimen_start_date` 가 있는 `SACT` 요법이 있는 환자 | 첫 요법일(가장 이른 시작일) 이전 `measurement_date` 에 결과가 있는 EGFR MEASUREMENT 행 1회 이상 (결과 없는 행은 세지 않음) | LC-01 과 같음. 시점 정의는 **임상 확인 필요** | 가능 (분류 pre/day/post, 미충족 사유 day·post·missing_result·none) |
 | EXP-LC-04 | 첫 요법 전 ALK 결과 | LC-03 과 같음 | 위와 같음 (ALK) | 위와 같음 | 가능 |
+| EXP-LC-05 | EGFR 표준 결과 coverage | LC-01 과 같음 | 기간 제한 없음 | 비교 가능성 (아래 6절) | **구현(MEASUREMENT)**: structured / raw only / absent |
+| EXP-LC-06 | ALK 표준 결과 coverage | LC-01 과 같음 | 기간 제한 없음 | 위와 같음 | **구현(MEASUREMENT)** |
 
 ### 3.3 유방암
 
@@ -88,6 +90,7 @@
 |---|---|---|---|---|---|
 | EXP-BC-01 | HER2 검사 결과 | 침습성 유방암 (침습성 여부 필드가 없어 앱은 전 환자) | 1회 이상 | [ASCO-CAP HER2 검사 지침 2023 (2018 권고 재확인)](https://pubmed.ncbi.nlm.nih.gov/37284804) | **구현(MEASUREMENT)**: HER2 LOINC 검사(혈청 제외) |
 | EXP-BC-02 | ER·PR 검사 결과 | 침습성 유방암 (앱은 전 환자) | 1회 이상 | ASCO-CAP ER/PgR 지침. **원문 확인 필요** | **구현(MEASUREMENT)** |
+| EXP-BC-04·05·06 | HER2·ER·PR 표준 결과 coverage | BC-01·BC-02 와 같음 | 기간 제한 없음 | 비교 가능성 (아래 6절) | **구현(MEASUREMENT)**: structured / raw only / absent |
 | EXP-BC-03 | 병기 | 전 환자 | 1회 | 유방암 특화 표에 병기 필드 없음 | **구현(MEASUREMENT)**: LOINC 병기군·SNOMED Tumor stage |
 
 ### 3.4 대장암
@@ -95,6 +98,7 @@
 | ID | 항목 | 대상 | 시점·횟수 | 근거 | 현재 판정 |
 |---|---|---|---|---|---|
 | EXP-CRC-01 | MMR 또는 MSI 검사 결과 | 전 환자 | 1회 이상 | [CAP MMR/MSI 지침 요약 (2019)](https://documents.cap.org/documents/cap-18-mmr-msi-for-crc-2019.pdf): 대장암 환자 전원에게 MMR 또는 MSI 검사 권고. [ASCO의 CAP 지침 인정 (2023)](https://pubmed.ncbi.nlm.nih.gov/36603179) | **구현(MEASUREMENT)** |
+| EXP-CRC-04 | MMR·MSI 표준 결과 coverage | 전 환자 | 기간 제한 없음 | 비교 가능성 (아래 6절) | **구현(MEASUREMENT)**: structured / raw only / absent |
 | EXP-CRC-02 | 진단 시 CEA (`3003785`) | 전 환자 | 기준일 전후 1회 이상 (구간 `제안`) | **지침 조항 확인 필요** | 가능 |
 | EXP-CRC-03 | RAS 검사 결과 | 전이성 대장암 (앱: 원격전이 부위 기재 또는 고식적 항암 요법이 있는 환자) | 1회 이상 | [ESMO 전이성 대장암 지침](https://www.annalsofoncology.org/article/S0923-7534(26)00108-0/fulltext). **원문 확인 필요** | **구현(MEASUREMENT)**: KRAS·NRAS LOINC 검사 |
 
@@ -133,7 +137,7 @@
 |---|---|---|
 | 가능 | 14 | 키·체중, 항암 전 키·체중, HbA1c, FIB-4 구성 검사, LDH |
 | 부분 | 2 | FIB-4 반복(당뇨 동반만, 위험인자 개수 기준 제외), IPI(나이·LDH·ECOG 만) |
-| 구현(MEASUREMENT) | 6 | EGFR·ALK, HER2, ER·PR, 유방암 병기, MMR/MSI, RAS |
+| 구현(MEASUREMENT) | 12 | EGFR·ALK, HER2, ER·PR, 유방암 병기, MMR/MSI, RAS, 그리고 표준 결과 coverage(EGFR·ALK·HER2·ER·PR·MMR/MSI 각 1) |
 
 초안에서 `불가`였던 6건은 모두 종양 바이오마커와 병기입니다. 문헌(2.2절)에서도 이 변수들이 가장 잘 빠지고 AI 모델 개발에서 중요도가 높습니다. 매뉴얼에 담을 필드가 없어, MEASUREMENT 에 LOINC 검사로 적는 것으로 정했습니다(5절 2). 병원 ETL 은 이 결과를 `measurement_concept_id`(LOINC 검사)와 `value_as_concept_id`(양성·음성, 검출·미검출, MSI-H·Stable, Stage 답변 등) 또는 `value_as_number`(ER·PR %)로 적재합니다. [manual/02-input.md](../manual/02-input.md) 참고.
 
@@ -170,7 +174,7 @@
 | EXP-COM-03 | 요법 시작 전 30일 ~ 시작일에 키와 체중 |
 | EXP-COM-05 | 요법 시작 전 30일 ~ 시작일에 백혈구·호중구·혈색소·혈소판 (30일은 제안) |
 | EXP-LC-02, CRC-02, DM-01, LY-01, LY-03 | 기준일 전후 90일 (제안) |
-| 바이오마커·병기 (LC-01, BC-01~03, CRC-01, CRC-03) | 기간 제한 없이 1회 이상 |
+| 바이오마커·병기 (LC-01, BC-01~03, CRC-01, CRC-03) | 기간 제한 없이 1회 이상 (검사 행 존재만 봄) |
 | EXP-CRC-03 대상 | `inap_dsnt_mtst_site_etc_cont` 기재 또는 `therapy_intent=3`(고식적) 요법. 기준 어휘에 전이 진단의 표준 SNOMED 개념이 거의 없어 진단으로는 보지 않음 |
 | EXP-MASLD-01 | 기준일 전 365일 ~ 후 90일에 AST·ALT·혈소판을 같은 날 (같은 방문의 다른 날은 세지 않음) |
 | EXP-MASLD-02 | 당뇨병 진단(201820 하위)이 있고 관찰 2년 이상. 기준일부터 2년 구간마다 FIB-4 구성 검사 |
@@ -180,10 +184,23 @@
 | EXP-DM-02 | 관찰 182일 이상. 182일 구간마다 HbA1c |
 | EXP-DM-03 | 관찰 1년 이상. 1년 구간마다 혈압(수축기·이완기)·크레아티닌 또는 eGFR·총콜레스테롤 또는 LDL·체중 또는 BMI |
 | EXP-DM-04~08 | DM-03 과 같은 대상(관찰 1년 이상)·1년 구간 분모. DM-04 는 UACR, DM-05~08 은 혈압·신기능·지질·체중 각각. DM-03 은 네 요소 합성 그대로 두며 UACR 은 넣지 않음 |
-| EXP-LC-03·04 | 분모: LC-01 대상 중 시작일 있는 SACT 요법이 있는 환자. 첫 요법일 F = 가장 이른 `regimen_start_date`. EGFR·ALK 각각 `measurement_date` 로만 분류: pre(F 이전 기록 있음, 충족) / day(F 당일에만) / post(F 이후에만) / none(기록 없음). 미충족 사유에 day·post·none. 검체 채취일 등으로 결과 가용 시점을 추정하지 않음. LC-01(기간 제한 없음)은 그대로 둠 |
+| EXP-LC-03·04 | 분모: LC-01 대상 중 시작일 있는 SACT 요법이 있는 환자. 첫 요법일 F = 가장 이른 `regimen_start_date`. EGFR·ALK 각각 결과가 있는(유한 `value_as_number`, 양수 `value_as_concept_id`, 또는 비지 않은 `value_source_value`) MEASUREMENT 행만 `measurement_date` 로 분류: pre(F 이전 결과 있음, 충족) / day(F 당일에만) / post(F 이후에만). 미충족 사유: day·post·missing_result(결과 없는 행만)·none(행 없음). 검체 채취일 등으로 결과 가용 시점을 추정하지 않음. LC-01(기간 제한 없음)은 그대로 둠 |
+| EXP-LC-05·06, BC-04~06, CRC-04 | 분모는 LC-01·BC-01·BC-02·CRC-01 과 같음. 기간 제한 없이 환자별 structured(충족) > raw only > absent 한 분류. 위 '표준 결과 coverage' 참고 |
 | EXP-LY-05~08 | 분모: LY-02 와 같은 DLBCL. 나이(`age_at_index`) / LDH(기준일 ±90일) / ECOG(SACT 기록 또는 ±90일 관찰) / 병기(LY-04 와 같은 조건). 결절외 침범 수는 추정하지 않음. LY-02 는 그대로 둠 |
 | EXP-LY-02 | DLBCL(`cell_of_origin` 이 GCB·ABC/non-GCB·unclassifiable). 나이, 진단 시 LDH, SACT ECOG 또는 진단 전후 90일 ECOG 관찰 |
 
 
 **EXP-MASLD-04·LY-04 근거 확인 (로컬 어휘 v20260829).** 단위: `8645` unit per liter, `8923` international unit per liter, `8848` thousand per microliter, `8961` thousand per cubic millimeter, `9444` billion per liter 가 CONCEPT.csv 에서 표준·유효로 확인됨(코드 `[U]/L`, `[iU]/L`, `10*3/uL`, `10*3/mm3`, `10*9/L`). 림프종 병기: `4299327` Lymphoma stage(SNOMED 385388004, Observable Entity, 표준·유효, CONCEPT_ANCESTOR 상 하위 개념 없음, 상위 `4161178` Tumor stage). `python spec/build_concept_sets.py` 로 `LYMPHOMA_STAGE` 1개를 `spec/concept_sets.yaml` 에 추가함(집합 33개). 기존 항목(MASLD-01~03, LY-01~03 등)은 그대로 유지.
 **가상데이터.** 견본은 폐암 EGFR·ALK, 유방암 ER·PR·HER2·병기군, 대장암 MSI·KRAS·NRAS 를 MEASUREMENT 행으로 담습니다(판독 NOTE 와 같은 값). 견본의 충실도 비율은 생성기의 진료 흐름을 반영할 뿐 실제 병원의 기대치가 아닙니다. 예를 들어 생성기는 키를 진단 때 한 번 재므로 EXP-COM-03(요법 시작 전 30일의 키)이 낮게 나옵니다.
+
+**표준 결과 coverage 와 비교 가능성 (EXP-LC-05·06, BC-04~06, CRC-04).** LC-01·BC-01·BC-02·CRC-01 은 검사 행이 있는지만 봅니다. 병원 간·환자 간 비교와 모델 입력에는 표준화된 결과가 필요하므로, 같은 대상·같은 개념 집합(EGFR·ALK·HER2·ER·PR·MMR/MSI)에 대해 환자마다 다음 셋 중 정확히 하나로 분류합니다(우선순위 순, 상호 배타, 기간 제한 없음, 분모는 각각 LC-01·BC-01·BC-02·CRC-01 과 같음).
+
+| 분류 | 조건 | 충족 | 비교 가능성 |
+|---|---|---|---|
+| structured | 검사 행 중 하나라도 유한한 `value_as_number`(NaN·Inf 제외, 0 허용) 또는 양수 `value_as_concept_id` 가 있음 | 예 | 가능: 표준 개념·수치로 집계·비교 |
+| raw only | structured 행은 없고 `value_source_value` 에 공백 아닌 문자열만 있는 행이 있음 | 아니오 | 불가: 병원별 자유 문자열이라 표준화 전에는 합치지 못함 |
+| absent | 나머지: 결과가 없는 행만 있거나(결과 누락), 검사 행 자체가 없음 | 아니오 | 해당 없음 |
+
+미충족 사유(detail)에는 `raw_only`, `absent` 와 함께 absent 안의 두 경우를 '행은 있으나 결과 없음'과 '행 없음'으로 적어 구분합니다. HER2·ER·PR·MMR/MSI 는 위 항목과 같은 패턴이고 RAS·병기는 이번 범위에 넣지 않았습니다.
+
+**EXP-LC-03·04 의 결과 기준.** 첫 요법 전 충족은 검사 행이 아니라 결과가 있는 행(structured 또는 raw only)이 첫 요법일 이전 `measurement_date` 에 있을 때만 셉니다. 결과 없는 행은 세지 않습니다. 분모(LC-01 대상 중 시작일이 있는 SACT 요법이 있는 환자)와 시점 분류는 그대로이고, 미충족 사유는 `day`·`post`(결과가 당일·이후에만) / `missing_result`(행은 있으나 결과 없음: 요법 전, 또는 당일·이후에만) / `none`(행 없음)으로 구분합니다.

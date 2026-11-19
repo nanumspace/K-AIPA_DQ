@@ -32,7 +32,8 @@ def must_be_clean(path, label):
     # Clinical lines do not increment for maintenance or count prior adjuvant rows.
     # Preserve these real line values and the visible heuristic warnings in reports.
     unexpected = [r for r in s["rules"] if r["violations"] and
-                  not (r["rule_id"] == "SEM-SACT-006" and r["severity"] == "warning")]
+                  not (r["severity"] == "warning" and (r["rule_id"] == "SEM-SACT-006" or
+                       (r["rule_id"] == "SEM-MEAS-006" and label == "clean")))]
     if unexpected or s["rules_error"] or s["violations_error"]:
         raise SystemExit(f"{path}: {label} has unexpected findings ({unexpected}, {s['rules_error']} rule errors)")
 

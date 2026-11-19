@@ -521,7 +521,7 @@ async function smoke(): Promise<void> {
       log(`run ${rec.run_id}: rules=${rec.rules_total} violations=${rec.violations_total}`);
       expect(rec.rules_error === 0, `${cohort} ${kind}: 규칙 실행 오류 ${rec.rules_error}`);
       const summary: Summary = JSON.parse(fs.readFileSync(path.join(runsDir(), rec.run_id, "summary.json"), "utf-8"));
-      const unexpected = summary.rules.filter((r) => r.violations > 0 && !(kind === "clean" && r.rule_id === "SEM-SACT-006" && r.severity === "warning"));
+      const unexpected = summary.rules.filter((r) => r.violations > 0 && !(kind === "clean" && r.severity === "warning" && ["SEM-SACT-006", "SEM-MEAS-006"].includes(r.rule_id)));
       expect(kind === "dirty" ? rec.violations_total > 0 : rec.violations_error === 0 && unexpected.length === 0, `${cohort} ${kind}: 위반 ${rec.violations_total}건`);
       expect(!rec.rule_set_modified && !rec.admin_modified, `${cohort} ${kind}: 표준 실행인데 규칙 변경으로 기록됨`);
       const sub = JSON.parse(fs.readFileSync(path.join(runsDir(), rec.run_id, "submission.json"), "utf-8"));

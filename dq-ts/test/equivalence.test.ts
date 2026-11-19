@@ -44,7 +44,9 @@ describe("검출 성능", () => {
       it(`${c} ${kind}: 오류 0 · 예상된 임상 차수 경고만 허용 · 표준 규칙 실행`, () => {
         const s = readSummary(tsDir(kind, c));
         expect({ violations: s.violations_error, errors: s.rules_error, disabled: s.rules_disabled }).toEqual({ violations: 0, errors: 0, disabled: 0 });
-        expect(s.rules.filter((r) => r.violations > 0 && !(r.rule_id === "SEM-SACT-006" && r.severity === "warning"))).toEqual([]);
+        const duplicates = s.rules.find((r) => r.rule_id === "SEM-MEAS-006");
+        expect(duplicates?.violations).toBe(kind === "clean" ? ({ LUNG_CANCER: 9, BREAST_CANCER: 7 } as Record<string, number>)[c] ?? 0 : 0);
+        expect(s.rules.filter((r) => r.violations > 0 && !(r.severity === "warning" && ["SEM-SACT-006", "SEM-MEAS-006"].includes(r.rule_id)))).toEqual([]);
         expect(s.rules.every((r) => r.origin === "standard")).toBe(true);
       });
     }

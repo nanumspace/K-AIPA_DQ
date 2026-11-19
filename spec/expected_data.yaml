@@ -90,6 +90,12 @@ setup:
   CREATE TEMP MACRO _ndays(pid, sid, d0, d1) AS
   (SELECT COUNT(DISTINCT e.event_date) FROM _EVENTS e WHERE e.person_id = pid AND e.set_id = sid AND e.event_date BETWEEN d0 AND d1)
 - >-
+  CREATE TEMP MACRO _rcls(pid, sid, d0, d1) AS
+  COALESCE((SELECT MAX(CASE WHEN isfinite(TRY_CAST(m.value_as_number AS DOUBLE)) OR TRY_CAST(m.value_as_concept_id AS BIGINT) > 0 THEN 3
+                            WHEN NULLIF(TRIM(CAST(m.value_source_value AS VARCHAR)), '') IS NOT NULL THEN 2 ELSE 1 END)
+            FROM MEASUREMENT m JOIN _CONCEPT_SET s ON s.concept_id = m.measurement_concept_id AND s.set_id = sid
+            WHERE m.person_id = pid AND m.measurement_date BETWEEN d0 AND d1), 0)
+- >-
   CREATE TEMP MACRO _fib4(pid, d0, d1) AS
   EXISTS (SELECT 1 FROM _EVENTS a
           JOIN _EVENTS l ON l.person_id = a.person_id AND l.event_date = a.event_date AND l.set_id = 'ALT'
@@ -218,7 +224,7 @@ items:
   scope: [LUNG_CANCER]
   unit: 환자
   target: EXP-LC-01 대상(선암 IV기) 중 시작일이 있는 SACT 요법이 있는 환자. 첫 요법일 = 가장 이른 regimen_start_date
-  expect: 첫 요법일 이전 날짜의 EGFR 검사 기록 (MEASUREMENT.measurement_date 기준. 검체 채취일로 가용 시점을 추정하지 않음)
+  expect: 첫 요법일 이전 날짜에 결과가 있는 EGFR MEASUREMENT 행 (결과 = 유한 value_as_number, 양수 value_as_concept_id, 또는 비지 않은 value_source_value). measurement_date 기준이며 검체 채취일로 가용 시점을 추정하지 않음
   basis: CAP/IASLC/AMP 분자검사 지침 (ASCO 인정). 표적 요법 선택 전 결과 필요 (시점 정의는 임상 확인 필요)
   requires: [MEASUREMENT, SACT]
   sql: |
@@ -229,14 +235,16 @@ items:
               AND (clinical_stage LIKE 'IV%' OR stage_iv_diagnosis_date IS NOT NULL)) d),
     c AS (
       SELECT t.person_id, t.f,
-             _has(t.person_id, 'EGFR_MUT', DATE '1900-01-01', t.f - 1) AS pre,
-             _has(t.person_id, 'EGFR_MUT', t.f, t.f) AS day,
-             _has(t.person_id, 'EGFR_MUT', t.f + 1, DATE '2999-12-31') AS post
+             _rcls(t.person_id, 'EGFR_MUT', DATE '1900-01-01', t.f - 1) AS pre,
+             _rcls(t.person_id, 'EGFR_MUT', t.f, t.f) AS day,
+             _rcls(t.person_id, 'EGFR_MUT', t.f + 1, DATE '2999-12-31') AS post
       FROM t WHERE t.f IS NOT NULL)
-    SELECT person_id, 'PERSON:' || person_id AS unit_key, pre AS met,
-           CASE WHEN day THEN 'day: EGFR 검사가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 당일에만 있음'
-                WHEN post THEN 'post: EGFR 검사가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 이후에만 있음'
-                ELSE 'none: EGFR 검사 기록 없음' END AS detail,
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, pre >= 2 AS met,
+           CASE WHEN day >= 2 THEN 'day: EGFR 결과가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 당일에만 있음'
+                WHEN post >= 2 THEN 'post: EGFR 결과가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 이후에만 있음'
+                WHEN pre = 1 THEN 'missing_result: 첫 요법일 이전 EGFR 행은 있으나 결과 없음'
+                WHEN day + post > 0 THEN 'missing_result: EGFR 행이 첫 요법일 당일·이후에만 있고 결과 없음'
+                ELSE 'none: EGFR 행 없음' END AS detail,
            CAST(NULL AS DOUBLE) AS per_year
     FROM c ORDER BY person_id
 
@@ -245,7 +253,7 @@ items:
   scope: [LUNG_CANCER]
   unit: 환자
   target: EXP-LC-01 대상(선암 IV기) 중 시작일이 있는 SACT 요법이 있는 환자. 첫 요법일 = 가장 이른 regimen_start_date
-  expect: 첫 요법일 이전 날짜의 ALK 검사 기록 (MEASUREMENT.measurement_date 기준. 검체 채취일로 가용 시점을 추정하지 않음)
+  expect: 첫 요법일 이전 날짜에 결과가 있는 ALK MEASUREMENT 행 (결과 = 유한 value_as_number, 양수 value_as_concept_id, 또는 비지 않은 value_source_value). measurement_date 기준이며 검체 채취일로 가용 시점을 추정하지 않음
   basis: CAP/IASLC/AMP 분자검사 지침 (ASCO 인정). 표적 요법 선택 전 결과 필요 (시점 정의는 임상 확인 필요)
   requires: [MEASUREMENT, SACT]
   sql: |
@@ -256,16 +264,60 @@ items:
               AND (clinical_stage LIKE 'IV%' OR stage_iv_diagnosis_date IS NOT NULL)) d),
     c AS (
       SELECT t.person_id, t.f,
-             _has(t.person_id, 'ALK', DATE '1900-01-01', t.f - 1) AS pre,
-             _has(t.person_id, 'ALK', t.f, t.f) AS day,
-             _has(t.person_id, 'ALK', t.f + 1, DATE '2999-12-31') AS post
+             _rcls(t.person_id, 'ALK', DATE '1900-01-01', t.f - 1) AS pre,
+             _rcls(t.person_id, 'ALK', t.f, t.f) AS day,
+             _rcls(t.person_id, 'ALK', t.f + 1, DATE '2999-12-31') AS post
       FROM t WHERE t.f IS NOT NULL)
-    SELECT person_id, 'PERSON:' || person_id AS unit_key, pre AS met,
-           CASE WHEN day THEN 'day: ALK 검사가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 당일에만 있음'
-                WHEN post THEN 'post: ALK 검사가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 이후에만 있음'
-                ELSE 'none: ALK 검사 기록 없음' END AS detail,
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, pre >= 2 AS met,
+           CASE WHEN day >= 2 THEN 'day: ALK 결과가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 당일에만 있음'
+                WHEN post >= 2 THEN 'post: ALK 결과가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 이후에만 있음'
+                WHEN pre = 1 THEN 'missing_result: 첫 요법일 이전 ALK 행은 있으나 결과 없음'
+                WHEN day + post > 0 THEN 'missing_result: ALK 행이 첫 요법일 당일·이후에만 있고 결과 없음'
+                ELSE 'none: ALK 행 없음' END AS detail,
            CAST(NULL AS DOUBLE) AS per_year
     FROM c ORDER BY person_id
+
+- id: EXP-LC-05
+  title: EGFR 표준 결과 coverage
+  scope: [LUNG_CANCER]
+  unit: 환자
+  target: EXP-LC-01 과 같은 분모 (선암 IV기)
+  expect: EGFR 검사 행에 구조화 결과(유한 value_as_number 또는 양수 value_as_concept_id). 상호 배타 우선순위 structured > raw only(value_source_value 만) > absent(결과 없는 행 또는 행 없음)
+  basis: 표준 결과만 환자 간 비교 가능. raw 문자열은 비교 불가 (docs/data-sufficiency.md)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _rcls(person_id, 'EGFR_MUT', DATE '1900-01-01', DATE '2999-12-31') = 3 AS met,
+           CASE _rcls(person_id, 'EGFR_MUT', DATE '1900-01-01', DATE '2999-12-31')
+                WHEN 2 THEN 'raw_only: EGFR 결과가 value_source_value 에만 있음'
+                WHEN 1 THEN 'absent: EGFR 행은 있으나 결과 없음'
+                ELSE 'absent: EGFR 행 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM (SELECT DISTINCT person_id FROM {DISEASE}
+          WHERE person_id IS NOT NULL AND histologic_diagnosis = 1
+            AND (clinical_stage LIKE 'IV%' OR stage_iv_diagnosis_date IS NOT NULL)) t
+    ORDER BY person_id
+
+- id: EXP-LC-06
+  title: ALK 표준 결과 coverage
+  scope: [LUNG_CANCER]
+  unit: 환자
+  target: EXP-LC-01 과 같은 분모 (선암 IV기)
+  expect: ALK 검사 행에 구조화 결과(유한 value_as_number 또는 양수 value_as_concept_id). 상호 배타 우선순위 structured > raw only(value_source_value 만) > absent(결과 없는 행 또는 행 없음)
+  basis: 표준 결과만 환자 간 비교 가능. raw 문자열은 비교 불가 (docs/data-sufficiency.md)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _rcls(person_id, 'ALK', DATE '1900-01-01', DATE '2999-12-31') = 3 AS met,
+           CASE _rcls(person_id, 'ALK', DATE '1900-01-01', DATE '2999-12-31')
+                WHEN 2 THEN 'raw_only: ALK 결과가 value_source_value 에만 있음'
+                WHEN 1 THEN 'absent: ALK 행은 있으나 결과 없음'
+                ELSE 'absent: ALK 행 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM (SELECT DISTINCT person_id FROM {DISEASE}
+          WHERE person_id IS NOT NULL AND histologic_diagnosis = 1
+            AND (clinical_stage LIKE 'IV%' OR stage_iv_diagnosis_date IS NOT NULL)) t
+    ORDER BY person_id
 
 - id: EXP-LC-02
   title: 진단 시 흉부 CT
@@ -313,6 +365,60 @@ items:
            CAST(NULL AS DOUBLE) AS per_year
     FROM _BASE ORDER BY person_id
 
+- id: EXP-BC-04
+  title: HER2 표준 결과 coverage
+  scope: [BREAST_CANCER]
+  unit: 환자
+  target: 전 환자 (EXP-BC-01 과 같은 분모)
+  expect: HER2 검사 행에 구조화 결과(유한 value_as_number 또는 양수 value_as_concept_id). 상호 배타 우선순위 structured > raw only > absent
+  basis: 표준 결과만 환자 간 비교 가능 (docs/data-sufficiency.md)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _rcls(person_id, 'HER2', DATE '1900-01-01', DATE '2999-12-31') = 3 AS met,
+           CASE _rcls(person_id, 'HER2', DATE '1900-01-01', DATE '2999-12-31')
+                WHEN 2 THEN 'raw_only: HER2 결과가 value_source_value 에만 있음'
+                WHEN 1 THEN 'absent: HER2 행은 있으나 결과 없음'
+                ELSE 'absent: HER2 행 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-BC-05
+  title: ER 표준 결과 coverage
+  scope: [BREAST_CANCER]
+  unit: 환자
+  target: 전 환자 (EXP-BC-02 와 같은 분모)
+  expect: ER 검사 행에 구조화 결과(유한 value_as_number 또는 양수 value_as_concept_id). 상호 배타 우선순위 structured > raw only > absent
+  basis: 표준 결과만 환자 간 비교 가능 (docs/data-sufficiency.md)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _rcls(person_id, 'ER', DATE '1900-01-01', DATE '2999-12-31') = 3 AS met,
+           CASE _rcls(person_id, 'ER', DATE '1900-01-01', DATE '2999-12-31')
+                WHEN 2 THEN 'raw_only: ER 결과가 value_source_value 에만 있음'
+                WHEN 1 THEN 'absent: ER 행은 있으나 결과 없음'
+                ELSE 'absent: ER 행 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-BC-06
+  title: PR 표준 결과 coverage
+  scope: [BREAST_CANCER]
+  unit: 환자
+  target: 전 환자 (EXP-BC-02 와 같은 분모)
+  expect: PR 검사 행에 구조화 결과(유한 value_as_number 또는 양수 value_as_concept_id). 상호 배타 우선순위 structured > raw only > absent
+  basis: 표준 결과만 환자 간 비교 가능 (docs/data-sufficiency.md)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _rcls(person_id, 'PR', DATE '1900-01-01', DATE '2999-12-31') = 3 AS met,
+           CASE _rcls(person_id, 'PR', DATE '1900-01-01', DATE '2999-12-31')
+                WHEN 2 THEN 'raw_only: PR 결과가 value_source_value 에만 있음'
+                WHEN 1 THEN 'absent: PR 행은 있으나 결과 없음'
+                ELSE 'absent: PR 행 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
 - id: EXP-BC-03
   title: 병기
   scope: [BREAST_CANCER]
@@ -340,6 +446,24 @@ items:
     SELECT person_id, 'PERSON:' || person_id AS unit_key,
            _has(person_id, 'MMR_MSI', DATE '1900-01-01', DATE '2999-12-31') AS met,
            'MMR·MSI 검사 기록 없음' AS detail, CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-CRC-04
+  title: MMR·MSI 표준 결과 coverage
+  scope: [COLORECTAL_CANCER]
+  unit: 환자
+  target: 전 환자 (EXP-CRC-01 과 같은 분모)
+  expect: MMR·MSI 검사 행에 구조화 결과(유한 value_as_number 또는 양수 value_as_concept_id). 상호 배타 우선순위 structured > raw only(value_source_value 만) > absent(결과 없는 행 또는 행 없음)
+  basis: 표준 결과만 환자 간 비교 가능. raw 문자열은 비교 불가 (docs/data-sufficiency.md)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _rcls(person_id, 'MMR_MSI', DATE '1900-01-01', DATE '2999-12-31') = 3 AS met,
+           CASE _rcls(person_id, 'MMR_MSI', DATE '1900-01-01', DATE '2999-12-31')
+                WHEN 2 THEN 'raw_only: MMR·MSI 결과가 value_source_value 에만 있음'
+                WHEN 1 THEN 'absent: MMR·MSI 행은 있으나 결과 없음'
+                ELSE 'absent: MMR·MSI 행 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
     FROM _BASE ORDER BY person_id
 
 - id: EXP-CRC-02

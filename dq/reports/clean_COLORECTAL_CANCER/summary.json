@@ -14,7 +14,7 @@
   "ADVERSE_EVENT": 392,
   "SACT": 116
  },
- "rules_total": 323,
+ "rules_total": 324,
  "rules_failed": 1,
  "rules_skipped": 43,
  "rules_error": 0,
@@ -34,7 +34,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 45,
+   "rules": 46,
    "failed": 1,
    "violations": 14
   }
@@ -4751,6 +4751,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-MEAS-006",
+   "name": "같은 검사 결과가 PK만 다르게 중복된 후보",
+   "category": "Plausibility",
+   "subcategory": "atemporal",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-003",
    "name": "HbA1c·UACR·크레아티닌 단위 부적합",
    "category": "Plausibility",
@@ -5025,6 +5040,33 @@
   {
    "id": "EXP-CRC-01",
    "title": "MMR 또는 MSI 검사 결과",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 7,
+     "met": 7
+    },
+    {
+     "band": "50-64",
+     "eligible": 42,
+     "met": 42
+    },
+    {
+     "band": "65+",
+     "eligible": 51,
+     "met": 51
+    }
+   ]
+  },
+  {
+   "id": "EXP-CRC-04",
+   "title": "MMR·MSI 표준 결과 coverage",
    "unit": "환자",
    "status": "ok",
    "note": "",

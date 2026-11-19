@@ -1,7 +1,7 @@
 {
   "name": "kai-quality-validator",
   "productName": "K-AIPA DQ",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": true,
   "description": "K-AIPA 임상 데이터 품질검증 (K-AIPA Clinical Data Quality Validator)",
   "license": "Apache-2.0",

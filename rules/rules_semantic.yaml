@@ -234,6 +234,31 @@ rules:
       AND v.visit_end_date >= v.visit_start_date
       AND (m.measurement_date < v.visit_start_date OR m.measurement_date > v.visit_end_date)
 
+- id: SEM-MEAS-006
+  name: 같은 검사 결과가 PK만 다르게 중복된 후보
+  category: Plausibility
+  subcategory: atemporal
+  severity: warning
+  scope: all
+  requires: [MEASUREMENT]
+  desc: 서로 다른 measurement_id 인데 환자·방문·검사일·검사 개념·결과(value_as_number, value_as_concept_id, value_source_value)·단위가 모두 같은 행을 중복 후보로 알린다. 방문·검사일·개념 중 하나라도 비었거나 결과 세 값이 모두 비어 있으면 대상이 아니다. 같은 날 같은 값의 재검사일 수도 있으므로 경고로만 알리고 어떤 행도 지우지 않는다. 같은 묶음의 두 번째 행부터 한 행씩 보고하며 detail 에 가장 작은 measurement_id 를 적는다.
+  sql: |
+    SELECT person_id, CAST(measurement_id AS VARCHAR) AS row_key,
+           'measurement_id ' || first_id || ' 와 환자·방문 ' || visit_occurrence_id || '·검사일 ' || measurement_date
+           || '·개념 ' || measurement_concept_id || '·결과·단위가 같음' AS detail
+    FROM (
+      SELECT person_id, measurement_id, visit_occurrence_id, measurement_date, measurement_concept_id,
+             MIN(measurement_id) OVER w AS first_id
+      FROM MEASUREMENT
+      WHERE person_id IS NOT NULL AND visit_occurrence_id IS NOT NULL
+        AND measurement_date IS NOT NULL AND measurement_concept_id IS NOT NULL
+        AND (value_as_number IS NOT NULL OR value_as_concept_id IS NOT NULL OR value_source_value IS NOT NULL)
+      WINDOW w AS (PARTITION BY person_id, visit_occurrence_id, measurement_date, measurement_concept_id,
+                   value_as_number, value_as_concept_id, value_source_value, unit_concept_id)
+    ) WHERE measurement_id <> first_id
+    GROUP BY person_id, measurement_id, first_id, visit_occurrence_id, measurement_date, measurement_concept_id
+    ORDER BY measurement_id, person_id, detail
+
 # 아래 두 규칙의 (개념, 단위) 허용 쌍은 로컬 Athena v20260829(raw/vocab/v20260829/CONCEPT.csv)에서
 # 개념 이름·LOINC 코드와 UCUM 단위 개념(8554 %, 9579 mmol/mol, 8840 mg/dL, 8749 umol/L,
 # 8723 mg/g, 9017 mg/g{creat}, 8838 ug/mg, 44777612 mg/mmol)을 확인한 것만 둔다.

@@ -266,6 +266,6 @@ F264,L01_WITHOUT_SACT,Completeness,DRUG_EXPOSURE,203268,200098,sact_id,200179,,S
 F265,L01_WITHOUT_SACT,Completeness,DRUG_EXPOSURE,201681,200050,sact_id,200096,,SEM-SACT-005,
 F266,PERSON_WITHOUT_DISEASE_ROW,Completeness,BREAST_CANCER,200084,200084,person_id,200084,(행 삭제),SEM-COM-009,
 F267,COLUMN_MISSING,Conformance,NOTE,,,file_id,,(컬럼 삭제),ST-0174,
-F268,COLUMN_MISSING,Conformance,MEASUREMENT,,,value_source_value,,(컬럼 삭제),ST-0126,
+F268,COLUMN_MISSING,Conformance,MEASUREMENT,,,unit_source_value,,(컬럼 삭제),ST-0126,
 F269,EXTRA_COLUMN,Conformance,OBSERVATION,,,extra_memo,,(명세에 없는 컬럼 추가),ST-0152,
 F270,EXTRA_COLUMN,Conformance,SACT,,,extra_memo,,(명세에 없는 컬럼 추가),ST-0317,

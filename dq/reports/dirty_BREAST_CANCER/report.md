@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: BREAST_CANCER (유방암)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 340개 (실패 255, 건너뜀 44, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 341개 (실패 256, 건너뜀 44, 오류 0)
 
-위반 1155건 (error 1080, warning 75)
+위반 1162건 (error 1080, warning 82)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 223 | 157 | 839 |
 | Completeness | 72 | 54 | 65 |
-| Plausibility | 45 | 44 | 251 |
+| Plausibility | 46 | 45 | 258 |
 
 ## 테이블 행수
 
@@ -276,6 +276,7 @@
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |
+| SEM-MEAS-006 같은 검사 결과가 PK만 다르게 중복된 후보 | Plausibility | warning | MEASUREMENT | 7 |
 | SEM-MEAS-003 HbA1c·UACR·크레아티닌 단위 부적합 | Plausibility | warning | MEASUREMENT | 1 |
 | SEM-SACT-001 항암요법 종료일 >= 시작일 | Plausibility | error | SACT | 2 |
 | SEM-SACT-006 항암요법 line 번호와 시작일 순서 확인 | Plausibility | warning | SACT | 1 |
@@ -297,6 +298,9 @@
 | EXP-COM-05 항암 요법 시작 전 혈구검사 | 요법 | 179 | 102 | 57.0% | - | 35/61 | 46/84 | 14/23 | 7/11 |
 | EXP-BC-01 HER2 검사 결과 | 환자 | 97 | 97 | 100.0% | - | 34/34 | 47/47 | 14/14 | 2/2 |
 | EXP-BC-02 ER·PR 검사 결과 | 환자 | 97 | 97 | 100.0% | - | 34/34 | 47/47 | 14/14 | 2/2 |
+| EXP-BC-04 HER2 표준 결과 coverage | 환자 | 97 | 97 | 100.0% | - | 34/34 | 47/47 | 14/14 | 2/2 |
+| EXP-BC-05 ER 표준 결과 coverage | 환자 | 97 | 97 | 100.0% | - | 34/34 | 47/47 | 14/14 | 2/2 |
+| EXP-BC-06 PR 표준 결과 coverage | 환자 | 97 | 97 | 100.0% | - | 34/34 | 47/47 | 14/14 | 2/2 |
 | EXP-BC-03 병기 | 환자 | 97 | 97 | 100.0% | - | 34/34 | 47/47 | 14/14 | 2/2 |
 
 ## 표준 용어 매핑률

@@ -453,7 +453,7 @@ ST-0122,CONDITION_OCCURRENCE.condition_type_concept_id 필수,Completeness,error
 ST-0123,CONDITION_OCCURRENCE.condition_type_concept_id 타입(integer),Conformance,error,CONDITION_OCCURRENCE,condition_type_concept_id,300423,300077,condition_type_concept_id='NOT_A_NUMBER' 은 integer 아님
 ST-0124,CONDITION_OCCURRENCE.condition_type_concept_id 코드표,Conformance,warning,CONDITION_OCCURRENCE,condition_type_concept_id,300423,300077,condition_type_concept_id=NOT_A_NUMBER 코드표(OMOP.condition_type_concept_id) 밖
 ST-0124,CONDITION_OCCURRENCE.condition_type_concept_id 코드표,Conformance,warning,CONDITION_OCCURRENCE,condition_type_concept_id,300536,300094,condition_type_concept_id=9999999 코드표(OMOP.condition_type_concept_id) 밖
-ST-0126,MEASUREMENT 컬럼 구성,Conformance,error,MEASUREMENT,value_source_value,,,컬럼 누락: value_source_value
+ST-0126,MEASUREMENT 컬럼 구성,Conformance,error,MEASUREMENT,unit_source_value,,,컬럼 누락: unit_source_value
 ST-0128,MEASUREMENT.measurement_id PK 유일성,Conformance,error,MEASUREMENT,measurement_id,,300003,PK NULL
 ST-0128,MEASUREMENT.measurement_id PK 유일성,Conformance,error,MEASUREMENT,measurement_id,305364,300037,PK 중복: 305364
 ST-0128,MEASUREMENT.measurement_id PK 유일성,Conformance,error,MEASUREMENT,measurement_id,305364,300054,PK 중복: 305364
