@@ -14,7 +14,7 @@
   "ADVERSE_EVENT": 4,
   "SACT": 3
  },
- "rules_total": 339,
+ "rules_total": 340,
  "rules_failed": 0,
  "rules_skipped": 43,
  "rules_error": 0,
@@ -34,7 +34,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 44,
+   "rules": 45,
    "failed": 0,
    "violations": 0
   }
@@ -4982,6 +4982,21 @@
    "subcategory": "value",
    "severity": "warning",
    "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-005",
+   "name": "검사일이 연결된 방문 기간 밖",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
+   "table": "MEASUREMENT,VISIT_OCCURRENCE",
    "fields": "",
    "check": "sql",
    "origin": "standard",

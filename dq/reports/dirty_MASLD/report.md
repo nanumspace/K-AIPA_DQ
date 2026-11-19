@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: MASLD (대사이상지방간)
 
-검증일 2026-09-07 / 테이블 10개 / 규칙 301개 (실패 200, 건너뜀 51, 오류 0)
+검증일 2026-09-07 / 테이블 10개 / 규칙 302개 (실패 201, 건너뜀 51, 오류 0)
 
-위반 1404건 (error 1348, warning 56)
+위반 1405건 (error 1348, warning 57)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 200 | 125 | 737 |
 | Completeness | 60 | 43 | 54 |
-| Plausibility | 41 | 32 | 613 |
+| Plausibility | 42 | 33 | 614 |
 
 ## 테이블 행수
 
@@ -226,6 +226,7 @@
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
+| SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |
 | SEM-MEAS-004 HbA1c·UACR·크레아티닌 단위 없음 | Completeness | warning | MEASUREMENT | 1 |
 
 ## 데이터 충실도

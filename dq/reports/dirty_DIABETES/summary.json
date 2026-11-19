@@ -12,14 +12,14 @@
   "DIABETES": 99,
   "ADVERSE_EVENT": 39
  },
- "rules_total": 298,
- "rules_failed": 188,
+ "rules_total": 299,
+ "rules_failed": 189,
  "rules_skipped": 75,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 1105,
+ "violations_total": 1106,
  "violations_error": 1049,
- "violations_warning": 56,
+ "violations_warning": 57,
  "by_category": {
   "Completeness": {
    "rules": 61,
@@ -32,9 +32,9 @@
    "violations": 999
   },
   "Plausibility": {
-   "rules": 40,
-   "failed": 31,
-   "violations": 56
+   "rules": 41,
+   "failed": 32,
+   "violations": 57
   }
  },
  "rules": [
@@ -4355,6 +4355,21 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-005",
+   "name": "검사일이 연결된 방문 기간 밖",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
+   "table": "MEASUREMENT,VISIT_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 1,
    "rows_checked": 0,
    "note": ""
   },

@@ -79,6 +79,8 @@
 |---|---|---|---|---|---|
 | EXP-LC-01 | EGFR·ALK 검사 결과 | 선암(`histologic_diagnosis`=1) 중 진행 병기(`clinical_stage` IV 또는 `stage_iv_diagnosis_date` 있음) | 1회 이상 | [CAP/IASLC/AMP 분자검사 지침 (ASCO 인정)](https://pubmed.ncbi.nlm.nih.gov/29589987) | **구현(MEASUREMENT)**: EGFR·ALK LOINC 검사 |
 | EXP-LC-02 | 진단 시 흉부 CT (`4058335`) | 전 환자 | 기준일 전후 1회 이상 (구간 `제안`) | 병기 결정 검사. **지침 조항 확인 필요** | 가능 |
+| EXP-LC-03 | 첫 요법 전 EGFR 결과 | LC-01 대상 중 `regimen_start_date` 가 있는 `SACT` 요법이 있는 환자 | 첫 요법일(가장 이른 시작일) 이전 `measurement_date` 의 EGFR 검사 1회 이상 | LC-01 과 같음. 시점 정의는 **임상 확인 필요** | 가능 (분류 pre/day/post/none, 미충족 사유에 day·post·none) |
+| EXP-LC-04 | 첫 요법 전 ALK 결과 | LC-03 과 같음 | 위와 같음 (ALK) | 위와 같음 | 가능 |
 
 ### 3.3 유방암
 
@@ -121,6 +123,7 @@
 |---|---|---|---|---|---|
 | EXP-LY-01 | 진단 시 LDH (`3022250`) | 전 환자 | 기준일 전후 1회 이상 (구간 `제안`) | [IPI (NEJM 1993)](https://pubmed.ncbi.nlm.nih.gov/8141877): 나이·병기·LDH·수행 상태·결절외 침범 수로 예후 분류 | 가능 |
 | EXP-LY-02 | IPI 구성요소 전부 | 공격성 림프종(DLBCL 등) | 진단 시 | 위와 같음 | 부분: 나이(PERSON)·LDH·ECOG(`SACT`)만 있음. **병기·결절외 침범 수 필드 없음** |
+| EXP-LY-05~08 | IPI 구성요소별: 나이 / LDH / ECOG / 병기 | EXP-LY-02 와 같은 DLBCL | LY-02 와 같음 (병기는 LY-04 와 같은 개념·값 조건) | 위와 같음 | 가능. LY-02 부분 합성은 그대로 둠. 결절외 침범 수는 필드가 없어 추정하지 않음 |
 | EXP-LY-04 | 진단 시 림프종 병기 기록 (SNOMED `4299327` Lymphoma stage) | 전 환자. 기준일(`diagnosis_date`)이 없으면 미충족 | 기준일 전후 90일에 병기 측정 1회 이상, 결과가 `value_as_concept_id`(>0)·`value_source_value`(비어 있지 않음)·`value_as_number` 중 하나로 있어야 함 | Ann Arbor/Lugano 병기는 예후·치료 계획의 기본 변수 (**지침 조항 확인 필요**) | **구현(MEASUREMENT)** |
 | EXP-LY-03 | 진단 시 PET-CT (`42872445`) 또는 골수 생검 (`4119553`) | 전 환자 | 기준일 전후 1회 이상 | 병기 결정 검사. **지침 조항 확인 필요** | 가능 |
 
@@ -177,6 +180,8 @@
 | EXP-DM-02 | 관찰 182일 이상. 182일 구간마다 HbA1c |
 | EXP-DM-03 | 관찰 1년 이상. 1년 구간마다 혈압(수축기·이완기)·크레아티닌 또는 eGFR·총콜레스테롤 또는 LDL·체중 또는 BMI |
 | EXP-DM-04~08 | DM-03 과 같은 대상(관찰 1년 이상)·1년 구간 분모. DM-04 는 UACR, DM-05~08 은 혈압·신기능·지질·체중 각각. DM-03 은 네 요소 합성 그대로 두며 UACR 은 넣지 않음 |
+| EXP-LC-03·04 | 분모: LC-01 대상 중 시작일 있는 SACT 요법이 있는 환자. 첫 요법일 F = 가장 이른 `regimen_start_date`. EGFR·ALK 각각 `measurement_date` 로만 분류: pre(F 이전 기록 있음, 충족) / day(F 당일에만) / post(F 이후에만) / none(기록 없음). 미충족 사유에 day·post·none. 검체 채취일 등으로 결과 가용 시점을 추정하지 않음. LC-01(기간 제한 없음)은 그대로 둠 |
+| EXP-LY-05~08 | 분모: LY-02 와 같은 DLBCL. 나이(`age_at_index`) / LDH(기준일 ±90일) / ECOG(SACT 기록 또는 ±90일 관찰) / 병기(LY-04 와 같은 조건). 결절외 침범 수는 추정하지 않음. LY-02 는 그대로 둠 |
 | EXP-LY-02 | DLBCL(`cell_of_origin` 이 GCB·ABC/non-GCB·unclassifiable). 나이, 진단 시 LDH, SACT ECOG 또는 진단 전후 90일 ECOG 관찰 |
 
 

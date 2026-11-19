@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: BREAST_CANCER (유방암)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 339개 (실패 254, 건너뜀 44, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 340개 (실패 255, 건너뜀 44, 오류 0)
 
-위반 1154건 (error 1080, warning 74)
+위반 1155건 (error 1080, warning 75)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 223 | 157 | 839 |
 | Completeness | 72 | 54 | 65 |
-| Plausibility | 44 | 43 | 250 |
+| Plausibility | 45 | 44 | 251 |
 
 ## 테이블 행수
 
@@ -275,6 +275,7 @@
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
+| SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |
 | SEM-MEAS-003 HbA1c·UACR·크레아티닌 단위 부적합 | Plausibility | warning | MEASUREMENT | 1 |
 | SEM-SACT-001 항암요법 종료일 >= 시작일 | Plausibility | error | SACT | 2 |
 | SEM-SACT-006 항암요법 line 번호와 시작일 순서 확인 | Plausibility | warning | SACT | 1 |

@@ -1,15 +1,15 @@
 {
  "cohort": "LYMPHOMA",
  "clean": {
-  "rules": 331,
+  "rules": 332,
   "violations": 7,
   "failed_rules": 1,
   "false_positive_rate": null
  },
  "dirty": {
-  "rules": 331,
-  "violations": 1175,
-  "failed_rules": 245
+  "rules": 332,
+  "violations": 1176,
+  "failed_rules": 246
  },
  "faults_total": 265,
  "faults_detected": 265,
@@ -237,5 +237,7 @@
    "recall": 1.0
   }
  ],
- "collateral_rules": []
+ "collateral_rules": [
+  "SEM-MEAS-005"
+ ]
 }

@@ -14,14 +14,14 @@
   "ADVERSE_EVENT": 362,
   "SACT": 181
  },
- "rules_total": 339,
- "rules_failed": 254,
+ "rules_total": 340,
+ "rules_failed": 255,
  "rules_skipped": 44,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 1154,
+ "violations_total": 1155,
  "violations_error": 1080,
- "violations_warning": 74,
+ "violations_warning": 75,
  "by_category": {
   "Completeness": {
    "rules": 72,
@@ -34,9 +34,9 @@
    "violations": 839
   },
   "Plausibility": {
-   "rules": 44,
-   "failed": 43,
-   "violations": 250
+   "rules": 45,
+   "failed": 44,
+   "violations": 251
   }
  },
  "rules": [
@@ -4987,6 +4987,21 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-005",
+   "name": "검사일이 연결된 방문 기간 밖",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
+   "table": "MEASUREMENT,VISIT_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 1,
    "rows_checked": 0,
    "note": ""
   },

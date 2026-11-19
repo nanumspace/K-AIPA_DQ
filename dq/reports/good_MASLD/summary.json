@@ -13,7 +13,7 @@
   "MASLD": 1,
   "ADVERSE_EVENT": 1
  },
- "rules_total": 301,
+ "rules_total": 302,
  "rules_failed": 0,
  "rules_skipped": 49,
  "rules_error": 0,
@@ -33,7 +33,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 41,
+   "rules": 42,
    "failed": 0,
    "violations": 0
   }
@@ -4411,6 +4411,21 @@
    "subcategory": "value",
    "severity": "warning",
    "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-005",
+   "name": "검사일이 연결된 방문 기간 밖",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
+   "table": "MEASUREMENT,VISIT_OCCURRENCE",
    "fields": "",
    "check": "sql",
    "origin": "standard",

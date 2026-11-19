@@ -14,7 +14,7 @@
   "ADVERSE_EVENT": 5,
   "SACT": 1
  },
- "rules_total": 330,
+ "rules_total": 331,
  "rules_failed": 0,
  "rules_skipped": 43,
  "rules_error": 0,
@@ -34,7 +34,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 45,
+   "rules": 46,
    "failed": 0,
    "violations": 0
   }
@@ -4841,6 +4841,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-MEAS-005",
+   "name": "검사일이 연결된 방문 기간 밖",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
+   "table": "MEASUREMENT,VISIT_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-003",
    "name": "HbA1c·UACR·크레아티닌 단위 부적합",
    "category": "Plausibility",
@@ -5080,6 +5095,28 @@
   {
    "id": "EXP-LC-01",
    "title": "EGFR·ALK 검사 결과",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 0,
+   "met": 0,
+   "per_year_median": null,
+   "by_age": []
+  },
+  {
+   "id": "EXP-LC-03",
+   "title": "첫 요법 전 EGFR 결과",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 0,
+   "met": 0,
+   "per_year_median": null,
+   "by_age": []
+  },
+  {
+   "id": "EXP-LC-04",
+   "title": "첫 요법 전 ALK 결과",
    "unit": "환자",
    "status": "ok",
    "note": "",

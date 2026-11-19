@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: DIABETES (당뇨병)
 
-검증일 2026-09-07 / 테이블 9개 / 규칙 298개 (실패 188, 건너뜀 75, 오류 0)
+검증일 2026-09-07 / 테이블 9개 / 규칙 299개 (실패 189, 건너뜀 75, 오류 0)
 
-위반 1105건 (error 1049, warning 56)
+위반 1106건 (error 1049, warning 57)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 197 | 118 | 999 |
 | Completeness | 61 | 39 | 50 |
-| Plausibility | 40 | 31 | 56 |
+| Plausibility | 41 | 32 | 57 |
 
 ## 테이블 행수
 
@@ -213,6 +213,7 @@
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
+| SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |
 | SEM-MEAS-003 HbA1c·UACR·크레아티닌 단위 부적합 | Plausibility | warning | MEASUREMENT | 1 |
 
 ## 데이터 충실도

@@ -2,15 +2,15 @@
  {
   "cohort": "LUNG_CANCER",
   "clean": {
-   "rules": 330,
+   "rules": 331,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 330,
-   "violations": 1474,
-   "failed_rules": 244
+   "rules": 331,
+   "violations": 1475,
+   "failed_rules": 245
   },
   "faults_total": 264,
   "faults_detected": 264,
@@ -233,21 +233,22 @@
    }
   ],
   "collateral_rules": [
+   "SEM-MEAS-005",
    "ST-0333"
   ]
  },
  {
   "cohort": "BREAST_CANCER",
   "clean": {
-   "rules": 339,
+   "rules": 340,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 339,
-   "violations": 1154,
-   "failed_rules": 254
+   "rules": 340,
+   "violations": 1155,
+   "failed_rules": 255
   },
   "faults_total": 270,
   "faults_detected": 270,
@@ -465,6 +466,7 @@
   ],
   "collateral_rules": [
    "SEM-MEAS-003",
+   "SEM-MEAS-005",
    "ST-0242",
    "ST-0333"
   ]
@@ -472,15 +474,15 @@
  {
   "cohort": "COLORECTAL_CANCER",
   "clean": {
-   "rules": 322,
+   "rules": 323,
    "violations": 14,
    "failed_rules": 1,
    "false_positive_rate": null
   },
   "dirty": {
-   "rules": 322,
-   "violations": 1537,
-   "failed_rules": 237
+   "rules": 323,
+   "violations": 1538,
+   "failed_rules": 238
   },
   "faults_total": 256,
   "faults_detected": 256,
@@ -696,20 +698,22 @@
     "recall": 1.0
    }
   ],
-  "collateral_rules": []
+  "collateral_rules": [
+   "SEM-MEAS-005"
+  ]
  },
  {
   "cohort": "MASLD",
   "clean": {
-   "rules": 301,
+   "rules": 302,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 301,
-   "violations": 1404,
-   "failed_rules": 200
+   "rules": 302,
+   "violations": 1405,
+   "failed_rules": 201
   },
   "faults_total": 213,
   "faults_detected": 213,
@@ -897,6 +901,7 @@
   ],
   "collateral_rules": [
    "SEM-MEAS-004",
+   "SEM-MEAS-005",
    "ST-0359",
    "ST-0361",
    "ST-0366"
@@ -905,15 +910,15 @@
  {
   "cohort": "DIABETES",
   "clean": {
-   "rules": 298,
+   "rules": 299,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 298,
-   "violations": 1105,
-   "failed_rules": 188
+   "rules": 299,
+   "violations": 1106,
+   "failed_rules": 189
   },
   "faults_total": 202,
   "faults_detected": 202,
@@ -1094,21 +1099,22 @@
    }
   ],
   "collateral_rules": [
-   "SEM-MEAS-003"
+   "SEM-MEAS-003",
+   "SEM-MEAS-005"
   ]
  },
  {
   "cohort": "LYMPHOMA",
   "clean": {
-   "rules": 331,
+   "rules": 332,
    "violations": 7,
    "failed_rules": 1,
    "false_positive_rate": null
   },
   "dirty": {
-   "rules": 331,
-   "violations": 1175,
-   "failed_rules": 245
+   "rules": 332,
+   "violations": 1176,
+   "failed_rules": 246
   },
   "faults_total": 265,
   "faults_detected": 265,
@@ -1336,6 +1342,8 @@
     "recall": 1.0
    }
   ],
-  "collateral_rules": []
+  "collateral_rules": [
+   "SEM-MEAS-005"
+  ]
  }
 ]

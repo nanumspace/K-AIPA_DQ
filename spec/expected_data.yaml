@@ -213,6 +213,60 @@ items:
             AND (clinical_stage LIKE 'IV%' OR stage_iv_diagnosis_date IS NOT NULL)) t
     ORDER BY person_id
 
+- id: EXP-LC-03
+  title: 첫 요법 전 EGFR 결과
+  scope: [LUNG_CANCER]
+  unit: 환자
+  target: EXP-LC-01 대상(선암 IV기) 중 시작일이 있는 SACT 요법이 있는 환자. 첫 요법일 = 가장 이른 regimen_start_date
+  expect: 첫 요법일 이전 날짜의 EGFR 검사 기록 (MEASUREMENT.measurement_date 기준. 검체 채취일로 가용 시점을 추정하지 않음)
+  basis: CAP/IASLC/AMP 분자검사 지침 (ASCO 인정). 표적 요법 선택 전 결과 필요 (시점 정의는 임상 확인 필요)
+  requires: [MEASUREMENT, SACT]
+  sql: |
+    WITH t AS (
+      SELECT d.person_id, (SELECT MIN(s.regimen_start_date) FROM SACT s WHERE s.person_id = d.person_id) AS f
+      FROM (SELECT DISTINCT person_id FROM {DISEASE}
+            WHERE person_id IS NOT NULL AND histologic_diagnosis = 1
+              AND (clinical_stage LIKE 'IV%' OR stage_iv_diagnosis_date IS NOT NULL)) d),
+    c AS (
+      SELECT t.person_id, t.f,
+             _has(t.person_id, 'EGFR_MUT', DATE '1900-01-01', t.f - 1) AS pre,
+             _has(t.person_id, 'EGFR_MUT', t.f, t.f) AS day,
+             _has(t.person_id, 'EGFR_MUT', t.f + 1, DATE '2999-12-31') AS post
+      FROM t WHERE t.f IS NOT NULL)
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, pre AS met,
+           CASE WHEN day THEN 'day: EGFR 검사가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 당일에만 있음'
+                WHEN post THEN 'post: EGFR 검사가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 이후에만 있음'
+                ELSE 'none: EGFR 검사 기록 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM c ORDER BY person_id
+
+- id: EXP-LC-04
+  title: 첫 요법 전 ALK 결과
+  scope: [LUNG_CANCER]
+  unit: 환자
+  target: EXP-LC-01 대상(선암 IV기) 중 시작일이 있는 SACT 요법이 있는 환자. 첫 요법일 = 가장 이른 regimen_start_date
+  expect: 첫 요법일 이전 날짜의 ALK 검사 기록 (MEASUREMENT.measurement_date 기준. 검체 채취일로 가용 시점을 추정하지 않음)
+  basis: CAP/IASLC/AMP 분자검사 지침 (ASCO 인정). 표적 요법 선택 전 결과 필요 (시점 정의는 임상 확인 필요)
+  requires: [MEASUREMENT, SACT]
+  sql: |
+    WITH t AS (
+      SELECT d.person_id, (SELECT MIN(s.regimen_start_date) FROM SACT s WHERE s.person_id = d.person_id) AS f
+      FROM (SELECT DISTINCT person_id FROM {DISEASE}
+            WHERE person_id IS NOT NULL AND histologic_diagnosis = 1
+              AND (clinical_stage LIKE 'IV%' OR stage_iv_diagnosis_date IS NOT NULL)) d),
+    c AS (
+      SELECT t.person_id, t.f,
+             _has(t.person_id, 'ALK', DATE '1900-01-01', t.f - 1) AS pre,
+             _has(t.person_id, 'ALK', t.f, t.f) AS day,
+             _has(t.person_id, 'ALK', t.f + 1, DATE '2999-12-31') AS post
+      FROM t WHERE t.f IS NOT NULL)
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, pre AS met,
+           CASE WHEN day THEN 'day: ALK 검사가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 당일에만 있음'
+                WHEN post THEN 'post: ALK 검사가 첫 요법일 ' || CAST(f AS VARCHAR) || ' 이후에만 있음'
+                ELSE 'none: ALK 검사 기록 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM c ORDER BY person_id
+
 - id: EXP-LC-02
   title: 진단 시 흉부 CT
   scope: [LUNG_CANCER]
@@ -649,3 +703,76 @@ items:
            CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 90일에 값이 있는 림프종 병기 기록 없음' END AS detail,
            CAST(NULL AS DOUBLE) AS per_year
     FROM _BASE ORDER BY person_id
+
+- id: EXP-LY-05
+  title: IPI 나이
+  scope: [LYMPHOMA]
+  unit: 환자
+  target: DLBCL (cell_of_origin 이 GCB·ABC/non-GCB·unclassifiable). EXP-LY-02 와 같은 분모
+  expect: PERSON.age_at_index 기록
+  basis: IPI (NEJM 1993) 구성요소
+  requires: []
+  sql: |
+    SELECT b.person_id, 'PERSON:' || b.person_id AS unit_key,
+           (SELECT MIN(age_at_index) FROM PERSON p WHERE p.person_id = b.person_id) IS NOT NULL AS met,
+           'age_at_index 없음' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE b
+    WHERE EXISTS (SELECT 1 FROM {DISEASE} d WHERE d.person_id = b.person_id AND d.cell_of_origin IN ('GCB', 'ABC/non-GCB', 'unclassifiable'))
+    ORDER BY b.person_id
+
+- id: EXP-LY-06
+  title: IPI LDH
+  scope: [LYMPHOMA]
+  unit: 환자
+  target: DLBCL (cell_of_origin 이 GCB·ABC/non-GCB·unclassifiable). EXP-LY-02 와 같은 분모
+  expect: 기준일 전후 90일에 LDH 1회 이상
+  basis: IPI (NEJM 1993) 구성요소
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT b.person_id, 'PERSON:' || b.person_id AS unit_key,
+           b.anchor_date IS NOT NULL AND _has(b.person_id, 'LDH', b.anchor_date - 90, b.anchor_date + 90) AS met,
+           CASE WHEN b.anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 90일에 LDH 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE b
+    WHERE EXISTS (SELECT 1 FROM {DISEASE} d WHERE d.person_id = b.person_id AND d.cell_of_origin IN ('GCB', 'ABC/non-GCB', 'unclassifiable'))
+    ORDER BY b.person_id
+
+- id: EXP-LY-07
+  title: IPI ECOG
+  scope: [LYMPHOMA]
+  unit: 환자
+  target: DLBCL (cell_of_origin 이 GCB·ABC/non-GCB·unclassifiable). EXP-LY-02 와 같은 분모
+  expect: SACT.ecog_performance_status 기록 또는 기준일 전후 90일 ECOG 관찰
+  basis: IPI (NEJM 1993) 구성요소
+  requires: [MEASUREMENT, SACT]
+  sql: |
+    SELECT b.person_id, 'PERSON:' || b.person_id AS unit_key,
+           (b.anchor_date IS NOT NULL AND _has(b.person_id, 'ECOG', b.anchor_date - 90, b.anchor_date + 90))
+             OR EXISTS (SELECT 1 FROM SACT s WHERE s.person_id = b.person_id AND s.ecog_performance_status IS NOT NULL) AS met,
+           'ECOG 없음 (SACT 와 기준일 전후 90일 모두)' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE b
+    WHERE EXISTS (SELECT 1 FROM {DISEASE} d WHERE d.person_id = b.person_id AND d.cell_of_origin IN ('GCB', 'ABC/non-GCB', 'unclassifiable'))
+    ORDER BY b.person_id
+
+- id: EXP-LY-08
+  title: IPI 병기
+  scope: [LYMPHOMA]
+  unit: 환자
+  target: DLBCL (cell_of_origin 이 GCB·ABC/non-GCB·unclassifiable). EXP-LY-02 와 같은 분모
+  expect: 기준일 전후 90일에 림프종 병기(SNOMED 4299327) 측정 결과가 값과 함께 1회 이상. 병기를 다른 기록에서 유추하지 않음
+  basis: IPI (NEJM 1993) 구성요소
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT b.person_id, 'PERSON:' || b.person_id AS unit_key,
+           b.anchor_date IS NOT NULL AND EXISTS (
+             SELECT 1 FROM MEASUREMENT m JOIN _CONCEPT_SET s ON s.concept_id = m.measurement_concept_id AND s.set_id = 'LYMPHOMA_STAGE'
+             WHERE m.person_id = b.person_id AND m.measurement_date BETWEEN b.anchor_date - 90 AND b.anchor_date + 90
+               AND (CAST(m.value_as_concept_id AS BIGINT) > 0 OR NULLIF(TRIM(CAST(m.value_source_value AS VARCHAR)), '') IS NOT NULL
+                    OR m.value_as_number IS NOT NULL)) AS met,
+           CASE WHEN b.anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 90일에 값이 있는 림프종 병기 기록 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE b
+    WHERE EXISTS (SELECT 1 FROM {DISEASE} d WHERE d.person_id = b.person_id AND d.cell_of_origin IN ('GCB', 'ABC/non-GCB', 'unclassifiable'))
+    ORDER BY b.person_id

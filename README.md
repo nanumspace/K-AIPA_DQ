@@ -1,8 +1,8 @@
 # K-AIPA DQ · K-AIPA 임상 데이터 품질검증
 
-**K-AIPA Clinical Data Quality Validator** (앱 이름 K-AIPA DQ, 버전 1.0.6)
+**K-AIPA Clinical Data Quality Validator** (앱 이름 K-AIPA DQ, 버전 1.0.7)
 
-폐암, 유방암, 대장암, 대사이상지방간(MASLD), 당뇨병, 림프종 **6개 질환 임상 코호트 테이블**이 의뢰사 매뉴얼의 명세에 맞는지 병원 담당자가 직접 점검하는 데스크톱 프로그램입니다. 현재 소스는 436개 규칙(코호트마다 298~339개)을 적용합니다. 검증 중 병원 DB에 접속하거나 입력 데이터를 외부로 보내지 않습니다. 중앙 제출용 집계 파일(`submission.json`)은 사용자가 직접 보냅니다.
+폐암, 유방암, 대장암, 대사이상지방간(MASLD), 당뇨병, 림프종 **6개 질환 임상 코호트 테이블**을 점검하는 데스크톱 프로그램입니다. 현재 소스는 437개 규칙(코호트마다 299~340개)을 적용합니다. 검증 중 병원 DB에 접속하거나 입력 데이터를 외부로 보내지 않습니다. 중앙 제출용 집계 파일(`submission.json`)은 사용자가 직접 보냅니다.
 
 소개 페이지: **https://nanumspace.github.io/K-AIPA_DQ/** (기능, 사용 흐름, 화면 예시, 다운로드, 자료실)
 저장소: https://github.com/nanumspace/K-AIPA_DQ
@@ -36,7 +36,7 @@
 
 ### 규칙의 세 종류와 심각도
 
-총 436개 중 구조 규칙 410개(`rules/rules_structural.yaml`, 매뉴얼 유래 368 + 보완 42)는 명세에서 자동 생성하고, 교차 테이블 SQL 규칙 26개(`rules/rules_semantic.yaml`)는 손으로 작성합니다. 구조 보완 규칙은 선택 표·컬럼을 낸 경우에만 실행되고 모두 경고입니다. 코호트별 적용 규칙은 폐암 330 · 유방암 339 · 대장암 322 · MASLD 301 · 당뇨병 298 · 림프종 331개입니다.
+총 437개 중 구조 규칙 410개(`rules/rules_structural.yaml`)는 명세에서 자동 생성하고, 교차 테이블 SQL 규칙 27개(`rules/rules_semantic.yaml`)는 손으로 작성합니다. 코호트별 적용 규칙은 폐암 331 · 유방암 340 · 대장암 323 · MASLD 302 · 당뇨병 299 · 림프종 332개입니다.
 
 | 구분 | 근거 | 심각도 |
 |---|---|---|
@@ -52,7 +52,7 @@
 
 규칙 위반과 별개로, 있어야 할 기록이 실제로 있는지 측정합니다. 합격·불합격 판정이나 목표값은 없습니다. 환자 단위 목록은 `sufficiency.csv`(기관 내부 전용)에 남고 중앙 제출 파일에는 집계만 들어갑니다. → [데이터 충실도 항목 및 분모](docs/data-sufficiency.md)
 
-현재 소스는 데이터 충실도 29개(공통 5개·질환별 24개)를 보고합니다. MASLD의 FIB-4 계산 가능률과 림프종 진단 시 병기 기록률은 기존 항목과 별도로 표시합니다. 표준 개념 필드의 미매핑률(`concept_id = 0` 비율)도 위반 건수에 포함하지 않습니다.
+현재 소스는 데이터 충실도 35개(공통 5개·질환별 30개)를 보고합니다. 폐암의 첫 항암 전 EGFR·ALK와 림프종 IPI 구성요소별 기록률을 기존 항목과 별도로 표시합니다. 표준 개념 필드의 미매핑률(`concept_id = 0` 비율)도 위반 건수에 포함하지 않습니다.
 
 ## 무엇이 들어 있나
 
@@ -62,7 +62,7 @@
 | 검증 엔진 (TypeScript) | `dq-ts/` | 앱에 내장되는 엔진. Python 참조 구현과 동등성이 회귀 시험으로 고정됨 |
 | 검증 엔진 (Python 참조 구현) | `dq/` | 규칙 의미의 기준. 검출 성능 평가 도구 포함 |
 | 기계 판독 명세 | `spec/` | 매뉴얼 → `kai_cdm_spec.yaml`(표 16 · 필드 157 + 보완 선택 컬럼 6·선택 테이블 2), 코드표, 코호트 구성, 값 제약(`constraints.yaml`) |
-| 검증 규칙 카탈로그 | `rules/` | 436개 = 구조 규칙 410개(명세에서 자동 생성) + 교차 테이블 SQL 규칙 26개 |
+| 검증 규칙 카탈로그 | `rules/` | 437개 = 구조 규칙 410개 + 교차 테이블 SQL 규칙 27개 |
 | 가상데이터 생성기 | `synth/` | 질환별 환자 여정 시나리오, 규칙에서 오류 유형을 뽑는 주입기, 생성된 clean/dirty/good 데이터 |
 | 문서 | `docs/` | 설계 원칙, 명세와 규칙, 가상데이터, 엔진과 검출 성능, 재현 방법, 릴리스 노트 |
 | 사용자 설명서 | `manual/` | 병원 담당자용 설치·입력·실행·출력물·규칙 편집 안내 |
@@ -76,11 +76,11 @@
 
 | 파일 | 대상 |
 |---|---|
-| `K-AIPA-DQ-1.0.6-mac-arm64.dmg` | macOS (Apple Silicon) |
-| `K-AIPA-DQ-1.0.6-win-x64.exe` | Windows 10/11 64비트 (x64) |
-| `K-AIPA-DQ-1.0.6-win-arm64.exe` | Windows 11 ARM64 |
-| `SampleData-1.0.6-all.zip` 및 코호트별 `SampleData-1.0.6-<COHORT>-clean.zip`·`-dirty.zip`·`-good.zip` | 견본 데이터(가상데이터) |
-| `K-AIPA-DQ-Criteria-1.0.6.zip` | 명세·규칙 전체 기준 패키지. 기관 조정과 환자 데이터 제외 |
+| `K-AIPA-DQ-1.0.7-mac-arm64.dmg` | macOS (Apple Silicon) |
+| `K-AIPA-DQ-1.0.7-win-x64.exe` | Windows 10/11 64비트 (x64) |
+| `K-AIPA-DQ-1.0.7-win-arm64.exe` | Windows 11 ARM64 |
+| `SampleData-1.0.7-all.zip` 및 코호트별 `SampleData-1.0.7-<COHORT>-clean.zip`·`-dirty.zip`·`-good.zip` | 견본 데이터(가상데이터) |
+| `K-AIPA-DQ-Criteria-1.0.7.zip` | 명세·규칙 전체 기준 패키지. 기관 조정과 환자 데이터 제외 |
 | `SHA256SUMS.txt` | 위 파일의 SHA-256 |
 
 같은 페이지의 견본 데이터 zip으로 앱 동작을 먼저 확인할 수 있습니다. 소개 페이지·자료실은 공개 릴리스 기준으로 배포되며, `main` 브랜치에서 개발 중인 내용과 다를 수 있습니다. 이전 이름(Quality Validator)의 v0.x 릴리스는 [기존 저장소](https://github.com/nanumspace/KAI_DQ_App/releases)에 보존됩니다. 새 앱에서 이전 명세를 선택하는 기능은 없습니다.
@@ -112,7 +112,7 @@ Good Sample은 "좋은 임상 표준"이 아니라, 공개 임상 근거를 참�
 
 ## 릴리스
 
-서명에 USB 토큰과 키체인이 필요해, 릴리스는 개발자의 macOS에서 저장소 루트의 `release.sh`로 합니다. 설치 파일 이름은 `K-AIPA-DQ-<버전>-<os>-<arch>.<확장자>`입니다. 준비물, 명령, 단계별 동작과 `--publish-only` 의 조건은 [docs/reproduce.md](docs/reproduce.md#릴리스-releasesh)에 있습니다. 버전별 변경 사항은 `docs/release-notes/<태그>.md`이며 Release 설명 맨 앞에 실립니다. 현재 노트: [v1.0.6](docs/release-notes/v1.0.6.md).
+서명에 USB 토큰과 키체인이 필요해, 릴리스는 개발자의 macOS에서 저장소 루트의 `release.sh`로 합니다. 설치 파일 이름은 `K-AIPA-DQ-<버전>-<os>-<arch>.<확장자>`입니다. 준비물, 명령, 단계별 동작과 `--publish-only` 의 조건은 [docs/reproduce.md](docs/reproduce.md#릴리스-releasesh)에 있습니다. 버전별 변경 사항은 `docs/release-notes/<태그>.md`이며 Release 설명 맨 앞에 실립니다. 현재 노트: [v1.0.7](docs/release-notes/v1.0.7.md).
 
 ## 문서
 
@@ -122,7 +122,7 @@ Good Sample은 "좋은 임상 표준"이 아니라, 공개 임상 근거를 참�
 - [docs/engine.md](docs/engine.md) 엔진 세 층, 검출 성능과 해석의 한계, 앱 구조
 - [docs/reproduce.md](docs/reproduce.md) 환경, 파이프라인 재현, 앱 빌드와 릴리스
 - [docs/release-notes/v1.0.4.md](docs/release-notes/v1.0.4.md) 1.0.4 릴리스 노트
-- [docs/release-notes/v1.0.6.md](docs/release-notes/v1.0.6.md) 1.0.6 릴리스 노트
+- [docs/release-notes/v1.0.7.md](docs/release-notes/v1.0.7.md) 1.0.7 릴리스 노트
 - [manual/README.md](manual/README.md) 사용자 설명서 ([규칙 편집](manual/06-rules.md) 포함)
 - [pilot/README.md](pilot/README.md) 파일럿 키트
 - [CONTRIBUTING.md](CONTRIBUTING.md) 규칙 추가와 시험 방법

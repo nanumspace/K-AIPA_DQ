@@ -1,15 +1,15 @@
 {
  "cohort": "LUNG_CANCER",
  "clean": {
-  "rules": 330,
+  "rules": 331,
   "violations": 0,
   "failed_rules": 0,
   "false_positive_rate": 0.0
  },
  "dirty": {
-  "rules": 330,
-  "violations": 1474,
-  "failed_rules": 244
+  "rules": 331,
+  "violations": 1475,
+  "failed_rules": 245
  },
  "faults_total": 264,
  "faults_detected": 264,
@@ -232,6 +232,7 @@
   }
  ],
  "collateral_rules": [
+  "SEM-MEAS-005",
   "ST-0333"
  ]
 }

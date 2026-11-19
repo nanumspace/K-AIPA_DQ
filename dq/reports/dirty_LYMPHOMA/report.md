@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: LYMPHOMA (림프종)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 331개 (실패 245, 건너뜀 43, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 332개 (실패 246, 건너뜀 43, 오류 0)
 
-위반 1175건 (error 1086, warning 89)
+위반 1176건 (error 1086, warning 90)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 216 | 150 | 725 |
 | Completeness | 68 | 50 | 62 |
-| Plausibility | 47 | 45 | 388 |
+| Plausibility | 48 | 46 | 389 |
 
 ## 테이블 행수
 
@@ -266,6 +266,7 @@
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
+| SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |
 | SEM-SACT-001 항암요법 종료일 >= 시작일 | Plausibility | error | SACT | 2 |
 | SEM-SACT-006 항암요법 line 번호와 시작일 순서 확인 | Plausibility | warning | SACT | 10 |
 | SEM-SACT-002 항암요법 기간이 연결 약물 기간과 일치 | Plausibility | warning | DRUG_EXPOSURE,SACT | 8 |
@@ -289,6 +290,10 @@
 | EXP-LY-02 IPI 구성요소 (셀 수 있는 것만) | 환자 | 40 | 37 | 92.5% | - | 1/1 | 20/21 | 16/17 | 0/1 |
 | EXP-LY-03 진단 시 PET-CT 또는 골수 생검 | 환자 | 97 | 90 | 92.8% | - | 21/21 | 36/39 | 31/35 | 2/2 |
 | EXP-LY-04 진단 시 림프종 병기 기록 | 환자 | 97 | 0 | 0.0% | - | 0/21 | 0/39 | 0/35 | 0/2 |
+| EXP-LY-05 IPI 나이 | 환자 | 40 | 39 | 97.5% | - | 1/1 | 21/21 | 17/17 | 0/1 |
+| EXP-LY-06 IPI LDH | 환자 | 40 | 38 | 95.0% | - | 1/1 | 20/21 | 16/17 | 1/1 |
+| EXP-LY-07 IPI ECOG | 환자 | 40 | 40 | 100.0% | - | 1/1 | 21/21 | 17/17 | 1/1 |
+| EXP-LY-08 IPI 병기 | 환자 | 40 | 0 | 0.0% | - | 0/1 | 0/21 | 0/17 | 0/1 |
 
 ## 표준 용어 매핑률
 

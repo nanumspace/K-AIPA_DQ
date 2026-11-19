@@ -14,14 +14,14 @@
   "ADVERSE_EVENT": 248,
   "SACT": 121
  },
- "rules_total": 331,
- "rules_failed": 245,
+ "rules_total": 332,
+ "rules_failed": 246,
  "rules_skipped": 43,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 1175,
+ "violations_total": 1176,
  "violations_error": 1086,
- "violations_warning": 89,
+ "violations_warning": 90,
  "by_category": {
   "Completeness": {
    "rules": 68,
@@ -34,9 +34,9 @@
    "violations": 725
   },
   "Plausibility": {
-   "rules": 47,
-   "failed": 45,
-   "violations": 388
+   "rules": 48,
+   "failed": 46,
+   "violations": 389
   }
  },
  "rules": [
@@ -4856,6 +4856,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-MEAS-005",
+   "name": "검사일이 연결된 방문 기간 밖",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
+   "table": "MEASUREMENT,VISIT_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-003",
    "name": "HbA1c·UACR·크레아티닌 단위 부적합",
    "category": "Plausibility",
@@ -5291,6 +5306,134 @@
     {
      "band": "미상",
      "eligible": 2,
+     "met": 0
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-05",
+   "title": "IPI 나이",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 40,
+   "met": 39,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 1,
+     "met": 1
+    },
+    {
+     "band": "50-64",
+     "eligible": 21,
+     "met": 21
+    },
+    {
+     "band": "65+",
+     "eligible": 17,
+     "met": 17
+    },
+    {
+     "band": "미상",
+     "eligible": 1,
+     "met": 0
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-06",
+   "title": "IPI LDH",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 40,
+   "met": 38,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 1,
+     "met": 1
+    },
+    {
+     "band": "50-64",
+     "eligible": 21,
+     "met": 20
+    },
+    {
+     "band": "65+",
+     "eligible": 17,
+     "met": 16
+    },
+    {
+     "band": "미상",
+     "eligible": 1,
+     "met": 1
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-07",
+   "title": "IPI ECOG",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 40,
+   "met": 40,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 1,
+     "met": 1
+    },
+    {
+     "band": "50-64",
+     "eligible": 21,
+     "met": 21
+    },
+    {
+     "band": "65+",
+     "eligible": 17,
+     "met": 17
+    },
+    {
+     "band": "미상",
+     "eligible": 1,
+     "met": 1
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-08",
+   "title": "IPI 병기",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 40,
+   "met": 0,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 1,
+     "met": 0
+    },
+    {
+     "band": "50-64",
+     "eligible": 21,
+     "met": 0
+    },
+    {
+     "band": "65+",
+     "eligible": 17,
+     "met": 0
+    },
+    {
+     "band": "미상",
+     "eligible": 1,
      "met": 0
     }
    ]

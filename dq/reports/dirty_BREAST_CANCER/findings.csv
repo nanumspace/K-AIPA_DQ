@@ -1124,6 +1124,7 @@ SEM-MEAS-001,검사일 없음,Completeness,warning,MEASUREMENT,,209086,200085,me
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,204058,200036,"value_as_number, value_as_concept_id 모두 없음"
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,204896,200042,"value_as_number, value_as_concept_id 모두 없음"
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,209135,200085,"value_as_number, value_as_concept_id 모두 없음"
+SEM-MEAS-005,검사일이 연결된 방문 기간 밖,Plausibility,warning,"MEASUREMENT,VISIT_OCCURRENCE",,210462,200098,measurement_date 2099-01-01 이 visit 203478 기간 2021-09-09~2021-09-09 밖
 SEM-MEAS-003,HbA1c·UACR·크레아티닌 단위 부적합,Plausibility,warning,MEASUREMENT,,208073,200075,measurement_concept_id 3016723 의 unit_concept_id 9999999 는 허용 단위 목록에 없음
 SEM-SACT-001,항암요법 종료일 >= 시작일,Plausibility,error,SACT,,200039,200020,regimen_end_date < regimen_start_date
 SEM-SACT-001,항암요법 종료일 >= 시작일,Plausibility,error,SACT,,200169,200093,regimen_end_date < regimen_start_date

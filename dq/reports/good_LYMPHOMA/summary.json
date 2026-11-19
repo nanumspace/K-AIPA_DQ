@@ -14,7 +14,7 @@
   "ADVERSE_EVENT": 3,
   "SACT": 1
  },
- "rules_total": 331,
+ "rules_total": 332,
  "rules_failed": 0,
  "rules_skipped": 43,
  "rules_error": 0,
@@ -34,7 +34,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 47,
+   "rules": 48,
    "failed": 0,
    "violations": 0
   }
@@ -4856,6 +4856,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-MEAS-005",
+   "name": "검사일이 연결된 방문 기간 밖",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "warning",
+   "table": "MEASUREMENT,VISIT_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-003",
    "name": "HbA1c·UACR·크레아티닌 단위 부적합",
    "category": "Plausibility",
@@ -5146,6 +5161,74 @@
   {
    "id": "EXP-LY-04",
    "title": "진단 시 림프종 병기 기록",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 1,
+   "met": 0,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "50-64",
+     "eligible": 1,
+     "met": 0
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-05",
+   "title": "IPI 나이",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 1,
+   "met": 1,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "50-64",
+     "eligible": 1,
+     "met": 1
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-06",
+   "title": "IPI LDH",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 1,
+   "met": 1,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "50-64",
+     "eligible": 1,
+     "met": 1
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-07",
+   "title": "IPI ECOG",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 1,
+   "met": 1,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "50-64",
+     "eligible": 1,
+     "met": 1
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-08",
+   "title": "IPI 병기",
    "unit": "환자",
    "status": "ok",
    "note": "",

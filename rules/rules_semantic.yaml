@@ -216,6 +216,24 @@ rules:
     SELECT person_id, CAST(measurement_id AS VARCHAR) AS row_key, 'value_as_number, value_as_concept_id 모두 없음' AS detail
     FROM MEASUREMENT WHERE value_as_number IS NULL AND value_as_concept_id IS NULL
 
+- id: SEM-MEAS-005
+  name: 검사일이 연결된 방문 기간 밖
+  category: Plausibility
+  subcategory: temporal
+  severity: warning
+  scope: all
+  requires: [MEASUREMENT, VISIT_OCCURRENCE]
+  desc: 같은 환자의 방문(visit_occurrence_id 연결)에 시작일과 종료일이 모두 있고 종료일 ≥ 시작일일 때, measurement_date 가 그 기간(양끝 포함) 밖이다. 종료일이 비어 있거나 기간이 뒤집힌 방문, 다른 환자의 방문, 검사일이 없는 행은 대상이 아니며 종료일을 추정하지 않는다.
+  sql: |
+    SELECT m.person_id, CAST(m.measurement_id AS VARCHAR) AS row_key,
+           'measurement_date ' || m.measurement_date || ' 이 visit ' || v.visit_occurrence_id || ' 기간 ' || v.visit_start_date || '~' || v.visit_end_date || ' 밖' AS detail
+    FROM MEASUREMENT m JOIN VISIT_OCCURRENCE v ON m.visit_occurrence_id = v.visit_occurrence_id
+    WHERE m.person_id = v.person_id
+      AND m.measurement_date IS NOT NULL
+      AND v.visit_start_date IS NOT NULL AND v.visit_end_date IS NOT NULL
+      AND v.visit_end_date >= v.visit_start_date
+      AND (m.measurement_date < v.visit_start_date OR m.measurement_date > v.visit_end_date)
+
 # 아래 두 규칙의 (개념, 단위) 허용 쌍은 로컬 Athena v20260829(raw/vocab/v20260829/CONCEPT.csv)에서
 # 개념 이름·LOINC 코드와 UCUM 단위 개념(8554 %, 9579 mmol/mol, 8840 mg/dL, 8749 umol/L,
 # 8723 mg/g, 9017 mg/g{creat}, 8838 ug/mg, 44777612 mg/mmol)을 확인한 것만 둔다.

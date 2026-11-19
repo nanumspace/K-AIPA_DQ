@@ -1402,4 +1402,5 @@ SEM-MEAS-001,검사일 없음,Completeness,warning,MEASUREMENT,,402962,400029,me
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,400527,400006,"value_as_number, value_as_concept_id 모두 없음"
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,401527,400015,"value_as_number, value_as_concept_id 모두 없음"
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,405764,400056,"value_as_number, value_as_concept_id 모두 없음"
+SEM-MEAS-005,검사일이 연결된 방문 기간 밖,Plausibility,warning,"MEASUREMENT,VISIT_OCCURRENCE",,400824,400008,measurement_date 2099-01-01 이 visit 400163 기간 2025-01-21~2025-01-21 밖
 SEM-MEAS-004,HbA1c·UACR·크레아티닌 단위 없음,Completeness,warning,MEASUREMENT,,402356,400024,measurement_concept_id 3004410 에 숫자 결과는 있으나 unit_concept_id 없음

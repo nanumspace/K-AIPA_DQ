@@ -1488,6 +1488,7 @@ SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,302118,30
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,302844,300030,"value_as_number, value_as_concept_id 모두 없음"
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,304665,300048,"value_as_number, value_as_concept_id 모두 없음"
 SEM-MEAS-002,검사 결과값 없음,Completeness,warning,MEASUREMENT,,306828,300067,"value_as_number, value_as_concept_id 모두 없음"
+SEM-MEAS-005,검사일이 연결된 방문 기간 밖,Plausibility,warning,"MEASUREMENT,VISIT_OCCURRENCE",,305855,300060,measurement_date 2099-01-01 이 visit 301637 기간 2023-08-04~2023-08-04 밖
 SEM-SACT-001,항암요법 종료일 >= 시작일,Plausibility,error,SACT,,300055,300050,regimen_end_date < regimen_start_date
 SEM-SACT-001,항암요법 종료일 >= 시작일,Plausibility,error,SACT,,300087,300075,regimen_end_date < regimen_start_date
 SEM-SACT-006,항암요법 line 번호와 시작일 순서 확인,Plausibility,warning,SACT,,300021,300022,line_of_therapy=1 이나 시작일 순서=2

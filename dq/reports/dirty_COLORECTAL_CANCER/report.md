@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: COLORECTAL_CANCER (대장암)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 322개 (실패 237, 건너뜀 44, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 323개 (실패 238, 건너뜀 44, 오류 0)
 
-위반 1537건 (error 1451, warning 86)
+위반 1538건 (error 1451, warning 87)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 211 | 146 | 986 |
 | Completeness | 67 | 49 | 60 |
-| Plausibility | 44 | 42 | 491 |
+| Plausibility | 45 | 43 | 492 |
 
 ## 테이블 행수
 
@@ -259,6 +259,7 @@
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 4 |
+| SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |
 | SEM-SACT-001 항암요법 종료일 >= 시작일 | Plausibility | error | SACT | 2 |
 | SEM-SACT-006 항암요법 line 번호와 시작일 순서 확인 | Plausibility | warning | SACT | 13 |
 | SEM-SACT-002 항암요법 기간이 연결 약물 기간과 일치 | Plausibility | warning | DRUG_EXPOSURE,SACT | 8 |
