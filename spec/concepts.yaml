@@ -202,3 +202,57 @@ procedures:
   46271079: {name: Transplantation of autologous hematopoietic stem cell, category: transplant}
   608175: {name: Chimeric antigen receptor T-cell immunotherapy, category: transplant}
   37151268: {name: Lymphocyte apheresis (leukapheresis), category: transplant}
+
+regimens:           # SACT.regimen_source_value -> HemOnc Regimen 표준 개념 (v20260829). null = HemOnc 에 같은 요법의 표준 개념이 없어 0(미매핑)으로 적재
+  # 폐암
+  Cisplatin + Pemetrexed: 35806173
+  Cisplatin + Gemcitabine: 35803575               # Cisplatin and Gemcitabine (GC)
+  Carboplatin + Pemetrexed: 35806172
+  Pembrolizumab + Carboplatin + Pemetrexed: 35806403
+  Pembrolizumab + Carboplatin + Paclitaxel: 35806415
+  Pembrolizumab + Carboplatin + Weekly Paclitaxel: 35806415
+  Pembrolizumab + Pemetrexed maintenance: null    # 'Pemetrexed and Pembrolizumab' 은 비표준이며 대응 표준 개념 없음
+  Pembrolizumab: 35803678
+  Pembrolizumab maintenance: 35803678
+  Osimertinib: 35804394
+  Adjuvant Osimertinib: 35804394
+  Docetaxel: 35804162
+  Etoposide + Cisplatin: 35805329                 # Cisplatin and Etoposide (EP)
+  Etoposide + Cisplatin (concurrent chemoradiation): 37557397   # Cisplatin and Etoposide (EP) and RT
+  Weekly Carboplatin + Paclitaxel (CCRT): 35805350               # Carboplatin and Paclitaxel (CP) and RT
+  Durvalumab consolidation: 35804164
+  # 유방암
+  Doxorubicin + Cyclophosphamide (AC): 35804199
+  Pembrolizumab + Doxorubicin + Cyclophosphamide (AC): null      # 'AC and Pembrolizumab' 은 비표준이며 대응 표준 개념 없음
+  Docetaxel + Cyclophosphamide (TC): 35804232
+  Docetaxel + Carboplatin + Trastuzumab + Pertuzumab (TCHP): 35804300
+  Docetaxel + Trastuzumab + Pertuzumab (THP): 35804217
+  Weekly Paclitaxel + Trastuzumab (APT): 35804201                # Paclitaxel and Trastuzumab (TH)
+  Weekly Paclitaxel: 35804166
+  Weekly Paclitaxel + Carboplatin: 35803572                      # Carboplatin and Paclitaxel (CP)
+  Carboplatin + Weekly Paclitaxel: 35803572
+  Trastuzumab: 35804222
+  Trastuzumab + Pertuzumab: 35804314
+  Trastuzumab + Pertuzumab maintenance: 35804314
+  Capecitabine + Trastuzumab: 35804312            # Capecitabine and Trastuzumab (XH)
+  Adjuvant Capecitabine (residual TNBC): 35804227
+  Tamoxifen: 35804221
+  Letrozole: 35804273
+  Anastrozole: 35804271
+  Palbociclib + Letrozole: 35804287
+  # 대장암
+  mFOLFOX6: 35804758
+  mFOLFOX6 + bevacizumab: 35804777                # mFOLFOX6-B
+  CAPOX: 35804755                                 # CapeOx
+  FOLFIRI + bevacizumab: 35804770
+  Capecitabine: 35804227
+  Capecitabine (preoperative CCRT): 35806890      # Capecitabine and RT
+  # 림프종
+  R-CHOP: 35805028
+  CHOP: 35803699
+  R-CVP: 35805630
+  ABVD: 35805802
+  R-GDP: 35805062
+  GDP: 35803704
+  Rituximab maintenance: 35803432
+  "CD19 CAR-T lymphodepletion - RESTRICTED coverage (cyclophosphamide only; fludarabine not coded)": null   # 기록이 불완전한 에피소드

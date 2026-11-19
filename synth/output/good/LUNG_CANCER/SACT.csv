@@ -1,2 +1,2 @@
 sact_id,person_id,regimen_concept_id,regimen_source_value,regimen_start_date,regimen_end_date,line_of_therapy,number_of_cycles,therapy_intent,ecog_performance_status,best_overall_response,date_of_progression,recurrence_anatomic_site
-100003,100002,0,Adjuvant Osimertinib,2022-02-14,2025-02-16,,39,2,0,NE,,
+100003,100002,35804394,Adjuvant Osimertinib,2022-02-14,2025-02-16,,39,2,0,NE,,

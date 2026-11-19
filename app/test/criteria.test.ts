@@ -11,7 +11,7 @@ import { CRITERIA_FILES } from "@shared/criteria";
 import { inspectCriteria, createCriteriaPackage, stageCriteriaPackage, compareSemver } from "../src/main/criteria";
 
 const ROOT = path.resolve(__dirname, "../..");
-const APP = "1.0.1";
+const APP = "1.0.2";
 const META = { name: "테스트 기준", version: "1.0.2", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF", minAppVersion: "1.0.0" };
 let work: string;
 let seq = 0;
@@ -74,7 +74,7 @@ describe("inspectCriteria", () => {
   it("내장 기준: 고정 메타와 해시, 집계가 엔진 로더와 같다", () => {
     const info = inspectCriteria(ROOT, "builtin", APP);
     expect(info.source).toBe("builtin");
-    expect(info.manifest).toMatchObject({ schema: "kai-criteria/1", version: "1.0.1", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF" });
+    expect(info.manifest).toMatchObject({ schema: "kai-criteria/1", version: "1.0.2", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF" });
     expect(Object.keys(info.manifest.files)).toEqual([...CRITERIA_FILES]);
     for (const f of CRITERIA_FILES) expect(info.manifest.files[f]).toBe(sha(fs.readFileSync(path.join(ROOT, f))));
     const spec = loadSpec();

@@ -28,7 +28,7 @@ const FILE_SET = new Set<string>(CRITERIA_FILES);
 const ALLOWED_DIRS = new Set(["spec/", "rules/"]);
 
 export const BUILTIN_MANIFEST: Omit<CriteriaManifest, "files"> = {
-  schema: SCHEMA, name: "K-AIPA DQ 기본 기준", version: "1.0.1", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF", minAppVersion: "1.0.1",
+  schema: SCHEMA, name: "K-AIPA DQ 기본 기준", version: "1.0.2", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF", minAppVersion: "1.0.1",
 };
 
 const fail = (m: string): never => { throw new Error(m); };

@@ -1,6 +1,6 @@
 # K-AIPA DQ · K-AIPA 임상 데이터 품질검증
 
-**K-AIPA Clinical Data Quality Validator** (앱 이름 K-AIPA DQ, 버전 1.0.1)
+**K-AIPA Clinical Data Quality Validator** (앱 이름 K-AIPA DQ, 버전 1.0.2)
 
 폐암, 유방암, 대장암, 대사이상지방간(MASLD), 당뇨병, 림프종 **6개 질환 임상 코호트 테이블**이 의뢰사 매뉴얼의 명세에 맞는지 병원 담당자가 직접 점검하는 데스크톱 프로그램입니다. 코호트 테이블 파일을 넣고 실행하면 명세 적합성·완전성·타당성 규칙 390개(코호트마다 253~294개 적용)를 검사해 보고서와 중앙 제출용 집계를 만듭니다. 검증 중 병원 DB에 접속하지 않으며, 입력 데이터를 외부로 보내는 기능이 없습니다. 중앙에 제출하는 것은 사용자가 직접 보내는 집계 파일(`submission.json`)입니다.
 
@@ -70,11 +70,11 @@
 
 | 파일 | 대상 |
 |---|---|
-| `K-AIPA-DQ-1.0.1-mac-arm64.dmg` | macOS (Apple Silicon) |
-| `K-AIPA-DQ-1.0.1-win-x64.exe` | Windows 10/11 64비트 (x64) |
-| `K-AIPA-DQ-1.0.1-win-arm64.exe` | Windows 11 ARM64 |
-| `SampleData-1.0.1-all.zip` 및 코호트별 `SampleData-1.0.1-<COHORT>-clean.zip`·`-dirty.zip`·`-good.zip` | 견본 데이터(가상데이터) |
-| `K-AIPA-DQ-Criteria-1.0.1.zip` | 명세·규칙 전체 기준 패키지. 기관 조정과 환자 데이터 제외 |
+| `K-AIPA-DQ-1.0.2-mac-arm64.dmg` | macOS (Apple Silicon) |
+| `K-AIPA-DQ-1.0.2-win-x64.exe` | Windows 10/11 64비트 (x64) |
+| `K-AIPA-DQ-1.0.2-win-arm64.exe` | Windows 11 ARM64 |
+| `SampleData-1.0.2-all.zip` 및 코호트별 `SampleData-1.0.2-<COHORT>-clean.zip`·`-dirty.zip`·`-good.zip` | 견본 데이터(가상데이터) |
+| `K-AIPA-DQ-Criteria-1.0.2.zip` | 명세·규칙 전체 기준 패키지. 기관 조정과 환자 데이터 제외 |
 | `SHA256SUMS.txt` | 위 파일의 SHA-256 |
 
 같은 페이지의 견본 데이터 zip으로 앱 동작을 먼저 확인할 수 있습니다. 소개 페이지·자료실은 공개 릴리스 기준으로 배포되며, `main` 브랜치에서 개발 중인 내용과 다를 수 있습니다. 이전 이름(Quality Validator)의 v0.x 릴리스는 [기존 저장소](https://github.com/nanumspace/KAI_DQ_App/releases)에 보존됩니다. 새 앱에서 이전 명세를 선택하는 기능은 없습니다.
@@ -115,7 +115,7 @@ Good Sample은 "좋은 임상 표준"이 아니라, 공개 임상 근거를 참�
 - [docs/synthetic-data.md](docs/synthetic-data.md) 생성 프레임워크, 시나리오, 오류 주입, 가상 임상 사례
 - [docs/engine.md](docs/engine.md) 엔진 세 층, 검출 성능과 해석의 한계, 앱 구조
 - [docs/reproduce.md](docs/reproduce.md) 환경, 파이프라인 재현, 앱 빌드와 릴리스
-- [docs/release-notes/v1.0.1.md](docs/release-notes/v1.0.1.md) 1.0.1 릴리스 노트
+- [docs/release-notes/v1.0.2.md](docs/release-notes/v1.0.2.md) 1.0.2 릴리스 노트
 - [manual/README.md](manual/README.md) 사용자 설명서 ([규칙 편집](manual/06-rules.md) 포함)
 - [pilot/README.md](pilot/README.md) 파일럿 키트
 - [CONTRIBUTING.md](CONTRIBUTING.md) 규칙 추가와 시험 방법

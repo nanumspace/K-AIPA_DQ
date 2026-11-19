@@ -226,7 +226,7 @@ codelists:
     '32835': EHR Pathology report
     '32824': EHR discharge summary
     '32834': EHR outpatient note
-  OMOP.note_class_concept_id:         # LOINC 문서 분류(Note 영역, v20260829). 어휘 확정은 의뢰사 확인 사항(docs/vocabulary.md 4절)
+  OMOP.note_class_concept_id:         # LOINC 문서 분류(Note 영역, v20260829). docs/vocabulary.md 2절
     '46235057': Radiology Note
     '3031451': Pathology Note
     '3020091': Discharge summary

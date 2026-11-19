@@ -1,4 +1,4 @@
 sact_id,person_id,regimen_concept_id,regimen_source_value,regimen_start_date,regimen_end_date,line_of_therapy,number_of_cycles,therapy_intent,ecog_performance_status,best_overall_response,date_of_progression,recurrence_anatomic_site
-200003,200003,0,Carboplatin + Weekly Paclitaxel,2019-02-07,2019-04-25,,4,1,0,PR,,
-200004,200003,0,Doxorubicin + Cyclophosphamide (AC),2019-05-02,2019-07-04,,4,1,0,PR,,
-200005,200003,0,Adjuvant Capecitabine (residual TNBC),2019-11-01,2020-02-27,,6,2,0,NE,,
+200003,200003,35803572,Carboplatin + Weekly Paclitaxel,2019-02-07,2019-04-25,,4,1,0,PR,,
+200004,200003,35804199,Doxorubicin + Cyclophosphamide (AC),2019-05-02,2019-07-04,,4,1,0,PR,,
+200005,200003,35804227,Adjuvant Capecitabine (residual TNBC),2019-11-01,2020-02-27,,6,2,0,NE,,

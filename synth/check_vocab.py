@@ -33,7 +33,7 @@ BINDING = {
     "MEASUREMENT.value_as_concept_id": ({"LOINC", "SNOMED"}, None),
     "OBSERVATION.observation_concept_id": ({"SNOMED", "LOINC"}, "Observation"),
     "NOTE.note_class_concept_id": ({"LOINC"}, "Note"),
-    "SACT.regimen_concept_id": ({"HemOnc"}, None),
+    "SACT.regimen_concept_id": ({"HemOnc"}, "Regimen"),
     "ADVERSE_EVENT.adverse_event_concept_id": ({"SNOMED"}, "Condition"),
 }
 TYPE_FIELDS = {"visit_type_concept_id", "procedure_type_concept_id", "condition_type_concept_id",
@@ -101,6 +101,10 @@ def main():
     for cohort, d in cat["cohort_definition"].items():
         for cid in d["condition_concept_ids"]:
             check(f"concepts.yaml cohort_definition.{cohort}", str(cid), {"SNOMED"}, "Condition")
+    for name, cid in (cat.get("regimens") or {}).items():
+        if cid is not None:
+            check(f"concepts.yaml regimens '{name}'", str(cid), {"HemOnc"}, "Regimen")
+            n_cat += 1
 
     lists = yaml.safe_load((ROOT / "spec" / "constraints.yaml").read_text(encoding="utf-8"))["codelists"]
     n_list = 0

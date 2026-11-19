@@ -45,7 +45,7 @@ SMILES_NOTE_TYPE, SMILES_NOTE_CLASS = 32817, 0      # 표준 분류가 없는 �
 HT, WT, BMI = 3036277, 3025315, 3038553             # 신장·체중·BMI (MEASUREMENT concept)
 WT_FRESH_DAYS = 7                                      # 투여일 기준 이 일수 안의 체중 기록이 없으면 투여일에 새로 잰다
 NOTE_OPD, NOTE_CLASS_ONC = 32834, 3032377           # 용량 계산 NOTE: Outpatient note / Oncology note (codelists 값)
-REGIMEN_UNMAPPED = 0                                   # regimen_concept_id: No matching concept
+REGIMENS = CONCEPTS["regimens"]                        # regimen_source_value -> HemOnc 표준 개념, null 은 0(No matching concept)
 
 _DRUG_ID = {v["name"]: k for k, v in CONCEPTS["drugs"].items()}
 
@@ -92,7 +92,7 @@ SMILES = {
 }
 
 
-# regimen_concept(name) 은 제거했다: CRC32 로 HemOnc 대역 코드를 꾸며 내던 방식은 유효한 표준 코드처럼 보이므로 쓰지 않는다. REGIMEN_UNMAPPED 참고.
+# regimen_concept_id 는 spec/concepts.yaml 의 regimens 표에서 찾는다. 표에 없는 요법 이름은 오류로 멈춘다(빠뜨린 매핑을 0 으로 숨기지 않는다).
 
 
 class Person:
@@ -582,7 +582,9 @@ class Ctx:
                 ends.append(e)
             cur = self.days(cur, cd)
         assert ends, "SACT 에는 약물이 하나 이상 있어야 한다"
-        row = dict(sact_id=sid, person_id=p.person_id, regimen_concept_id=REGIMEN_UNMAPPED, regimen_source_value=regimen,
+        if regimen not in REGIMENS:
+            raise KeyError(f"spec/concepts.yaml regimens 에 없는 요법: {regimen!r}")
+        row = dict(sact_id=sid, person_id=p.person_id, regimen_concept_id=REGIMENS[regimen] or 0, regimen_source_value=regimen,
                    regimen_start_date=start, regimen_end_date=max(ends), line_of_therapy=line, number_of_cycles=len(cycle_dates),
                    therapy_intent=intent, ecog_performance_status=ecog, best_overall_response=response,
                    date_of_progression=None, recurrence_anatomic_site=None)
