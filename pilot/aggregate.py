@@ -17,8 +17,9 @@ rule_set 이 없는 제출분(이전 형식)은 표준 실행으로 본다.
   rules_summary.csv       규칙마다 실패한 기관 수, 위반 합계, 검사 행 합계                  (표준 출처 규칙만)
   nonstandard_rules.csv   끈 · 조정한 · 사용자 · 관리자 규칙의 기관별 결과
   sites.csv               기관·코호트마다 규칙·위반·행 수, 정규화 건수, 규칙 설정 상태
+  sufficiency_by_site.csv 데이터 충실도: 기관·코호트 × 기대 항목의 대상·충족 수와 충족률 (submission 스키마 3, 앱 1.0.4 이상)
   summary.md              사람이 읽는 요약: 모든 기관에서 우는 규칙(규칙·명세를 의심), 한 기관에서만 우는 규칙(그 기관의 내보내기를 의심),
-                          입력 정규화, 규칙 설정이 표준이 아닌 실행
+                          입력 정규화, 규칙 설정이 표준이 아닌 실행, 데이터 충실도 항목별 합계
 
 파일에는 환자 단위 정보가 없으므로 이 도구도 그런 것을 만들지 않는다.
 """
@@ -222,10 +223,32 @@ def main():
                 norm_any = True
     if not norm_any:
         L.append("(없음)")
+
+    # ---- 데이터 충실도 (submission 스키마 3 이상). 기관·코호트 × 항목의 대상·충족 수, 기관 사이 합계
+    suff_rows, suff_total = [], defaultdict(lambda: [0, 0, 0])   # (cohort, id, title, unit) -> [기관 수, 대상, 충족]
+    for s in sorted(subs, key=lambda x: (x["_site"], x["cohort"])):
+        for x in s.get("sufficiency") or []:
+            if x.get("status") != "ok":
+                suff_rows.append([s["_site"], s["cohort"], x["id"], x.get("title", ""), x.get("unit", ""), x.get("status", ""), "", "", "", ""])
+                continue
+            n, m = x.get("eligible", 0), x.get("met", 0)
+            suff_rows.append([s["_site"], s["cohort"], x["id"], x.get("title", ""), x.get("unit", ""), "ok", n, m,
+                              f"{m / n * 100:.1f}" if n else "", x.get("per_year_median") or ""])
+            t = suff_total[(s["cohort"], x["id"], x.get("title", ""), x.get("unit", ""))]
+            t[0] += 1; t[1] += n; t[2] += m
+    write_csv(os.path.join(a.out, "sufficiency_by_site.csv"),
+              ["기관", "코호트", "항목", "이름", "단위", "상태", "대상", "충족", "충족률%", "1인·1년당 중앙값"], suff_rows)
+    L += ["", "## 데이터 충실도 — 있어야 할 기록이 있는 비율 (규칙 위반과 별개, sufficiency_by_site.csv)", ""]
+    if suff_total:
+        L += ["| 코호트 | 항목 | 단위 | 기관 수 | 대상 | 충족 | 충족률 |", "|---|---|---|---|---|---|---|"]
+        for (co, iid, title, unit), (k, n, m) in sorted(suff_total.items()):
+            L.append(f"| {co} | {iid} {title} | {unit} | {k} | {n:,} | {m:,} | {f'{m / n * 100:.1f}%' if n else '-'} |")
+    else:
+        L.append("(없음 — 1.0.4 이전 앱의 제출분에는 데이터 충실도가 없다)")
     L.append("")
     with io.open(os.path.join(a.out, "summary.md"), "w", encoding="utf-8") as fh:
         fh.write("\n".join(L))
-    print(f"기관·코호트 {len(sites)}개, 표준 규칙 {len(rules)}개 → {a.out}/ (sites.csv, rules_by_site.csv, rules_summary.csv, nonstandard_rules.csv, summary.md)")
+    print(f"기관·코호트 {len(sites)}개, 표준 규칙 {len(rules)}개 → {a.out}/ (sites.csv, rules_by_site.csv, rules_summary.csv, nonstandard_rules.csv, sufficiency_by_site.csv, summary.md)")
     print(f"  모든 기관에서 우는 규칙 {len(all_fail)}개, 한 기관에서만 우는 규칙 {len(one_fail)}개, 규칙 설정이 표준이 아닌 실행 {len(nonstd_subs)}개")
 
 

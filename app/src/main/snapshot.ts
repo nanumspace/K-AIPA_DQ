@@ -1,5 +1,5 @@
 // 실행 기준 스냅샷: 실행 시작 전에 그 순간의 명세·규칙 원본을 실행 폴더에 한 번만 보관한다.
-// criteria/<YAML 7종 + manifest.json>   워커가 읽는 기준 루트 (실행이 끝난 뒤에도 그대로 남는다)
+// criteria/<기준 YAML(CRITERIA_FILES) + manifest.json>   워커가 읽는 기준 루트 (실행이 끝난 뒤에도 그대로 남는다)
 // criteria.zip                          같은 내용을 한 파일로 묶은 이식용 패키지
 // criteria-snapshot.json                실행 당시의 유효 규칙·명세 요약·기준일·덧씌우기 (이력 화면과 감사용)
 // 한 번 쓰면 바꾸지 않는다: 모든 파일을 배타적으로 만들고, 중간에 실패하면 이번에 만든 것만 치운다.
@@ -25,7 +25,7 @@ function zipTime(createdAt: string): Date {
 }
 
 /**
- * root(기준 패키지가 풀려 있는 폴더)의 YAML 7종과 manifest 를 runDir/criteria 로 복사하고,
+ * root(기준 패키지가 풀려 있는 폴더)의 기준 YAML(CRITERIA_FILES)과 manifest 를 runDir/criteria 로 복사하고,
  * criteria.zip 과 criteria-snapshot.json 을 만든다. 이미 있는 파일은 덮어쓰지 않고 실패한다.
  * 실패하면 이번 호출이 만든 파일과 폴더만 지우고 오류를 던진다.
  */

@@ -43,14 +43,14 @@ Domain·Vocabulary·Concept Class·Relationship 같은 어휘 메타데이터는
 
 **기준 배포판: OHDSI 표준 어휘 v20260829** ([릴리스 노트](https://github.com/OHDSI/Vocabulary-v5.0/releases)). SNOMED CT 국제판 2026-02-01, LOINC 2.82, RxNorm Extension 2026-06 정리분, EDI 2026-01판(v20260227 에서 반영)을 포함합니다. 사업 기간 동안 고정하며, 새 배포판(다음 예상 2027-02)으로는 승인이 있을 때만 모든 병원이 함께 교체합니다.
 
-## 3. 앱 반영 상태 (1.0.3)
+## 3. 앱 반영 상태 (1.0.4)
 
 1. ~~**필드별 허용 용어 명세**~~ (완료): 2절을 `spec/constraints.yaml` 의 `concept` 항목으로 넣었습니다. 명세(`spec/kai_cdm_spec.yaml`)의 각 개념 필드에 `concept: {domain, vocabularies, standard}` 가 붙고, `synth/check_vocab.py` 도 같은 대응을 씁니다.
 2. ~~**개념 검증 규칙**~~ (완료): 개념 필드마다 `표준 용어` 구조 규칙(검사 유형 `concept`, 25개, 경고)이 있습니다. 개념 존재, 표준(`standard_concept = 'S'`)·유효(`invalid_reason` 없음), 영역, 허용 어휘를 봅니다. 값 `0` 은 매핑 실패 표시라 보지 않습니다. 원천 개념 필드(`*_source_concept_id`)는 존재만 봅니다. 병원이 선택 테이블 CONCEPT 를 냈을 때만 돌고, 내지 않으면 'CONCEPT 미제출'로 건너뜁니다. 이상사례 코드값 필드는 지금처럼 코드 목록(`AE.*`)으로 검사합니다.
 3. **매핑률 지표**: 필드별 `concept_id = 0` 비율. 기록 누락과 매핑 실패를 구분하는 데 씁니다. 아직 구현하지 않았습니다.
 4. ~~**어휘 버전 확인**~~ (완료): 교차 규칙 `SEM-VOC-001`(경고)이 선택 테이블 VOCABULARY 의 `vocabulary_id = 'None'` 행 `vocabulary_version` 이 `v5.0 29-AUG-26`(v20260829)인지 봅니다.
 5. ~~**가상데이터 재검증**~~ (2026-11-19 완료): 카탈로그의 진단·이상사례·검사·약물·시술 개념 59개, 관찰·노트 개념, 코드 목록의 노트 유형·분류와 단위 2개가 이름과 다른 개념이거나 비표준·폐기 개념이어서 고쳤습니다. 항암 요법 이름 48개는 `spec/concepts.yaml` 의 `regimens` 표로 HemOnc 개념에 대응했습니다(표준 개념이 없는 3개는 `0`). `synth/check_vocab.py` 가 카탈로그, 코드 목록, clean·good 데이터의 모든 개념을 어휘와 대조하며 현재 어긋나는 항목은 0건입니다.
-6. **기대 데이터 정의** ([data-sufficiency.md](data-sufficiency.md)): 항목을 LOINC·SNOMED 코드로 적고, CONCEPT_ANCESTOR 로 하위 개념까지 셉니다. 아직 구현하지 않았습니다. 구현할 때 CONCEPT_ANCESTOR 를 선택 테이블에 더합니다.
+6. ~~**기대 데이터 정의**~~ (1.0.4 완료, [data-sufficiency.md](data-sufficiency.md)): 22개 항목의 검사·시술을 대표 개념으로 적고, 기준 어휘 v20260829 의 LOINC 구성요소·CONCEPT_ANCESTOR 로 펼친 개념 집합(`spec/concept_sets.yaml`, ID 만)을 기준 패키지에 넣었습니다. 앱 안에서 펼치므로 병원이 CONCEPT_ANCESTOR 를 낼 필요는 없습니다. 바이오마커·병기는 MEASUREMENT 의 LOINC 검사로 적습니다.
 
 ## 4. 결정 기록
 

@@ -11,7 +11,10 @@ python dq/engine.py --cohort <COHORT> --data <csv 디렉터리> --out <보고서
 1. 코호트 구성(`spec/cohort_profiles.yaml`)에 따라 `<TABLE>.csv`를 문자열 그대로 읽습니다.
 2. **구조 규칙**은 원본 문자열 위에서 검사합니다 (타입 오류를 잡기 위해). 컬럼 구성 규칙은 누락된 컬럼만, 명세 외 컬럼 규칙은 추가된 컬럼만 보고하며 컬럼 별칭은 받지 않습니다.
 3. **교차 테이블 규칙**은 명세 타입으로 변환한 뒤 DuckDB에 적재해 SQL로 실행합니다. 보조 테이블 `_MEASUREMENT_CONCEPTS`(검사 타당 범위), `_ANTICANCER_DRUGS`를 함께 등록합니다.
-4. 출력: `findings.csv`(위반 행 단위), `summary.json`(규칙 단위 상태와 위반 수), `report.md`(사람용 요약).
+4. **데이터 충실도**는 같은 DuckDB 연결에서 교차 테이블 규칙 뒤에 계산합니다(아래 문단).
+5. 출력: `findings.csv`(위반 행 단위), `sufficiency.csv`(데이터 충실도 미충족 환자·요법, 환자 단위), `summary.json`(규칙 단위 상태와 위반 수, `sufficiency` 집계), `report.md`(사람용 요약, `## 데이터 충실도` 절 포함).
+
+**데이터 충실도.** 규칙 위반과 별개로 "있어야 할 기록이 실제로 있는가"를 22개 기대 데이터 항목(EXP-*)으로 셉니다. 항목의 SQL 은 `spec/expected_data.yaml` 에 있고, 개념 집합(31개)은 `spec/concept_sets.yaml` 의 개념 ID 를 씁니다. Python 참조 구현과 TypeScript 엔진이 모두 같은 DuckDB 연결에서 교차 테이블 규칙 뒤에 계산하며, 동등성 시험이 `sufficiency.csv` 까지 바이트 단위로 대조합니다. 합격·불합격 판정 없이 비율만 냅니다. 정의와 해석은 [데이터 충실도](data-sufficiency.md)에 있습니다.
 
 규칙 통계 항목의 키는 `rule_id, name, category, subcategory, severity, table, fields, check, origin, status, violations, rows_checked, note` 순서이고, `status` 는 `pass | fail | skipped | error | disabled` 입니다. 표준 실행에서 `origin` 은 모두 `standard`, `summary.json` 의 `rules_disabled` 는 0 입니다.
 
@@ -46,15 +49,16 @@ Electron + React + TypeScript로 만든 검증 프로그램입니다. Windows 11
 
 **입력.** 코호트 테이블 파일(병원이 직접 채운 질환 본표와 공통 표)을 세 가지 형태로 받습니다: CSV 여러 개(UTF-8 또는 EUC-KR, EUC-KR은 자동 변환), 시트당 테이블 하나인 엑셀 한 파일(날짜 셀은 YYYY-MM-DD로 변환), 또는 파일들이 든 폴더. 파일·시트 이름이 테이블 이름과 달라도 이름 포함 여부와 헤더 유사도(명세 컬럼의 60% 이상)로 자동 대응하고, 대응표에서 직접 바꿀 수 있습니다. 실행 전 사전 점검이 기본키·person_id 누락(오류, 실행 차단), 명세 컬럼 불일치, 날짜 형식 표본(주의)을 알려 줍니다. 실행을 막는 표는 PERSON 과 질환 본표입니다. `NULL`·`NA`·`N/A` 같은 글자는 빈 값으로 읽되, `LYMPHOMA.cell_of_origin` 열의 글자 `NA` 는 매뉴얼이 정한 값이므로 그대로 둡니다.
 
-**출력.** 실행마다 다섯 파일이 실행 폴더에 생깁니다.
+**출력.** 실행마다 여섯 파일이 실행 폴더에 생깁니다.
 
 | 파일 | 내용 | 외부 제출 |
 |---|---|---|
-| `report.md` | 검증 보고서 (규칙 조정이 있으면 `## 규칙 설정` 절 포함) | 가능 |
+| `report.md` | 검증 보고서 (규칙 조정이 있으면 `## 규칙 설정` 절, `## 데이터 충실도` 절 포함) | 가능 |
 | `findings.csv` | 위반 행 목록 (규칙, 테이블, 행 키, 환자 ID, 상세) | 금지 (환자 단위) |
+| `sufficiency.csv` | 데이터 충실도 미충족 환자·요법과 사유 | 금지 (환자 단위, 기관 내부 전용) |
 | `rule_results.csv` | 코호트에 적용된 규칙의 통과·실패·건너뜀·꺼짐과 위반 수, `origin` 열 | 가능 |
-| `submission.json` | 중앙 제출용 집계 (환자 단위 정보 없음), `schema: kai-dq-submission/1`, 규칙 설정 요약 `rule_set` 포함 | 가능, 중앙에 보내는 유일한 파일 |
-| `summary.json` | 엔진 원본 요약 | 가능 |
+| `submission.json` | 중앙 제출용 집계 (환자 단위 정보 없음), `schema: kai-dq-submission/3`, 규칙 설정 요약 `rule_set` 와 데이터 충실도 `sufficiency` 집계 포함 | 가능, 중앙에 보내는 유일한 파일 |
+| `summary.json` | 엔진 원본 요약 (`sufficiency` 포함) | 가능 |
 
 **구조.** 화면(React, 샌드박스)은 preload가 노출한 좁은 API로만 메인 프로세스에 요청합니다. 메인이 파일을 인식·정규화하고 엔진을 Electron 유틸리티 프로세스(워커)에서 실행해 진행률을 전달하며, 실행마다 요약·규칙별 결과·위반 행을 사용자 컴퓨터의 DuckDB 이력 DB에 적재합니다. 화면은 검증 실행(첫 화면, 4단계 마법사), 결과 보고서, 오류 현황 조회, 대시보드, 통계 모니터링, 검증 규칙 관리(규칙 조회와 수준 1~3 편집), 설정(관리자 모드 단추 포함) 7개입니다.
 

@@ -174,10 +174,16 @@ def main():
         for k, v in sect.items():
             codelists[k] = OrderedDict((str(a), str(b)) for a, b in v.items())
     meta = SPEC["meta"]
+    ed = load("spec/expected_data.yaml")
+    sets = load("spec/concept_sets.yaml")
+    exp_items = [OrderedDict(id=it["id"], title=it["title"], cohorts=list(PROFILES) if it["scope"] == "all" else it["scope"],
+                             unit=it["unit"], target=it["target"], expect=it["expect"], basis=it["basis"]) for it in ed["items"]]
+    concept_sets = [OrderedDict(id=k, name=v["name"], n=len(sets["sets"][k])) for k, v in ed["concept_sets"].items()]
     data = OrderedDict(spec_name=meta["name"], manual_date=meta.get("manual_date", ""),
                        counts=dict(tables=len(TABLES), fields=sum(len(t["fields"]) for t in TABLES.values()),
                                    structural=len(RULES_ST), semantic=len(RULES_SE)),
-                       files=files, cohorts=cohorts, tables=tables, codelists=codelists, rules=rules)
+                       files=files, cohorts=cohorts, tables=tables, codelists=codelists, rules=rules,
+                       expected=exp_items, concept_sets=concept_sets, vocabulary_version=sets["meta"]["vocabulary_version"])
     for c in data["cohorts"]:
         del c["rule_ids"]
         c["rules"] = sum(1 for r in rules if c["id"] in r["cohorts"])

@@ -1,12 +1,13 @@
 // 검증 엔진 본체: 적재 → 구조 규칙 → 교차 규칙 → 요약/보고서
 import fs from "node:fs";
 import path from "node:path";
-import { loadSpec, loadCodelists, loadConcepts, loadProfiles } from "./load.js";
+import { loadSpec, loadCodelists, loadConcepts, loadProfiles, loadExpectedData, loadConceptSets } from "./load.js";
 import { readCsv, writeCsv } from "./csv.js";
 import { runStructural } from "./structural.js";
 import { runSemantic } from "./semantic.js";
+import { runSufficiency, sufficiencyMd, SUFF_PUBLIC_ERROR } from "./sufficiency.js";
 import { effectiveRules, ruleSetHash, describeOverrides, isEmptyOverrides } from "./rules.js";
-import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides, CohortProfile } from "./types.js";
+import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides, CohortProfile, SufficiencyResult, SufficiencyRow } from "./types.js";
 
 /** 외부용 요약에는 DB 오류 원문(입력값·SQL을 포함할 수 있음)을 싣지 않는다.
  * 앱 내부 진단은 원본 Summary 를 사용한다.
@@ -17,10 +18,12 @@ export function publicSummary(summary: Summary): Summary {
     rules: summary.rules.map((r) => r.status === "error"
       ? { ...r, note: "규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요." }
       : r),
+    sufficiency: summary.sufficiency.map((x) => (x.status === "error" ? { ...x, note: SUFF_PUBLIC_ERROR } : x)),
   };
 }
 
 export const FINDING_COLUMNS = ["rule_id", "rule_name", "category", "severity", "table", "field", "row_key", "person_id", "detail"];
+export const SUFFICIENCY_COLUMNS = ["item_id", "person_id", "unit_key", "detail"];
 
 export type ProgressStage = "load" | "structural" | "semantic" | "write";
 export interface Progress { stage: ProgressStage; done: number; total: number; text: string }
@@ -52,6 +55,8 @@ export class Engine {
   readonly raw = new Map<string, RawTable>();
   readonly findings: Finding[] = [];
   readonly ruleStats = new Map<string, RuleStat>();
+  sufficiency: SufficiencyResult[] = [];
+  sufficiencyRows: SufficiencyRow[] = [];
   private readonly progress?: ProgressFn;
 
   constructor(opt: EngineOptions) {
@@ -120,7 +125,13 @@ export class Engine {
       { cohort: this.cohort, todayIso: this.todayIso, spec: this.spec, concepts: this.concepts,
         tablesInCohort: this.tablesInCohort, raw: this.raw, diseaseTable: this.diseaseTable,
         onRule: (i, n, id) => this.progress?.({ stage: "semantic", done: i, total: n, text: `교차 규칙 ${id}` }) },
-      this.rulesSem, { initStat: this.initStat, add: this.add });
+      this.rulesSem, { initStat: this.initStat, add: this.add },
+      async (con) => {
+        this.progress?.({ stage: "semantic", done: this.rulesSem.length, total: this.rulesSem.length, text: "데이터 충실도" });
+        const r = await runSufficiency(con, { cohort: this.cohort, raw: this.raw, diseaseTable: this.diseaseTable,
+          expected: loadExpectedData(), conceptSets: loadConceptSets() });
+        this.sufficiency = r.items; this.sufficiencyRows = r.rows;
+      });
   }
 
   summary(): Summary {
@@ -143,7 +154,7 @@ export class Engine {
       violations_total: sum(() => true),
       violations_error: sum((s) => s.severity === "error"),
       violations_warning: sum((s) => s.severity === "warning"),
-      by_category: byCat, rules: stats,
+      by_category: byCat, rules: stats, sufficiency: this.sufficiency,
     };
   }
 
@@ -151,6 +162,7 @@ export class Engine {
     this.progress?.({ stage: "write", done: 0, total: 1, text: "보고서 쓰는 중" });
     fs.mkdirSync(outDir, { recursive: true });
     writeCsv(path.join(outDir, "findings.csv"), FINDING_COLUMNS, this.findings as unknown as Record<string, unknown>[]);
+    writeCsv(path.join(outDir, "sufficiency.csv"), SUFFICIENCY_COLUMNS, this.sufficiencyRows as unknown as Record<string, unknown>[]);
     const s = this.summary();
     fs.writeFileSync(path.join(outDir, "summary.json"), JSON.stringify(publicSummary(s), null, 1), "utf-8");
     fs.writeFileSync(path.join(outDir, "report.md"), this.reportMd(s), "utf-8");
@@ -190,6 +202,7 @@ export class Engine {
       L.push(`| ${r.rule_id} ${r.name} | ${r.category} | ${r.severity} | ${r.table} | ${r.violations} |`);
     const errs = s.rules.filter((r) => r.status === "error");
     if (errs.length) L.push("", "## 규칙 실행 오류", "", ...errs.map((r) => `- ${r.rule_id}: 규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요.`));
+    L.push(...sufficiencyMd(s.sufficiency));
     return L.join("\n") + "\n";
   }
 }

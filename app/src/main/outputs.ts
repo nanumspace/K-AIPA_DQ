@@ -17,10 +17,11 @@ export const APP_VERSION = app.getVersion();
 const FILES: Omit<OutputFile, "path" | "size">[] = [
   { key: "report", name: "report.md", label: "검증 보고서", desc: "요약, 분류별 집계와 실패 규칙별 건수. 입력 원문과 DB 오류 원문은 포함하지 않습니다.", shareable: true },
   { key: "findings", name: "findings.csv", label: "위반 행 목록 (CSV)", desc: "규칙, 테이블, 행 키, 환자 ID, 상세. 병원 내부에서 데이터를 고칠 때 씁니다.", shareable: false },
+  { key: "sufficiency", name: "sufficiency.csv", label: "데이터 충실도 미충족 목록 (CSV)", desc: "있어야 할 기록이 없는 환자·요법과 사유. 병원 내부에서 누락을 찾을 때 씁니다.", shareable: false },
   { key: "rules", name: "rule_results.csv", label: "규칙별 결과 (CSV)", desc: "규칙 전체의 통과·실패·건너뜀·꺼짐과 위반 수, 검사 행 수, 규칙의 출처(표준·변경·사용자·관리자).", shareable: true },
   { key: "submission", name: "submission.json", label: "제출용 집계", desc: "환자 단위 정보를 뺀 규칙별 건수와 테이블 행 수, 규칙 설정(표준 여부). 제출이 필요할 때 전달하는 파일이며 앱이 자동으로 보내지는 않습니다.", shareable: true },
   { key: "summary", name: "summary.json", label: "실행 요약 (JSON)", desc: "규칙 단위 요약. DB 오류 원문을 제외한 프로그램 간 비교용 결과.", shareable: true },
-  { key: "criteria", name: CRITERIA_ZIP, label: "실행 당시 기준 패키지 (ZIP)", desc: "이 실행에 쓴 명세·규칙 YAML 7종과 manifest 의 원본. 다른 PC 에서 같은 기준으로 다시 검증하거나 감사할 때 씁니다. 기관 자체 규칙의 SQL 이 포함될 수 있습니다.", shareable: false },
+  { key: "criteria", name: CRITERIA_ZIP, label: "실행 당시 기준 패키지 (ZIP)", desc: "이 실행에 쓴 명세·규칙·데이터 충실도 YAML 9종과 manifest 의 원본. 다른 PC 에서 같은 기준으로 다시 검증하거나 감사할 때 씁니다. 기관 자체 규칙의 SQL 이 포함될 수 있습니다.", shareable: false },
   { key: "criteriaSnapshot", name: CRITERIA_SNAPSHOT_JSON, label: "실행 당시 유효 규칙·명세 (JSON)", desc: "그 실행에 적용된 규칙(심각도·조건·SQL 포함), 명세 요약, 검증 기준일과 이 PC 의 규칙 덧씌우기. 기관 자체 규칙의 SQL 이 포함될 수 있어 외부로 보내지 않습니다.", shareable: false },
 ];
 
@@ -42,7 +43,7 @@ export function writeExtraOutputs(runDir: string, summary: Summary, meta: { coho
   // 병원 간 비교에 그대로 쓴다. origin 이 standard 가 아닌 규칙이 있으면 그 규칙의 결과를 비교에서 빼거나 따로 표시한다.
   // admin_modified 가 true 이면 표준 SQL 이 바뀐 제출분이므로 반드시 따로 표시한다. standard_hash 가 다르면 규칙 버전이 다른 제출분이다.
   const submission = {
-    schema: "kai-dq-submission/2",
+    schema: "kai-dq-submission/3",
     app_version: APP_VERSION,
     run_id: meta.runId, cohort: summary.cohort, cohort_kor: meta.cohortKor, label: meta.label,
     run_date: summary.run_date, generated_at: new Date().toISOString(),
@@ -57,6 +58,8 @@ export function writeExtraOutputs(runDir: string, summary: Summary, meta: { coho
     by_category: summary.by_category,
     by_check: [...byCheck.entries()].map(([check, b]) => ({ check, label: checkLabel(check), ...b })),
     by_rule: rules.map((r) => ({ rule_id: r.rule_id, name: r.name, category: r.category, severity: r.severity, check: r.check, origin: r.origin, table: r.table, status: r.status, violations: r.violations, rows_checked: r.rows_checked })),
+    // 데이터 충실도: 항목별 대상·충족 수와 연령대별 수 (규칙 집계와 별개, 환자 단위 값 없음)
+    sufficiency: (summary.sufficiency ?? []).map((x) => ({ id: x.id, title: x.title, unit: x.unit, status: x.status, eligible: x.eligible, met: x.met, per_year_median: x.per_year_median, by_age: x.by_age })),
     note: "환자 단위 정보(person_id, row_key, detail)는 포함하지 않습니다.",
   };
   fs.writeFileSync(path.join(runDir, "submission.json"), JSON.stringify(submission, null, 1), "utf-8");
@@ -70,7 +73,7 @@ export function runOutputs(runDir: string): RunOutputs {
   return { dir: runDir, inputDir: path.join(runDir, "input"), files };
 }
 
-/** 출력물(결과 5종과 실행 당시 기준 2종)을 대상 폴더 아래 <실행 ID>/ 로 복사한다. 없는 파일은 건너뛴다. */
+/** 출력물(결과 6종과 실행 당시 기준 2종)을 대상 폴더 아래 <실행 ID>/ 로 복사한다. 없는 파일은 건너뛴다. */
 export function exportBundle(runDir: string, runId: string, destRoot: string): string {
   const dest = path.join(destRoot, runId);
   fs.mkdirSync(dest, { recursive: true });
@@ -83,7 +86,7 @@ export function exportBundle(runDir: string, runId: string, destRoot: string): s
     `K-AIPA DQ 결과 · ${runId}`, "",
     ...listed.map((f) => `- ${f.name}: ${f.label}. ${f.desc}${f.shareable ? "" : " [외부 제출 금지]"}`), "",
     "이 폴더는 앱이 로컬에 복사한 파일입니다. 앱은 어떤 파일도 자동 전송하지 않습니다. 제출이 필요하면 submission.json 만 직접 전달하세요.",
-    "findings.csv 는 환자 단위 정보(환자 ID, 행 키)가 있으므로 보안이 확보된 기관 내부 위치에만 보관하고 외부로 내보내지 않습니다.",
+    "findings.csv · sufficiency.csv 는 환자 단위 정보(환자 ID, 행 키)가 있으므로 보안이 확보된 기관 내부 위치에만 보관하고 외부로 내보내지 않습니다.",
     ...(hasCriteria ? [`${CRITERIA_ZIP}, ${CRITERIA_SNAPSHOT_JSON} 에는 기관 자체 규칙의 SQL 과 내부 설명이 담길 수 있으므로 외부로 내보내지 않습니다. 같은 기준으로 다시 검증하려면 ${CRITERIA_ZIP} 을 기준 패키지로 가져오세요.`] : []), ""].join("\n"), "utf-8");
   return dest;
 }

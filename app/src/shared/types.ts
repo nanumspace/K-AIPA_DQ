@@ -1,7 +1,7 @@
 // 메인 · preload · 렌더러가 공유하는 타입과 IPC 계약
-import type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule } from "@engine/types.js";
+import type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule, SufficiencyResult } from "@engine/types.js";
 
-export type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule };
+export type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule, SufficiencyResult };
 import type { CriteriaInfo, CriteriaPreview, CriteriaSnapshot } from "./criteria";
 
 export interface AppConfig {
@@ -164,6 +164,8 @@ export interface RunRecord {
   rows_total: number; tables: Record<string, number>;
   /** 이 PC 에서 끈 규칙 수 */
   rules_disabled: number;
+  /** 건너뜀 가운데 매뉴얼 보완 선택 항목(선택 테이블·선택 컬럼)을 내지 않아 건너뛴 규칙 수. 미검사로 세지 않는다 */
+  rules_skipped_optional: number;
   /** 표준이 아닌 규칙(변경·사용자·관리자)이 하나라도 있었는지 */
   rule_set_modified: boolean;
   /** 관리자 출처 규칙(SQL 교체·ADM)이 있었는지 */
@@ -191,11 +193,12 @@ export interface FindingsPage { total: number; rows: FindingRow[] }
 /** 조건에 맞는 위반 행을 CSV 로 저장한 결과 */
 export interface FindingsExportResult { path: string; rows: number }
 
-export interface RunDetail { run: RunRecord; rules: RuleResultRow[]; report: string }
+/** sufficiency: 데이터 충실도 항목별 집계 (summary.json). 충실도 이전에 만든 실행은 빈 배열 */
+export interface RunDetail { run: RunRecord; rules: RuleResultRow[]; report: string; sufficiency: SufficiencyResult[] }
 
 // ------------------------------------------------------------------ 출력
 export interface OutputFile {
-  key: "report" | "findings" | "rules" | "submission" | "summary" | "criteria" | "criteriaSnapshot";
+  key: "report" | "findings" | "sufficiency" | "rules" | "submission" | "summary" | "criteria" | "criteriaSnapshot";
   name: string;
   label: string;
   desc: string;

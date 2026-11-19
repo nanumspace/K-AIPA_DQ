@@ -52,7 +52,9 @@ export function ReportPage({ nav }: { nav: Nav }) {
     return ["Conformance", "Completeness", "Plausibility"].map((c) => ({ c, ...(m.get(c) ?? { rules: 0, failed: 0, violations: 0 }) }));
   }, [d]);
   const failed = useMemo(() => (d?.rules ?? []).filter((r) => r.status === "fail").sort((a, b) => Number(b.severity === "error") - Number(a.severity === "error") || b.violations - a.violations), [d]);
-  const skipped = useMemo(() => (d?.rules ?? []).filter((r) => r.status !== "fail" && r.status !== "pass").sort((a, b) => Number(b.status === "error") - Number(a.status === "error")), [d]);
+  const isOptionalSkip = (r: { status: string; note: string }) => r.status === "skipped" && r.note.startsWith("선택 항목 미제출");
+  const skipped = useMemo(() => (d?.rules ?? []).filter((r) => r.status !== "fail" && r.status !== "pass" && !isOptionalSkip(r)).sort((a, b) => Number(b.status === "error") - Number(a.status === "error")), [d]);
+  const optionalSkipped = useMemo(() => (d?.rules ?? []).filter(isOptionalSkip).length, [d]);
   const run = d?.run.run_id === runId ? d.run : undefined;
 
   return (
@@ -76,6 +78,7 @@ export function ReportPage({ nav }: { nav: Nav }) {
           <h2 className="run-title">{run.cohort_kor} · {run.label}</h2>
           <RunSummary run={run} />
           {run.rule_set_modified && <div className="callout warn">표준과 다른 규칙 설정으로 실행했습니다.{run.admin_modified && " 관리자 SQL 규칙이 포함되어 있습니다."} 변경 내역은 보고서 원문과 제출용 집계에 기록됩니다.</div>}
+          {optionalSkipped > 0 && <p className="hint">선택 항목(원천 코드 컬럼, CONCEPT·VOCABULARY)을 내지 않아 그 규칙 {optionalSkipped}개는 건너뛰었습니다. 매뉴얼 보완 항목이라 미검사로 보지 않습니다.</p>}
           {skipped.length > 0 && (
             <Card title="먼저 확인: 미검사 · 실행 오류" sub="입력 누락, 꺼 둔 규칙 또는 실행 오류의 사유를 확인한 뒤 다시 검증하세요.">
               <div className="table-scroll"><table className="tbl">
@@ -95,6 +98,22 @@ export function ReportPage({ nav }: { nav: Nav }) {
               </table></div>
             )}
           </Card>
+          {(d?.sufficiency.length ?? 0) > 0 && (
+            <Card title="데이터 충실도" sub="있어야 할 기록(지침 기반 기대 항목)이 실제로 있는 비율입니다. 규칙 위반·통과율과 별개이며 충족 판정이나 목표치는 없습니다. 기록 없음의 원인(미시행·외부 시행·추출 누락·매핑 차이)은 단정하지 않습니다. 미충족 환자·요법은 sufficiency.csv(기관 내부용)에 있습니다.">
+              <div className="table-scroll"><table className="tbl">
+                <thead><tr><th>항목</th><th>단위</th><th className="num">대상</th><th className="num">충족</th><th className="num">비율</th><th className="num">1인·1년당 중앙값</th><th>연령대별 (충족/대상)</th></tr></thead>
+                <tbody>{d!.sufficiency.map((x) => (
+                  <tr key={x.id}><td><span className="mono">{x.id}</span> {x.title}</td><td>{x.unit}</td>
+                    {x.status === "ok" ? <>
+                      <td className="num">{fmt(x.eligible)}</td><td className="num">{fmt(x.met)}</td>
+                      <td className="num">{x.eligible ? pct(x.met / x.eligible * 100, 1) : "-"}</td><td className="num">{x.per_year_median ?? "-"}</td>
+                      <td>{x.by_age.map((b) => `${b.band} ${b.met}/${b.eligible}`).join(" · ")}</td>
+                    </> : <td colSpan={5}><StatusPill s={x.status === "skipped" ? "skipped" : "error"} /> {x.note}</td>}
+                  </tr>
+                ))}</tbody>
+              </table></div>
+            </Card>
+          )}
           <Card title="실행 당시 적용 기준" sub="이 실행을 시작할 때 보관한 명세와 규칙입니다. 이후 기준이 바뀌어도 이 화면은 바뀌지 않으며 현재 기준을 대신 보여 주지 않습니다.">
             {criteriaErr ? <div className="callout err" role="alert">당시 기준을 불러오지 못했습니다: {criteriaErr} <button className="btn" onClick={() => setRetry((n) => n + 1)}>다시 시도</button></div>
               : criteria === undefined ? <div role="status">당시 기준 확인 중…</div>

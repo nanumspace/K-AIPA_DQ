@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse, parseDocument, isMap, isSeq, isScalar } from "yaml";
-import type { Spec, StructuralRule, SemanticRule, Concepts, CohortProfile } from "./types.js";
+import type { Spec, StructuralRule, SemanticRule, Concepts, CohortProfile, ExpectedData } from "./types.js";
 
 let rootOverride: string | undefined;
 
@@ -56,6 +56,16 @@ export function loadConcepts(): Concepts {
 
 export function loadProfiles(): Record<string, CohortProfile> {
   return loadYaml<{ cohorts: Record<string, CohortProfile> }>("spec/cohort_profiles.yaml").cohorts;
+}
+
+/** 데이터 충실도 정의 (손으로 관리) */
+export function loadExpectedData(): ExpectedData {
+  return loadYaml<ExpectedData>("spec/expected_data.yaml");
+}
+
+/** 데이터 충실도 개념 집합 (spec/build_concept_sets.py 가 기준 어휘로 펼친 ID 목록) */
+export function loadConceptSets(): Record<string, number[]> {
+  return loadYaml<{ sets: Record<string, number[]> }>("spec/concept_sets.yaml").sets;
 }
 
 /**

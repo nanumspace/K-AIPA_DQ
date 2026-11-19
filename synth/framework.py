@@ -46,6 +46,13 @@ HT, WT, BMI = 3036277, 3025315, 3038553             # 신장·체중·BMI (MEASU
 WT_FRESH_DAYS = 7                                      # 투여일 기준 이 일수 안의 체중 기록이 없으면 투여일에 새로 잰다
 NOTE_OPD, NOTE_CLASS_ONC = 32834, 3032377           # 용량 계산 NOTE: Outpatient note / Oncology note (codelists 값)
 REGIMENS = CONCEPTS["regimens"]                        # regimen_source_value -> HemOnc 표준 개념, null 은 0(No matching concept)
+# 바이오마커·병기 결과는 MEASUREMENT 에 LOINC 검사로 적는다 (docs/data-sufficiency.md, 결정 2026-11-19). 기준 어휘 v20260829 표준 개념
+EGFR_TEST, ALK_TEST, KRAS_TEST, NRAS_TEST = 3009224, 21492143, 3012200, 3001274
+ER_TEST, PR_TEST, HER2_TEST, STAGE_TEST, MSI_TEST = 3016794, 3022156, 3019066, 3031548, 21493972
+POSITIVE, NEGATIVE, DETECTED, NOT_DETECTED = 9191, 9189, 4126681, 9190     # SNOMED Meas Value
+MSI_HIGH, MS_STABLE = 21499079, 45879403                                   # LOINC 답변 MSI-H, Stable
+STAGE_ANSWER = {"0": 45884284, "I": 45880980, "II": 45880979, "III": 45878643, "IV": 45880109}   # LOINC 답변 Stage 0~IV
+PERCENT = 8554
 
 _DRUG_ID = {v["name"]: k for k, v in CONCEPTS["drugs"].items()}
 
@@ -233,6 +240,16 @@ class Ctx:
             unit_source_value=m["unit_label"], value_source_value=None if value is None else str(value)))
         if value is not None and concept in (HT, WT):
             bisect.insort(p.ht if concept == HT else p.wt, (date, float(value)))
+        return mid
+
+    def result(self, p, date, concept, value_concept, source, vid=None, number=None, unit=None):
+        """범주형 검사 결과(바이오마커·병기). 카탈로그 밖 LOINC 검사라 정상범위·타당 범위가 없다."""
+        vid = vid or self.visit_on(p, date)
+        mid = self.nid("MEASUREMENT")
+        self.rows["MEASUREMENT"].append(dict(
+            measurement_id=mid, visit_occurrence_id=vid, person_id=p.person_id, measurement_concept_id=concept, measurement_date=date,
+            measurement_type_concept_id=32856, value_as_number=number, value_as_concept_id=value_concept,
+            unit_concept_id=unit, range_low=None, range_high=None, unit_source_value=None, value_source_value=source))
         return mid
 
     def lab_value(self, concept, shift=0.0, sd_scale=1.0, lo=None, hi=None, nd=1):

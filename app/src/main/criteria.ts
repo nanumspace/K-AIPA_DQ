@@ -6,12 +6,12 @@ import path from "node:path";
 import { createHash, randomBytes } from "node:crypto";
 import { unzipSync, zipSync } from "fflate";
 import { parseDocument } from "yaml";
-import { getRoot, setRoot, loadSpec, loadProfiles, loadStructuralRules, loadSemanticRules, loadCodelists, loadConcepts } from "@engine/index.js";
-import type { Spec, SpecField, StructuralRule, SemanticRule, Concepts, CohortProfile } from "@engine/types.js";
+import { getRoot, setRoot, loadSpec, loadProfiles, loadStructuralRules, loadSemanticRules, loadCodelists, loadConcepts, loadExpectedData, loadConceptSets } from "@engine/index.js";
+import type { Spec, SpecField, StructuralRule, SemanticRule, Concepts, CohortProfile, ExpectedData } from "@engine/types.js";
 import type { RuleOverrides } from "@shared/types";
 import { CRITERIA_FILES } from "@shared/criteria";
 import type { CriteriaManifest, CriteriaInfo, CriteriaPreview } from "@shared/criteria";
-import { checkSql, isEmptyOverrides, validateOverrides } from "./ruleset";
+import { checkSql, checkSqlStatement, isEmptyOverrides, validateOverrides } from "./ruleset";
 import type { RuleContext } from "./ruleset";
 
 // ------------------------------------------------------------------ 한도
@@ -28,7 +28,7 @@ const FILE_SET = new Set<string>(CRITERIA_FILES);
 const ALLOWED_DIRS = new Set(["spec/", "rules/"]);
 
 export const BUILTIN_MANIFEST: Omit<CriteriaManifest, "files"> = {
-  schema: SCHEMA, name: "K-AIPA DQ 기본 기준", version: "1.0.3", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF", minAppVersion: "1.0.3",
+  schema: SCHEMA, name: "K-AIPA DQ 기본 기준", version: "1.0.4", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF", minAppVersion: "1.0.4",
 };
 
 const fail = (m: string): never => { throw new Error(m); };
@@ -146,9 +146,10 @@ function strictYaml(rel: string, bytes: Uint8Array): unknown {
 interface Loaded {
   spec: Spec; profiles: Record<string, CohortProfile>; structural: StructuralRule[]; semantic: SemanticRule[];
   codelists: Map<string, Set<string>>; concepts: Concepts; constraints: unknown;
+  expected: ExpectedData; conceptSets: Record<string, number[]>;
 }
 
-/** 파일 7개가 다 있는 디렉터리에서 엔진 로더로 읽는다 (구조 점검 전이라 형식이 틀리면 예외) */
+/** 기준 파일이 다 있는 디렉터리에서 엔진 로더로 읽는다 (구조 점검 전이라 형식이 틀리면 예외) */
 function loadAll(root: string, files: Map<string, Uint8Array>): Loaded {
   const docs = new Map<string, unknown>();
   for (const rel of CRITERIA_FILES) docs.set(rel, strictYaml(rel, files.get(rel)!));
@@ -156,9 +157,48 @@ function loadAll(root: string, files: Map<string, Uint8Array>): Loaded {
     return withRoot(root, () => ({
       spec: loadSpec(), profiles: loadProfiles(), structural: loadStructuralRules(), semantic: loadSemanticRules(),
       codelists: loadCodelists(), concepts: loadConcepts(), constraints: docs.get("spec/constraints.yaml"),
+      expected: loadExpectedData(), conceptSets: loadConceptSets(),
     }));
   } catch (e) {
     return fail(`기준 파일 구조가 올바르지 않습니다: ${(e as Error).message}`);
+  }
+}
+
+/** 데이터 충실도 정의(expected_data)와 개념 집합(concept_sets)이 서로·명세와 맞는지 */
+function checkExpected(L: Loaded, errs: string[]): void {
+  const E = L.expected;
+  if (!isObj(E) || !isObj(E.concept_sets) || !Array.isArray(E.events) || !isObj(E.anchors) || !Array.isArray(E.setup) || !Array.isArray(E.items) || !Array.isArray(E.setup_requires)) {
+    errs.push("expected_data: concept_sets, events, anchors, setup_requires, setup, items 가 필요합니다."); return;
+  }
+  if (!isObj(L.conceptSets)) { errs.push("concept_sets: sets 가 필요합니다."); return; }
+  for (const k of Object.keys(E.concept_sets)) {
+    const ids = L.conceptSets[k];
+    if (!Array.isArray(ids) || !ids.length || !ids.every((x) => Number.isInteger(x))) errs.push(`concept_sets: ${k} 의 개념 ID 목록이 없거나 올바르지 않습니다.`);
+  }
+  for (const k of Object.keys(L.conceptSets)) if (!E.concept_sets[k]) errs.push(`concept_sets: expected_data 에 정의가 없는 집합입니다: ${k}`);
+  for (const ev of E.events) {
+    const t = L.spec.tables[ev?.table];
+    if (!t || ![ev.concept, ev.date].every((f) => t.fields.some((x) => x.name === f))) errs.push(`expected_data: events 의 표·열이 명세에 없습니다: ${String(ev?.table)}.${String(ev?.concept)}/${String(ev?.date)}`);
+  }
+  for (const t of E.setup_requires) if (!L.spec.tables[t]) errs.push(`expected_data: setup_requires 에 명세에 없는 테이블이 있습니다: ${String(t)}`);
+  for (const c of Object.keys(L.profiles)) {
+    const a = E.anchors[c];
+    const e = typeof a === "string" ? checkSqlStatement(a.split("{DISEASE}").join("D"), { columns: ["person_id", "anchor_date"] }) : "기준일 SQL 이 없습니다.";
+    if (e) errs.push(`expected_data: ${c} 기준일: ${e}`);
+  }
+  for (const s of E.setup) { const e = checkSqlStatement(String(s).split("{ANCHOR}").join("SELECT 1").split("{DISEASE}").join("D"), { createTemp: true }); if (e) errs.push(`expected_data: setup: ${e}`); }
+  const seen = new Set<string>();
+  for (const it of E.items) {
+    const id = String(it?.id);
+    if (!isObj(it) || !ID_RE.test(id)) { errs.push(`expected_data: 항목 ID 가 올바르지 않습니다: ${id}`); continue; }
+    if (seen.has(id)) errs.push(`expected_data: 항목 ID 가 겹칩니다: ${id}`);
+    seen.add(id);
+    for (const k of ["title", "unit", "target", "expect", "basis"] as const) if (typeof it[k] !== "string" || !it[k]) errs.push(`${id}: ${k} 가 비어 있습니다.`);
+    checkScope(id, it.scope, L, errs);
+    if (!Array.isArray(it.requires)) errs.push(`${id}: requires 는 테이블 목록이어야 합니다.`);
+    else for (const t of it.requires) if (!L.spec.tables[t]) errs.push(`${id}: requires 에 명세에 없는 테이블이 있습니다: ${String(t)}`);
+    const e = checkSqlStatement(String(it.sql ?? "").split("{DISEASE}").join("D"), { columns: ["person_id", "unit_key", "met", "detail", "per_year"] });
+    if (e) errs.push(`${id}: ${e}`);
   }
 }
 
@@ -386,7 +426,7 @@ function validateContent(L: Loaded, rawCodelists: unknown): void {
   checkSpec(L, errs);
   checkProfiles(L, errs);
   checkCodelistsConcepts(L, errs, rawCodelists);
-  if (!errs.length) { checkConstraints(L, errs); checkStructural(L, errs); checkSemantic(L, errs); }
+  if (!errs.length) { checkConstraints(L, errs); checkStructural(L, errs); checkSemantic(L, errs); checkExpected(L, errs); }
   if (errs.length) fail(`기준 내용 검증 실패 (${errs.length}건): ${errs.slice(0, 8).join(" / ")}${errs.length > 8 ? ` … 외 ${errs.length - 8}건` : ""}`);
 }
 

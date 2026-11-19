@@ -444,6 +444,9 @@ def generate(ctx: Ctx, n=100):
                                                 prp="positive" if st["pr"] > 0 else "negative", her2=her2_txt, fish=fish_txt,
                                                 ki=st["ki67"], sub=sub if not dcis else ("ER-positive DCIS" if st["hr"] else "ER-negative DCIS")),
                  note_type=32835, note_class=3031451, vid=pv)
+        ctx.result(p, path_day, ER_TEST, POSITIVE if st["hr"] else NEGATIVE, f"ER {st['er']}%", vid=pv, number=st["er"], unit=PERCENT)
+        ctx.result(p, path_day, PR_TEST, POSITIVE if st["pr"] > 0 else NEGATIVE, f"PR {st['pr']}%", vid=pv, number=st["pr"], unit=PERCENT)
+        ctx.result(p, path_day, HER2_TEST, POSITIVE if st["her2"] else NEGATIVE, f"HER2 IHC {her2_txt}{fish_txt}", vid=pv)
         ctx.observation(p, path_day, 36303470, vid=pv, value_number=ecog, value_string=f"ECOG {ecog}")
         ht = ctx.normal(170 if gender == MALE else 158, 5.5, 140, 190)
         wt = ctx.normal(70 if gender == MALE else 58, 9, 38, 110)
@@ -467,6 +470,7 @@ def generate(ctx: Ctx, n=100):
             ctx.note(p, stage_day, CT_REPORT.format(lat=lat_en, size=size, node=node, met=met_txt, t=T, n=N, m=M), vid=svid_stage)
             ctx.note(p, stage_day, f"Whole body FDG PET-CT. Hypermetabolic {lat_en.lower()} breast mass (SUVmax {round(ctx.rand(3.0, 15.0), 1)}). {node}. {met_txt} "
                                    "Brain not evaluable on FDG PET.", vid=svid_stage)
+        ctx.result(p, stage_day, STAGE_TEST, STAGE_ANSWER[st["stage"]], f"c{T}{N}{M} stage {st['stage']}")
 
         # ---- 2) 치료
         surgery_day = None

@@ -19,6 +19,7 @@ pip install pandas numpy pyyaml duckdb openpyxl
 ```bash
 python spec/build_spec.py                    # 매뉴얼 엑셀(raw/) + spec/constraints.yaml → 명세·코드표·코호트 구성 (spec/)
 python rules/generate_structural_rules.py    # 명세 → 구조 규칙 410개 (rules/rules_structural.yaml)
+python spec/build_concept_sets.py            # OHDSI 용어집 → 데이터 충실도 개념 집합 (spec/concept_sets.yaml)
 python dq/run_all.py                         # 생성·검증(clean/dirty/good)·오류 주입·정답 대조를 모두 실행
 ```
 
@@ -29,6 +30,8 @@ python dq/run_all.py                         # 생성·검증(clean/dirty/good)�
 `run_all.py`는 코호트마다 시드를 고정하므로(20260907 + 코호트 순번) 결과가 재현됩니다. 실행 후 `synth/output/`과 `dq/reports/`가 저장소에 든 것과 같은 내용으로 다시 만들어집니다.
 
 `spec/build_spec.py` 는 `raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx` 를 읽습니다. 매뉴얼이 정하지 않는 값 제약(범위, 정규식, OMOP 대표 코드)은 `spec/constraints.yaml` 에서 옵니다. 매뉴얼에 없는 필드가 `constraints.yaml` 에 있으면 멈춥니다.
+
+`spec/build_concept_sets.py` 는 `spec/expected_data.yaml` 의 개념 집합(31개)을 OHDSI 용어집(LOINC 성분 + `CONCEPT_ANCESTOR`)에서 펼쳐 개념 ID 만 `spec/concept_sets.yaml` 에 씁니다. 용어집 `raw/vocab/v20260829` 가 필요한데 저장소에 없으므로, 없는 환경에서는 이 단계를 건너뜁니다. 결과 `spec/concept_sets.yaml` 은 저장소에 들어 있어 나머지 단계와 앱 빌드에는 필요하지 않습니다.
 
 ### 개별 실행
 

@@ -129,21 +129,34 @@ export function normalizeOverrides(o: RuleOverrides): RuleOverrides {
 const err = (m: string): never => { throw new Error(m); };
 
 /**
- * 관리자가 쓰는 SQL 의 안전 점검. 규칙 SQL 은 위반 행을 돌려주는 SELECT 하나여야 한다.
- * 데이터를 바꾸거나 파일·확장을 건드리는 문장은 막는다 (관리자라도 규칙 편집 화면에서 쓸 일이 아니다).
+ * 기준 SQL 의 안전 점검: 문장 하나, 조회문(또는 허용한 임시 객체 생성), 데이터·파일·확장을 건드리는 구문 금지.
+ * columns 는 결과에 있어야 할 컬럼 이름. createTemp 이면 `CREATE TEMP TABLE|MACRO _이름` 으로 시작하는 문장만 받는다(데이터 충실도 준비 SQL).
  */
-export function checkSql(sql: string): string | null {
+export function checkSqlStatement(sql: string, opt: { columns?: string[]; createTemp?: boolean } = {}): string | null {
   if (typeof sql !== "string" || !sql.trim()) return "SQL 이 비어 있습니다.";
   if (sql.length > 20000) return "SQL 이 너무 깁니다 (20,000자 이하).";
   // 문자열 리터럴과 주석을 걷어 낸 뒤 본다
   const bare = sql.replace(/'(?:[^']|'')*'/g, "''").replace(/--[^\n]*/g, " ").replace(/\/\*[\s\S]*?\*\//g, " ").trim();
-  const body = bare.replace(/;\s*$/, "");
+  let body = bare.replace(/;\s*$/, "");
   if (body.includes(";")) return "문장은 하나여야 합니다 (세미콜론으로 나눈 여러 문장은 쓸 수 없습니다).";
-  if (!/^(select|with)\b/i.test(body)) return "SELECT 또는 WITH 로 시작해야 합니다.";
+  if (opt.createTemp) {
+    const head = /^create\s+temp\s+(table\s+_\w+\s+as|macro\s+_\w+\s*\([^)]*\)\s+as)\b/i.exec(body);
+    if (!head) return "CREATE TEMP TABLE _이름 AS 또는 CREATE TEMP MACRO _이름(...) AS 로 시작해야 합니다.";
+    body = body.slice(head[0].length).trim();
+  } else if (!/^(select|with)\b/i.test(body)) return "SELECT 또는 WITH 로 시작해야 합니다.";
   const bad = /\b(copy|attach|detach|install|load|export|import|pragma|create|drop|insert|update|delete|alter|call|set|truncate|read_csv|read_csv_auto|read_json|read_parquet|read_text|glob|httpfs)\b/i.exec(body);
   if (bad) return `쓸 수 없는 구문입니다: ${bad[0]}`;
-  if (!/\bperson_id\b/i.test(body) || !/\brow_key\b/i.test(body) || !/\bdetail\b/i.test(body)) return "결과 컬럼 person_id, row_key, detail 이 모두 있어야 합니다.";
+  const missing = (opt.columns ?? []).filter((c) => !new RegExp(`\\b${c}\\b`, "i").test(body));
+  if (missing.length) return `결과 컬럼 ${(opt.columns ?? []).join(", ")} 이 모두 있어야 합니다.`;
   return null;
+}
+
+/**
+ * 관리자가 쓰는 SQL 의 안전 점검. 규칙 SQL 은 위반 행을 돌려주는 SELECT 하나여야 한다.
+ * 데이터를 바꾸거나 파일·확장을 건드리는 문장은 막는다 (관리자라도 규칙 편집 화면에서 쓸 일이 아니다).
+ */
+export function checkSql(sql: string): string | null {
+  return checkSqlStatement(sql, { columns: ["person_id", "row_key", "detail"] });
 }
 
 function checkRegex(rx: unknown): string {

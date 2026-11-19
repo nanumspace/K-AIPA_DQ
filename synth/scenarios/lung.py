@@ -344,9 +344,12 @@ def generate(ctx: Ctx, n=100):
             gvid = ctx.visit_on(p, gmt_day)
             pdl1 = ctx.choice([0, 1, 5, 25, 50, 80])
             kras = (not egfr) and ctx.bern(0.2)
-            ctx.note(p, gmt_day, f"Molecular pathology (NGS panel): EGFR {ctx.choice(['exon 19 deletion', 'L858R']) if egfr else 'wild type'}; ALK IHC "
+            variant = ctx.choice(['exon 19 deletion', 'L858R']) if egfr else 'wild type'
+            ctx.note(p, gmt_day, f"Molecular pathology (NGS panel): EGFR {variant}; ALK FISH "
                                  f"negative; KRAS {'G12C' if kras else 'wild type'}; PD-L1 TPS {pdl1}%.",
                      note_type=32835, note_class=3031451, vid=gvid)
+            ctx.result(p, gmt_day, EGFR_TEST, DETECTED if egfr else NOT_DETECTED, f"EGFR {variant}", vid=gvid)
+            ctx.result(p, gmt_day, ALK_TEST, NEGATIVE, "ALK negative", vid=gvid)
 
         # ---- 2) 치료
         last = ctx.days(index, 3)

@@ -1,0 +1,490 @@
+# 데이터 충실도: 질환별 기대 데이터 (손으로 관리, 결정 2026-11-19)
+#
+# 규칙(rules/)은 "있는 행이 맞게 적혔는가"를 보고, 이 파일은 "있어야 할 기록이 실제로 있는가"를 본다.
+# 근거와 결정은 docs/data-sufficiency.md. 결과는 오류·경고와 섞지 않고 보고서의 '데이터 충실도' 절과
+# summary.json 의 sufficiency 에 비율로만 싣는다(충족 판정·목표치 없음).
+#
+# 실행(엔진 공통, dq/engine.py · dq-ts/src/sufficiency.ts):
+#   1. _CONCEPT_SET(set_id, concept_id)  spec/concept_sets.yaml (아래 concept_sets 를 기준 어휘 v20260829 로 펼친 것,
+#      python spec/build_concept_sets.py)
+#   2. _EVENTS(person_id, set_id, event_date)  events 의 표에서 개념 집합에 든 기록. 표·열이 없으면 그 표는 뺀다
+#   3. setup 의 SQL 을 차례로 실행. {ANCHOR} 는 anchors 의 코호트별 SQL, {DISEASE} 는 질환 본표
+#   4. items 의 SQL 마다 대상 단위 한 행: person_id, unit_key, met(참/거짓), detail(미충족 사유), per_year(1인·1년당 횟수, 없으면 NULL)
+#      setup_requires 나 requires 의 표가 없으면 그 항목은 건너뛴다
+#
+# 기간은 docs/data-sufficiency.md 의 제안 구간이다. 관찰 종료일 = 마지막 방문일(종료일 없으면 시작일)과 사망일 중 이른 날.
+
+concept_sets:
+  # 일반 검사: LOINC 구성요소(component) + 검체(system) 로 같은 검사의 모든 표준 코드
+  HEIGHT:      {name: 키, loinc_components: [Body height], systems: ['^Patient']}
+  WEIGHT:      {name: 체중, loinc_components: [Body weight], systems: ['^Patient']}
+  BMI:         {name: 체질량지수, loinc_components: [Body mass index (BMI)], systems: ['^Patient']}
+  HBA1C:       {name: HbA1c, loinc_components: [Hemoglobin A1c/Hemoglobin.total], systems: [Blood]}
+  WBC:         {name: 백혈구, loinc_components: [Leukocytes], systems: [Blood]}
+  NEUTROPHILS: {name: 호중구, loinc_components: [Neutrophils], systems: [Blood]}
+  HEMOGLOBIN:  {name: 혈색소, loinc_components: [Hemoglobin], systems: [Blood]}
+  PLATELETS:   {name: 혈소판, loinc_components: [Platelets], systems: [Blood]}
+  AST:         {name: AST, loinc_components: [Aspartate aminotransferase], systems: [Serum or Plasma]}
+  ALT:         {name: ALT, loinc_components: [Alanine aminotransferase], systems: [Serum or Plasma, 'Serum, Plasma or Blood']}
+  CEA:         {name: CEA, loinc_components: [Carcinoembryonic Ag], systems: [Serum or Plasma]}
+  LDH:         {name: LDH, loinc_components: [Lactate dehydrogenase], systems: [Serum or Plasma]}
+  CREATININE:  {name: 크레아티닌, loinc_components: [Creatinine], systems: [Serum or Plasma]}
+  EGFR_RATE:   {name: eGFR, loinc_components: [Glomerular filtration rate], systems: [Serum or Plasma, 'Serum, Plasma or Blood']}
+  CHOLESTEROL: {name: 총콜레스테롤, loinc_components: [Cholesterol], systems: [Serum or Plasma]}
+  LDL:         {name: LDL 콜레스테롤, loinc_components: [Cholesterol in LDL], systems: [Serum or Plasma]}
+  SBP:         {name: 수축기 혈압, loinc_components: [Intravascular systolic], systems: [Arterial system]}
+  DBP:         {name: 이완기 혈압, loinc_components: [Intravascular diastolic], systems: [Arterial system]}
+  # 바이오마커·병기: MEASUREMENT 에 LOINC 로 적는다(결정 2026-11-19). 결과는 value_as_concept_id 또는 value_source_value
+  EGFR_MUT:    {name: EGFR 유전자 검사, loinc_components: ['EGFR gene%']}
+  ALK:         {name: ALK 유전자 검사, loinc_components: ['ALK gene%']}
+  HER2:        {name: HER2 검사, loinc_components: [HER2 Ag, 'Cells.HER2%', 'ERBB2 gene duplication', 'ERBB2 gene copy number%', 'ERBB2 gene (HER2)%'], exclude_systems: [Serum, Plasma, Serum or Plasma]}
+  ER:          {name: 에스트로겐 수용체, loinc_components: [Estrogen receptor, Estrogen receptor Ag, Cells.estrogen receptor/Cells], exclude_systems: [Serum, Plasma, Serum or Plasma]}
+  PR:          {name: 프로게스테론 수용체, loinc_components: [Progesterone receptor, Progesterone receptor Ag, Cells.progesterone receptor/Cells], exclude_systems: [Serum, Plasma, Serum or Plasma]}
+  STAGE:       {name: 암 병기군, concepts: [3031548, 40762588, 40762594, 40762600], descendants_of: [4161178]}
+  MMR_MSI:     {name: MMR·MSI 검사, loinc_components: ['Microsatellite instability%', PMS2 Ag, 'DNA mismatch repair%'], concepts: [37174395, 45773613]}
+  RAS:         {name: RAS 유전자 검사, loinc_components: ['KRAS gene%', 'NRAS gene%', 'KRAS and NRAS gene', 'KRAS & NRAS gene%']}
+  # 관찰·시술·진단
+  ECOG:        {name: ECOG 수행 상태, concepts: [36303470]}
+  CT_CHEST:    {name: 흉부 CT, descendants_of: [4058335]}
+  PET_CT:      {name: PET-CT, descendants_of: [42872445]}
+  BM_BIOPSY:   {name: 골수 생검, descendants_of: [4119553]}
+  DIABETES_DX: {name: 당뇨병 진단, descendants_of: [201820]}
+
+events:
+- {table: MEASUREMENT, concept: measurement_concept_id, date: measurement_date}
+- {table: PROCEDURE_OCCURRENCE, concept: procedure_concept_id, date: procedure_date}
+- {table: OBSERVATION, concept: observation_concept_id, date: observation_date}
+- {table: CONDITION_OCCURRENCE, concept: condition_concept_id, date: condition_start_date}
+
+# 기준일: 폐암·유방암·대장암 diag_rgst_ymd, 림프종 diagnosis_date, 당뇨병 condition_start_date,
+# MASLD 는 날짜 필드가 없어 질환 본표 visit_occurrence_id 가 가리키는 방문의 시작일. 환자에 여러 행이면 가장 이른 날.
+anchors:
+  LUNG_CANCER: SELECT person_id, MIN(diag_rgst_ymd) AS anchor_date FROM {DISEASE} WHERE person_id IS NOT NULL GROUP BY person_id
+  BREAST_CANCER: SELECT person_id, MIN(diag_rgst_ymd) AS anchor_date FROM {DISEASE} WHERE person_id IS NOT NULL GROUP BY person_id
+  COLORECTAL_CANCER: SELECT person_id, MIN(diag_rgst_ymd) AS anchor_date FROM {DISEASE} WHERE person_id IS NOT NULL GROUP BY person_id
+  LYMPHOMA: SELECT person_id, MIN(diagnosis_date) AS anchor_date FROM {DISEASE} WHERE person_id IS NOT NULL GROUP BY person_id
+  DIABETES: SELECT person_id, MIN(condition_start_date) AS anchor_date FROM {DISEASE} WHERE person_id IS NOT NULL GROUP BY person_id
+  MASLD: >-
+    SELECT d.person_id, MIN(v.visit_start_date) AS anchor_date FROM {DISEASE} d
+    LEFT JOIN VISIT_OCCURRENCE v ON v.visit_occurrence_id = d.visit_occurrence_id
+    WHERE d.person_id IS NOT NULL GROUP BY d.person_id
+
+setup_requires: [PERSON, VISIT_OCCURRENCE]
+setup:
+- CREATE TEMP TABLE _ANCHOR AS {ANCHOR}
+- >-
+  CREATE TEMP TABLE _BASE AS
+  SELECT p.person_id, a.anchor_date,
+         CASE WHEN p.death_date IS NOT NULL AND (o.last_visit IS NULL OR p.death_date < o.last_visit) THEN p.death_date ELSE o.last_visit END AS obs_end
+  FROM (SELECT person_id, MIN(death_date) AS death_date FROM PERSON WHERE person_id IS NOT NULL GROUP BY person_id) p
+  LEFT JOIN _ANCHOR a ON a.person_id = p.person_id
+  LEFT JOIN (SELECT person_id, MAX(COALESCE(visit_end_date, visit_start_date)) AS last_visit FROM VISIT_OCCURRENCE
+             WHERE person_id IS NOT NULL GROUP BY person_id) o ON o.person_id = p.person_id
+- >-
+  CREATE TEMP MACRO _has(pid, sid, d0, d1) AS
+  EXISTS (SELECT 1 FROM _EVENTS e WHERE e.person_id = pid AND e.set_id = sid AND e.event_date BETWEEN d0 AND d1)
+- >-
+  CREATE TEMP MACRO _ndays(pid, sid, d0, d1) AS
+  (SELECT COUNT(DISTINCT e.event_date) FROM _EVENTS e WHERE e.person_id = pid AND e.set_id = sid AND e.event_date BETWEEN d0 AND d1)
+- >-
+  CREATE TEMP MACRO _fib4(pid, d0, d1) AS
+  EXISTS (SELECT 1 FROM _EVENTS a
+          JOIN _EVENTS l ON l.person_id = a.person_id AND l.event_date = a.event_date AND l.set_id = 'ALT'
+          JOIN _EVENTS t ON t.person_id = a.person_id AND t.event_date = a.event_date AND t.set_id = 'PLATELETS'
+          WHERE a.person_id = pid AND a.set_id = 'AST' AND a.event_date BETWEEN d0 AND d1)
+
+items:
+# ---------------------------------------------------------------- 공통
+- id: EXP-COM-01
+  title: 키
+  scope: all
+  unit: 환자
+  target: 전 환자
+  expect: 기준일 전 365일 ~ 후 90일에 1회 이상
+  basis: BMI·체표면적 계산의 필수 변수 (EMA Data Quality Framework, extensiveness)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           anchor_date IS NOT NULL AND _has(person_id, 'HEIGHT', anchor_date - 365, anchor_date + 90) AS met,
+           CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 ' || CAST(anchor_date AS VARCHAR) || ' 전후 구간에 키 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-COM-02
+  title: 체중
+  scope: all
+  unit: 환자
+  target: 전 환자
+  expect: 기준일 전 365일 ~ 후 90일에 1회 이상
+  basis: BMI·체표면적 계산의 필수 변수 (EMA Data Quality Framework, extensiveness)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           anchor_date IS NOT NULL AND _has(person_id, 'WEIGHT', anchor_date - 365, anchor_date + 90) AS met,
+           CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 ' || CAST(anchor_date AS VARCHAR) || ' 전후 구간에 체중 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-COM-03
+  title: 항암 요법 시작 전 키·체중
+  scope: [LUNG_CANCER, BREAST_CANCER, COLORECTAL_CANCER, LYMPHOMA]
+  unit: 요법
+  target: SACT 요법
+  expect: 요법 시작 전 30일 ~ 시작일에 키와 체중
+  basis: ASCO/ONS 항암 투여 안전 기준 Standard 1.7
+  requires: [SACT]
+  sql: |
+    SELECT person_id, 'SACT:' || sact_id AS unit_key,
+           d IS NOT NULL AND _has(person_id, 'HEIGHT', d - 30, d) AND _has(person_id, 'WEIGHT', d - 30, d) AS met,
+           CASE WHEN d IS NULL THEN '요법 시작일 없음'
+                ELSE concat_ws('·', CASE WHEN NOT _has(person_id, 'HEIGHT', d - 30, d) THEN '키' END,
+                                    CASE WHEN NOT _has(person_id, 'WEIGHT', d - 30, d) THEN '체중' END) || ' 없음 (시작 전 30일)' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM (SELECT person_id, sact_id, regimen_start_date AS d FROM SACT WHERE person_id IS NOT NULL) s
+    ORDER BY person_id, unit_key
+
+- id: EXP-COM-04
+  title: 요법별 수행 상태(ECOG)
+  scope: [LUNG_CANCER, BREAST_CANCER, COLORECTAL_CANCER, LYMPHOMA]
+  unit: 요법
+  target: SACT 요법
+  expect: SACT.ecog_performance_status 기록
+  basis: ASCO/ONS 항암 투여 안전 기준 Standard 1.6.1
+  requires: [SACT]
+  sql: |
+    SELECT person_id, 'SACT:' || sact_id AS unit_key, ecog_performance_status IS NOT NULL AS met,
+           'ecog_performance_status 없음' AS detail, CAST(NULL AS DOUBLE) AS per_year
+    FROM SACT WHERE person_id IS NOT NULL ORDER BY person_id, unit_key
+
+- id: EXP-COM-05
+  title: 항암 요법 시작 전 혈구검사
+  scope: [LUNG_CANCER, BREAST_CANCER, COLORECTAL_CANCER, LYMPHOMA]
+  unit: 요법
+  target: SACT 요법
+  expect: 요법 시작 전 30일 ~ 시작일에 백혈구·호중구·혈색소·혈소판
+  basis: ASCO/ONS 기준 3.9.8.3 (시점은 임상 확인 필요, 30일은 제안)
+  requires: [SACT]
+  sql: |
+    SELECT person_id, 'SACT:' || sact_id AS unit_key,
+           d IS NOT NULL AND _has(person_id, 'WBC', d - 30, d) AND _has(person_id, 'NEUTROPHILS', d - 30, d)
+             AND _has(person_id, 'HEMOGLOBIN', d - 30, d) AND _has(person_id, 'PLATELETS', d - 30, d) AS met,
+           CASE WHEN d IS NULL THEN '요법 시작일 없음'
+                ELSE concat_ws('·', CASE WHEN NOT _has(person_id, 'WBC', d - 30, d) THEN '백혈구' END,
+                                    CASE WHEN NOT _has(person_id, 'NEUTROPHILS', d - 30, d) THEN '호중구' END,
+                                    CASE WHEN NOT _has(person_id, 'HEMOGLOBIN', d - 30, d) THEN '혈색소' END,
+                                    CASE WHEN NOT _has(person_id, 'PLATELETS', d - 30, d) THEN '혈소판' END) || ' 없음 (시작 전 30일)' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM (SELECT person_id, sact_id, regimen_start_date AS d FROM SACT WHERE person_id IS NOT NULL) s
+    ORDER BY person_id, unit_key
+
+# ---------------------------------------------------------------- 폐암
+- id: EXP-LC-01
+  title: EGFR·ALK 검사 결과
+  scope: [LUNG_CANCER]
+  unit: 환자
+  target: 선암(histologic_diagnosis=1) 중 IV기(clinical_stage IV* 또는 stage_iv_diagnosis_date 있음)
+  expect: EGFR 검사와 ALK 검사 기록이 각각 1회 이상 (MEASUREMENT, LOINC)
+  basis: CAP/IASLC/AMP 분자검사 지침 (ASCO 인정)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _has(person_id, 'EGFR_MUT', DATE '1900-01-01', DATE '2999-12-31') AND _has(person_id, 'ALK', DATE '1900-01-01', DATE '2999-12-31') AS met,
+           concat_ws('·', CASE WHEN NOT _has(person_id, 'EGFR_MUT', DATE '1900-01-01', DATE '2999-12-31') THEN 'EGFR' END,
+                          CASE WHEN NOT _has(person_id, 'ALK', DATE '1900-01-01', DATE '2999-12-31') THEN 'ALK' END) || ' 검사 기록 없음' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM (SELECT DISTINCT person_id FROM {DISEASE}
+          WHERE person_id IS NOT NULL AND histologic_diagnosis = 1
+            AND (clinical_stage LIKE 'IV%' OR stage_iv_diagnosis_date IS NOT NULL)) t
+    ORDER BY person_id
+
+- id: EXP-LC-02
+  title: 진단 시 흉부 CT
+  scope: [LUNG_CANCER]
+  unit: 환자
+  target: 전 환자
+  expect: 기준일 전후 90일에 1회 이상
+  basis: 병기 결정 검사 (지침 조항 확인 필요, 구간 제안)
+  requires: [PROCEDURE_OCCURRENCE]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           anchor_date IS NOT NULL AND _has(person_id, 'CT_CHEST', anchor_date - 90, anchor_date + 90) AS met,
+           CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 90일에 흉부 CT 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+# ---------------------------------------------------------------- 유방암
+- id: EXP-BC-01
+  title: HER2 검사 결과
+  scope: [BREAST_CANCER]
+  unit: 환자
+  target: 전 환자 (침습성 여부 필드가 없어 전체)
+  expect: HER2 검사 기록 1회 이상 (MEASUREMENT, LOINC)
+  basis: ASCO-CAP HER2 검사 지침 2023
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _has(person_id, 'HER2', DATE '1900-01-01', DATE '2999-12-31') AS met,
+           'HER2 검사 기록 없음' AS detail, CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-BC-02
+  title: ER·PR 검사 결과
+  scope: [BREAST_CANCER]
+  unit: 환자
+  target: 전 환자 (침습성 여부 필드가 없어 전체)
+  expect: ER 검사와 PR 검사 기록이 각각 1회 이상 (MEASUREMENT, LOINC)
+  basis: ASCO-CAP ER/PgR 지침 (원문 확인 필요)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _has(person_id, 'ER', DATE '1900-01-01', DATE '2999-12-31') AND _has(person_id, 'PR', DATE '1900-01-01', DATE '2999-12-31') AS met,
+           concat_ws('·', CASE WHEN NOT _has(person_id, 'ER', DATE '1900-01-01', DATE '2999-12-31') THEN 'ER' END,
+                          CASE WHEN NOT _has(person_id, 'PR', DATE '1900-01-01', DATE '2999-12-31') THEN 'PR' END) || ' 검사 기록 없음' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-BC-03
+  title: 병기
+  scope: [BREAST_CANCER]
+  unit: 환자
+  target: 전 환자
+  expect: 병기군 기록 1회 이상 (MEASUREMENT, LOINC 병기군 또는 SNOMED Tumor stage)
+  basis: 유방암 특화 표에 병기 필드가 없어 MEASUREMENT 로 표현 (결정 2026-11-19)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _has(person_id, 'STAGE', DATE '1900-01-01', DATE '2999-12-31') AS met,
+           '병기 기록 없음' AS detail, CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+# ---------------------------------------------------------------- 대장암
+- id: EXP-CRC-01
+  title: MMR 또는 MSI 검사 결과
+  scope: [COLORECTAL_CANCER]
+  unit: 환자
+  target: 전 환자
+  expect: MMR 면역염색 또는 MSI 검사 기록 1회 이상 (MEASUREMENT)
+  basis: CAP MMR/MSI 지침 (2019), ASCO 인정 (2023)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _has(person_id, 'MMR_MSI', DATE '1900-01-01', DATE '2999-12-31') AS met,
+           'MMR·MSI 검사 기록 없음' AS detail, CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-CRC-02
+  title: 진단 시 CEA
+  scope: [COLORECTAL_CANCER]
+  unit: 환자
+  target: 전 환자
+  expect: 기준일 전후 90일에 1회 이상
+  basis: 지침 조항 확인 필요 (구간 제안)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           anchor_date IS NOT NULL AND _has(person_id, 'CEA', anchor_date - 90, anchor_date + 90) AS met,
+           CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 90일에 CEA 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-CRC-03
+  title: 전이성 대장암의 RAS 검사 결과
+  scope: [COLORECTAL_CANCER]
+  unit: 환자
+  target: 전이 기록이 있는 환자 (원격전이 부위 inap_dsnt_mtst_site_etc_cont 기재 또는 고식적(therapy_intent=3) 항암 요법). 기준 어휘 v20260829 에는 전이 진단의 표준 SNOMED 개념이 거의 없어 진단으로는 보지 않는다
+  expect: KRAS·NRAS 검사 기록 1회 이상 (MEASUREMENT, LOINC)
+  basis: ESMO 전이성 대장암 지침 (원문 확인 필요)
+  requires: [MEASUREMENT, SACT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           _has(person_id, 'RAS', DATE '1900-01-01', DATE '2999-12-31') AS met,
+           'RAS 검사 기록 없음' AS detail, CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE b
+    WHERE EXISTS (SELECT 1 FROM {DISEASE} d WHERE d.person_id = b.person_id AND d.inap_dsnt_mtst_site_etc_cont IS NOT NULL)
+       OR EXISTS (SELECT 1 FROM SACT s WHERE s.person_id = b.person_id AND s.therapy_intent = 3)
+    ORDER BY person_id
+
+# ---------------------------------------------------------------- MASLD
+- id: EXP-MASLD-01
+  title: FIB-4 구성 검사 (AST·ALT·혈소판 같은 날)
+  scope: [MASLD]
+  unit: 환자
+  target: 전 환자
+  expect: 기준일 전 365일 ~ 후 90일에 세 검사가 같은 날 모두
+  basis: AASLD 2023 진료 지침 (FIB-4 1차 위험 평가)
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           anchor_date IS NOT NULL AND _fib4(person_id, anchor_date - 365, anchor_date + 90) AS met,
+           CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 구간에 AST·ALT·혈소판을 같은 날 잰 기록 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-MASLD-02
+  title: FIB-4 반복 평가 (당뇨 동반)
+  scope: [MASLD]
+  unit: 환자
+  target: 당뇨병 진단이 있고 관찰 기간 2년 이상인 환자 (대사 위험인자 2개 이상 기준은 정의 확인 필요라 제외)
+  expect: 기준일부터 2년 구간마다 FIB-4 구성 검사(같은 날) 1회 이상
+  basis: 'AASLD 2023: FIB-4 위험 평가는 1~2년마다 반복'
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 730
+        AND _has(person_id, 'DIABETES_DX', DATE '1900-01-01', DATE '2999-12-31')),
+    w AS (SELECT person_id, a, unnest(range(0, span // 730)) AS i FROM b),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN _fib4(person_id, a + CAST(i * 730 AS INTEGER), a + CAST(i * 730 + 729 AS INTEGER)) THEN 0 ELSE 1 END) AS miss
+          FROM w GROUP BY person_id)
+    SELECT b.person_id, 'PERSON:' || b.person_id AS unit_key, g.miss = 0 AS met,
+           '2년 구간 ' || g.n || '개 중 ' || g.miss || '개에 FIB-4 구성 검사 없음' AS detail,
+           (SELECT COUNT(DISTINCT a.event_date) FROM _EVENTS a
+              JOIN _EVENTS l ON l.person_id = a.person_id AND l.event_date = a.event_date AND l.set_id = 'ALT'
+              JOIN _EVENTS t ON t.person_id = a.person_id AND t.event_date = a.event_date AND t.set_id = 'PLATELETS'
+            WHERE a.person_id = b.person_id AND a.set_id = 'AST' AND a.event_date BETWEEN b.a AND b.a + CAST(b.span AS INTEGER)) * 365.25 / b.span AS per_year
+    FROM b JOIN g ON g.person_id = b.person_id ORDER BY b.person_id
+
+- id: EXP-MASLD-03
+  title: 연 1회 체중 또는 BMI
+  scope: [MASLD]
+  unit: 환자
+  target: 관찰 기간 1년 이상인 환자
+  expect: 기준일부터 1년 구간마다 BMI, 또는 체중(키는 관찰 중 1회 이상) 1회 이상
+  basis: 대사 위험인자 판정에 필요 (빈도는 제안)
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 365),
+    w AS (SELECT person_id, a, span, unnest(range(0, span // 365)) AS i FROM b),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN _has(person_id, 'BMI', a + CAST(i * 365 AS INTEGER), a + CAST(i * 365 + 364 AS INTEGER))
+                            OR (_has(person_id, 'WEIGHT', a + CAST(i * 365 AS INTEGER), a + CAST(i * 365 + 364 AS INTEGER))
+                                AND _has(person_id, 'HEIGHT', a - 365, a + CAST(span AS INTEGER))) THEN 0 ELSE 1 END) AS miss
+          FROM w GROUP BY person_id)
+    SELECT b.person_id, 'PERSON:' || b.person_id AS unit_key, g.miss = 0 AS met,
+           '1년 구간 ' || g.n || '개 중 ' || g.miss || '개에 BMI·체중 없음' AS detail,
+           (SELECT COUNT(DISTINCT e.event_date) FROM _EVENTS e
+            WHERE e.person_id = b.person_id AND e.set_id IN ('WEIGHT', 'BMI') AND e.event_date BETWEEN b.a AND b.a + CAST(b.span AS INTEGER)) * 365.25 / b.span AS per_year
+    FROM b JOIN g ON g.person_id = b.person_id ORDER BY b.person_id
+
+# ---------------------------------------------------------------- 당뇨병
+- id: EXP-DM-01
+  title: 진단 시 HbA1c
+  scope: [DIABETES]
+  unit: 환자
+  target: 전 환자
+  expect: 기준일 전후 90일에 1회 이상
+  basis: 'ADA Standards of Care 2026, 6장: 초기 평가에서 A1C'
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           anchor_date IS NOT NULL AND _has(person_id, 'HBA1C', anchor_date - 90, anchor_date + 90) AS met,
+           CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 90일에 HbA1c 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-DM-02
+  title: 추적 중 HbA1c (6개월마다)
+  scope: [DIABETES]
+  unit: 환자
+  target: 관찰 기간 6개월(182일) 이상인 환자
+  expect: 기준일부터 182일 구간마다 1회 이상
+  basis: 'ADA 권고 6.2: 연 2회 이상'
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 182),
+    w AS (SELECT person_id, a, unnest(range(0, span // 182)) AS i FROM b),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN _has(person_id, 'HBA1C', a + CAST(i * 182 AS INTEGER), a + CAST(i * 182 + 181 AS INTEGER)) THEN 0 ELSE 1 END) AS miss
+          FROM w GROUP BY person_id)
+    SELECT b.person_id, 'PERSON:' || b.person_id AS unit_key, g.miss = 0 AS met,
+           '6개월 구간 ' || g.n || '개 중 ' || g.miss || '개에 HbA1c 없음' AS detail,
+           _ndays(b.person_id, 'HBA1C', b.a, b.a + CAST(b.span AS INTEGER)) * 365.25 / b.span AS per_year
+    FROM b JOIN g ON g.person_id = b.person_id ORDER BY b.person_id
+
+- id: EXP-DM-03
+  title: 연 1회 혈압·신기능·지질·체중
+  scope: [DIABETES]
+  unit: 환자
+  target: 관찰 기간 1년 이상인 환자
+  expect: 기준일부터 1년 구간마다 혈압(수축기·이완기), 크레아티닌 또는 eGFR, 총콜레스테롤 또는 LDL, 체중 또는 BMI
+  basis: 영국 NDA 진료 과정 (국내 지침과의 차이 확인 필요). 소변 알부민/크레아티닌비·발 검사는 개념 합의 전이라 제외
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 365),
+    w AS (SELECT person_id, a + CAST(i * 365 AS INTEGER) AS d0, a + CAST(i * 365 + 364 AS INTEGER) AS d1
+          FROM (SELECT person_id, a, unnest(range(0, span // 365)) AS i FROM b)),
+    c AS (SELECT person_id,
+                 _has(person_id, 'SBP', d0, d1) AND _has(person_id, 'DBP', d0, d1) AS bp,
+                 _has(person_id, 'CREATININE', d0, d1) OR _has(person_id, 'EGFR_RATE', d0, d1) AS renal,
+                 _has(person_id, 'CHOLESTEROL', d0, d1) OR _has(person_id, 'LDL', d0, d1) AS lipid,
+                 _has(person_id, 'WEIGHT', d0, d1) OR _has(person_id, 'BMI', d0, d1) AS wt
+          FROM w),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN bp AND renal AND lipid AND wt THEN 0 ELSE 1 END) AS miss,
+                 SUM(CASE WHEN bp THEN 0 ELSE 1 END) AS m_bp, SUM(CASE WHEN renal THEN 0 ELSE 1 END) AS m_renal,
+                 SUM(CASE WHEN lipid THEN 0 ELSE 1 END) AS m_lipid, SUM(CASE WHEN wt THEN 0 ELSE 1 END) AS m_wt
+          FROM c GROUP BY person_id)
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, miss = 0 AS met,
+           '1년 구간 ' || n || '개 중 미충족 ' || miss || '개 (혈압 ' || m_bp || ', 신기능 ' || m_renal || ', 지질 ' || m_lipid || ', 체중 ' || m_wt || ')' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM g ORDER BY person_id
+
+# ---------------------------------------------------------------- 림프종
+- id: EXP-LY-01
+  title: 진단 시 LDH
+  scope: [LYMPHOMA]
+  unit: 환자
+  target: 전 환자
+  expect: 기준일 전후 90일에 1회 이상
+  basis: IPI (NEJM 1993) 구성요소
+  requires: [MEASUREMENT]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           anchor_date IS NOT NULL AND _has(person_id, 'LDH', anchor_date - 90, anchor_date + 90) AS met,
+           CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 90일에 LDH 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id
+
+- id: EXP-LY-02
+  title: IPI 구성요소 (셀 수 있는 것만)
+  scope: [LYMPHOMA]
+  unit: 환자
+  target: DLBCL (cell_of_origin 이 GCB·ABC/non-GCB·unclassifiable)
+  expect: 나이(PERSON.age_at_index), 진단 시 LDH(전후 90일), 수행 상태(SACT ECOG 또는 전후 90일 ECOG 관찰). 병기·결절외 침범 수는 필드가 없어 제외
+  basis: IPI (NEJM 1993)
+  requires: [MEASUREMENT, SACT]
+  sql: |
+    WITH t AS (
+      SELECT b.person_id, b.anchor_date AS a,
+             (SELECT MIN(age_at_index) FROM PERSON p WHERE p.person_id = b.person_id) IS NOT NULL AS age_ok,
+             b.anchor_date IS NOT NULL AND _has(b.person_id, 'LDH', b.anchor_date - 90, b.anchor_date + 90) AS ldh_ok,
+             (b.anchor_date IS NOT NULL AND _has(b.person_id, 'ECOG', b.anchor_date - 90, b.anchor_date + 90)) AS ecog_obs
+      FROM _BASE b
+      WHERE EXISTS (SELECT 1 FROM {DISEASE} d WHERE d.person_id = b.person_id AND d.cell_of_origin IN ('GCB', 'ABC/non-GCB', 'unclassifiable')))
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, age_ok AND ldh_ok AND ecog_ok AS met,
+           concat_ws('·', CASE WHEN NOT age_ok THEN '나이' END, CASE WHEN NOT ldh_ok THEN 'LDH' END, CASE WHEN NOT ecog_ok THEN 'ECOG' END) || ' 없음' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM (SELECT t.*, ecog_obs OR EXISTS (SELECT 1 FROM SACT s WHERE s.person_id = t.person_id AND s.ecog_performance_status IS NOT NULL) AS ecog_ok FROM t)
+    ORDER BY person_id
+
+- id: EXP-LY-03
+  title: 진단 시 PET-CT 또는 골수 생검
+  scope: [LYMPHOMA]
+  unit: 환자
+  target: 전 환자
+  expect: 기준일 전후 90일에 둘 중 하나 1회 이상
+  basis: 병기 결정 검사 (지침 조항 확인 필요)
+  requires: [PROCEDURE_OCCURRENCE]
+  sql: |
+    SELECT person_id, 'PERSON:' || person_id AS unit_key,
+           anchor_date IS NOT NULL AND (_has(person_id, 'PET_CT', anchor_date - 90, anchor_date + 90) OR _has(person_id, 'BM_BIOPSY', anchor_date - 90, anchor_date + 90)) AS met,
+           CASE WHEN anchor_date IS NULL THEN '기준일 없음' ELSE '기준일 전후 90일에 PET-CT·골수 생검 없음' END AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM _BASE ORDER BY person_id

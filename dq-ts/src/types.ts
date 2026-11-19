@@ -130,6 +130,38 @@ export interface Summary {
   violations_warning: number;
   by_category: Record<string, { rules: number; failed: number; violations: number }>;
   rules: RuleStat[];
+  /** 데이터 충실도 (spec/expected_data.yaml). 규칙 집계와 별개 */
+  sufficiency: SufficiencyResult[];
+}
+
+export interface SufficiencyResult {
+  id: string;
+  title: string;
+  unit: string;
+  status: "ok" | "skipped" | "error";
+  note: string;
+  eligible: number;
+  met: number;
+  /** 1인·1년당 횟수 중앙값(소수 첫째 자리 문자열). 밀도 항목이 아니면 null */
+  per_year_median: string | null;
+  by_age: { band: string; eligible: number; met: number }[];
+}
+
+/** 미충족 단위 한 행 (sufficiency.csv, 기관 내부용) */
+export interface SufficiencyRow { item_id: string; person_id: string; unit_key: string; detail: string }
+
+export interface ExpectedItem {
+  id: string; title: string; scope: "all" | string[]; unit: string; target: string; expect: string; basis: string;
+  requires: string[]; sql: string;
+}
+
+export interface ExpectedData {
+  concept_sets: Record<string, { name: string; [k: string]: unknown }>;
+  events: { table: string; concept: string; date: string }[];
+  anchors: Record<string, string>;
+  setup_requires: string[];
+  setup: string[];
+  items: ExpectedItem[];
 }
 
 /** 열 지향 문자열 테이블. 값은 CSV 원문 그대로이며 NULL 은 빈 문자열이다. */

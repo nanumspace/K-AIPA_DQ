@@ -4,6 +4,7 @@ import path from "node:path";
 import { DuckDBInstance, DuckDBConnection, type DuckDBValue } from "@duckdb/node-api";
 import type { Summary, RuleStat, RawTable } from "@engine/types.js";
 import { csvCell } from "@engine/csv.js";
+import { OPTIONAL_SKIP } from "@engine/structural.js";
 import type { RunRecord, RuleResultRow, FindingRow, FindingsQuery, FindingsFilter, FindingsPage, Dashboard, CohortStatus } from "@shared/types";
 import { checkLabel } from "@shared/labels";
 
@@ -52,7 +53,10 @@ async function rows<T>(sql: string, params?: DuckDBValue[]): Promise<T[]> {
   return r.getRowObjectsJson() as unknown as T[];
 }
 
-const NUM_FIELDS = ["rules_total", "rules_failed", "rules_skipped", "rules_error", "violations_total", "violations_error", "violations_warning", "rows_total", "rules_disabled"] as const;
+const NUM_FIELDS = ["rules_total", "rules_failed", "rules_skipped", "rules_error", "violations_total", "violations_error", "violations_warning", "rows_total", "rules_disabled", "rules_skipped_optional"] as const;
+/** 선택 항목(선택 테이블·선택 컬럼)을 내지 않아 건너뛴 규칙 수: 엔진 note 의 머리말로 센다 (OPTIONAL_SKIP) */
+const RUN_COLS = `runs.*, (SELECT COUNT(*) FROM rule_results rr WHERE rr.run_id = runs.run_id AND rr.status = 'skipped'
+  AND starts_with(rr.note, '${OPTIONAL_SKIP}')) AS rules_skipped_optional`;
 
 /** DuckDB 의 BIGINT 는 JSON 변환 시 문자열이 될 수 있어 숫자 필드를 강제 변환한다. */
 function toRun(r: Record<string, unknown>): RunRecord {
@@ -107,11 +111,11 @@ export async function insertRun(a: InsertRunArgs): Promise<RunRecord> {
 }
 
 export async function listRuns(): Promise<RunRecord[]> {
-  return (await rows<Record<string, unknown>>(`SELECT * FROM runs ORDER BY created_at DESC`)).map(toRun);
+  return (await rows<Record<string, unknown>>(`SELECT ${RUN_COLS} FROM runs ORDER BY created_at DESC`)).map(toRun);
 }
 
 export async function getRun(runId: string): Promise<RunRecord | null> {
-  const r = await rows<Record<string, unknown>>(`SELECT * FROM runs WHERE run_id = ?`, [runId]);
+  const r = await rows<Record<string, unknown>>(`SELECT ${RUN_COLS} FROM runs WHERE run_id = ?`, [runId]);
   return r.length ? toRun(r[0]) : null;
 }
 
@@ -220,7 +224,7 @@ export async function deleteRun(runId: string): Promise<void> {
 }
 
 export async function dashboard(rulesCount: Dashboard["rulesCount"]): Promise<Dashboard> {
-  const all = (await rows<Record<string, unknown>>(`SELECT * FROM runs ORDER BY created_at`)).map(toRun);
+  const all = (await rows<Record<string, unknown>>(`SELECT ${RUN_COLS} FROM runs ORDER BY created_at`)).map(toRun);
   const latest = new Map<string, RunRecord>();
   for (const r of all) latest.set(r.cohort, r); // 시간순이므로 마지막이 최신
   const latestByCohort: CohortStatus[] = [...latest.values()].sort((a, b) => a.cohort.localeCompare(b.cohort))

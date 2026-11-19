@@ -49,7 +49,7 @@ GitHub 저장소 [nanumspace/K-AIPA_DQ](https://github.com/nanumspace/K-AIPA_DQ)
 | 이름 | 내용 | 환자 단위 정보 |
 |---|---|---|
 | `history.duckdb` | 실행 이력 DB 파일 하나. 실행 요약, 규칙별 결과, 위반 행 목록(`findings`)이 들어 있습니다 | **있음** (위반 행의 환자 ID·행 키·상세) |
-| `runs/<실행 ID>/` | 실행마다 폴더 하나. 정규화된 입력 `input/<TABLE>.csv`, 출력 파일 5종, `normalization.json` | **있음** (`input/`, `findings.csv`) |
+| `runs/<실행 ID>/` | 실행마다 폴더 하나. 정규화된 입력 `input/<TABLE>.csv`, 출력 파일 6종, `normalization.json` | **있음** (`input/`, `findings.csv`, `sufficiency.csv`) |
 | `rule-overrides.json`, `rule-history.jsonl` | 이 PC 의 규칙 설정과 변경 이력([6장](06-rules.md)) | 없음 |
 | `config.json` | 명세 위치, 검증 기준일 기본값 등 앱 설정 | 없음 |
 

@@ -70,6 +70,10 @@ describe("Python 참조 구현과 동등성", () => {
         expect(ts).toEqual(py);
         expect(Object.keys(ts)).toEqual(Object.keys(py));
         expect(Object.keys(ts.rules[0])).toEqual(Object.keys(py.rules[0]));
+        expect(Object.keys(ts.sufficiency[0])).toEqual(Object.keys(py.sufficiency[0]));
+      });
+      it("sufficiency.csv(데이터 충실도 미충족 단위)가 Python 과 글자 단위로 같다", () => {
+        expect(read(tsDir(kind, c), "sufficiency.csv")).toBe(read(pyDir(kind, c), "sufficiency.csv"));
       });
     });
   }

@@ -438,8 +438,10 @@ function registerIpc(): void {
   ipcMain.handle("runs:get", async (_e, runId: string): Promise<RunDetail> => {
     const run = await db.getRun(runId);
     if (!run) throw new Error("실행 기록이 없습니다");
-    const rp = path.join(runsDir(), runId, "report.md");
-    return { run, rules: await db.getRuleResults(runId), report: fs.existsSync(rp) ? fs.readFileSync(rp, "utf-8") : "" };
+    const dir = path.join(runsDir(), runId);
+    const rp = path.join(dir, "report.md"), sp = path.join(dir, "summary.json");
+    const sufficiency = fs.existsSync(sp) ? ((JSON.parse(fs.readFileSync(sp, "utf-8")) as Partial<Summary>).sufficiency ?? []) : [];
+    return { run, rules: await db.getRuleResults(runId), report: fs.existsSync(rp) ? fs.readFileSync(rp, "utf-8") : "", sufficiency };
   });
   ipcMain.handle("runs:outputs", (_e, runId: string) => runOutputs(path.join(runsDir(), runId)));
   ipcMain.handle("findings:query", (_e, q: FindingsQuery) => db.getFindings(q));

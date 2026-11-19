@@ -51,6 +51,8 @@ export function parseNum(s: string): number | null {
 
 /** 사용자가 끈 규칙의 note */
 export const DISABLED_NOTE = "사용자 설정으로 끔";
+/** 매뉴얼 보완 선택 항목(선택 테이블·선택 컬럼)을 내지 않아 건너뛴 규칙의 note 머리말. 앱이 '미검사'와 구분해 보인다 */
+export const OPTIONAL_SKIP = "선택 항목 미제출";
 
 export interface StructuralContext {
   cohort: string;
@@ -101,7 +103,7 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
       continue;
     }
     const df = ctx.raw.get(table);
-    if (!df) { st.status = "skipped"; st.note = "테이블 없음"; continue; }
+    if (!df) { st.status = "skipped"; st.note = ctx.spec.tables[table].optional ? `${OPTIONAL_SKIP}: ${table}` : "테이블 없음"; continue; }
     st.rows_checked = df.n;
     const { pkcol, pid } = keyColumns(df, ctx.spec.tables[table].pk);
     const fields = rule.fields;
@@ -118,7 +120,8 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
     }
     const missing = fields.filter((f) => !df.cols.has(f));
     if (missing.length && chk !== "group_anchor" && chk !== "person_invariant") {
-      st.status = "skipped"; st.note = `컬럼 없음: ${pyList(missing)}`; continue;
+      const opt = missing.every((m) => ctx.spec.tables[table].fields.find((x) => x.name === m)?.optional === true);
+      st.status = "skipped"; st.note = `${opt ? OPTIONAL_SKIP : "컬럼 없음"}: ${pyList(missing)}`; continue;
     }
     const col = (f: string) => df.cols.get(f)!;
 
@@ -229,7 +232,7 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
       for (let i = 0; i < df.n; i++) if (vals[i] !== "") sink.add(rule, table, f, pkcol[i], pid[i], `${f}=${vals[i]} (이 코호트에서는 NULL 이어야 함)`);
     } else if (chk === "concept") {
       const cdf = ctx.raw.get("CONCEPT");
-      if (!cdf) { st.status = "skipped"; st.note = "CONCEPT 미제출"; continue; }
+      if (!cdf) { st.status = "skipped"; st.note = `${OPTIONAL_SKIP}: CONCEPT`; continue; }
       if (!cdf.cols.has("concept_id")) { st.status = "skipped"; st.note = "CONCEPT.concept_id 컬럼 없음"; continue; }
       concepts ??= conceptIndex(cdf);
       const f = fields[0]; const vals = col(f);

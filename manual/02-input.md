@@ -59,6 +59,13 @@ DB 에서 표준 CSV(쉼표 구분, 따옴표 처리)로 내보내 주세요. `v
 - **폐암 `clinical_stage`.** AJCC 병기군(`IA`, `IB`, `IIA`, `IIB`, `IIIA`, `IIIB`, `IIIC`, `IV` 등)으로 적습니다. 소세포폐암의 제한기/확장기(`LD`/`ED`)로 적으면 경고가 나므로 TNM 병기로 바꿔 입력합니다.
 - **`diag_rgst_ymd`.** **진단정보 등록일**입니다(진단일이 아닙니다).
 - **필수 여부.** 컬럼 명세서의 필수 열을 기준으로 삼습니다.
+- **바이오마커·병기 (1.0.4).** 질환 본표에 필드가 없는 종양 바이오마커와 병기는 **MEASUREMENT 에 LOINC 검사로** 적습니다. 결과는 `value_as_concept_id`(예: 9191 Positive, 9189 Negative, 4126681 Detected, 9190 Not detected, LOINC 답변 MSI-H·Stable·Stage I~IV)나 `value_as_number`(ER·PR %)에 두고, 원문은 `value_source_value` 에 둡니다. 데이터 충실도가 이 기록을 셉니다([데이터 충실도](../docs/data-sufficiency.md)). 앱이 세는 검사는 같은 LOINC 구성요소의 모든 표준 검사입니다(자료실의 '데이터 충실도').
+
+  | 코호트 | 검사 | LOINC 검사 예 (견본 데이터) |
+  |---|---|---|
+  | 폐암 (선암 IV기) | EGFR, ALK | 3009224 EGFR gene mutations found, 21492143 ALK gene rearrangements by FISH |
+  | 유방암 | ER, PR, HER2, 병기 | 3016794 ER %, 3022156 PR %, 3019066 HER2 Ag IHC, 3031548 Derived AJCC stage group |
+  | 대장암 | MMR·MSI, RAS(전이성) | 21493972 MSI interpretation, 3012200 KRAS·3001274 NRAS mutations found |
 
 ### 알려진 한계
 

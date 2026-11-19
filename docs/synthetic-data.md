@@ -32,6 +32,7 @@ clean 과 good 은 `--today 2026-09-07` 로 검증했을 때 오류 등급 위�
 - **림프종 `cell_of_origin`**: DLBCL 은 GCB·ABC/non-GCB·unclassifiable, 그 밖의 아형은 글자 `NA`.
 - **폐암 `clinical_stage`**: AJCC 병기군만 씁니다. 소세포폐암도 LD/ED 가 아니라 TNM 병기로 적습니다.
 - **`diag_rgst_ymd`**: 진단정보 등록일(진단 입원 첫날)로 둡니다.
+- **바이오마커·병기**: 판독 NOTE 와 같은 값을 MEASUREMENT 의 LOINC 검사 행으로도 적습니다(폐암 EGFR·ALK, 유방암 ER·PR·HER2·병기군, 대장암 MSI·KRAS·NRAS). 결과는 `value_as_concept_id`(양성·음성, 검출·미검출, MSI-H·Stable, Stage 답변)와 `value_as_number`(ER·PR %)입니다. 데이터 충실도([data-sufficiency.md](data-sufficiency.md))가 이 행을 셉니다.
 
 ## 질환별 환자 여정 시나리오 (`synth/scenarios/`)
 

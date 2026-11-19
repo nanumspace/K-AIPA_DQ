@@ -186,12 +186,16 @@ def _mmr_text(ctx, deficient):
     return "Loss of MLH1/PMS2 expression (dMMR / MSI-H)" if ctx.bern(0.7) else "Loss of MSH2/MSH6 expression (dMMR / MSI-H)"
 
 
-def _molecular_text(ctx, mmr):
+def _molecular(ctx, p, day, mmr):
+    """종양 분자검사: 판독 NOTE 와 KRAS·NRAS 결과(MEASUREMENT)"""
     ras = ctx.bern(0.5)
     braf = (not ras) and ctx.bern(0.10)
     ras_t = (ctx.choice(["KRAS G12D mutation", "KRAS G12V mutation", "KRAS G13D mutation", "KRAS A146T mutation", "NRAS Q61K mutation"])
              if ras else "KRAS/NRAS wild-type (exons 2, 3 and 4)")
-    return f"Molecular profiling of the tumor: {ras_t}; {'BRAF V600E mutation' if braf else 'BRAF V600E not detected'}; mismatch repair {mmr}."
+    ctx.note(p, day, f"Molecular profiling of the tumor: {ras_t}; {'BRAF V600E mutation' if braf else 'BRAF V600E not detected'}; mismatch repair {mmr}.",
+             note_type=32835, note_class=3031451)
+    ctx.result(p, day, KRAS_TEST, DETECTED if ras_t.startswith("KRAS ") else NOT_DETECTED, ras_t if ras_t.startswith("KRAS ") else "KRAS wild-type")
+    ctx.result(p, day, NRAS_TEST, DETECTED if ras_t.startswith("NRAS ") else NOT_DETECTED, ras_t if ras_t.startswith("NRAS ") else "NRAS wild-type")
 
 
 def _cap_cycles(ctx, start, cycles, cd):
@@ -440,8 +444,10 @@ def generate(ctx: Ctx, n=100):
         circ = ctx.randint(25, 95) if t != "T1" else ctx.randint(10, 30)
         ctx.note(p, index, COLONO_REPORT.format(desc=ctx.choice(["Ulcerofungating", "Ulceroinfiltrative", "Polypoid"]), site=site_nm, size=size, circ=circ),
                  note_type=32831, note_class=3000735, vid=dx_vid)
-        ctx.note(p, ctx.days(index, ctx.randint(2, 4)), BX_REPORT.format(bx_site=organ_bx, hist=HIST[hist_cd], grade=GRADE[grade].lower(), mmr=mmr),
+        bx_day = ctx.days(index, ctx.randint(2, 4))
+        ctx.note(p, bx_day, BX_REPORT.format(bx_site=organ_bx, hist=HIST[hist_cd], grade=GRADE[grade].lower(), mmr=mmr),
                  note_type=32835, note_class=3031451)
+        ctx.result(p, bx_day, MSI_TEST, MSI_HIGH if mmr_def else MS_STABLE, mmr)
         ht = ctx.normal(168 if gender == MALE else 156, 6, 145, 190); wt = ctx.normal(67 if gender == MALE else 57, 9, 38, 110)
         ctx.measure(p, index, 3036277, ht, vid=dx_vid); ctx.measure(p, index, 3025315, wt, vid=dx_vid)
         ctx.measure(p, index, 3038553, round(wt / (ht / 100) ** 2, 1), vid=dx_vid)
@@ -556,7 +562,7 @@ def generate(ctx: Ctx, n=100):
                     ctx.labs(p, ctx.days(rd, 1), [3000963, 3010813, 3016723], vid=rvid)
                     last = max(last, ctx.days(rd, 5))
         elif stage == "IV":
-            ctx.note(p, ctx.days(stag_day, ctx.randint(5, 9)), _molecular_text(ctx, mmr), note_type=32835, note_class=3031451)
+            _molecular(ctx, p, ctx.days(stag_day, ctx.randint(5, 9)), mmr)
             st = dict(ecog=ecog, cea0=cea0, cea=cea, sites=list(mets))
             if obstruction and ctx.bern(0.7):
                 sd = ctx.days(last, ctx.randint(3, 14))
@@ -613,7 +619,7 @@ def generate(ctx: Ctx, n=100):
                     ctx.note(p, conf, f"FDG PET/CT: FDG-avid {site_r.lower()} lesion (SUVmax {round(ctx.rand(5, 14), 1)}), consistent with recurrence.",
                              note_type=32841, note_class=46235057, vid=cvid)
                 mol = ctx.days(conf, ctx.randint(3, 6))
-                ctx.note(p, mol, _molecular_text(ctx, mmr), note_type=32835, note_class=3031451)
+                _molecular(ctx, p, mol, mmr)
                 if adj_sid is not None:
                     ctx.sact_update(adj_sid, date_of_progression=fu, recurrence_anatomic_site=site_r)
                 st = dict(ecog=ecog, cea0=cea0, cea=cea_v, sites=[site_r])

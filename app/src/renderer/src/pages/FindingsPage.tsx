@@ -238,7 +238,7 @@ export function FindingsPage({ nav }: { nav: Nav }) {
     </div>
   );
 
-  const incomplete = run ? run.rules_error + run.rules_skipped + run.rules_disabled : 0;
+  const incomplete = run ? run.rules_error + run.rules_skipped - (run.rules_skipped_optional ?? 0) + run.rules_disabled : 0;
   const selectedRule = ruleId ? failedById.get(ruleId) : undefined;
   const queryWaiting = queryLoad.status === "idle" || queryLoad.status === "loading";
   const exportDisabled = !!exporting || queryLoad.status !== "ok" || searchPending || total === 0;

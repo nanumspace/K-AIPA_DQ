@@ -8,7 +8,10 @@
 입력  : 코호트 디렉터리의 <TABLE>.csv (UTF-8, 헤더 포함, NULL 은 빈 문자열)
 규칙  : rules/rules_structural.yaml (명세에서 자동 생성) + rules/rules_semantic.yaml (수동 작성, DuckDB SQL)
 명세  : spec/kai_cdm_spec.yaml (의뢰사 매뉴얼 2026-11-16 판), spec/codelists.yaml, spec/cohort_profiles.yaml
-출력  : findings.csv (위반 행 단위), summary.json (규칙 단위), report.md (사람용 요약)
+출력  : findings.csv (위반 행 단위), summary.json (규칙 단위), report.md (사람용 요약),
+        sufficiency.csv (데이터 충실도 미충족 단위, 기관 내부용)
+
+데이터 충실도(spec/expected_data.yaml, spec/concept_sets.yaml)는 규칙과 별개로 "있어야 할 기록이 있는 비율"을 센다.
 
 구조 규칙은 원본 문자열 위에서 검사하고(타입 오류를 잡기 위해), 의미 규칙은 명세 타입으로 변환한 뒤 DuckDB 에서 SQL 로 검사한다.
 """
@@ -25,6 +28,31 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 TS_RE = re.compile(r"^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}(:\d{2}(\.\d+)?)?)?$")
 INT_RE = re.compile(r"^[+-]?\d+$")
 FLOAT_RE = re.compile(r"^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$")
+
+
+# 데이터 충실도: 항목 SQL 을 감싸 연령대를 붙이고 집계한다 (dq-ts/src/sufficiency.ts 와 같은 SQL)
+AGE_BANDS = ["<50", "50-64", "65+", "미상"]
+SUFF_EMPTY_EVENTS = "SELECT CAST(NULL AS BIGINT) AS person_id, CAST(NULL AS VARCHAR) AS set_id, CAST(NULL AS DATE) AS event_date WHERE false"
+SUFF_WRAP = """CREATE OR REPLACE TEMP TABLE _S AS
+SELECT s.person_id, s.unit_key, COALESCE(s.met, false) AS met, s.detail, s.per_year,
+       CASE WHEN p.age IS NULL THEN '미상' WHEN p.age < 50 THEN '<50' WHEN p.age < 65 THEN '50-64' ELSE '65+' END AS age_band
+FROM ({sql}) s
+LEFT JOIN (SELECT person_id, {age} AS age FROM PERSON GROUP BY person_id) p ON p.person_id = s.person_id"""
+SUFF_TOTAL = "SELECT COUNT(*), COUNT(*) FILTER (WHERE met), CAST(ROUND(MEDIAN(per_year), 1) AS VARCHAR) FROM _S"
+SUFF_BANDS = "SELECT age_band, COUNT(*), COUNT(*) FILTER (WHERE met) FROM _S GROUP BY age_band"
+SUFF_UNMET = "SELECT person_id, unit_key, detail FROM _S WHERE NOT met ORDER BY person_id, unit_key"
+SUFF_PUBLIC_ERROR = "실행 오류: 상세는 내부 실행 기록에서 확인하세요."
+# 매뉴얼 보완 선택 항목(선택 테이블·선택 컬럼)을 내지 않아 건너뛴 규칙의 note 머리말. 앱이 '미검사'와 구분해 보인다
+OPTIONAL_SKIP = "선택 항목 미제출"
+
+
+def pct(met, n):
+    """정수 연산으로 소수 첫째 자리 백분율 (반올림, 두 엔진이 같은 글자를 낸다)"""
+    if not n:
+        return "-"
+    t = (met * 2000 + n) // (2 * n)
+    return f"{t // 10}.{t % 10}%"
+
 
 
 def load_yaml(p):
@@ -117,7 +145,9 @@ class Engine:
                     self.add(rule, table, "", "", None, f"{table}.csv 없음")
                 continue
             if table not in self.raw:
-                st["status"] = "skipped"; st["note"] = "테이블 없음"; continue
+                st["status"] = "skipped"
+                st["note"] = f"{OPTIONAL_SKIP}: {table}" if self.spec[table].get("optional") else "테이블 없음"
+                continue
             df = self.raw[table]
             st["rows_checked"] = len(df)
             pkcol, pid = self.keys(df, table)
@@ -134,7 +164,8 @@ class Engine:
             # 이하 필드 기반 검사: 필드가 없으면 columns 규칙이 이미 잡았으므로 건너뜀
             missing = [f for f in fields if f not in df.columns]
             if missing and chk not in ("group_anchor", "person_invariant"):
-                st["status"] = "skipped"; st["note"] = f"컬럼 없음: {missing}"; continue
+                opt = all(next(x for x in self.spec[table]["fields"] if x["name"] == m).get("optional") for m in missing)
+                st["status"] = "skipped"; st["note"] = f"{OPTIONAL_SKIP if opt else '컬럼 없음'}: {missing}"; continue
             if chk == "pk_unique":
                 cols = fields
                 null = df[cols].eq("").any(axis=1)
@@ -219,7 +250,7 @@ class Engine:
                     self.add(rule, table, f, pkcol[i], pid[i], f"{f}={df.at[i, f]} (이 코호트에서는 NULL 이어야 함)")
             elif chk == "concept":
                 if "CONCEPT" not in self.raw:
-                    st["status"] = "skipped"; st["note"] = "CONCEPT 미제출"; continue
+                    st["status"] = "skipped"; st["note"] = f"{OPTIONAL_SKIP}: CONCEPT"; continue
                 if "concept_id" not in self.raw["CONCEPT"].columns:
                     st["status"] = "skipped"; st["note"] = "CONCEPT.concept_id 컬럼 없음"; continue
                 f = fields[0]; idx = self.concept_index()
@@ -303,10 +334,71 @@ class Engine:
             self.init_stat(rule, ",".join(sorted(req)) if req else dtab)
             st = self.rule_stats[rule["id"]]
             if not req.issubset(present) or dtab not in present:
-                st["status"] = "skipped"; st["note"] = f"필요 테이블 없음: {sorted(req - present)}"; continue
+                lack = sorted(req - present)
+                opt = dtab in present and all(self.spec[t].get("optional") for t in lack)
+                st["status"] = "skipped"; st["note"] = f"{OPTIONAL_SKIP if opt else '필요 테이블 없음'}: {lack}"; continue
             self._run_one_sem(con, rule, subst)
+        self.run_sufficiency(con)
         con.close()
         return self
+
+    # ------------------------------------------------- data sufficiency
+    def run_sufficiency(self, con):
+        """기대 데이터 항목마다 대상 단위 수·충족 수·연령대별 수를 센다. 의미 규칙과 같은 DuckDB 연결을 쓴다."""
+        ed = load_yaml("spec/expected_data.yaml")
+        sets = load_yaml("spec/concept_sets.yaml")["sets"]
+        self.sufficiency, self.suff_rows = [], []
+        con.execute("CREATE TEMP TABLE _CONCEPT_SET (set_id VARCHAR, concept_id BIGINT)")
+        rows = [(k, int(c)) for k, v in sets.items() for c in v]
+        if rows:
+            con.executemany("INSERT INTO _CONCEPT_SET VALUES (?, ?)", rows)
+        parts = []
+        for ev in ed["events"]:
+            t, cc, dc = ev["table"], ev["concept"], ev["date"]
+            if t in self.raw and all(c in self.raw[t].columns for c in ("person_id", cc, dc)):
+                parts.append(f'SELECT x.person_id, s.set_id, x."{dc}" AS event_date FROM "{t}" x '
+                             f'JOIN _CONCEPT_SET s ON s.concept_id = x."{cc}" WHERE x.person_id IS NOT NULL AND x."{dc}" IS NOT NULL')
+        con.execute("CREATE TEMP TABLE _EVENTS AS " + (" UNION ALL ".join(parts) or SUFF_EMPTY_EVENTS))
+        dtab = self.disease_table
+        present = set(self.raw)
+        missing_setup = sorted(set(ed["setup_requires"] + [dtab]) - present)
+        setup_error = None
+        if not missing_setup:
+            subst = {"{ANCHOR}": ed["anchors"][self.cohort], "{DISEASE}": dtab}
+            try:
+                for stmt in ed["setup"]:
+                    for k, v in subst.items():
+                        stmt = stmt.replace(k, v)
+                    con.execute(stmt)
+            except Exception as e:
+                setup_error = str(e)[:200]
+        p = self.raw.get("PERSON")
+        age = "MIN(age_at_index)" if p is not None and "age_at_index" in p.columns else "CAST(NULL AS BIGINT)"
+        for item in ed["items"]:
+            scope = item.get("scope", "all")
+            if scope != "all" and self.cohort not in scope:
+                continue
+            r = OrderedDict(id=item["id"], title=item["title"], unit=item["unit"], status="ok", note="",
+                            eligible=0, met=0, per_year_median=None, by_age=[])
+            self.sufficiency.append(r)
+            req = set(item.get("requires", []))
+            if missing_setup or not req.issubset(present):
+                r["status"] = "skipped"; r["note"] = f"필요 테이블 없음: {sorted(set(missing_setup) | (req - present))}"; continue
+            if setup_error:
+                r["status"] = "error"; r["note"] = f"SQL 오류: {setup_error}"; continue
+            sql = item["sql"].replace("{DISEASE}", dtab)
+            try:
+                con.execute(SUFF_WRAP.format(sql=sql, age=age))
+                n, m, med = con.execute(SUFF_TOTAL).fetchone()
+                bands = {b: (bn, bm) for b, bn, bm in con.execute(SUFF_BANDS).fetchall()}
+                unmet = con.execute(SUFF_UNMET).fetchall()
+            except Exception as e:
+                r["status"] = "error"; r["note"] = f"SQL 오류: {str(e)[:200]}"; continue
+            r["eligible"], r["met"], r["per_year_median"] = int(n), int(m), med
+            r["by_age"] = [OrderedDict(band=b, eligible=int(bands[b][0]), met=int(bands[b][1])) for b in AGE_BANDS if b in bands]
+            for pid, key, detail in unmet:
+                self.suff_rows.append(OrderedDict(item_id=item["id"], person_id="" if pid is None else str(int(pid)),
+                                                  unit_key=key or "", detail=detail or ""))
 
     def _run_one_sem(self, con, rule, subst):
         """의미 규칙 하나를 돌린다. SELECT 는 person_id, row_key, detail 순서로 낸다."""
@@ -349,7 +441,7 @@ class Engine:
             violations_total=sum(s["violations"] for s in stats),
             violations_error=sum(s["violations"] for s in stats if s["severity"] == "error"),
             violations_warning=sum(s["violations"] for s in stats if s["severity"] == "warning"),
-            by_category=dict(by_cat), rules=stats)
+            by_category=dict(by_cat), rules=stats, sufficiency=getattr(self, "sufficiency", []))
 
     def write(self, out_dir):
         os.makedirs(out_dir, exist_ok=True)
@@ -358,11 +450,13 @@ class Engine:
         cols = ["rule_id", "rule_name", "category", "severity", "table", "field", "row_key", "person_id", "detail"]
         pd.DataFrame(self.findings, columns=cols).to_csv(
             os.path.join(out_dir, "findings.csv"), index=False, encoding="utf-8-sig")
+        pd.DataFrame(getattr(self, "suff_rows", []), columns=["item_id", "person_id", "unit_key", "detail"]).to_csv(
+            os.path.join(out_dir, "sufficiency.csv"), index=False, encoding="utf-8-sig")
         s = self.summary()
         public = {**s, "rules": [
             {**r, "note": "규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요."} if r["status"] == "error" else r
             for r in s["rules"]
-        ]}
+        ], "sufficiency": [{**x, "note": SUFF_PUBLIC_ERROR} if x["status"] == "error" else x for x in s["sufficiency"]]}
         json.dump(public, open(os.path.join(out_dir, "summary.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
         with open(os.path.join(out_dir, "report.md"), "w", encoding="utf-8") as fh:
             fh.write(f"# 데이터 품질 검증 보고서: {self.cohort} ({self.profile['kor']})\n\n")
@@ -380,6 +474,20 @@ class Engine:
             errs = [r for r in s["rules"] if r["status"] == "error"]
             if errs:
                 fh.write("\n## 규칙 실행 오류\n\n" + "\n".join(f"- {r['rule_id']}: 규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요." for r in errs) + "\n")
+            if s["sufficiency"]:
+                fh.write("\n## 데이터 충실도\n\n있어야 할 기록이 있는 비율이다(규칙 위반과 별개, 충족 판정·목표치 없음). "
+                         "미충족 단위는 sufficiency.csv(기관 내부용)에 있다.\n\n"
+                         "| 항목 | 단위 | 대상 | 충족 | 비율 | 1인·1년당 중앙값 | " + " | ".join(AGE_BANDS) + " |\n"
+                         "|---|---|---|---|---|---|" + "---|" * len(AGE_BANDS) + "\n")
+                for x in s["sufficiency"]:
+                    if x["status"] != "ok":
+                        why = f"건너뜀 ({x['note']})" if x["status"] == "skipped" else "실행 오류"
+                        fh.write(f"| {x['id']} {x['title']} | {x['unit']} | - | - | {why} | - |" + " - |" * len(AGE_BANDS) + "\n")
+                        continue
+                    band = {b["band"]: b for b in x["by_age"]}
+                    cells = [f"{band[b]['met']}/{band[b]['eligible']}" if b in band else "-" for b in AGE_BANDS]
+                    fh.write(f"| {x['id']} {x['title']} | {x['unit']} | {x['eligible']} | {x['met']} | {pct(x['met'], x['eligible'])} | "
+                             f"{x['per_year_median'] or '-'} | " + " | ".join(cells) + " |\n")
         return s
 
 

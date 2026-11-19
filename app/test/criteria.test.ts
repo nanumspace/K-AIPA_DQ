@@ -11,7 +11,7 @@ import { CRITERIA_FILES } from "@shared/criteria";
 import { inspectCriteria, createCriteriaPackage, stageCriteriaPackage, compareSemver } from "../src/main/criteria";
 
 const ROOT = path.resolve(__dirname, "../..");
-const APP = "1.0.3";
+const APP = "1.0.4";
 const META = { name: "테스트 기준", version: "1.0.2", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF", minAppVersion: "1.0.0" };
 let work: string;
 let seq = 0;
@@ -19,7 +19,7 @@ let seq = 0;
 const tmp = (label: string) => { const d = path.join(work, `${label}-${seq++}`); fs.mkdirSync(d, { recursive: true }); return d; };
 const sha = (b: Uint8Array | string) => createHash("sha256").update(b).digest("hex");
 
-/** 기준 7개를 새 폴더로 복사하고 파일별로 고친다 */
+/** 기준 파일 전부를 새 폴더로 복사하고 파일별로 고친다 */
 function variant(edit: Record<string, (s: string) => string> = {}): string {
   const dir = tmp("crit");
   for (const rel of CRITERIA_FILES) {
@@ -74,7 +74,7 @@ describe("inspectCriteria", () => {
   it("내장 기준: 고정 메타와 해시, 집계가 엔진 로더와 같다", () => {
     const info = inspectCriteria(ROOT, "builtin", APP);
     expect(info.source).toBe("builtin");
-    expect(info.manifest).toMatchObject({ schema: "kai-criteria/1", version: "1.0.3", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF" });
+    expect(info.manifest).toMatchObject({ schema: "kai-criteria/1", version: "1.0.4", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF" });
     expect(Object.keys(info.manifest.files)).toEqual([...CRITERIA_FILES]);
     for (const f of CRITERIA_FILES) expect(info.manifest.files[f]).toBe(sha(fs.readFileSync(path.join(ROOT, f))));
     const spec = loadSpec();
@@ -118,7 +118,7 @@ describe("inspectCriteria", () => {
 });
 
 describe("createCriteriaPackage", () => {
-  it("꾸러미는 manifest.json 과 파일 7개만 담고 해시가 맞다 (왕복)", () => {
+  it("꾸러미는 manifest.json 과 기준 파일(CRITERIA_FILES)만 담고 해시가 맞다 (왕복)", () => {
     const bytes = goodPackage();
     const entries = unzipSync(bytes);
     expect(Object.keys(entries).sort()).toEqual(["manifest.json", ...CRITERIA_FILES].sort());
@@ -203,6 +203,13 @@ describe("내용 검증", () => {
     const dir = variant();
     fs.appendFileSync(path.join(dir, "spec/concepts.yaml"), Buffer.from([0xff, 0xfe, 0x0a]));
     expect(() => pack(dir)).toThrow(/UTF-8/);
+  });
+
+  it("데이터 충실도: 항목 SQL 안전 점검·개념 집합 정의와 목록 일치", () => {
+    expect(() => pack(variant({ "spec/expected_data.yaml": replaceOnce("FROM _BASE ORDER BY person_id", "FROM read_csv('/etc/passwd') ORDER BY person_id") }))).toThrow(/EXP-COM-01: 쓸 수 없는 구문/);
+    expect(() => pack(variant({ "spec/expected_data.yaml": replaceOnce("- CREATE TEMP TABLE _ANCHOR AS {ANCHOR}", "- DROP TABLE PERSON") }))).toThrow(/setup/);
+    expect(() => pack(variant({ "spec/concept_sets.yaml": replaceOnce(/\n  HEIGHT: \[[^\]]*\]/, "") }))).toThrow(/HEIGHT/);
+    expect(() => pack(variant({ "spec/expected_data.yaml": replaceOnce("requires: [SACT]", "requires: [NOPE]") }))).toThrow(/requires/);
   });
 });
 

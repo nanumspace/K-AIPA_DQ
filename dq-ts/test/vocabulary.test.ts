@@ -62,9 +62,9 @@ describe("선택 테이블·선택 컬럼", () => {
     const e = await run(copySample("none"));
     const concept = [...e.ruleStats.values()].filter((s) => s.check === "concept");
     expect(concept.length).toBeGreaterThan(0);
-    // 선택 컬럼(원천 개념)이 없는 표는 '컬럼 없음'으로 먼저 건너뛴다
-    expect(concept.every((s) => s.status === "skipped" && (s.note === "CONCEPT 미제출" || s.note.startsWith("컬럼 없음")))).toBe(true);
-    expect(concept.filter((s) => s.note === "CONCEPT 미제출").length).toBeGreaterThan(10);
+    // 선택 컬럼(원천 개념)이 없는 표도, CONCEPT 가 없는 표도 '선택 항목 미제출'로 건너뛴다(미검사와 구분)
+    expect(concept.every((s) => s.status === "skipped" && s.note.startsWith("선택 항목 미제출: "))).toBe(true);
+    expect(concept.filter((s) => s.note === "선택 항목 미제출: CONCEPT").length).toBeGreaterThan(10);
     expect(e.ruleStats.get("SEM-VOC-001")?.status).toBe("skipped");
     expect(e.findings).toEqual([]);
   });

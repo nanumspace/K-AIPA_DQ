@@ -2,7 +2,7 @@
 // 타입 변환은 참조 구현(pandas to_numeric / to_datetime, errors="coerce")과 같이 실패 시 NULL 이다.
 import { DuckDBInstance, DuckDBConnection } from "@duckdb/node-api";
 import type { RawTable, SemanticRule, Spec, Concepts, RuleStat } from "./types.js";
-import { DISABLED_NOTE } from "./structural.js";
+import { DISABLED_NOTE, OPTIONAL_SKIP } from "./structural.js";
 import { pyList, pySorted } from "./pyrepr.js";
 
 function q(name: string): string { return `"${name.replace(/"/g, '""')}"`; }
@@ -64,7 +64,8 @@ async function loadTable(con: DuckDBConnection, name: string, df: RawTable, spec
   await con.run(`CREATE TABLE ${q(name)} AS SELECT ${fields.map((f) => castExpr(f.name, f.type)).join(", ")} FROM ${q(rawName)}`);
 }
 
-export async function runSemantic(ctx: SemanticContext, rules: SemanticRule[], sink: SemanticSink): Promise<void> {
+/** after: 교차 규칙을 다 돈 뒤 같은 연결(명세 타입 테이블이 적재된 상태)로 할 일 (데이터 충실도) */
+export async function runSemantic(ctx: SemanticContext, rules: SemanticRule[], sink: SemanticSink, after?: (con: DuckDBConnection) => Promise<void>): Promise<void> {
   const inst = await DuckDBInstance.create(":memory:");
   const con = await inst.connect();
   try {
@@ -101,7 +102,8 @@ export async function runSemantic(ctx: SemanticContext, rules: SemanticRule[], s
       if (rule.disabled) { st.status = "disabled"; st.note = DISABLED_NOTE; continue; }
       const missing = req.filter((t) => !present.has(t));
       if (missing.length || !present.has(dtab)) {
-        st.status = "skipped"; st.note = `필요 테이블 없음: ${pyList(pySorted(missing))}`; continue;
+        const opt = present.has(dtab) && missing.every((t) => ctx.spec.tables[t]?.optional === true);
+        st.status = "skipped"; st.note = `${opt ? OPTIONAL_SKIP : "필요 테이블 없음"}: ${pyList(pySorted(missing))}`; continue;
       }
       let sql = rule.sql;
       for (const [k, v] of Object.entries(subst)) sql = sql.split(k).join(v);
@@ -135,6 +137,7 @@ export async function runSemantic(ctx: SemanticContext, rules: SemanticRule[], s
       }
       if (st.violations > 0) st.status = "fail";
     }
+    if (after) await after(con);
   } finally {
     con.closeSync();
     inst.closeSync();
