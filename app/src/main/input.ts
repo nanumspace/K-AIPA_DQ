@@ -349,11 +349,13 @@ export function checkTables(tables: string[], spec: Spec, candidates: SourceCand
     const ids = (mapping[table] ?? []).filter((id) => byId.has(id));
     const cs = ids.map((id) => byId.get(id)!);
     const issues: InputIssue[] = [];
-    const out: TableCheck = { table, kor: st.kor, required, candidateIds: ids, auto: ids.length > 0 && same(auto[table], ids), rows: null, missingColumns: [], extraColumns: [], issues };
+    const out: TableCheck = { table, kor: st.kor, required, optional: st.optional === true, candidateIds: ids, auto: ids.length > 0 && same(auto[table], ids), rows: null, missingColumns: [], extraColumns: [], issues };
     if (!cs.length) {
       issues.push(required
         ? { level: "error", text: "파일이 없습니다. 이 테이블 없이는 검증할 수 없습니다." }
-        : { level: "warn", text: "파일이 없습니다. 이 테이블의 규칙은 건너뛰고 '테이블 없음'으로 보고됩니다. 해당 사례가 없더라도 헤더만 있는 빈 파일을 넣어 주세요." });
+        : out.optional
+          ? { level: "info", text: "선택 테이블입니다(매뉴얼 보완). 내면 개념 ID 를 표준 용어와 대조하고, 없으면 그 규칙만 건너뜁니다." }
+          : { level: "warn", text: "파일이 없습니다. 이 테이블의 규칙은 건너뛰고 '테이블 없음'으로 보고됩니다. 해당 사례가 없더라도 헤더만 있는 빈 파일을 넣어 주세요." });
       return out;
     }
     const broken = cs.filter((c) => c.error);
@@ -397,8 +399,11 @@ export function checkTables(tables: string[], spec: Spec, candidates: SourceCand
     out.extraColumns = [...new Set(cs.flatMap((c) => { const m = columnNames(c.columns, specCols).map; return c.columns.filter((n) => !specCols.includes(m[n])); }))];
     if (out.missingColumns.includes(st.pk)) issues.push({ level: "error", text: `기본키 컬럼 ${st.pk} 이(가) 없습니다.` });
     if (table !== "PERSON" && specCols.includes("person_id") && out.missingColumns.includes("person_id")) issues.push({ level: "error", text: "person_id 컬럼이 없습니다." });
-    const otherMissing = out.missingColumns.filter((n) => n !== st.pk && n !== "person_id");
+    const optionalCols = new Set(st.fields.filter((f) => f.optional).map((f) => f.name));
+    const otherMissing = out.missingColumns.filter((n) => n !== st.pk && n !== "person_id" && !optionalCols.has(n));
+    const optMissing = out.missingColumns.filter((n) => optionalCols.has(n));
     if (otherMissing.length) issues.push({ level: "warn", text: `명세 컬럼 ${otherMissing.length}개 없음: ${otherMissing.slice(0, 6).join(", ")}${otherMissing.length > 6 ? " …" : ""}` });
+    if (optMissing.length) issues.push({ level: "info", text: `선택 컬럼(원천 코드, 매뉴얼 보완) ${optMissing.length}개 없음: ${optMissing.join(", ")}. 없어도 검증에 지장이 없습니다.` });
     if (out.extraColumns.length) issues.push({ level: "info", text: `명세에 없는 컬럼 ${out.extraColumns.length}개 (무시됨): ${out.extraColumns.slice(0, 6).join(", ")}${out.extraColumns.length > 6 ? " …" : ""}` });
     return out;
   });
@@ -487,12 +492,13 @@ export function stageInputs(candidates: SourceCandidate[], mapping: Record<strin
 
 // ------------------------------------------------------------------ 입력 양식
 function specRows(tables: string[], spec: Spec): (string | number | boolean)[][] {
-  const rows: (string | number | boolean)[][] = [["테이블", "테이블(한글)", "순서", "컬럼", "컬럼(한글)", "타입", "필수", "키", "참조", "코드표", "범위", "패턴", "설명"]];
+  const rows: (string | number | boolean)[][] = [["테이블", "테이블(한글)", "순서", "컬럼", "컬럼(한글)", "타입", "필수", "키", "참조", "코드표", "범위", "패턴", "설명", "구분"]];
   for (const t of tables) {
     const st = spec.tables[t];
     st.fields.forEach((f, i) => {
       const range = Array.isArray(f.range) ? `${(f.range as number[])[0]} ~ ${(f.range as number[])[1]}` : "";
-      rows.push([t, st.kor, i + 1, f.name, String(f.kor ?? ""), f.type, f.required ? "Y" : "", String(f.key ?? ""), String(f.ref ?? ""), String(f.codelist ?? ""), range, String(f.pattern ?? ""), String(f.desc ?? "")]);
+      const kind = st.optional ? "보완 · 선택 테이블" : f.optional ? "보완 · 선택 컬럼" : "매뉴얼";
+      rows.push([t, st.kor, i + 1, f.name, String(f.kor ?? ""), f.type, f.required ? "Y" : "", String(f.key ?? ""), String(f.ref ?? ""), String(f.codelist ?? ""), range, String(f.pattern ?? ""), String(f.desc ?? ""), kind]);
     });
   }
   return rows;

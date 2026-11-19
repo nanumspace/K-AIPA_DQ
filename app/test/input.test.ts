@@ -118,3 +118,21 @@ describe("입력 무결성: 컬럼명 겹침 · 버려질 칸", () => {
     expect(() => stage(plan, "changed-after")).toThrow(/겹칩니다/);
   });
 });
+
+describe("선택 테이블 · 선택 컬럼 (매뉴얼 보완)", () => {
+  it("CONCEPT·VOCABULARY 가 없거나 원천 코드 컬럼이 없어도 경고가 아니라 안내다", () => {
+    const dir = path.join(work, "optional");
+    fs.mkdirSync(dir, { recursive: true });
+    const cond = spec.tables.CONDITION_OCCURRENCE.fields.filter((f) => !f.optional).map((f) => f.name);
+    fs.writeFileSync(path.join(dir, "CONDITION_OCCURRENCE.csv"), cond.join(",") + "\n1,,1,4112853,2024-01-05,32817\n", "utf-8");
+    const plan = buildPlan("LYMPHOMA", ["CONDITION_OCCURRENCE", "CONCEPT", "VOCABULARY"], spec, inspectPaths([dir]), undefined, []);
+    expect(plan.warnings).toBe(0);
+    const issues = (t: string) => plan.tables.find((x) => x.table === t)!.issues;
+    expect(issues("CONDITION_OCCURRENCE").map((i) => [i.level, i.text])).toEqual([
+      ["info", "선택 컬럼(원천 코드, 매뉴얼 보완) 2개 없음: condition_source_value, condition_source_concept_id. 없어도 검증에 지장이 없습니다."]]);
+    for (const t of ["CONCEPT", "VOCABULARY"]) {
+      expect(plan.tables.find((x) => x.table === t)!.optional).toBe(true);
+      expect(issues(t).map((i) => i.level)).toEqual(["info"]);
+    }
+  });
+});

@@ -18,10 +18,11 @@ export interface AppConfig {
   adminMode: boolean;
 }
 
-export interface CohortInfo { id: string; kor: string; tables: string[] }
+/** tables 는 코호트 구성, optionalTables 는 내면 검사하는 선택 테이블(CONCEPT·VOCABULARY) */
+export interface CohortInfo { id: string; kor: string; tables: string[]; optionalTables: string[] }
 
 /** 규칙 서식(사용자 규칙 추가)에서 테이블 → 필드를 고르기 위한 명세 요약 */
-export interface SpecTableInfo { table: string; kor: string; category: string; fields: { name: string; type: string; required: boolean; desc: string; codes: string[]; codelist?: string; range?: number[]; ref?: string }[] }
+export interface SpecTableInfo { table: string; kor: string; category: string; optional?: boolean; fields: { name: string; type: string; required: boolean; optional?: boolean; desc: string; codes: string[]; codelist?: string; range?: number[]; ref?: string }[] }
 
 /** 규칙 하나에서 사용자가 조정할 수 있는 값의 종류 */
 export type ParamKind = "range" | "pattern" | "codelist";
@@ -114,6 +115,8 @@ export interface TableCheck {
   kor: string;
   /** 없으면 검증 자체가 무의미한 테이블 (PERSON, 질환 특화) */
   required: boolean;
+  /** 매뉴얼 밖 선택 테이블: 없어도 경고하지 않는다 */
+  optional: boolean;
   /** 이 테이블로 읽는 후보들 (없으면 빈 배열, 합치면 둘 이상) */
   candidateIds: string[];
   auto: boolean;

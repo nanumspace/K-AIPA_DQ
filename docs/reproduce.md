@@ -18,7 +18,7 @@ pip install pandas numpy pyyaml duckdb openpyxl
 
 ```bash
 python spec/build_spec.py                    # 매뉴얼 엑셀(raw/) + spec/constraints.yaml → 명세·코드표·코호트 구성 (spec/)
-python rules/generate_structural_rules.py    # 명세 → 구조 규칙 368개 (rules/rules_structural.yaml)
+python rules/generate_structural_rules.py    # 명세 → 구조 규칙 410개 (rules/rules_structural.yaml)
 python dq/run_all.py                         # 생성·검증(clean/dirty/good)·오류 주입·정답 대조를 모두 실행
 ```
 

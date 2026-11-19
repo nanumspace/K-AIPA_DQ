@@ -20,7 +20,7 @@ clean 과 good 은 `--today 2026-09-07` 로 검증했을 때 오류 등급 위�
 
 ## 생성 프레임워크 (`synth/framework.py`)
 
-- 명세(`spec/kai_cdm_spec.yaml`)에서 표와 컬럼을 읽어 코호트별 `<TABLE>.csv`를 씁니다 (UTF-8, 헤더 포함, NULL은 빈 문자열, 날짜 ISO 8601). 명세에 없는 표·열은 만들지 않습니다.
+- 명세(`spec/kai_cdm_spec.yaml`)에서 표와 컬럼을 읽어 코호트별 `<TABLE>.csv`를 씁니다 (UTF-8, 헤더 포함, NULL은 빈 문자열, 날짜 ISO 8601). 명세에 없는 표·열은 만들지 않습니다. 매뉴얼 보완인 선택 컬럼(원천 코드)과 선택 표(CONCEPT·VOCABULARY)는 넣지 않습니다. 확인할 병원 원천 코드가 없고, CONCEPT 를 견본으로 배포하면 어휘 재배포가 되기 때문입니다. 그래서 견본에서는 표준 용어 규칙이 '건너뜀'으로 나옵니다.
 - numpy 시드 기반이라 같은 시드면 같은 데이터가 나옵니다.
 - `Ctx` 헬퍼가 환자·방문·약물 연결과 날짜 관계를 구성합니다. 처방의 복용기간이나 검사 결과 보고일은 내원 당일보다 길거나 늦을 수 있으므로, 방문 밖 날짜를 일괄 오류로 취급하지 않습니다. 약물 종료일은 시작일 + days_supply − 1 입니다.
 - 대표 concept(진단, 약물, 검사, 처치, 이상사례)은 `spec/concepts.yaml`에서 가져옵니다. 모든 concept id 는 기준 어휘 OHDSI v20260829 의 표준·유효 개념이며 필드별 허용 용어([vocabulary.md](vocabulary.md) 2절)를 따릅니다. `python synth/check_vocab.py` 가 카탈로그·코드 목록·clean·good 데이터의 개념을 어휘와 대조하고, `dq/run_all.py` 는 어휘(`raw/vocab/v20260829/`, 라이선스 때문에 저장소에 없음)가 있으면 이 대조까지 실행합니다.

@@ -1,4 +1,4 @@
-# 매뉴얼에 없는 값 제약 (손으로 관리)
+# 매뉴얼에 없는 값 제약과 보완 항목 (손으로 관리)
 #
 # 의뢰사 매뉴얼(raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx)은 필드명·타입·PK/FK·필수·설명만 정한다.
 # 여기에는 그 밖에 검증에 쓰는 값 제약을 적는다. spec/build_spec.py 가 매뉴얼과 합쳐 명세를 만든다.
@@ -6,14 +6,23 @@
 #   fields.<TABLE>.<field>:
 #     range: [min, max]       타당 범위 (위반은 경고)
 #     pattern: 정규식          형식 (위반은 경고)
-#     codelist: OMOP.<name>   아래 codelists 의 OMOP 대표 concept 집합 (위반은 경고; 병원 어휘로 확장 가능)
+#     codelist: <name>        아래 codelists 의 코드 집합 (위반은 경고; 병원 어휘로 확장 가능)
 #     fk_external: <TABLE>    제출 범위 밖 테이블을 가리키는 키 (참조 무결성 검사 안 함)
+#     concept:                표준 용어 대조 (선택 테이블 CONCEPT 를 냈을 때만, 위반은 경고). docs/vocabulary.md 2절
+#       domain: <domain_id>        요구 영역 (없으면 보지 않음)
+#       vocabularies: [..]         허용 vocabulary_id (없으면 보지 않음)
+#       standard: true|false       표준(S)·유효 개념이어야 하는지 (기본 true)
+#     note: 문장                명세 설명 뒤에 붙이는 보완 설명
+#
+#   supplement:               매뉴얼에 없는 선택 컬럼·선택 테이블 (docs/vocabulary.md 4절, 2026-11-19 결정)
+#     fields.<TABLE>: [필드]   매뉴얼 테이블 끝에 붙는 선택 컬럼. 없어도 '컬럼 누락'이 아니다
+#     tables.<TABLE>:          모든 코호트의 선택 테이블. 없어도 '테이블 없음'이 아니다
 #
 # 매뉴얼 설명에 'N=라벨' 로 적힌 코드표(예: SACT.therapy_intent)는 build_spec.py 가 설명에서 직접 읽는다.
-
 fields:
   PERSON.gender_concept_id:
     codelist: OMOP.gender_concept_id
+    concept: {domain: Gender, vocabularies: [Gender]}
   PERSON.year_of_birth:
     range:
     - 1900
@@ -34,16 +43,24 @@ fields:
     fk_external: CARE_SITE
   VISIT_OCCURRENCE.visit_concept_id:
     codelist: OMOP.visit_concept_id
+    concept: {domain: Visit, vocabularies: [Visit]}
   VISIT_OCCURRENCE.visit_type_concept_id:
     codelist: OMOP.visit_type_concept_id
+    concept: {domain: Type Concept, vocabularies: [Type Concept]}
+  PROCEDURE_OCCURRENCE.procedure_concept_id:
+    concept: {domain: Procedure, vocabularies: [SNOMED]}
   PROCEDURE_OCCURRENCE.procedure_type_concept_id:
     codelist: OMOP.procedure_type_concept_id
+    concept: {domain: Type Concept, vocabularies: [Type Concept]}
+  DRUG_EXPOSURE.drug_concept_id:
+    concept: {domain: Drug, vocabularies: [RxNorm, RxNorm Extension]}
   DRUG_EXPOSURE.days_supply:
     range:
     - 0
     - 400
   DRUG_EXPOSURE.amount_unit_concept_id:
     codelist: OMOP.amount_unit_concept_id
+    concept: {domain: Unit, vocabularies: [UCUM]}
   DRUG_EXPOSURE.amount_value:
     range:
     - 0
@@ -54,8 +71,10 @@ fields:
     - 100000
   DRUG_EXPOSURE.numerator_unit_concept_id:
     codelist: OMOP.numerator_unit_concept_id
+    concept: {domain: Unit, vocabularies: [UCUM]}
   DRUG_EXPOSURE.denominator_unit_concept_id:
     codelist: OMOP.denominator_unit_concept_id
+    concept: {domain: Unit, vocabularies: [UCUM]}
   DRUG_EXPOSURE.frequency_per_day:
     range:
     - 1
@@ -68,16 +87,25 @@ fields:
     range:
     - 1
     - 500
+  CONDITION_OCCURRENCE.condition_concept_id:
+    concept: {domain: Condition, vocabularies: [SNOMED]}
   CONDITION_OCCURRENCE.condition_type_concept_id:
     codelist: OMOP.condition_type_concept_id
+    concept: {domain: Type Concept, vocabularies: [Type Concept]}
+  MEASUREMENT.measurement_concept_id:
+    concept: {domain: Measurement, vocabularies: [LOINC]}
   MEASUREMENT.measurement_type_concept_id:
     codelist: OMOP.measurement_type_concept_id
+    concept: {domain: Type Concept, vocabularies: [Type Concept]}
+  MEASUREMENT.value_as_concept_id:
+    concept: {vocabularies: [LOINC, SNOMED]}
   MEASUREMENT.value_as_number:
     range:
     - -1000000
     - 1000000
   MEASUREMENT.unit_concept_id:
     codelist: OMOP.unit_concept_id
+    concept: {domain: Unit, vocabularies: [UCUM]}
   MEASUREMENT.range_low:
     range:
     - -1000000
@@ -86,18 +114,24 @@ fields:
     range:
     - -1000000
     - 1000000
+  OBSERVATION.observation_concept_id:
+    concept: {domain: Observation, vocabularies: [SNOMED, LOINC]}
   OBSERVATION.observation_type_concept_id:
     codelist: OMOP.observation_type_concept_id
+    concept: {domain: Type Concept, vocabularies: [Type Concept]}
   OBSERVATION.value_as_number:
     range:
     - -1000000
     - 1000000
   OBSERVATION.unit_concept_id:
     codelist: OMOP.unit_concept_id
+    concept: {domain: Unit, vocabularies: [UCUM]}
   NOTE.note_type_concept_id:
     codelist: OMOP.note_type_concept_id
+    concept: {domain: Type Concept, vocabularies: [Type Concept]}
   NOTE.note_class_concept_id:
     codelist: OMOP.note_class_concept_id
+    concept: {domain: Note, vocabularies: [LOINC]}
   MASLD.fib4_score:
     range:
     - 0
@@ -126,6 +160,8 @@ fields:
     range:
     - 0
     - 4
+  SACT.regimen_concept_id:
+    concept: {domain: Regimen, vocabularies: [HemOnc]}
   SACT.line_of_therapy:
     range:
     - 1
@@ -138,16 +174,77 @@ fields:
     range:
     - 0
     - 5
+  ADVERSE_EVENT.adverse_event_concept_id:
+    concept: {domain: Condition, vocabularies: [SNOMED]}
   ADVERSE_EVENT.severity_concept_id:
-    codelist: OMOP.severity_concept_id
+    codelist: AE.severity
+    note: &ae_code 매뉴얼 자체 코드값입니다(코드표 참고). 컬럼 이름은 concept_id 이지만 OMOP 표준 개념 ID 가 아니므로 CONCEPT 와 대조하지 않습니다.
   ADVERSE_EVENT.causality_concept_id:
-    codelist: OMOP.causality_concept_id
+    codelist: AE.causality
+    note: *ae_code
   ADVERSE_EVENT.seriousness_concept_id:
-    codelist: OMOP.seriousness_concept_id
+    codelist: AE.seriousness
+    note: *ae_code
   ADVERSE_EVENT.outcome_concept_id:
-    codelist: OMOP.outcome_concept_id
+    codelist: AE.outcome
+    note: *ae_code
   ADVERSE_EVENT.action_taken_concept_id:
-    codelist: OMOP.action_taken_concept_id
+    codelist: AE.action_taken
+    note: *ae_code
+
+supplement:
+  fields:
+    CONDITION_OCCURRENCE:
+    - name: condition_source_value
+      type: varchar
+      desc: 병원 원천 진단 코드(예 KCD-8 'C34.1')를 그대로 적는다. 매뉴얼 1.2 ⑦ '원본 코드 유지'를 위한 선택 컬럼이다.
+    - name: condition_source_concept_id
+      type: integer
+      desc: 원천 진단 코드에 해당하는 OMOP 개념 ID(예 KCD7 어휘). 대응하는 개념이 없으면 0.
+      concept: {standard: false}
+    PROCEDURE_OCCURRENCE:
+    - name: procedure_source_value
+      type: varchar
+      desc: 병원 원천 시술 코드(예 EDI 수가 코드)를 그대로 적는다. 선택 컬럼이다.
+    - name: procedure_source_concept_id
+      type: integer
+      desc: 원천 시술 코드에 해당하는 OMOP 개념 ID(예 EDI 어휘). 대응하는 개념이 없으면 0.
+      concept: {standard: false}
+    DRUG_EXPOSURE:
+    - name: drug_source_value
+      type: varchar
+      desc: 병원 원천 약품 코드(예 EDI 약가 코드)를 그대로 적는다. 선택 컬럼이다.
+    - name: drug_source_concept_id
+      type: integer
+      desc: 원천 약품 코드에 해당하는 OMOP 개념 ID(예 EDI 어휘). 대응하는 개념이 없으면 0.
+      concept: {standard: false}
+  tables:
+    CONCEPT:
+      kor: 표준 용어
+      pk: concept_id
+      desc: 병원 데이터에 쓴 개념만 담은 OMOP CONCEPT 일부. 내면 모든 개념 ID 를 표준 용어와 대조한다.
+      fields:
+      - {name: concept_id, type: integer, required: true}
+      - {name: concept_name, type: varchar, required: true}
+      - {name: domain_id, type: varchar, required: true}
+      - {name: vocabulary_id, type: varchar, required: true}
+      - {name: concept_class_id, type: varchar, required: true}
+      - {name: standard_concept, type: varchar, desc: "S 표준, C 분류, 빈 값 비표준"}
+      - {name: concept_code, type: varchar, required: true}
+      - {name: valid_start_date, type: varchar, desc: "Athena 원본(YYYYMMDD)·DB 내보내기(YYYY-MM-DD) 모두 받는다"}
+      - {name: valid_end_date, type: varchar}
+      - {name: invalid_reason, type: varchar, desc: "D 폐기, U 대체, 빈 값 유효"}
+    VOCABULARY:
+      kor: 어휘 버전
+      pk: vocabulary_id
+      desc: OMOP VOCABULARY 테이블. vocabulary_id='None' 행의 vocabulary_version 으로 어휘 배포판을 확인한다.
+      fields:
+      - {name: vocabulary_id, type: varchar, required: true}
+      - {name: vocabulary_name, type: varchar, required: true}
+      - {name: vocabulary_reference, type: varchar}
+      - {name: vocabulary_version, type: varchar}
+      - {name: vocabulary_concept_id, type: integer}
+
 codelists:
   OMOP.gender_concept_id:
     '8507': MALE
@@ -234,34 +331,34 @@ codelists:
     '3030624': Outpatient Note
     '3032377': Oncology Note
     '0': No matching concept (표준 분류가 없는 노트, 예 약물 구조식 SMILES)
-  OMOP.severity_concept_id:
+  AE.severity:                        # 이상사례 코드값(매뉴얼 자체, OMOP 개념 아님)
     '1': CTCAE Grade 1
     '2': CTCAE Grade 2
     '3': CTCAE Grade 3
     '4': CTCAE Grade 4
     '5': CTCAE Grade 5
-  OMOP.causality_concept_id:
+  AE.causality:
     '1': Certain
     '2': Probable
     '3': Possible
     '4': Unlikely
     '5': Unrelated
     '6': Unassessable
-  OMOP.seriousness_concept_id:
+  AE.seriousness:
     '1': Death
     '2': Life-threatening
     '3': Hospitalization
     '4': Disability
     '5': Congenital anomaly
     '6': Other medically important
-  OMOP.outcome_concept_id:
+  AE.outcome:
     '1': Recovered
     '2': Recovering
     '3': Not recovered
     '4': Recovered with sequelae
     '5': Fatal
     '6': Unknown
-  OMOP.action_taken_concept_id:
+  AE.action_taken:
     '1': None
     '2': Dose reduced
     '3': Interrupted

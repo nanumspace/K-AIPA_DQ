@@ -12,14 +12,19 @@ export interface SpecField {
 export interface SpecTable {
   name: string;
   kor: string;
-  category: "core" | "disease" | string;
+  category: "core" | "disease" | "vocabulary" | string;
   pk: string;
+  /** 매뉴얼 밖 보완 테이블: 없어도 '테이블 없음'이 아니다 */
+  optional?: boolean;
   fields: SpecField[];
 }
 
 export interface Spec {
   tables: Record<string, SpecTable>;
 }
+
+/** 코호트 구성. optional_tables 는 내면 검사하고 없으면 건너뛰는 보완 테이블 */
+export interface CohortProfile { kor: string; tables: string[]; optional_tables?: string[] }
 
 export type RuleOrigin = "standard" | "modified" | "admin" | "custom";
 export type Severity = "error" | "warning";

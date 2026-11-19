@@ -21,7 +21,7 @@
 | 당뇨병 | DIABETES (5) | O | X | 10 |
 | 림프종 | LYMPHOMA (15) | O | O | 11 |
 
-전체 명세는 16개 테이블, 157개 필드입니다(공통 8표 76필드, 질환 본표 6표 57필드, SACT 13필드, ADVERSE_EVENT 11필드). 코호트별 테이블 구성은 `spec/cohort_profiles.yaml`에 고정되어 있습니다.
+전체 명세는 18개 테이블, 178개 필드입니다. 매뉴얼은 16개 테이블, 157개 필드이고(공통 8표 76필드, 질환 본표 6표 57필드, SACT 13필드, ADVERSE_EVENT 11필드), 여기에 매뉴얼 보완으로 선택 컬럼 6개(`condition_`·`procedure_`·`drug_` 의 `*_source_value`, `*_source_concept_id`)와 선택 테이블 2개(CONCEPT·VOCABULARY, 필드 15개)가 더해집니다. 선택 컬럼(원천 코드)과 선택 테이블은 없어도 오류가 아니고, 내면 표준 용어(OHDSI v20260829)와 대조합니다([vocabulary.md](vocabulary.md)). 코호트별 테이블 구성은 `spec/cohort_profiles.yaml`에 고정되어 있습니다.
 
 ## 설계 원칙
 

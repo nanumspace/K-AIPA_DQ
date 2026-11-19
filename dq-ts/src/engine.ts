@@ -6,7 +6,7 @@ import { readCsv, writeCsv } from "./csv.js";
 import { runStructural } from "./structural.js";
 import { runSemantic } from "./semantic.js";
 import { effectiveRules, ruleSetHash, describeOverrides, isEmptyOverrides } from "./rules.js";
-import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides } from "./types.js";
+import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides, CohortProfile } from "./types.js";
 
 /** 외부용 요약에는 DB 오류 원문(입력값·SQL을 포함할 수 있음)을 싣지 않는다.
  * 앱 내부 진단은 원본 Summary 를 사용한다.
@@ -42,7 +42,7 @@ export class Engine {
   readonly spec: Spec;
   readonly codelists: Map<string, Set<string>>;
   readonly concepts: Concepts;
-  readonly profile: { kor: string; tables: string[] };
+  readonly profile: CohortProfile;
   readonly tablesInCohort: string[];
   readonly diseaseTable: string;
   readonly rulesStruct: StructuralRule[];
@@ -66,7 +66,8 @@ export class Engine {
     const profiles = loadProfiles();
     if (!profiles[opt.cohort]) throw new Error(`알 수 없는 코호트: ${opt.cohort}`);
     this.profile = profiles[opt.cohort];
-    this.tablesInCohort = this.profile.tables;
+    // 선택 테이블(CONCEPT·VOCABULARY)은 내면 읽고, 없으면 그 규칙만 건너뛴다
+    this.tablesInCohort = [...this.profile.tables, ...(this.profile.optional_tables ?? [])];
     this.diseaseTable = this.tablesInCohort.find((t) => this.spec.tables[t].category === "disease")!;
     const eff = effectiveRules(this.overrides);
     this.rulesStruct = eff.structural;

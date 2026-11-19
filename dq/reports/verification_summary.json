@@ -2,13 +2,13 @@
  {
   "cohort": "LUNG_CANCER",
   "clean": {
-   "rules": 285,
+   "rules": 328,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 285,
+   "rules": 328,
    "violations": 1795,
    "failed_rules": 243
   },
@@ -239,13 +239,13 @@
  {
   "cohort": "BREAST_CANCER",
   "clean": {
-   "rules": 294,
+   "rules": 337,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 294,
+   "rules": 337,
    "violations": 1862,
    "failed_rules": 252
   },
@@ -471,13 +471,13 @@
  {
   "cohort": "COLORECTAL_CANCER",
   "clean": {
-   "rules": 277,
+   "rules": 320,
    "violations": 14,
    "failed_rules": 1,
    "false_positive_rate": null
   },
   "dirty": {
-   "rules": 277,
+   "rules": 320,
    "violations": 1570,
    "failed_rules": 236
   },
@@ -700,13 +700,13 @@
  {
   "cohort": "MASLD",
   "clean": {
-   "rules": 257,
+   "rules": 299,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 257,
+   "rules": 299,
    "violations": 1403,
    "failed_rules": 199
   },
@@ -903,13 +903,13 @@
  {
   "cohort": "DIABETES",
   "clean": {
-   "rules": 253,
+   "rules": 295,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 253,
+   "rules": 295,
    "violations": 1104,
    "failed_rules": 187
   },
@@ -1096,13 +1096,13 @@
  {
   "cohort": "LYMPHOMA",
   "clean": {
-   "rules": 286,
+   "rules": 329,
    "violations": 7,
    "failed_rules": 1,
    "false_positive_rate": null
   },
   "dirty": {
-   "rules": 286,
+   "rules": 329,
    "violations": 1175,
    "failed_rules": 245
   },

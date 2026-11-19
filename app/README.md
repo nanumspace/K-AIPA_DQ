@@ -4,7 +4,7 @@ Electron + React + TypeScript 데스크톱 앱입니다. 검증 엔진은 `../dq
 
 ## 명세
 
-명세는 의뢰사 매뉴얼 **2026-11-16** 하나입니다 (표 16개 · 필드 157개, 6개 코호트). 코호트마다 핵심 표 8개(PERSON, VISIT_OCCURRENCE, PROCEDURE_OCCURRENCE, DRUG_EXPOSURE, CONDITION_OCCURRENCE, MEASUREMENT, OBSERVATION, NOTE), 질환 본표 하나, ADVERSE_EVENT 를 쓰고, 폐암·유방암·대장암·림프종은 SACT 를 더합니다. 구조 규칙(`rules/rules_structural.yaml`)은 명세에서 자동 생성되고 교차 규칙(`rules/rules_semantic.yaml`)은 손으로 씁니다. 사이드바 아래 꼬리말이 `매뉴얼 2026-11-16 · 규칙 N개 · 코호트 6개` 로 지금의 규모를 보여 줍니다 (규칙 수는 이 PC 의 사용자·관리자 규칙을 포함합니다).
+명세는 의뢰사 매뉴얼 **2026-11-16** 하나입니다 (표 16개 · 필드 157개(매뉴얼) + 보완 선택 컬럼 6개·선택 테이블 2개, 6개 코호트). 코호트마다 핵심 표 8개(PERSON, VISIT_OCCURRENCE, PROCEDURE_OCCURRENCE, DRUG_EXPOSURE, CONDITION_OCCURRENCE, MEASUREMENT, OBSERVATION, NOTE), 질환 본표 하나, ADVERSE_EVENT 를 쓰고, 폐암·유방암·대장암·림프종은 SACT 를 더합니다. 구조 규칙(`rules/rules_structural.yaml`)은 명세에서 자동 생성되고 교차 규칙(`rules/rules_semantic.yaml`)은 손으로 씁니다. 사이드바 아래 꼬리말이 `매뉴얼 2026-11-16 · 규칙 N개 · 코호트 6개` 로 지금의 규모를 보여 줍니다 (규칙 수는 이 PC 의 사용자·관리자 규칙을 포함합니다).
 
 몇 가지 해석을 앱이 알고 있습니다.
 

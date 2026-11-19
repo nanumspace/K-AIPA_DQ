@@ -338,3 +338,23 @@ rules:
     SELECT person_id, '{DISEASE}:' || {DISEASE_PK} AS row_key, 'cell_of_origin=' || cell_of_origin || ' 는 GCB·ABC/non-GCB·unclassifiable·NA 가 아님' AS detail
     FROM {DISEASE}
     WHERE cell_of_origin IS NOT NULL AND cell_of_origin NOT IN ('GCB', 'ABC/non-GCB', 'unclassifiable', 'NA')
+
+# ---------------------------------------------------------------------------
+# 표준 용어 (선택 테이블 VOCABULARY 를 냈을 때만)
+# ---------------------------------------------------------------------------
+- id: SEM-VOC-001
+  name: 표준 용어 배포판 v20260829
+  category: Conformance
+  subcategory: vocabulary
+  severity: warning
+  scope: all
+  requires: [VOCABULARY]
+  desc: 사업 기준 어휘는 OHDSI 표준 용어 v20260829(VOCABULARY 의 vocabulary_id='None' 행 vocabulary_version 'v5.0 29-AUG-26')다. 다른 배포판이면 개념 ID 가 달라질 수 있다. docs/vocabulary.md 1절
+  sql: |
+    SELECT NULL AS person_id, vocabulary_id AS row_key,
+           'vocabulary_version=' || COALESCE(vocabulary_version, 'NULL') || ' 는 기준 배포판 v5.0 29-AUG-26(v20260829) 이 아님' AS detail
+    FROM VOCABULARY
+    WHERE vocabulary_id = 'None' AND COALESCE(vocabulary_version, '') <> 'v5.0 29-AUG-26'
+    UNION ALL
+    SELECT NULL, 'None', 'VOCABULARY 에 vocabulary_id=None 행(배포판 버전)이 없음'
+    WHERE NOT EXISTS (SELECT 1 FROM VOCABULARY WHERE vocabulary_id = 'None')

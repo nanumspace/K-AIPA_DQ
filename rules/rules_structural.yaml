@@ -21,7 +21,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id001
+    expected:
     - person_id
     - gender_concept_id
     - year_of_birth
@@ -31,7 +31,7 @@ rules:
     - care_site_id
     - observation_period_start_date
     - death_date
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0003
@@ -43,7 +43,16 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id001
+    expected:
+    - person_id
+    - gender_concept_id
+    - year_of_birth
+    - month_of_birth
+    - day_of_birth
+    - age_at_index
+    - care_site_id
+    - observation_period_start_date
+    - death_date
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -359,14 +368,14 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id002
+    expected:
     - visit_occurrence_id
     - person_id
     - visit_concept_id
     - visit_start_date
     - visit_end_date
     - visit_type_concept_id
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0027
@@ -378,7 +387,13 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id002
+    expected:
+    - visit_occurrence_id
+    - person_id
+    - visit_concept_id
+    - visit_start_date
+    - visit_end_date
+    - visit_type_concept_id
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -634,14 +649,14 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id003
+    expected:
     - procedure_occurrence_id
     - visit_occurrence_id
     - person_id
     - procedure_concept_id
     - procedure_date
     - procedure_type_concept_id
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0047
@@ -653,7 +668,15 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id003
+    expected:
+    - procedure_occurrence_id
+    - visit_occurrence_id
+    - person_id
+    - procedure_concept_id
+    - procedure_date
+    - procedure_type_concept_id
+    - procedure_source_value
+    - procedure_source_concept_id
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -884,7 +907,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id004
+    expected:
     - drug_exposure_id
     - visit_occurrence_id
     - person_id
@@ -904,7 +927,7 @@ rules:
     - frequency_per_day
     - dosing_interval_day
     - dosing_number
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0065
@@ -916,7 +939,28 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id004
+    expected:
+    - drug_exposure_id
+    - visit_occurrence_id
+    - person_id
+    - sact_id
+    - note_id
+    - drug_concept_id
+    - drug_exposure_start_date
+    - drug_exposure_end_date
+    - days_supply
+    - amount_unit_concept_id
+    - amount_value
+    - quantity
+    - numerator_value
+    - numerator_unit_concept_id
+    - denominator_value
+    - denominator_unit_concept_id
+    - frequency_per_day
+    - dosing_interval_day
+    - dosing_number
+    - drug_source_value
+    - drug_source_concept_id
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -1518,14 +1562,14 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id005
+    expected:
     - condition_occurrence_id
     - visit_occurrence_id
     - person_id
     - condition_concept_id
     - condition_start_date
     - condition_type_concept_id
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0109
@@ -1537,7 +1581,15 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id005
+    expected:
+    - condition_occurrence_id
+    - visit_occurrence_id
+    - person_id
+    - condition_concept_id
+    - condition_start_date
+    - condition_type_concept_id
+    - condition_source_value
+    - condition_source_concept_id
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -1768,7 +1820,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id006
+    expected:
     - measurement_id
     - visit_occurrence_id
     - person_id
@@ -1782,7 +1834,7 @@ rules:
     - range_high
     - unit_source_value
     - value_source_value
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0127
@@ -1794,7 +1846,20 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id006
+    expected:
+    - measurement_id
+    - visit_occurrence_id
+    - person_id
+    - measurement_concept_id
+    - measurement_date
+    - measurement_type_concept_id
+    - value_as_number
+    - value_as_concept_id
+    - unit_concept_id
+    - range_low
+    - range_high
+    - unit_source_value
+    - value_source_value
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -2128,7 +2193,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id007
+    expected:
     - observation_id
     - visit_occurrence_id
     - person_id
@@ -2138,7 +2203,7 @@ rules:
     - value_as_number
     - value_as_string
     - unit_concept_id
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0152
@@ -2150,7 +2215,16 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id007
+    expected:
+    - observation_id
+    - visit_occurrence_id
+    - person_id
+    - observation_concept_id
+    - observation_date
+    - observation_type_concept_id
+    - value_as_number
+    - value_as_string
+    - unit_concept_id
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -2451,7 +2525,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id008
+    expected:
     - note_id
     - visit_occurrence_id
     - person_id
@@ -2460,7 +2534,7 @@ rules:
     - note_type_concept_id
     - note_class_concept_id
     - file_id
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0175
@@ -2472,7 +2546,15 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id008
+    expected:
+    - note_id
+    - visit_occurrence_id
+    - person_id
+    - note_date
+    - note_text
+    - note_type_concept_id
+    - note_class_concept_id
+    - file_id
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -2705,7 +2787,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id009
+    expected:
     - lung_cancer_id
     - person_id
     - visit_occurrence_id
@@ -2714,7 +2796,7 @@ rules:
     - histologic_diagnosis_source_value
     - clinical_stage
     - stage_iv_diagnosis_date
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0193
@@ -2726,7 +2808,15 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id009
+    expected:
+    - lung_cancer_id
+    - person_id
+    - visit_occurrence_id
+    - diag_rgst_ymd
+    - histologic_diagnosis
+    - histologic_diagnosis_source_value
+    - clinical_stage
+    - stage_iv_diagnosis_date
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -2996,7 +3086,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id010
+    expected:
     - breast_cancer_id
     - person_id
     - visit_occurrence_id
@@ -3007,7 +3097,7 @@ rules:
     - postpartum_at_diagnosis
     - fertility_history
     - fertility_treatment_type
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0214
@@ -3019,7 +3109,17 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id010
+    expected:
+    - breast_cancer_id
+    - person_id
+    - visit_occurrence_id
+    - diag_rgst_ymd
+    - menopause_status
+    - pregnant_at_diagnosis
+    - history_of_live_birth
+    - postpartum_at_diagnosis
+    - fertility_history
+    - fertility_treatment_type
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -3428,7 +3528,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id011
+    expected:
     - colorectal_cancer_id
     - person_id
     - visit_occurrence_id
@@ -3440,7 +3540,7 @@ rules:
     - inva_dgre_nm
     - radi_rsmg_invl_yn_spnm
     - tme_qlt_dgre_spnm
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0245
@@ -3452,7 +3552,18 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id011
+    expected:
+    - colorectal_cancer_id
+    - person_id
+    - visit_occurrence_id
+    - diag_rgst_ymd
+    - ostm_frsn_clsf_etc_cont
+    - inap_dsnt_mtst_site_etc_cont
+    - anes_mthd_etc_cont
+    - afop_asmt_item_etc_cont
+    - inva_dgre_nm
+    - radi_rsmg_invl_yn_spnm
+    - tme_qlt_dgre_spnm
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -3628,7 +3739,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id012
+    expected:
     - masld_id
     - person_id
     - visit_occurrence_id
@@ -3637,7 +3748,7 @@ rules:
     - bard_score
     - safe_score
     - liverrisk_score
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0259
@@ -3649,7 +3760,15 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id012
+    expected:
+    - masld_id
+    - person_id
+    - visit_occurrence_id
+    - fib4_score
+    - apri_score
+    - bard_score
+    - safe_score
+    - liverrisk_score
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -3915,13 +4034,13 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id013
+    expected:
     - dm_id
     - person_id
     - visit_occurrence_id
     - condition_start_date
     - condition_end_date
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0279
@@ -3933,7 +4052,12 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id013
+    expected:
+    - dm_id
+    - person_id
+    - visit_occurrence_id
+    - condition_start_date
+    - condition_end_date
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -4136,7 +4260,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id014
+    expected:
     - lymphoma_id
     - person_id
     - visit_occurrence_id
@@ -4152,7 +4276,7 @@ rules:
     - pit_score
     - minimal_residual_disease_result
     - ctdna_result
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0295
@@ -4164,7 +4288,22 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id014
+    expected:
+    - lymphoma_id
+    - person_id
+    - visit_occurrence_id
+    - diagnosis_date
+    - cell_of_origin
+    - double_expressor_yn
+    - double_hit_triple_hit_status
+    - t_14_18_result
+    - t_11_14_result
+    - mipi_score
+    - mipi_c_risk_group
+    - hodgkin_ips_score
+    - pit_score
+    - minimal_residual_disease_result
+    - ctdna_result
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -4454,7 +4593,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id015
+    expected:
     - sact_id
     - person_id
     - regimen_concept_id
@@ -4468,7 +4607,7 @@ rules:
     - best_overall_response
     - date_of_progression
     - recurrence_anatomic_site
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0317
@@ -4480,7 +4619,20 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id015
+    expected:
+    - sact_id
+    - person_id
+    - regimen_concept_id
+    - regimen_source_value
+    - regimen_start_date
+    - regimen_end_date
+    - line_of_therapy
+    - number_of_cycles
+    - therapy_intent
+    - ecog_performance_status
+    - best_overall_response
+    - date_of_progression
+    - recurrence_anatomic_site
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -4836,7 +4988,7 @@ rules:
   severity: error
   check: columns
   params:
-    expected: &id016
+    expected:
     - adverse_event_id
     - person_id
     - visit_occurrence_id
@@ -4848,7 +5000,7 @@ rules:
     - seriousness_concept_id
     - outcome_concept_id
     - action_taken_concept_id
-  desc: 명세의 모든 컬럼이 있어야 한다.
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
   scope: all
   source: auto:spec
 - id: ST-0344
@@ -4860,7 +5012,18 @@ rules:
   severity: warning
   check: extra_columns
   params:
-    expected: *id016
+    expected:
+    - adverse_event_id
+    - person_id
+    - visit_occurrence_id
+    - adverse_event_concept_id
+    - adverse_event_start_date
+    - severity_concept_id
+    - causality_concept_id
+    - is_serious_yn
+    - seriousness_concept_id
+    - outcome_concept_id
+    - action_taken_concept_id
   desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
   scope: all
   source: auto:spec
@@ -5066,8 +5229,8 @@ rules:
   severity: warning
   check: codelist
   params:
-    codelist: OMOP.severity_concept_id
-  desc: severity_concept_id 값은 코드표 OMOP.severity_concept_id 에 있어야 한다. (OMOP 대표 코드 집합이라 병원 어휘에 따라 다를 수 있어 경고)
+    codelist: AE.severity
+  desc: severity_concept_id 값은 코드표 AE.severity 에 있어야 한다. (매뉴얼 자체 코드값, OMOP 개념 아님)
   scope: all
   source: auto:spec
 - id: ST-0360
@@ -5094,8 +5257,8 @@ rules:
   severity: warning
   check: codelist
   params:
-    codelist: OMOP.causality_concept_id
-  desc: causality_concept_id 값은 코드표 OMOP.causality_concept_id 에 있어야 한다. (OMOP 대표 코드 집합이라 병원 어휘에 따라 다를 수 있어 경고)
+    codelist: AE.causality
+  desc: causality_concept_id 값은 코드표 AE.causality 에 있어야 한다. (매뉴얼 자체 코드값, OMOP 개념 아님)
   scope: all
   source: auto:spec
 - id: ST-0362
@@ -5136,8 +5299,8 @@ rules:
   severity: warning
   check: codelist
   params:
-    codelist: OMOP.seriousness_concept_id
-  desc: seriousness_concept_id 값은 코드표 OMOP.seriousness_concept_id 에 있어야 한다. (OMOP 대표 코드 집합이라 병원 어휘에 따라 다를 수 있어 경고)
+    codelist: AE.seriousness
+  desc: seriousness_concept_id 값은 코드표 AE.seriousness 에 있어야 한다. (매뉴얼 자체 코드값, OMOP 개념 아님)
   scope: all
   source: auto:spec
 - id: ST-0365
@@ -5164,8 +5327,8 @@ rules:
   severity: warning
   check: codelist
   params:
-    codelist: OMOP.outcome_concept_id
-  desc: outcome_concept_id 값은 코드표 OMOP.outcome_concept_id 에 있어야 한다. (OMOP 대표 코드 집합이라 병원 어휘에 따라 다를 수 있어 경고)
+    codelist: AE.outcome
+  desc: outcome_concept_id 값은 코드표 AE.outcome 에 있어야 한다. (매뉴얼 자체 코드값, OMOP 개념 아님)
   scope: all
   source: auto:spec
 - id: ST-0367
@@ -5192,7 +5355,681 @@ rules:
   severity: warning
   check: codelist
   params:
-    codelist: OMOP.action_taken_concept_id
-  desc: action_taken_concept_id 값은 코드표 OMOP.action_taken_concept_id 에 있어야 한다. (OMOP 대표 코드 집합이라 병원 어휘에 따라 다를 수 있어 경고)
+    codelist: AE.action_taken
+  desc: action_taken_concept_id 값은 코드표 AE.action_taken 에 있어야 한다. (매뉴얼 자체 코드값, OMOP 개념 아님)
+  scope: all
+  source: auto:spec
+- id: ST-0369
+  name: PROCEDURE_OCCURRENCE.procedure_source_concept_id 타입(integer)
+  category: Conformance
+  subcategory: value
+  table: PROCEDURE_OCCURRENCE
+  fields:
+  - procedure_source_concept_id
+  severity: warning
+  check: type
+  params:
+    type: integer
+  desc: procedure_source_concept_id 은 integer 형식이어야 한다 (날짜는 YYYY-MM-DD).
+  scope: all
+  source: auto:spec
+- id: ST-0370
+  name: DRUG_EXPOSURE.drug_source_concept_id 타입(integer)
+  category: Conformance
+  subcategory: value
+  table: DRUG_EXPOSURE
+  fields:
+  - drug_source_concept_id
+  severity: warning
+  check: type
+  params:
+    type: integer
+  desc: drug_source_concept_id 은 integer 형식이어야 한다 (날짜는 YYYY-MM-DD).
+  scope: all
+  source: auto:spec
+- id: ST-0371
+  name: CONDITION_OCCURRENCE.condition_source_concept_id 타입(integer)
+  category: Conformance
+  subcategory: value
+  table: CONDITION_OCCURRENCE
+  fields:
+  - condition_source_concept_id
+  severity: warning
+  check: type
+  params:
+    type: integer
+  desc: condition_source_concept_id 은 integer 형식이어야 한다 (날짜는 YYYY-MM-DD).
+  scope: all
+  source: auto:spec
+- id: ST-0372
+  name: CONCEPT 컬럼 구성
+  category: Conformance
+  subcategory: structure
+  table: CONCEPT
+  fields: []
+  severity: warning
+  check: columns
+  params:
+    expected:
+    - concept_id
+    - concept_name
+    - domain_id
+    - vocabulary_id
+    - concept_class_id
+    - standard_concept
+    - concept_code
+    - valid_start_date
+    - valid_end_date
+    - invalid_reason
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
+  scope: all
+  source: auto:spec
+- id: ST-0373
+  name: CONCEPT 명세 외 컬럼
+  category: Conformance
+  subcategory: structure
+  table: CONCEPT
+  fields: []
+  severity: warning
+  check: extra_columns
+  params:
+    expected:
+    - concept_id
+    - concept_name
+    - domain_id
+    - vocabulary_id
+    - concept_class_id
+    - standard_concept
+    - concept_code
+    - valid_start_date
+    - valid_end_date
+    - invalid_reason
+  desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
+  scope: all
+  source: auto:spec
+- id: ST-0374
+  name: CONCEPT.concept_id PK 유일성
+  category: Conformance
+  subcategory: relational
+  table: CONCEPT
+  fields:
+  - concept_id
+  severity: warning
+  check: pk_unique
+  params: {}
+  desc: PK 는 NULL 이 아니고 유일해야 한다.
+  scope: all
+  source: auto:spec
+- id: ST-0375
+  name: CONCEPT.concept_id 타입(integer)
+  category: Conformance
+  subcategory: value
+  table: CONCEPT
+  fields:
+  - concept_id
+  severity: warning
+  check: type
+  params:
+    type: integer
+  desc: concept_id 은 integer 형식이어야 한다 (날짜는 YYYY-MM-DD).
+  scope: all
+  source: auto:spec
+- id: ST-0376
+  name: CONCEPT.concept_name 필수
+  category: Completeness
+  subcategory: value
+  table: CONCEPT
+  fields:
+  - concept_name
+  severity: warning
+  check: not_null
+  params: {}
+  desc: 필수 필드 concept_name 은 NULL 일 수 없다.
+  scope: all
+  source: auto:spec
+- id: ST-0377
+  name: CONCEPT.domain_id 필수
+  category: Completeness
+  subcategory: value
+  table: CONCEPT
+  fields:
+  - domain_id
+  severity: warning
+  check: not_null
+  params: {}
+  desc: 필수 필드 domain_id 은 NULL 일 수 없다.
+  scope: all
+  source: auto:spec
+- id: ST-0378
+  name: CONCEPT.vocabulary_id 필수
+  category: Completeness
+  subcategory: value
+  table: CONCEPT
+  fields:
+  - vocabulary_id
+  severity: warning
+  check: not_null
+  params: {}
+  desc: 필수 필드 vocabulary_id 은 NULL 일 수 없다.
+  scope: all
+  source: auto:spec
+- id: ST-0379
+  name: CONCEPT.concept_class_id 필수
+  category: Completeness
+  subcategory: value
+  table: CONCEPT
+  fields:
+  - concept_class_id
+  severity: warning
+  check: not_null
+  params: {}
+  desc: 필수 필드 concept_class_id 은 NULL 일 수 없다.
+  scope: all
+  source: auto:spec
+- id: ST-0380
+  name: CONCEPT.concept_code 필수
+  category: Completeness
+  subcategory: value
+  table: CONCEPT
+  fields:
+  - concept_code
+  severity: warning
+  check: not_null
+  params: {}
+  desc: 필수 필드 concept_code 은 NULL 일 수 없다.
+  scope: all
+  source: auto:spec
+- id: ST-0381
+  name: VOCABULARY 컬럼 구성
+  category: Conformance
+  subcategory: structure
+  table: VOCABULARY
+  fields: []
+  severity: warning
+  check: columns
+  params:
+    expected:
+    - vocabulary_id
+    - vocabulary_name
+    - vocabulary_reference
+    - vocabulary_version
+    - vocabulary_concept_id
+  desc: 명세의 모든 컬럼이 있어야 한다 (선택 컬럼 제외).
+  scope: all
+  source: auto:spec
+- id: ST-0382
+  name: VOCABULARY 명세 외 컬럼
+  category: Conformance
+  subcategory: structure
+  table: VOCABULARY
+  fields: []
+  severity: warning
+  check: extra_columns
+  params:
+    expected:
+    - vocabulary_id
+    - vocabulary_name
+    - vocabulary_reference
+    - vocabulary_version
+    - vocabulary_concept_id
+  desc: 명세에 없는 컬럼이 있으면 알린다(검사에는 쓰지 않음).
+  scope: all
+  source: auto:spec
+- id: ST-0383
+  name: VOCABULARY.vocabulary_id PK 유일성
+  category: Conformance
+  subcategory: relational
+  table: VOCABULARY
+  fields:
+  - vocabulary_id
+  severity: warning
+  check: pk_unique
+  params: {}
+  desc: PK 는 NULL 이 아니고 유일해야 한다.
+  scope: all
+  source: auto:spec
+- id: ST-0384
+  name: VOCABULARY.vocabulary_name 필수
+  category: Completeness
+  subcategory: value
+  table: VOCABULARY
+  fields:
+  - vocabulary_name
+  severity: warning
+  check: not_null
+  params: {}
+  desc: 필수 필드 vocabulary_name 은 NULL 일 수 없다.
+  scope: all
+  source: auto:spec
+- id: ST-0385
+  name: VOCABULARY.vocabulary_concept_id 타입(integer)
+  category: Conformance
+  subcategory: value
+  table: VOCABULARY
+  fields:
+  - vocabulary_concept_id
+  severity: warning
+  check: type
+  params:
+    type: integer
+  desc: vocabulary_concept_id 은 integer 형식이어야 한다 (날짜는 YYYY-MM-DD).
+  scope: all
+  source: auto:spec
+- id: ST-0386
+  name: PERSON.gender_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: PERSON
+  fields:
+  - gender_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Gender
+    vocabularies:
+    - Gender
+  desc: gender_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Gender, 어휘 Gender 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0387
+  name: VISIT_OCCURRENCE.visit_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: VISIT_OCCURRENCE
+  fields:
+  - visit_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Visit
+    vocabularies:
+    - Visit
+  desc: visit_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Visit, 어휘 Visit 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0388
+  name: VISIT_OCCURRENCE.visit_type_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: VISIT_OCCURRENCE
+  fields:
+  - visit_type_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Type Concept
+    vocabularies:
+    - Type Concept
+  desc: visit_type_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Type Concept, 어휘 Type Concept 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0389
+  name: PROCEDURE_OCCURRENCE.procedure_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: PROCEDURE_OCCURRENCE
+  fields:
+  - procedure_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Procedure
+    vocabularies:
+    - SNOMED
+  desc: procedure_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Procedure, 어휘 SNOMED 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0390
+  name: PROCEDURE_OCCURRENCE.procedure_type_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: PROCEDURE_OCCURRENCE
+  fields:
+  - procedure_type_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Type Concept
+    vocabularies:
+    - Type Concept
+  desc: procedure_type_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Type Concept, 어휘 Type Concept 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0391
+  name: PROCEDURE_OCCURRENCE.procedure_source_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: PROCEDURE_OCCURRENCE
+  fields:
+  - procedure_source_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: false
+  desc: procedure_source_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0392
+  name: DRUG_EXPOSURE.drug_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: DRUG_EXPOSURE
+  fields:
+  - drug_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Drug
+    vocabularies:
+    - RxNorm
+    - RxNorm Extension
+  desc: drug_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Drug, 어휘 RxNorm/RxNorm Extension 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0393
+  name: DRUG_EXPOSURE.amount_unit_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: DRUG_EXPOSURE
+  fields:
+  - amount_unit_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Unit
+    vocabularies:
+    - UCUM
+  desc: amount_unit_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Unit, 어휘 UCUM 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0394
+  name: DRUG_EXPOSURE.numerator_unit_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: DRUG_EXPOSURE
+  fields:
+  - numerator_unit_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Unit
+    vocabularies:
+    - UCUM
+  desc: numerator_unit_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Unit, 어휘 UCUM 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0395
+  name: DRUG_EXPOSURE.denominator_unit_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: DRUG_EXPOSURE
+  fields:
+  - denominator_unit_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Unit
+    vocabularies:
+    - UCUM
+  desc: denominator_unit_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Unit, 어휘 UCUM 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0396
+  name: DRUG_EXPOSURE.drug_source_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: DRUG_EXPOSURE
+  fields:
+  - drug_source_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: false
+  desc: drug_source_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0397
+  name: CONDITION_OCCURRENCE.condition_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: CONDITION_OCCURRENCE
+  fields:
+  - condition_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Condition
+    vocabularies:
+    - SNOMED
+  desc: condition_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Condition, 어휘 SNOMED 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0398
+  name: CONDITION_OCCURRENCE.condition_type_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: CONDITION_OCCURRENCE
+  fields:
+  - condition_type_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Type Concept
+    vocabularies:
+    - Type Concept
+  desc: condition_type_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Type Concept, 어휘 Type Concept 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0399
+  name: CONDITION_OCCURRENCE.condition_source_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: CONDITION_OCCURRENCE
+  fields:
+  - condition_source_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: false
+  desc: condition_source_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0400
+  name: MEASUREMENT.measurement_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: MEASUREMENT
+  fields:
+  - measurement_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Measurement
+    vocabularies:
+    - LOINC
+  desc: measurement_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Measurement, 어휘 LOINC 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0401
+  name: MEASUREMENT.measurement_type_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: MEASUREMENT
+  fields:
+  - measurement_type_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Type Concept
+    vocabularies:
+    - Type Concept
+  desc: measurement_type_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Type Concept, 어휘 Type Concept 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0402
+  name: MEASUREMENT.value_as_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: MEASUREMENT
+  fields:
+  - value_as_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    vocabularies:
+    - LOINC
+    - SNOMED
+  desc: value_as_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 어휘 LOINC/SNOMED 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0403
+  name: MEASUREMENT.unit_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: MEASUREMENT
+  fields:
+  - unit_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Unit
+    vocabularies:
+    - UCUM
+  desc: unit_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Unit, 어휘 UCUM 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0404
+  name: OBSERVATION.observation_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: OBSERVATION
+  fields:
+  - observation_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Observation
+    vocabularies:
+    - SNOMED
+    - LOINC
+  desc: observation_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Observation, 어휘 SNOMED/LOINC 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0405
+  name: OBSERVATION.observation_type_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: OBSERVATION
+  fields:
+  - observation_type_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Type Concept
+    vocabularies:
+    - Type Concept
+  desc: observation_type_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Type Concept, 어휘 Type Concept 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0406
+  name: OBSERVATION.unit_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: OBSERVATION
+  fields:
+  - unit_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Unit
+    vocabularies:
+    - UCUM
+  desc: unit_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Unit, 어휘 UCUM 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0407
+  name: NOTE.note_type_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: NOTE
+  fields:
+  - note_type_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Type Concept
+    vocabularies:
+    - Type Concept
+  desc: note_type_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Type Concept, 어휘 Type Concept 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0408
+  name: NOTE.note_class_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: NOTE
+  fields:
+  - note_class_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Note
+    vocabularies:
+    - LOINC
+  desc: note_class_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Note, 어휘 LOINC 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0409
+  name: SACT.regimen_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: SACT
+  fields:
+  - regimen_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Regimen
+    vocabularies:
+    - HemOnc
+  desc: regimen_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Regimen, 어휘 HemOnc 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
+  scope: all
+  source: auto:spec
+- id: ST-0410
+  name: ADVERSE_EVENT.adverse_event_concept_id 표준 용어
+  category: Conformance
+  subcategory: vocabulary
+  table: ADVERSE_EVENT
+  fields:
+  - adverse_event_concept_id
+  severity: warning
+  check: concept
+  params:
+    standard: true
+    domain: Condition
+    vocabularies:
+    - SNOMED
+  desc: adverse_event_concept_id 의 개념 ID(0 제외)는 CONCEPT 에 있어야, 표준·유효 개념, 영역 Condition, 어휘 SNOMED 한다. 선택 테이블 CONCEPT 를 내지 않으면 건너뛴다.
   scope: all
   source: auto:spec

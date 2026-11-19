@@ -37,7 +37,7 @@ CODELISTS = load("spec/codelists.yaml")
 RULES_ST = load("rules/rules_structural.yaml")["rules"]
 RULES_SE = load("rules/rules_semantic.yaml")["rules"]
 
-SPEC_HEADER = ["테이블", "테이블(한글)", "순서", "컬럼", "컬럼(한글)", "타입", "필수", "키", "참조", "코드표", "범위", "패턴", "설명"]
+SPEC_HEADER = ["테이블", "테이블(한글)", "순서", "컬럼", "컬럼(한글)", "타입", "필수", "키", "참조", "코드표", "범위", "패턴", "설명", "구분"]
 GUIDE = ["K-AIPA DQ 임상 코호트 데이터 입력 양식 (엑셀)", "", "시트 하나가 테이블 하나입니다. 시트 이름은 바꾸지 마세요.",
          "첫 줄은 컬럼명입니다. 이름은 바꾸지 마세요.", "빈 값은 빈 칸으로 두고, 날짜는 날짜 셀 또는 YYYY-MM-DD 문자열로 넣습니다.",
          "컬럼 설명은 '명세' 시트를 보세요."]
@@ -48,6 +48,10 @@ CSV_README = "\n".join(["K-AIPA DQ 임상 코호트 데이터 입력 양식 (CSV
                         "- 컬럼 설명은 컬럼 명세서(xlsx)를 참고하세요.", ""])
 
 
+def kind_of(st, f):
+    return "보완 · 선택 테이블" if st.get("optional") else "보완 · 선택 컬럼" if f.get("optional") else "매뉴얼"
+
+
 def spec_rows(tables):
     """app/src/main/input.ts 의 specRows 와 같은 열 구성"""
     rows = [SPEC_HEADER]
@@ -56,7 +60,8 @@ def spec_rows(tables):
         for i, f in enumerate(st["fields"], 1):
             rng = f"{f['range'][0]} ~ {f['range'][1]}" if f.get("range") else ""
             rows.append([t, st.get("kor", ""), i, f["name"], f.get("kor", ""), f["type"], "Y" if f.get("required") else "",
-                         f.get("key", ""), f.get("ref", ""), f.get("codelist", ""), rng, f.get("pattern", ""), f.get("desc", "")])
+                         f.get("key", ""), f.get("ref", ""), f.get("codelist", ""), rng, f.get("pattern", ""), f.get("desc", ""),
+                         kind_of(st, f)])
     return rows
 
 
@@ -74,14 +79,14 @@ def add_sheet(wb, title, rows, header=True, widths=None):
     return ws
 
 
-SPEC_WIDTHS = {"A": 24, "B": 14, "C": 6, "D": 30, "E": 14, "F": 9, "G": 6, "H": 12, "I": 34, "J": 32, "K": 10, "L": 18, "M": 80}
+SPEC_WIDTHS = {"A": 24, "B": 14, "C": 6, "D": 30, "E": 14, "F": 9, "G": 6, "H": 12, "I": 34, "J": 32, "K": 10, "L": 18, "M": 80, "N": 18}
 
 
 def cohort_rules(cohort):
     """이 코호트에서 실행되는 규칙 id (엔진과 같은 판정):
     구조 규칙은 코호트 구성에 있는 표의 규칙 가운데 scope 가 all 이거나 그 코호트를 가리키는 것,
     교차 규칙은 scope 가 all 이거나 그 코호트를 가리키는 것."""
-    tabs = set(PROFILES[cohort]["tables"])
+    tabs = set(PROFILES[cohort]["tables"]) | set(PROFILES[cohort].get("optional_tables", []))
     ids = [r["id"] for r in RULES_ST if r["table"] in tabs and (r.get("scope", "all") == "all" or cohort in r["scope"])]
     ids += [r["id"] for r in RULES_SE if r.get("scope", "all") == "all" or cohort in r["scope"]]
     return ids
@@ -113,7 +118,7 @@ def main():
     # 코호트별 입력 양식
     cohorts = []
     for c, p in PROFILES.items():
-        tabs = p["tables"]
+        tabs = p["tables"] + p.get("optional_tables", [])     # 선택 테이블(CONCEPT·VOCABULARY)도 양식에 넣는다
         wb = openpyxl.Workbook(); wb.remove(wb.active)
         add_sheet(wb, "안내", [[g] for g in GUIDE], header=False, widths={"A": 90})
         for t in tabs:
@@ -133,7 +138,8 @@ def main():
                 missing.append(f"{k}_{c}")
             elif e["rules"] != len(rules):
                 sys.exit(f"{c}: 규칙 수 판정이 엔진과 다르다 ({k}: 자료실 {len(rules)} / 엔진 {e['rules']})")
-        cohorts.append(OrderedDict(id=c, kor=p["kor"], tables=tabs, rule_ids=rules, template_xlsx=xlsx, template_csv=zname,
+        cohorts.append(OrderedDict(id=c, kor=p["kor"], tables=p["tables"], optional_tables=p.get("optional_tables", []),
+                                   rule_ids=rules, template_xlsx=xlsx, template_csv=zname,
                                    expected=exp))
 
     # 규칙 목록
@@ -159,8 +165,9 @@ def main():
 
     tables = OrderedDict()
     for t, st in TABLES.items():
-        tables[t] = OrderedDict(kor=st.get("kor", ""), category=st["category"], pk=st["pk"], fields=[
-            OrderedDict((k, f.get(k, "")) for k in ("name", "type", "required", "key", "ref", "codelist", "range", "pattern", "desc"))
+        tables[t] = OrderedDict(kor=st.get("kor", ""), category=st["category"], pk=st["pk"], optional=bool(st.get("optional")), fields=[
+            OrderedDict([*((k, f.get(k, "")) for k in ("name", "type", "required", "key", "ref", "codelist", "range", "pattern", "desc")),
+                         ("kind", kind_of(st, f))])
             for f in st["fields"]])
     codelists = OrderedDict()
     for sect in CODELISTS.values():

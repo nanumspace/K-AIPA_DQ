@@ -46,7 +46,9 @@ class Engine:
                 self.codelists[k] = {str(c) for c in v.keys()}
         self.concepts = load_yaml("spec/concepts.yaml")
         self.profile = load_yaml("spec/cohort_profiles.yaml")["cohorts"][cohort]
-        self.tables_in_cohort = self.profile["tables"]
+        # 선택 테이블(CONCEPT·VOCABULARY)은 내면 읽고, 없으면 그 규칙만 건너뛴다
+        self.tables_in_cohort = self.profile["tables"] + self.profile.get("optional_tables", [])
+        self._concepts = None
         self.disease_table = [t for t in self.tables_in_cohort if self.spec[t]["category"] == "disease"][0]
         self.rules_struct = load_yaml("rules/rules_structural.yaml")["rules"]
         self.rules_sem = load_yaml("rules/rules_semantic.yaml")["rules"]
@@ -88,6 +90,15 @@ class Engine:
         pkcol = df[pk] if pk in df.columns else pd.Series([""] * len(df), index=df.index)
         pid = df["person_id"] if "person_id" in df.columns else pd.Series([""] * len(df), index=df.index)
         return pkcol, pid
+
+    def concept_index(self):
+        """제출된 CONCEPT: concept_id -> (domain_id, vocabulary_id, standard_concept, invalid_reason)"""
+        if self._concepts is None:
+            df = self.raw["CONCEPT"]
+            col = lambda c: df[c] if c in df.columns else pd.Series([""] * len(df), index=df.index)
+            self._concepts = dict(zip(df["concept_id"], zip(col("domain_id"), col("vocabulary_id"),
+                                                              col("standard_concept"), col("invalid_reason"))))
+        return self._concepts
 
     # ------------------------------------------------------- structural pass
     def run_structural(self):
@@ -206,6 +217,31 @@ class Engine:
                 f = fields[0]
                 for i in df.index[df[f] != ""]:
                     self.add(rule, table, f, pkcol[i], pid[i], f"{f}={df.at[i, f]} (이 코호트에서는 NULL 이어야 함)")
+            elif chk == "concept":
+                if "CONCEPT" not in self.raw:
+                    st["status"] = "skipped"; st["note"] = "CONCEPT 미제출"; continue
+                if "concept_id" not in self.raw["CONCEPT"].columns:
+                    st["status"] = "skipped"; st["note"] = "CONCEPT.concept_id 컬럼 없음"; continue
+                f = fields[0]; idx = self.concept_index()
+                domain, vocabs, standard = p.get("domain"), p.get("vocabularies"), p.get("standard", True)
+                for i in df.index[(df[f] != "") & (df[f] != "0")]:
+                    v = df.at[i, f]
+                    c = idx.get(v)
+                    if c is None:
+                        self.add(rule, table, f, pkcol[i], pid[i], f"{f}={v} CONCEPT 에 없음")
+                        continue
+                    dom, voc, std, inv = c
+                    why = []
+                    if standard and std != "S":
+                        why.append(f"standard_concept={std or 'NULL'}")
+                    if standard and inv:
+                        why.append(f"invalid_reason={inv}")
+                    if domain and dom != domain:
+                        why.append(f"domain_id={dom} (요구 {domain})")
+                    if vocabs and voc not in vocabs:
+                        why.append(f"vocabulary_id={voc} (허용 {'/'.join(vocabs)})")
+                    if why:
+                        self.add(rule, table, f, pkcol[i], pid[i], f"{f}={v} " + ", ".join(why))
         for st in self.rule_stats.values():
             if st["violations"] > 0:
                 st["status"] = "fail"

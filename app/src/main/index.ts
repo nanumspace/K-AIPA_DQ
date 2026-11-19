@@ -76,8 +76,8 @@ function ruleCtx(): rs.RuleContext {
 function specTables(): SpecTableInfo[] {
   setRoot(config.root);
   const codes = loadCodelists();
-  return Object.entries(spec().tables).map(([table, t]) => ({ table, kor: t.kor, category: t.category,
-    fields: t.fields.map((f) => ({ name: f.name, type: f.type, required: f.required, desc: String(f.desc ?? ""),
+  return Object.entries(spec().tables).map(([table, t]) => ({ table, kor: t.kor, category: t.category, ...(t.optional ? { optional: true } : {}),
+    fields: t.fields.map((f) => ({ name: f.name, type: f.type, required: f.required, ...(f.optional ? { optional: true } : {}), desc: String(f.desc ?? ""),
       codes: f.codelist ? [...(codes.get(String(f.codelist)) ?? [])] : [],
       ...(f.codelist ? { codelist: String(f.codelist) } : {}), ...(Array.isArray(f.range) ? { range: f.range as number[] } : {}),
       ...(f.ref ? { ref: String(f.ref) } : {}) })) }));
@@ -94,7 +94,7 @@ function requireIdle(): void { if (running) throw new Error("검증 실행이 �
 
 function cohorts(): CohortInfo[] {
   setRoot(config.root);
-  return Object.entries(loadProfiles()).map(([id, p]) => ({ id, kor: p.kor, tables: p.tables }));
+  return Object.entries(loadProfiles()).map(([id, p]) => ({ id, kor: p.kor, tables: p.tables, optionalTables: p.optional_tables ?? [] }));
 }
 
 function cohortOf(id: string): CohortInfo {
@@ -102,6 +102,9 @@ function cohortOf(id: string): CohortInfo {
   if (!c) throw new Error(`알 수 없는 코호트: ${id}`);
   return c;
 }
+
+/** 입력 점검·양식에 쓰는 테이블: 코호트 구성 + 선택 테이블 */
+const inputTables = (c: CohortInfo): string[] => [...c.tables, ...c.optionalTables];
 
 function rules(): RuleInfo[] { return rs.buildRuleViews(ruleCtx().base, overrides); }
 
@@ -173,11 +176,12 @@ function inspect(cohort: string, paths: string[], existing: SourceCandidate[] = 
   const fresh = input.inspectPaths(paths);
   const seen = new Set(fresh.map((c) => c.id));
   const candidates = [...existing.filter((c) => !seen.has(c.id)), ...fresh];
-  return input.buildPlan(cohort, info.tables, spec(), candidates, undefined, requiredTables(info.tables));
+  return input.buildPlan(cohort, inputTables(info), spec(), candidates, undefined, requiredTables(info.tables));
 }
 
 function check(cohort: string, candidates: SourceCandidate[], mapping: Record<string, string[]>): InputPlan {
-  return input.buildPlan(cohort, cohortOf(cohort).tables, spec(), candidates, mapping, requiredTables(cohortOf(cohort).tables));
+  const info = cohortOf(cohort);
+  return input.buildPlan(cohort, inputTables(info), spec(), candidates, mapping, requiredTables(info.tables));
 }
 
 async function exportTemplate(cohort: string, kind: TemplateKind): Promise<string | null> {
@@ -185,7 +189,7 @@ async function exportTemplate(cohort: string, kind: TemplateKind): Promise<strin
   if (kind === "csv") {
     const r = await dialog.showSaveDialog(win!, { title: "CSV 양식 ZIP 저장", defaultPath: `${cohort}_입력양식.zip`, filters: [{ name: "ZIP", extensions: ["zip"] }] });
     if (r.canceled || !r.filePath) return null;
-    input.writeCsvTemplateZip(info.tables, s, r.filePath);
+    input.writeCsvTemplateZip(inputTables(info), s, r.filePath);
     return r.filePath;
   }
   if (kind.startsWith("sample-")) {
@@ -206,7 +210,7 @@ async function exportTemplate(cohort: string, kind: TemplateKind): Promise<strin
   const name = kind === "xlsx" ? `${cohort}_입력양식.xlsx` : `${cohort}_컬럼명세서.xlsx`;
   const r = await dialog.showSaveDialog(win!, { defaultPath: name, filters: [{ name: "Excel", extensions: ["xlsx"] }] });
   if (r.canceled || !r.filePath) return null;
-  if (kind === "xlsx") input.writeXlsxTemplate(info.tables, s, r.filePath); else input.writeSpecSheet(info.tables, s, r.filePath);
+  if (kind === "xlsx") input.writeXlsxTemplate(inputTables(info), s, r.filePath); else input.writeSpecSheet(inputTables(info), s, r.filePath);
   return r.filePath;
 }
 

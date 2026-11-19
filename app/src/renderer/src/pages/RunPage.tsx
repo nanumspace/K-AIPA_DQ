@@ -159,7 +159,7 @@ export function RunPage({ nav, onActivity }: { nav: Nav; onActivity: (activity: 
                 {cohorts.map((c) => <option key={c.id} value={c.id}>{c.kor} ({c.id})</option>)}
               </select>
             </label>
-            {info && <div style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.6 }}>필요 테이블 {info.tables.length}개<br />{info.tables.join(" · ")}</div>}
+            {info && <div style={{ fontSize: 12, color: "var(--muted)", lineHeight: 1.6 }}>필요 테이블 {info.tables.length}개<br />{info.tables.join(" · ")}{info.optionalTables.length > 0 && <><br />선택 테이블 {info.optionalTables.join(" · ")} (내면 개념 ID 를 표준 용어와 대조)</>}</div>}
           </div>
           <div className={`dropzone ${drag ? "drag" : ""}`} onDragOver={(e) => { e.preventDefault(); setDrag(true); }} onDragLeave={() => setDrag(false)} onDrop={onDrop}>
             <div style={{ fontSize: 15, fontWeight: 600, color: "var(--navy)" }}>여기에 파일이나 폴더를 끌어다 놓으세요</div>
@@ -238,7 +238,7 @@ export function RunPage({ nav, onActivity }: { nav: Nav; onActivity: (activity: 
               <thead><tr><th>테이블</th><th>파일 / 시트</th><th className="num">행</th><th>점검 결과</th></tr></thead>
               <tbody>{plan.tables.map((t: TableCheck) => (
                 <tr key={t.table}>
-                  <td style={{ whiteSpace: "nowrap" }}><span className="mono">{t.table}</span><div style={{ color: "var(--muted)", fontSize: 11 }}>{t.kor}{t.required ? " · 필수" : ""}</div></td>
+                  <td style={{ whiteSpace: "nowrap" }}><span className="mono">{t.table}</span><div style={{ color: "var(--muted)", fontSize: 11 }}>{t.kor}{t.required ? " · 필수" : t.optional ? " · 선택" : ""}</div></td>
                   <td style={{ minWidth: 260 }}>
                     <select aria-label={`${t.table} 대응 파일`} value={t.candidateIds.length === 1 ? t.candidateIds[0] : t.candidateIds.length ? MERGED : ""} onChange={(e) => { if (e.target.value !== MERGED) remap(t.table, e.target.value); }} disabled={!!busy} style={{ padding: "5px 8px" }}>
                       {t.candidateIds.length > 1 && <option value={MERGED}>{t.candidateIds.map((id) => nameOf(id)).join(" + ")} (합침)</option>}

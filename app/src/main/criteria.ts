@@ -7,7 +7,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { unzipSync, zipSync } from "fflate";
 import { parseDocument } from "yaml";
 import { getRoot, setRoot, loadSpec, loadProfiles, loadStructuralRules, loadSemanticRules, loadCodelists, loadConcepts } from "@engine/index.js";
-import type { Spec, SpecField, StructuralRule, SemanticRule, Concepts } from "@engine/types.js";
+import type { Spec, SpecField, StructuralRule, SemanticRule, Concepts, CohortProfile } from "@engine/types.js";
 import type { RuleOverrides } from "@shared/types";
 import { CRITERIA_FILES } from "@shared/criteria";
 import type { CriteriaManifest, CriteriaInfo, CriteriaPreview } from "@shared/criteria";
@@ -28,7 +28,7 @@ const FILE_SET = new Set<string>(CRITERIA_FILES);
 const ALLOWED_DIRS = new Set(["spec/", "rules/"]);
 
 export const BUILTIN_MANIFEST: Omit<CriteriaManifest, "files"> = {
-  schema: SCHEMA, name: "K-AIPA DQ 기본 기준", version: "1.0.2", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF", minAppVersion: "1.0.1",
+  schema: SCHEMA, name: "K-AIPA DQ 기본 기준", version: "1.0.3", manual: "2026-11-16", publisher: "K-AI 코호트 구축 TF", minAppVersion: "1.0.3",
 };
 
 const fail = (m: string): never => { throw new Error(m); };
@@ -144,7 +144,7 @@ function strictYaml(rel: string, bytes: Uint8Array): unknown {
 }
 
 interface Loaded {
-  spec: Spec; profiles: Record<string, { kor: string; tables: string[] }>; structural: StructuralRule[]; semantic: SemanticRule[];
+  spec: Spec; profiles: Record<string, CohortProfile>; structural: StructuralRule[]; semantic: SemanticRule[];
   codelists: Map<string, Set<string>>; concepts: Concepts; constraints: unknown;
 }
 
@@ -166,7 +166,7 @@ function loadAll(root: string, files: Map<string, Uint8Array>): Loaded {
 const FIELD_TYPES = new Set(["integer", "bigint", "float", "varchar", "text", "date", "timestamp"]);
 const SEVERITIES = new Set(["error", "warning"]);
 const CATEGORIES = new Set(["Conformance", "Completeness", "Plausibility"]);
-const STRUCT_CHECKS = new Set(["table_present", "columns", "extra_columns", "pk_unique", "not_null", "type", "fk", "codelist", "range", "pattern", "not_future", "must_be_null"]);
+const STRUCT_CHECKS = new Set(["table_present", "columns", "extra_columns", "pk_unique", "not_null", "type", "fk", "codelist", "range", "pattern", "not_future", "must_be_null", "concept"]);
 const ID_RE = /^[A-Za-z][A-Za-z0-9_-]{0,39}$/;
 const IDENT_RE = /^[A-Za-z_][A-Za-z0-9_]{0,63}$/;
 
@@ -182,6 +182,7 @@ function checkSpec(L: Loaded, errs: string[]): void {
     if (!isObj(t) || t.name !== key) { errs.push(`spec: 테이블 ${key} 의 name 이 키와 다릅니다.`); continue; }
     if (!IDENT_RE.test(key)) errs.push(`spec: 테이블 이름이 올바르지 않습니다: ${key}`);
     if (typeof t.kor !== "string" || typeof t.category !== "string") errs.push(`spec: ${key} 의 kor/category 가 필요합니다.`);
+    if (t.optional !== undefined && typeof t.optional !== "boolean") errs.push(`spec: ${key} 의 optional 은 true/false 여야 합니다.`);
     if (!Array.isArray(t.fields) || !t.fields.length) { errs.push(`spec: ${key} 에 필드가 없습니다.`); continue; }
     const names = new Set<string>();
     for (const f of t.fields as SpecField[]) {
@@ -206,6 +207,14 @@ function checkSpec(L: Loaded, errs: string[]): void {
       }
       if (f.pattern !== undefined && !regexOk(f.pattern)) errs.push(`spec: ${at} 의 pattern 이 올바르지 않습니다.`);
       if (f.codelist !== undefined && (typeof f.codelist !== "string" || !L.codelists.has(f.codelist))) errs.push(`spec: ${at} 의 코드표가 codelists 에 없습니다: ${String(f.codelist)}`);
+      if (f.optional !== undefined && typeof f.optional !== "boolean") errs.push(`spec: ${at} 의 optional 은 true/false 여야 합니다.`);
+      if (f.concept !== undefined) {
+        const c = f.concept as Record<string, unknown>;
+        const ok = isObj(c) && typeof c.standard === "boolean" && Object.keys(c).every((k) => k === "standard" || k === "domain" || k === "vocabularies")
+          && (c.domain === undefined || typeof c.domain === "string")
+          && (c.vocabularies === undefined || (Array.isArray(c.vocabularies) && c.vocabularies.length > 0 && c.vocabularies.every((v) => typeof v === "string")));
+        if (!ok) errs.push(`spec: ${at} 의 concept 는 {standard, domain?, vocabularies?} 여야 합니다.`);
+      }
     }
     const pk = (t.fields as SpecField[]).find((f) => f.name === t.pk);
     if (!pk) errs.push(`spec: ${key} 의 PK 필드가 없습니다: ${String(t.pk)}`);
@@ -219,6 +228,10 @@ function checkProfiles(L: Loaded, errs: string[]): void {
     if (!ID_RE.test(id)) errs.push(`cohort_profiles: 코호트 ID 가 올바르지 않습니다: ${id}`);
     if (!isObj(p) || typeof p.kor !== "string" || !Array.isArray(p.tables) || !p.tables.length) { errs.push(`cohort_profiles: ${id} 형식이 올바르지 않습니다.`); continue; }
     for (const t of p.tables) if (!L.spec.tables?.[t]) errs.push(`cohort_profiles: ${id} 가 명세에 없는 테이블을 씁니다: ${String(t)}`);
+    else if (L.spec.tables[t].optional) errs.push(`cohort_profiles: ${id} 의 tables 에 선택 테이블이 있습니다: ${String(t)} (optional_tables 에 두세요)`);
+    const opt = p.optional_tables;
+    if (opt !== undefined && !Array.isArray(opt)) { errs.push(`cohort_profiles: ${id} 의 optional_tables 는 목록이어야 합니다.`); continue; }
+    for (const t of opt ?? []) if (!L.spec.tables?.[t]?.optional) errs.push(`cohort_profiles: ${id} 의 optional_tables 에 선택 테이블이 아닌 것이 있습니다: ${String(t)}`);
   }
 }
 
@@ -249,6 +262,12 @@ function checkConstraints(L: Loaded, errs: string[]): void {
         if (JSON.stringify(F[p]) !== JSON.stringify(val)) errs.push(`constraints: ${k}.${p} 가 spec 과 다릅니다.`);
       } else if (p === "fk_external") {
         if (F.key !== "FK_EXTERNAL" || F.ref !== val) errs.push(`constraints: ${k}.fk_external 이 spec 과 다릅니다.`);
+      } else if (p === "concept") {
+        const c = (isObj(val) ? val : {}) as Record<string, unknown>;
+        const want = { standard: c.standard ?? true, ...(c.domain ? { domain: c.domain } : {}), ...(c.vocabularies ? { vocabularies: c.vocabularies } : {}) };
+        if (!sameJson(F.concept, want)) errs.push(`constraints: ${k}.concept 가 spec 과 다릅니다.`);
+      } else if (p === "note") {
+        if (typeof val !== "string" || !String(F.desc ?? "").endsWith(`※ ${val}`)) errs.push(`constraints: ${k}.note 가 spec 설명에 없습니다.`);
       } else errs.push(`constraints: ${k} 에 알 수 없는 제약이 있습니다: ${p}`);
     }
   }
@@ -292,7 +311,8 @@ function checkStructural(L: Loaded, errs: string[]): void {
       const rt = tables[p.ref_table as string];
       if (!rt || !rt.fields.some((x) => x.name === p.ref_field)) errs.push(`${id}: 참조 대상이 명세에 없습니다: ${String(p.ref_table)}.${String(p.ref_field)}`);
     }
-    if ((r.check === "columns" || r.check === "extra_columns") && !sameJson(p.expected, t.fields.map((f) => f.name))) errs.push(`${id}: ${r.table} 의 expected 컬럼이 spec 과 다릅니다.`);
+    if (r.check === "columns" && !sameJson(p.expected, t.fields.filter((f) => !f.optional).map((f) => f.name))) errs.push(`${id}: ${r.table} 의 expected 컬럼이 spec(선택 컬럼 제외)과 다릅니다.`);
+    if (r.check === "extra_columns" && !sameJson(p.expected, t.fields.map((f) => f.name))) errs.push(`${id}: ${r.table} 의 expected 컬럼이 spec 과 다릅니다.`);
     const k = `${r.check}|${r.table}|${field}`;
     actual.set(k, [...(actual.get(k) ?? []), r]);
   }
@@ -302,7 +322,7 @@ function checkStructural(L: Loaded, errs: string[]): void {
   const add = (check: string, t: string, f: string, cmp: (r: StructuralRule) => string | null) => expect.set(`${check}|${t}|${f}`, cmp);
   for (const [tn, t] of Object.entries(tables)) {
     if (!Array.isArray(t.fields)) continue;
-    add("table_present", tn, "", () => null);
+    if (!t.optional) add("table_present", tn, "", () => null);
     add("columns", tn, "", () => null);
     add("extra_columns", tn, "", () => null);
     add("pk_unique", tn, t.pk, () => null);
@@ -318,9 +338,10 @@ function checkStructural(L: Loaded, errs: string[]): void {
       if (Array.isArray(rg)) add("range", tn, f.name, (r) => (r.params.min === rg[0] && r.params.max === rg[1] ? null : `범위가 spec([${String(rg)}])과 다릅니다`));
       if (f.pattern) add("pattern", tn, f.name, (r) => (r.params.regex === f.pattern ? null : "패턴이 spec 과 다릅니다"));
       if (f.type === "date") add("not_future", tn, f.name, () => null);
+      if (f.concept) add("concept", tn, f.name, (r) => (sameJson(r.params, f.concept) ? null : "표준 용어 대응이 spec 과 다릅니다"));
     }
   }
-  const GENERATED = new Set(["table_present", "columns", "extra_columns", "pk_unique", "not_null", "type", "fk", "codelist", "range", "pattern", "not_future"]);
+  const GENERATED = new Set(["table_present", "columns", "extra_columns", "pk_unique", "not_null", "type", "fk", "codelist", "range", "pattern", "not_future", "concept"]);
   for (const [k, cmp] of expect) {
     const [check, tn, f] = k.split("|");
     const rs = actual.get(k);

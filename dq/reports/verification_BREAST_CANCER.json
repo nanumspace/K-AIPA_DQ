@@ -1,13 +1,13 @@
 {
  "cohort": "BREAST_CANCER",
  "clean": {
-  "rules": 294,
+  "rules": 337,
   "violations": 0,
   "failed_rules": 0,
   "false_positive_rate": 0.0
  },
  "dirty": {
-  "rules": 294,
+  "rules": 337,
   "violations": 1862,
   "failed_rules": 252
  },

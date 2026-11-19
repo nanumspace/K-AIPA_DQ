@@ -73,8 +73,19 @@ function keyColumns(df: RawTable, pk: string): { pkcol: string[]; pid: string[] 
   return { pkcol: df.cols.get(pk) ?? empty(), pid: df.cols.get("person_id") ?? empty() };
 }
 
+/** 제출된 CONCEPT: concept_id -> [domain_id, vocabulary_id, standard_concept, invalid_reason] */
+function conceptIndex(df: RawTable): Map<string, [string, string, string, string]> {
+  const empty = new Array<string>(df.n).fill("");
+  const col = (c: string) => df.cols.get(c) ?? empty;
+  const id = col("concept_id"), dom = col("domain_id"), voc = col("vocabulary_id"), std = col("standard_concept"), inv = col("invalid_reason");
+  const m = new Map<string, [string, string, string, string]>();
+  for (let i = 0; i < df.n; i++) m.set(id[i], [dom[i], voc[i], std[i], inv[i]]);
+  return m;
+}
+
 export function runStructural(ctx: StructuralContext, rules: StructuralRule[], sink: RuleSink): void {
   const todayMs = ctx.today.getTime();
+  let concepts: Map<string, [string, string, string, string]> | undefined;
   let idx = 0;
   for (const rule of rules) {
     idx += 1;
@@ -216,6 +227,28 @@ export function runStructural(ctx: StructuralContext, rules: StructuralRule[], s
     } else if (chk === "must_be_null") {
       const f = fields[0]; const vals = col(f);
       for (let i = 0; i < df.n; i++) if (vals[i] !== "") sink.add(rule, table, f, pkcol[i], pid[i], `${f}=${vals[i]} (이 코호트에서는 NULL 이어야 함)`);
+    } else if (chk === "concept") {
+      const cdf = ctx.raw.get("CONCEPT");
+      if (!cdf) { st.status = "skipped"; st.note = "CONCEPT 미제출"; continue; }
+      if (!cdf.cols.has("concept_id")) { st.status = "skipped"; st.note = "CONCEPT.concept_id 컬럼 없음"; continue; }
+      concepts ??= conceptIndex(cdf);
+      const f = fields[0]; const vals = col(f);
+      const domain = p.domain as string | undefined;
+      const vocabs = p.vocabularies as string[] | undefined;
+      const standard = p.standard !== false;
+      for (let i = 0; i < df.n; i++) {
+        const v = vals[i];
+        if (v === "" || v === "0") continue;
+        const c = concepts.get(v);
+        if (!c) { sink.add(rule, table, f, pkcol[i], pid[i], `${f}=${v} CONCEPT 에 없음`); continue; }
+        const [dom, voc, std, inv] = c;
+        const why: string[] = [];
+        if (standard && std !== "S") why.push(`standard_concept=${std || "NULL"}`);
+        if (standard && inv) why.push(`invalid_reason=${inv}`);
+        if (domain && dom !== domain) why.push(`domain_id=${dom} (요구 ${domain})`);
+        if (vocabs && !vocabs.includes(voc)) why.push(`vocabulary_id=${voc} (허용 ${vocabs.join("/")})`);
+        if (why.length) sink.add(rule, table, f, pkcol[i], pid[i], `${f}=${v} ${why.join(", ")}`);
+      }
     } else {
       st.status = "error"; st.note = `알 수 없는 검사 유형: ${chk}`;
     }

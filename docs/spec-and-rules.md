@@ -1,6 +1,6 @@
 # K-AIPA DQ — 명세와 규칙 카탈로그
 
-적용 릴리스: **1.0.0**. 검증 기준은 제공된 **「질환별 데이터 테이블」 매뉴얼 2026-11-16**(`raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx`) 하나입니다. 표 16개 · 필드 157개이며, 규칙은 구조 규칙 368개 + 교차 테이블 규칙 22개 = 390개입니다. 사업 전체의 비임상·오믹스 데이터 명세나 AI 모델 성능을 검증하는 문서는 아닙니다.
+적용 릴리스: **1.0.3**. 검증 기준은 제공된 **「질환별 데이터 테이블」 매뉴얼 2026-11-16**(`raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx`) 하나입니다. 매뉴얼은 표 16개 · 필드 157개이고, 여기에 매뉴얼 보완인 선택 컬럼 6개와 선택 테이블 2개(CONCEPT, VOCABULARY)를 더해 명세는 표 18개 · 필드 178개입니다. 규칙은 구조 규칙 410개(매뉴얼 368 + 보완 42) + 교차 테이블 규칙 23개 = 433개입니다. 사업 전체의 비임상·오믹스 데이터 명세나 AI 모델 성능을 검증하는 문서는 아닙니다.
 
 ## 출처와 적용 범위
 
@@ -12,35 +12,37 @@
 
 | 항목 | 내용 |
 |---|---|
-| 명세 | `spec/kai_cdm_spec.yaml` (표 16개: 공통 8 · 질환 본표 6 · 확장 2(SACT, ADVERSE_EVENT) · 필드 157개), `spec/codelists.yaml`, `spec/cohort_profiles.yaml` |
-| 값 제약 | `spec/constraints.yaml` (매뉴얼에 없는 범위·형식·OMOP 대표 코드·제출 범위 밖 FK, 손으로 관리) |
-| 구조 규칙 | `rules/rules_structural.yaml` 368개 (명세에서 `rules/generate_structural_rules.py` 가 자동 생성) |
-| 교차 규칙 | `rules/rules_semantic.yaml` 22개 (손으로 작성, DuckDB SQL, id `SEM-*`: 공통 COM 12 · 검사 MEAS 2 · 항암요법 SACT 6 · 폐암 LC 1 · 림프종 LY 1) |
-| 코호트별 적용 규칙 | 폐암 285 · 유방암 294 · 대장암 277 · MASLD 257 · 당뇨병 253 · 림프종 286 |
-| 코호트별 표 | 공통 8표 + 질환 본표 + ADVERSE_EVENT + SACT(MASLD·당뇨병 제외) |
+| 명세 | `spec/kai_cdm_spec.yaml` (표 18개: 공통 8 · 질환 본표 6 · 확장 2(SACT, ADVERSE_EVENT) · 선택 2(CONCEPT, VOCABULARY) · 필드 178개), `spec/codelists.yaml`, `spec/cohort_profiles.yaml` |
+| 값 제약·보완 | `spec/constraints.yaml` (매뉴얼에 없는 범위·형식·코드표·표준 용어 대응·제출 범위 밖 FK와 보완 항목(`supplement`), 손으로 관리) |
+| 구조 규칙 | `rules/rules_structural.yaml` 410개 (명세에서 `rules/generate_structural_rules.py` 가 자동 생성. ST-0001~0368 매뉴얼, ST-0369~0410 보완) |
+| 교차 규칙 | `rules/rules_semantic.yaml` 23개 (손으로 작성, DuckDB SQL, id `SEM-*`: 공통 COM 12 · 검사 MEAS 2 · 항암요법 SACT 6 · 폐암 LC 1 · 림프종 LY 1 · 표준 용어 VOC 1) |
+| 코호트별 적용 규칙 | 폐암 328 · 유방암 337 · 대장암 320 · MASLD 299 · 당뇨병 295 · 림프종 329 (선택 테이블·컬럼 규칙 포함, 내지 않으면 건너뜀) |
+| 코호트별 표 | 공통 8표 + 질환 본표 + ADVERSE_EVENT + SACT(MASLD·당뇨병 제외), 선택 표 CONCEPT·VOCABULARY |
 | 실행 전 필수 표 | PERSON 과 질환 본표 (없으면 실행이 막힘) |
 
-**코호트별 적용 규칙의 셈법.** 엔진이 쓰는 기준과 같습니다. 구조 규칙은 *코호트 구성에 있는 표*의 규칙 가운데 적용 범위(`scope`)가 `all` 이거나 그 코호트를 가리키는 것, 교차 규칙은 `scope` 가 `all` 이거나 그 코호트를 가리키는 것입니다. 교차 규칙이 필요로 하는 표가 코호트에 없으면 규칙은 *건너뜀*으로 보고됩니다(건너뜀도 적용 규칙 수에 들어갑니다). 자료실의 규칙 목록(`resources.html`)이 같은 계산을 합니다.
+**코호트별 적용 규칙의 셈법.** 엔진이 쓰는 기준과 같습니다. 구조 규칙은 *코호트 구성에 있는 표*(선택 표 포함)의 규칙 가운데 적용 범위(`scope`)가 `all` 이거나 그 코호트를 가리키는 것, 교차 규칙은 `scope` 가 `all` 이거나 그 코호트를 가리키는 것입니다. 교차 규칙이 필요로 하는 표가 코호트에 없거나 내지 않았으면 규칙은 *건너뜀*으로 보고됩니다(건너뜀도 적용 규칙 수에 들어갑니다). 자료실의 규칙 목록(`resources.html`)이 같은 계산을 합니다.
 
 ## 기계 판독 명세 (`spec/`)
 
-`spec/build_spec.py` 가 매뉴얼 엑셀(시트 하나가 표 하나)을 읽어 필드마다 이름·타입·필수 여부·PK/FK·설명을 가져오고, 설명의 `N=라벨` 형태 코드표를 `codelists.yaml` 의 `embedded` 절로 분리합니다. 매뉴얼은 FK 의 대상 표를 적지 않으므로 이름으로 정합니다(`person_id`, `visit_occurrence_id`, `sact_id`, `note_id`). 거기에 `spec/constraints.yaml` 의 값 제약(`range`, `pattern`, `codelist`, `fk_external`)을 합칩니다.
+`spec/build_spec.py` 가 매뉴얼 엑셀(시트 하나가 표 하나)을 읽어 필드마다 이름·타입·필수 여부·PK/FK·설명을 가져오고, 설명의 `N=라벨` 형태 코드표를 `codelists.yaml` 의 `embedded` 절로 분리합니다. 매뉴얼은 FK 의 대상 표를 적지 않으므로 이름으로 정합니다(`person_id`, `visit_occurrence_id`, `sact_id`, `note_id`). 거기에 `spec/constraints.yaml` 의 값 제약(`range`, `pattern`, `codelist`, `concept`, `note`, `fk_external`)과 보완 항목(`supplement`)을 합칩니다.
 
 | 속성 | 내용 |
 |---|---|
 | `type` | integer / float / varchar / text / date 로 정규화 (매뉴얼 `RBDMS dependent text` 는 text) |
 | `required` | 매뉴얼의 필수 열(Y/N). 값이 Y/N 이 아니면 생성이 멈춤 |
 | `key`, `ref` | PK / FK 와 참조 대상 (예: `VISIT_OCCURRENCE.visit_occurrence_id`) |
-| `codelist` | 설명문에서 분리한 코드표(`embedded`) 또는 OMOP 대표 코드 집합(`omop`) 참조 |
+| `codelist` | 설명문에서 분리한 코드표(`embedded`), OMOP 대표 코드 집합(`omop`), 이상사례 코드값(`ae`) 참조 |
 | `range`, `pattern` | 수치 타당 범위, 문자열 정규식 (`constraints.yaml` 에서 옴. 위반은 경고) |
+| `concept` | 표준 용어 대응 `{standard, domain, vocabularies}` ([vocabulary.md](vocabulary.md) 2절). 선택 테이블 CONCEPT 를 냈을 때 대조 |
+| `optional` | 매뉴얼 보완 항목. 필드에 붙으면 선택 컬럼(없어도 컬럼 누락 아님), 표에 붙으면 선택 테이블(없어도 테이블 없음 아님) |
 | `fk_external` | 제출 범위 밖 표를 가리키는 키(예: `PERSON.care_site_id`). 참조 무결성 검사 안 함 |
 
 | 파일 | 내용 |
 |---|---|
-| `kai_cdm_spec.yaml` | 16 테이블 · 157 필드 명세 |
-| `codelists.yaml` | 매뉴얼 설명에서 분리한 코드표(embedded) + OMOP 대표 코드 집합(omop) |
-| `cohort_profiles.yaml` | 코호트별 테이블 구성 (SACT 는 폐암·유방암·대장암·림프종만) |
-| `constraints.yaml` | 매뉴얼에 없는 값 제약 |
+| `kai_cdm_spec.yaml` | 18 테이블 · 178 필드 명세 (매뉴얼 16 · 157 + 보완) |
+| `codelists.yaml` | 매뉴얼 설명에서 분리한 코드표(embedded) + OMOP 대표 코드 집합(omop) + 이상사례 코드값(ae) |
+| `cohort_profiles.yaml` | 코호트별 테이블 구성 (SACT 는 폐암·유방암·대장암·림프종만), 선택 테이블 `optional_tables` |
+| `constraints.yaml` | 매뉴얼에 없는 값 제약과 보완 항목 |
 | `concepts.yaml` | 가상데이터 생성기와 교차 규칙이 공유하는 대표 concept 목록, 검사 타당 범위 `_MEASUREMENT_CONCEPTS`, 항암제 목록 `_ANTICANCER_DRUGS` |
 
 ### 매뉴얼 해석
@@ -57,40 +59,44 @@
 | 약물 투여 빈도·간격 | 매뉴얼 설명 "매일 투여하는 경우 days_supply 값이 반드시 입력되어야 한다"(`frequency_per_day` 가 있으면 `days_supply` 필수, `SEM-COM-006`), "투여 간격이 1일을 초과하는 경우 dosing_number 값이 반드시 입력되어야 한다"(`SEM-COM-007`)는 매뉴얼이 명시한 조건부 필수이므로 **오류**입니다. |
 | SACT 연결 | `DRUG_EXPOSURE.sact_id` 는 선택입니다. 항종양제(`_ANTICANCER_DRUGS` 의 ATC L01 계열)인데 `sact_id` 가 없으면 연결 누락 확인을 안내하는 **경고**(`SEM-SACT-005`)만 냅니다. SACT 가 없는 코호트(MASLD, 당뇨병)에서는 `sact_id` 가 항상 비어 있어야 합니다. |
 | 치료 차수 | `line_of_therapy` 는 선택 값이며 매뉴얼은 1부터 시작하거나 연속일 것을 요구하지 않습니다. 시작일 순서와 차수의 불일치는 검토용 경고(`SEM-SACT-006`)이고, 종료일이 시작일보다 이른 오류(`SEM-SACT-001`)와 분리합니다. |
-| 명세 외 열 | 매뉴얼에 없는 열이 파일에 있으면 `명세에 없는 컬럼: <c>` 경고만 냅니다(검사에는 쓰지 않음). 컬럼 구성 규칙은 **누락된** 열만 오류로 보고하며 별칭은 받지 않습니다. |
+| 명세 외 열 | 매뉴얼에 없는 열이 파일에 있으면 `명세에 없는 컬럼: <c>` 경고만 냅니다(검사에는 쓰지 않음). 컬럼 구성 규칙은 **누락된** 열만 오류로 보고하며 별칭은 받지 않습니다. 보완 선택 컬럼은 명세 열이라 이 경고에 걸리지 않고, 없어도 누락이 아닙니다. |
+| 원천 코드 (매뉴얼 보완) | 매뉴얼 1.2 ⑦ "원본 코드 유지"를 위해 CONDITION_OCCURRENCE·PROCEDURE_OCCURRENCE·DRUG_EXPOSURE 에 `*_source_value`·`*_source_concept_id` 를 선택 컬럼으로 둡니다. 내면 `*_source_concept_id` 의 정수 형식과(CONCEPT 를 냈을 때) 개념 존재를 경고로 봅니다. 원천 어휘(KCD7·EDI)는 비표준이라 표준 여부는 보지 않습니다. |
+| 이상사례 코드값 | `ADVERSE_EVENT` 의 `severity`·`causality`·`seriousness`·`outcome`·`action_taken` `_concept_id` 는 이름과 달리 매뉴얼 자체 코드값(1~6)입니다. 명세 설명에 그렇게 적고, 코드표 `AE.*` 로 검사하며(경고) 표준 용어와 대조하지 않습니다. |
+| 표준 용어 테이블 (매뉴얼 보완) | 병원이 사용한 개념만 담은 CONCEPT 일부와 VOCABULARY 를 선택 테이블로 받습니다. 내면 개념 필드마다 존재·표준·영역·어휘(`concept` 규칙)와 배포판 버전(`SEM-VOC-001`)을 경고로 봅니다. `valid_start_date`·`valid_end_date` 는 Athena 원본(YYYYMMDD)과 DB 내보내기(YYYY-MM-DD)를 모두 받도록 문자열입니다. |
 
 ## 심각도 원칙
 
 | 심각도 | 기준 | 예 |
 |---|---|---|
 | error | **명세의 직접 요구사항 및 구조적·논리적 모순**: 표·컬럼 구성, 필수, 타입, PK/FK, 설명 속 코드표, 조건부 필수, 날짜 역전·환자 연결 불일치 등 | 필수값 NULL, PK 중복, 투여 빈도는 있는데 `days_supply` 없음, 방문 종료일이 시작일보다 앞섬 |
-| warning | **검토용 제약·임상 개연성**: 명세가 직접 요구하지 않는 범위·대표 코드·휴리스틱 | 임상 범위(`constraints.yaml`), OMOP 대표 코드 집합, 명세 외 열, 검사 타당 범위, 병기군 표기, 치료 차수 확인 |
+| warning | **검토용 제약·임상 개연성**: 명세가 직접 요구하지 않는 범위·대표 코드·휴리스틱과 매뉴얼 보완 항목 | 임상 범위(`constraints.yaml`), OMOP 대표 코드 집합, 이상사례 코드값, 명세 외 열, 검사 타당 범위, 병기군 표기, 치료 차수 확인, 선택 컬럼·선택 테이블 규칙, 표준 용어 대조 |
 
-구조 규칙 368개 중 오류 309 · 경고 59, 교차 규칙 22개 중 오류 14 · 경고 8입니다. 분류는 Kahn 세 축(OHDSI DataQualityDashboard 와 같음)이며 적합성 246 · 완전성 88 · 타당성 56개입니다.
+구조 규칙 410개 중 오류 309 · 경고 101(보완 42개는 모두 경고), 교차 규칙 23개 중 오류 14 · 경고 9입니다. 분류는 Kahn 세 축(OHDSI DataQualityDashboard 와 같음)이며 적합성 283 · 완전성 94 · 타당성 56개입니다.
 
 위 분류는 현재 구현의 검사 심각도입니다. 사업의 제출 승인·반려 기준이나 임상 품질 인증 등급을 자동으로 정하지 않습니다. 규칙의 근거를 문서화한다는 이유만으로 기존 심각도를 변경하지 않습니다.
 
 ## 규칙 카탈로그 (`rules/`)
 
-### 구조 규칙 368개 (명세에서 자동 생성)
+### 구조 규칙 410개 (명세에서 자동 생성)
 
-`rules/generate_structural_rules.py` 가 명세에서 생성하므로 매뉴얼이나 값 제약이 바뀌면 다시 생성합니다. 직접 편집하지 않습니다.
+`rules/generate_structural_rules.py` 가 명세에서 생성하므로 매뉴얼이나 값 제약이 바뀌면 다시 생성합니다. 직접 편집하지 않습니다. 매뉴얼 규칙(ST-0001~0368)을 먼저, 보완 규칙(ST-0369~0410: 선택 컬럼 → 선택 테이블 → 표준 용어)을 뒤에 붙여 매뉴얼 규칙 번호가 바뀌지 않게 합니다.
 
 | 검사 유형 | 규칙 수 | 내용 |
 |---|---|---|
-| type | 134 | integer / float / date(YYYY-MM-DD) 형식 |
-| not_null | 66 | 필수 필드 |
+| type | 139 | integer / float / date(YYYY-MM-DD) 형식 |
+| not_null | 72 | 필수 필드 |
 | fk | 30 | 참조무결성 (참조 테이블이 코호트에 없으면 건너뜀) |
-| codelist | 27 | 매뉴얼 설명의 코드표, OMOP 대표 코드 집합(병원 어휘로 확장될 수 있어 경고) |
+| codelist | 27 | 매뉴얼 설명의 코드표, OMOP 대표 코드 집합·이상사례 코드값(경고) |
+| concept | 25 | 표준 용어 대조: 개념 존재, 표준·유효, 영역, 허용 어휘 (경고, CONCEPT 를 냈을 때만) |
 | range | 24 | 임상 상식 범위 (경고) |
 | not_future | 22 | 검증 실행일 이후 날짜 금지 |
-| table_present | 16 | 코호트 구성에 있는 표가 제출되어야 함 |
-| columns | 16 | 명세의 모든 컬럼이 있어야 함 (누락 컬럼만 보고) |
-| extra_columns | 16 | 명세에 없는 컬럼 알림 (경고) |
-| pk_unique | 16 | PK 는 비어 있지 않고 유일 |
+| table_present | 16 | 코호트 구성에 있는 표가 제출되어야 함 (선택 표 제외) |
+| columns | 18 | 명세의 모든 컬럼이 있어야 함 (누락 컬럼만 보고, 선택 컬럼 제외) |
+| extra_columns | 18 | 명세에 없는 컬럼 알림 (경고) |
+| pk_unique | 18 | PK 는 비어 있지 않고 유일 |
 | must_be_null | 1 | 비항암 코호트(MASLD, 당뇨병)에서 `DRUG_EXPOSURE.sact_id` 는 NULL |
 
-### 교차 테이블 규칙 22개 (수동 작성, `rules_semantic.yaml`)
+### 교차 테이블 규칙 23개 (수동 작성, `rules_semantic.yaml`)
 
 DuckDB SQL로 작성되어 있어 병원 DBMS로 옮기기 쉽습니다. 각 규칙은 위반 행(person_id, row_key, detail)을 반환합니다. 치환자(`{TODAY}`, `{DISEASE}`, `{DISEASE_PK}`)로 코호트별로 실행됩니다.
 
@@ -101,10 +107,11 @@ DuckDB SQL로 작성되어 있어 병원 DBMS로 옮기기 쉽습니다. 각 규
 | 항암요법 SEM-SACT | 6 | 항암요법 종료일 ≥ 시작일, 항암요법 기간 = 연결 약물 기간(경고), 진행일 ≥ 항암 시작일, 약물-항암요법 환자 일치, 항종양제 투여의 항암요법 연결 확인(경고), line 번호와 시작일 순서 확인(경고, 검토용 휴리스틱: line_of_therapy 는 선택이며 매뉴얼은 1부터 시작·연속을 요구하지 않음) |
 | 폐암 SEM-LC | 1 | 임상 병기가 AJCC 병기군 표기인지 (경고) |
 | 림프종 SEM-LY | 1 | `cell_of_origin` 값 (경고) |
+| 표준 용어 SEM-VOC | 1 | VOCABULARY 의 배포판 버전이 v20260829(`v5.0 29-AUG-26`)인지 (경고, VOCABULARY 를 냈을 때만) |
 
 ### 알려진 한계
 
-- Athena 어휘가 없어 `*_concept_id` 의 **존재·표준 여부는 검사하지 않습니다.** OMOP 코드표는 대표 코드 집합과의 대조이며 경고입니다.
+- 앱에는 어휘 파일이 없습니다. 병원이 선택 테이블 CONCEPT 를 내지 않으면 `*_concept_id` 의 **존재·표준 여부는 검사하지 않고** OMOP 대표 코드 집합과의 대조(경고)만 합니다. CONCEPT 를 내더라도 그 CONCEPT 가 실제 Athena 배포판과 같은지는 앱이 확인할 수 없습니다(VOCABULARY 의 버전 행만 봅니다).
 - 항종양제 판정은 앱에 내장된 항암제 목록(`_ANTICANCER_DRUGS`)을 씁니다. 목록 밖 약제는 판정되지 않습니다.
 - 림프종 아형 열이 없어 DLBCL 인데 `cell_of_origin` 이 `NA` 인 오기입은 검출할 수 없습니다.
 - 수치 범위와 문자열 패턴은 임상 상식 범위(예: `age_at_index` 0~110)이며 파일럿 병원 집계로 보정합니다.

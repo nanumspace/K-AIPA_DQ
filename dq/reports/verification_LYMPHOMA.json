@@ -1,13 +1,13 @@
 {
  "cohort": "LYMPHOMA",
  "clean": {
-  "rules": 286,
+  "rules": 329,
   "violations": 7,
   "failed_rules": 1,
   "false_positive_rate": null
  },
  "dirty": {
-  "rules": 286,
+  "rules": 329,
   "violations": 1175,
   "failed_rules": 245
  },

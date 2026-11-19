@@ -5,8 +5,8 @@
 
 검사 대상
   1. spec/concepts.yaml 의 진단·이상사례·검사·약물·시술 개념: 존재, 표준, 유효, 영역·어휘
-  2. spec/constraints.yaml 의 OMOP 코드 목록(이상사례 코드값 필드 제외): 존재, 표준, 유효, 어휘
-  3. synth/output/{clean,good}/<COHORT> 의 모든 *_concept_id 값: 필드별 허용 용어 (docs/vocabulary.md 2절)
+  2. spec/codelists.yaml 의 OMOP 코드 목록 중 표준 용어 대응이 있는 필드의 것: 존재, 표준, 유효, 영역·어휘
+  3. synth/output/{clean,good}/<COHORT> 의 개념 필드 값: 명세의 표준 용어 대응(spec 의 concept, constraints.yaml 에서 관리)
 
 어휘 파일은 라이선스 때문에 저장소에 없다(raw/vocab/ 는 .gitignore). 없으면 검사하지 못했다고 알리고 실패한다.
 """
@@ -22,37 +22,23 @@ import yaml
 ROOT = Path(__file__).resolve().parent.parent
 sys.stdout.reconfigure(encoding="utf-8")
 
-# 필드 -> (허용 vocabulary_id, 요구 domain_id 또는 None)
-BINDING = {
-    "PERSON.gender_concept_id": ({"Gender"}, "Gender"),
-    "VISIT_OCCURRENCE.visit_concept_id": ({"Visit"}, "Visit"),
-    "CONDITION_OCCURRENCE.condition_concept_id": ({"SNOMED"}, "Condition"),
-    "PROCEDURE_OCCURRENCE.procedure_concept_id": ({"SNOMED"}, "Procedure"),
-    "DRUG_EXPOSURE.drug_concept_id": ({"RxNorm", "RxNorm Extension"}, "Drug"),
-    "MEASUREMENT.measurement_concept_id": ({"LOINC"}, "Measurement"),
-    "MEASUREMENT.value_as_concept_id": ({"LOINC", "SNOMED"}, None),
-    "OBSERVATION.observation_concept_id": ({"SNOMED", "LOINC"}, "Observation"),
-    "NOTE.note_class_concept_id": ({"LOINC"}, "Note"),
-    "SACT.regimen_concept_id": ({"HemOnc"}, "Regimen"),
-    "ADVERSE_EVENT.adverse_event_concept_id": ({"SNOMED"}, "Condition"),
-}
-TYPE_FIELDS = {"visit_type_concept_id", "procedure_type_concept_id", "condition_type_concept_id",
-               "measurement_type_concept_id", "observation_type_concept_id", "note_type_concept_id"}
-UNIT_FIELDS = {"unit_concept_id", "amount_unit_concept_id", "numerator_unit_concept_id", "denominator_unit_concept_id"}
-# 매뉴얼 자체 코드값(1~6)이라 개념 검사 대상이 아닌 필드
-CODE_FIELDS = {"severity_concept_id", "causality_concept_id", "seriousness_concept_id", "outcome_concept_id",
-               "action_taken_concept_id"}
+
+def bindings():
+    """명세의 표준 용어 대응: (TABLE, field) -> (허용 vocabulary_id 집합 또는 None, 요구 domain_id 또는 None, 표준 여부, 코드표)"""
+    spec = yaml.safe_load((ROOT / "spec" / "kai_cdm_spec.yaml").read_text(encoding="utf-8"))["tables"]
+    out = {}
+    for t, d in spec.items():
+        for f in d["fields"]:
+            c = f.get("concept")
+            if c:
+                out[(t, f["name"])] = (set(c["vocabularies"]) if c.get("vocabularies") else None, c.get("domain"),
+                                       c["standard"], f.get("codelist"))
+    return out
+
+
 CATALOG = {"conditions": ({"SNOMED"}, "Condition"), "adverse_events": ({"SNOMED"}, "Condition"),
            "measurements": ({"LOINC"}, "Measurement"), "drugs": ({"RxNorm", "RxNorm Extension"}, "Drug"),
            "procedures": ({"SNOMED"}, "Procedure")}
-
-
-def binding(table, field):
-    if field in TYPE_FIELDS:
-        return {"Type Concept"}, "Type Concept"
-    if field in UNIT_FIELDS:
-        return {"UCUM"}, "Unit"
-    return BINDING.get(f"{table}.{field}")
 
 
 def main():
@@ -79,15 +65,15 @@ def main():
 
     problems = []
 
-    def check(where, cid, vocabs, domain):
+    def check(where, cid, vocabs, domain, standard=True):
         x = info(cid)
         if x is None:
             problems.append(f"{where}: {cid} 어휘에 없음")
             return
         name, dom, voc, std, inv = x
-        if std != "S" or inv:
+        if standard and (std != "S" or inv):
             problems.append(f"{where}: {cid} '{name}' 표준·유효 개념 아님 (standard={std}, invalid={inv})")
-        if voc not in vocabs:
+        if vocabs and voc not in vocabs:
             problems.append(f"{where}: {cid} '{name}' 어휘 {voc} (허용 {sorted(vocabs)})")
         if domain and dom != domain:
             problems.append(f"{where}: {cid} '{name}' 영역 {dom} (요구 {domain})")
@@ -106,19 +92,17 @@ def main():
             check(f"concepts.yaml regimens '{name}'", str(cid), {"HemOnc"}, "Regimen")
             n_cat += 1
 
-    lists = yaml.safe_load((ROOT / "spec" / "constraints.yaml").read_text(encoding="utf-8"))["codelists"]
-    n_list = 0
-    for name, codes in lists.items():
-        field = name.split(".", 1)[1]
-        if not name.startswith("OMOP.") or field in CODE_FIELDS:
+    bind = bindings()
+    lists = yaml.safe_load((ROOT / "spec" / "codelists.yaml").read_text(encoding="utf-8"))["omop"]
+    n_list, done = 0, set()
+    for (table, field), (vocabs, domain, standard, codelist) in bind.items():
+        if not codelist or codelist in done:
             continue
-        b = binding("NOTE" if field.startswith("note_class") else "", field) or (
-            ({"Gender"}, "Gender") if field == "gender_concept_id" else ({"Visit"}, "Visit") if field == "visit_concept_id" else None)
-        for cid in codes:
-            if cid == "0":
-                continue
-            check(f"constraints.yaml {name}", str(cid), *b)
-            n_list += 1
+        done.add(codelist)
+        for cid in lists[codelist]:
+            if cid != "0":
+                check(f"codelists.yaml {codelist}", str(cid), vocabs, domain, standard)
+                n_list += 1
 
     n_val = 0
     for kind in ("clean", "good"):
@@ -126,7 +110,7 @@ def main():
             table = f.stem
             with f.open(encoding="utf-8-sig", newline="") as h:
                 r = csv.DictReader(h)
-                fields = [c for c in (r.fieldnames or []) if c.endswith("_concept_id") and c not in CODE_FIELDS]
+                fields = [c for c in (r.fieldnames or []) if (table, c) in bind]
                 seen = set()
                 for row in r:
                     for fld in fields:
@@ -134,11 +118,8 @@ def main():
                         if v in ("", "0") or (fld, v) in seen:
                             continue
                         seen.add((fld, v))
-                        b = binding(table, fld)
-                        if b is None:
-                            problems.append(f"{kind}/{f.parent.name}/{table}.{fld}: 허용 용어가 정해지지 않은 필드")
-                            continue
-                        check(f"{kind}/{f.parent.name}/{table}.{fld}", v, *b)
+                        vocabs, domain, standard, _ = bind[(table, fld)]
+                        check(f"{kind}/{f.parent.name}/{table}.{fld}", v, vocabs, domain, standard)
                         n_val += 1
 
     print(f"카탈로그 {n_cat}개, 코드 목록 {n_list}개, 가상데이터 개념 값 {n_val}건(필드·값 쌍) 대조")

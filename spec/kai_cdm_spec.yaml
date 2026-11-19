@@ -21,6 +21,11 @@ tables:
       required: true
       desc: 성별 정보를 나타내는 표준 Concept 식별자이다. CONCEPT 테이블을 참조하며, 성별 정보를 표준화된 형태로 관리하기 위해 사용된다.
       codelist: OMOP.gender_concept_id
+      concept:
+        standard: true
+        domain: Gender
+        vocabularies:
+        - Gender
     - name: year_of_birth
       type: integer
       required: true
@@ -88,6 +93,11 @@ tables:
 
         예) 외래 = 00000000'
       codelist: OMOP.visit_concept_id
+      concept:
+        standard: true
+        domain: Visit
+        vocabularies:
+        - Visit
     - name: visit_start_date
       type: date
       required: true
@@ -101,6 +111,11 @@ tables:
       required: true
       desc: 방문 기록이 생성된 원천 데이터의 유형을 나타내는 표준 Concept 식별자이다.
       codelist: OMOP.visit_type_concept_id
+      concept:
+        standard: true
+        domain: Type Concept
+        vocabularies:
+        - Type Concept
   PROCEDURE_OCCURRENCE:
     name: PROCEDURE_OCCURRENCE
     kor: 시술 및 처치
@@ -129,6 +144,11 @@ tables:
       type: integer
       required: true
       desc: 처치를 나타내는 표준 Concept 식별자로, 표준 용어체계(Standardized Vocabularies)의 Procedure Domain Concept을 참조하는 외래키이다.
+      concept:
+        standard: true
+        domain: Procedure
+        vocabularies:
+        - SNOMED
     - name: procedure_date
       type: date
       required: true
@@ -138,6 +158,23 @@ tables:
       required: true
       desc: 처치 기록이 생성된 원천 데이터의 유형을 나타내는 표준 Concept 식별자이다. 표준 용어체계의 Concept을 참조하며, 해당 정보의 출처와 생성 방식을 구분하기 위해 사용된다.
       codelist: OMOP.procedure_type_concept_id
+      concept:
+        standard: true
+        domain: Type Concept
+        vocabularies:
+        - Type Concept
+    - name: procedure_source_value
+      type: varchar
+      required: false
+      desc: 병원 원천 시술 코드(예 EDI 수가 코드)를 그대로 적는다. 선택 컬럼이다.
+      optional: true
+    - name: procedure_source_concept_id
+      type: integer
+      required: false
+      desc: 원천 시술 코드에 해당하는 OMOP 개념 ID(예 EDI 어휘). 대응하는 개념이 없으면 0.
+      optional: true
+      concept:
+        standard: false
   DRUG_EXPOSURE:
     name: DRUG_EXPOSURE
     kor: 약물 노출
@@ -178,6 +215,12 @@ tables:
       type: integer
       required: true
       desc: 약물 정보를 나타내는 표준 Concept 식별자로, 표준 용어체계(Standardized Vocabularies)의 Drug Domain Concept을 참조하는 외래키(Foreign Key)이다.
+      concept:
+        standard: true
+        domain: Drug
+        vocabularies:
+        - RxNorm
+        - RxNorm Extension
     - name: drug_exposure_start_date
       type: date
       required: true
@@ -198,6 +241,11 @@ tables:
       required: false
       desc: 약물의 용량 단위를 나타내는 concept ID 이다.
       codelist: OMOP.amount_unit_concept_id
+      concept:
+        standard: true
+        domain: Unit
+        vocabularies:
+        - UCUM
     - name: amount_value
       type: float
       required: false
@@ -221,6 +269,11 @@ tables:
       required: false
       desc: 분자 함량 측정 단위를 나타내는 concept_id 이다.
       codelist: OMOP.numerator_unit_concept_id
+      concept:
+        standard: true
+        domain: Unit
+        vocabularies:
+        - UCUM
     - name: denominator_value
       type: float
       required: false
@@ -230,6 +283,11 @@ tables:
       required: false
       desc: 분모 함량 측정 단위를 나타내는 concept_id 이다.
       codelist: OMOP.denominator_unit_concept_id
+      concept:
+        standard: true
+        domain: Unit
+        vocabularies:
+        - UCUM
     - name: frequency_per_day
       type: integer
       required: false
@@ -251,6 +309,18 @@ tables:
       range:
       - 1
       - 500
+    - name: drug_source_value
+      type: varchar
+      required: false
+      desc: 병원 원천 약품 코드(예 EDI 약가 코드)를 그대로 적는다. 선택 컬럼이다.
+      optional: true
+    - name: drug_source_concept_id
+      type: integer
+      required: false
+      desc: 원천 약품 코드에 해당하는 OMOP 개념 ID(예 EDI 어휘). 대응하는 개념이 없으면 0.
+      optional: true
+      concept:
+        standard: false
   CONDITION_OCCURRENCE:
     name: CONDITION_OCCURRENCE
     kor: 질환 발생
@@ -279,6 +349,11 @@ tables:
       type: integer
       required: true
       desc: 질환 상태를 나타내는 표준 Concept 식별자로, 표준 용어체계(Standardized Vocabularies)의 Condition Domain Concept을 참조하는 외래키이다.
+      concept:
+        standard: true
+        domain: Condition
+        vocabularies:
+        - SNOMED
     - name: condition_start_date
       type: date
       required: true
@@ -288,6 +363,23 @@ tables:
       required: true
       desc: 질환 정보가 기록된 원천 데이터의 유형, 표준화 수준 및 발생 유형을 나타내는 표준 Concept 식별자이다. 질환 기록의 출처와 생성 방식을 구분하기 위해 사용된다.
       codelist: OMOP.condition_type_concept_id
+      concept:
+        standard: true
+        domain: Type Concept
+        vocabularies:
+        - Type Concept
+    - name: condition_source_value
+      type: varchar
+      required: false
+      desc: 병원 원천 진단 코드(예 KCD-8 'C34.1')를 그대로 적는다. 매뉴얼 1.2 ⑦ '원본 코드 유지'를 위한 선택 컬럼이다.
+      optional: true
+    - name: condition_source_concept_id
+      type: integer
+      required: false
+      desc: 원천 진단 코드에 해당하는 OMOP 개념 ID(예 KCD7 어휘). 대응하는 개념이 없으면 0.
+      optional: true
+      concept:
+        standard: false
   MEASUREMENT:
     name: MEASUREMENT
     kor: 검사
@@ -316,6 +408,11 @@ tables:
       type: integer
       required: true
       desc: 측정 항목을 나타내는 표준 Concept 식별자로, 표준 용어체계(Standardized Vocabularies)의 Measurement Domain Concept을 참조하는 외래키이다.
+      concept:
+        standard: true
+        domain: Measurement
+        vocabularies:
+        - LOINC
     - name: measurement_date
       type: date
       required: false
@@ -325,6 +422,11 @@ tables:
       required: false
       desc: 측정 정보가 생성된 원천 데이터의 유형 또는 출처(Provenance)를 나타내는 표준 Concept 식별자이다.
       codelist: OMOP.measurement_type_concept_id
+      concept:
+        standard: true
+        domain: Type Concept
+        vocabularies:
+        - Type Concept
     - name: value_as_number
       type: float
       required: false
@@ -336,11 +438,21 @@ tables:
       type: integer
       required: false
       desc: 측정 결과가 범주형 값인 경우 해당 결과를 나타내는 표준 Concept 식별자이다.
+      concept:
+        standard: true
+        vocabularies:
+        - LOINC
+        - SNOMED
     - name: unit_concept_id
       type: integer
       required: false
       desc: 측정 결과의 단위를 나타내는 표준 Concept 식별자이다.
       codelist: OMOP.unit_concept_id
+      concept:
+        standard: true
+        domain: Unit
+        vocabularies:
+        - UCUM
     - name: range_low
       type: float
       required: false
@@ -391,6 +503,12 @@ tables:
       type: integer
       required: true
       desc: 관찰된 임상적 사실을 나타내는 표준 Concept 식별자로, 표준 용어체계(Standardized Vocabularies)의 Observation Concept을 참조하는 외래키(Foreign Key)이다.
+      concept:
+        standard: true
+        domain: Observation
+        vocabularies:
+        - SNOMED
+        - LOINC
     - name: observation_date
       type: date
       required: true
@@ -400,6 +518,11 @@ tables:
       required: true
       desc: 관찰 정보의 기록 유형 또는 원천 데이터의 출처를 나타내는 표준 Concept 식별자이다.
       codelist: OMOP.observation_type_concept_id
+      concept:
+        standard: true
+        domain: Type Concept
+        vocabularies:
+        - Type Concept
     - name: value_as_number
       type: float
       required: false
@@ -416,6 +539,11 @@ tables:
       required: false
       desc: 수치형 관찰 결과의 측정 단위를 나타내는 표준 Concept 식별자이다. 표준 용어체계에 정의된 단위를 참조한다.
       codelist: OMOP.unit_concept_id
+      concept:
+        standard: true
+        domain: Unit
+        vocabularies:
+        - UCUM
   NOTE:
     name: NOTE
     kor: 노트
@@ -453,11 +581,21 @@ tables:
       required: true
       desc: 노트의 유형을 나타내는 표준 Concept 식별자이다.
       codelist: OMOP.note_type_concept_id
+      concept:
+        standard: true
+        domain: Type Concept
+        vocabularies:
+        - Type Concept
     - name: note_class_concept_id
       type: integer
       required: true
       desc: 노트의 분류(Class)를 나타내는 표준 Concept 식별자이다.
       codelist: OMOP.note_class_concept_id
+      concept:
+        standard: true
+        domain: Note
+        vocabularies:
+        - LOINC
     - name: file_id
       type: integer
       required: false
@@ -841,6 +979,11 @@ tables:
       type: integer
       required: true
       desc: 항암 레지멘 concept ID 이다.
+      concept:
+        standard: true
+        domain: Regimen
+        vocabularies:
+        - HemOnc
     - name: regimen_source_value
       type: varchar
       required: true
@@ -927,6 +1070,11 @@ tables:
       type: integer
       required: true
       desc: 이상사례를 나타내는 표준 코드값이다.
+      concept:
+        standard: true
+        domain: Condition
+        vocabularies:
+        - SNOMED
     - name: adverse_event_start_date
       type: date
       required: true
@@ -934,13 +1082,17 @@ tables:
     - name: severity_concept_id
       type: integer
       required: false
-      desc: 이상사례의 중증도를 나타내는 코드값이다.
-      codelist: OMOP.severity_concept_id
+      desc: '이상사례의 중증도를 나타내는 코드값이다.
+
+        ※ 매뉴얼 자체 코드값입니다(코드표 참고). 컬럼 이름은 concept_id 이지만 OMOP 표준 개념 ID 가 아니므로 CONCEPT 와 대조하지 않습니다.'
+      codelist: AE.severity
     - name: causality_concept_id
       type: integer
       required: false
-      desc: 약물과의 인과관계를 나타내는 값이다.
-      codelist: OMOP.causality_concept_id
+      desc: '약물과의 인과관계를 나타내는 값이다.
+
+        ※ 매뉴얼 자체 코드값입니다(코드표 참고). 컬럼 이름은 concept_id 이지만 OMOP 표준 개념 ID 가 아니므로 CONCEPT 와 대조하지 않습니다.'
+      codelist: AE.causality
     - name: is_serious_yn
       type: integer
       required: false
@@ -948,15 +1100,101 @@ tables:
     - name: seriousness_concept_id
       type: integer
       required: false
-      desc: 중대한 이상사례(SAE) 판단 기준에 해당하는 항목을 나타내는 코드값이다.
-      codelist: OMOP.seriousness_concept_id
+      desc: '중대한 이상사례(SAE) 판단 기준에 해당하는 항목을 나타내는 코드값이다.
+
+        ※ 매뉴얼 자체 코드값입니다(코드표 참고). 컬럼 이름은 concept_id 이지만 OMOP 표준 개념 ID 가 아니므로 CONCEPT 와 대조하지 않습니다.'
+      codelist: AE.seriousness
     - name: outcome_concept_id
       type: integer
       required: false
-      desc: 이상사례의 결과를 나타내는 코드값이다.
-      codelist: OMOP.outcome_concept_id
+      desc: '이상사례의 결과를 나타내는 코드값이다.
+
+        ※ 매뉴얼 자체 코드값입니다(코드표 참고). 컬럼 이름은 concept_id 이지만 OMOP 표준 개념 ID 가 아니므로 CONCEPT 와 대조하지 않습니다.'
+      codelist: AE.outcome
     - name: action_taken_concept_id
       type: integer
       required: false
-      desc: 이상사례에 대해 취해진 조치(약물 관련)를 나타내는 코드값이다.
-      codelist: OMOP.action_taken_concept_id
+      desc: '이상사례에 대해 취해진 조치(약물 관련)를 나타내는 코드값이다.
+
+        ※ 매뉴얼 자체 코드값입니다(코드표 참고). 컬럼 이름은 concept_id 이지만 OMOP 표준 개념 ID 가 아니므로 CONCEPT 와 대조하지 않습니다.'
+      codelist: AE.action_taken
+  CONCEPT:
+    name: CONCEPT
+    kor: 표준 용어
+    section: 보완 · 표준 용어(CONCEPT)
+    category: vocabulary
+    pk: concept_id
+    optional: true
+    desc: 병원 데이터에 쓴 개념만 담은 OMOP CONCEPT 일부. 내면 모든 개념 ID 를 표준 용어와 대조한다.
+    fields:
+    - name: concept_id
+      type: integer
+      required: true
+      desc: ''
+      key: PK
+    - name: concept_name
+      type: varchar
+      required: true
+      desc: ''
+    - name: domain_id
+      type: varchar
+      required: true
+      desc: ''
+    - name: vocabulary_id
+      type: varchar
+      required: true
+      desc: ''
+    - name: concept_class_id
+      type: varchar
+      required: true
+      desc: ''
+    - name: standard_concept
+      type: varchar
+      required: false
+      desc: S 표준, C 분류, 빈 값 비표준
+    - name: concept_code
+      type: varchar
+      required: true
+      desc: ''
+    - name: valid_start_date
+      type: varchar
+      required: false
+      desc: Athena 원본(YYYYMMDD)·DB 내보내기(YYYY-MM-DD) 모두 받는다
+    - name: valid_end_date
+      type: varchar
+      required: false
+      desc: ''
+    - name: invalid_reason
+      type: varchar
+      required: false
+      desc: D 폐기, U 대체, 빈 값 유효
+  VOCABULARY:
+    name: VOCABULARY
+    kor: 어휘 버전
+    section: 보완 · 어휘 버전(VOCABULARY)
+    category: vocabulary
+    pk: vocabulary_id
+    optional: true
+    desc: OMOP VOCABULARY 테이블. vocabulary_id='None' 행의 vocabulary_version 으로 어휘 배포판을 확인한다.
+    fields:
+    - name: vocabulary_id
+      type: varchar
+      required: true
+      desc: ''
+      key: PK
+    - name: vocabulary_name
+      type: varchar
+      required: true
+      desc: ''
+    - name: vocabulary_reference
+      type: varchar
+      required: false
+      desc: ''
+    - name: vocabulary_version
+      type: varchar
+      required: false
+      desc: ''
+    - name: vocabulary_concept_id
+      type: integer
+      required: false
+      desc: ''

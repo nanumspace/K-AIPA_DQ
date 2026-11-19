@@ -738,12 +738,12 @@ ST-0354,ADVERSE_EVENT.adverse_event_concept_id 타입(integer),Conformance,error
 ST-0355,ADVERSE_EVENT.adverse_event_start_date 필수,Completeness,error,ADVERSE_EVENT,adverse_event_start_date,400008,400046,adverse_event_start_date NULL
 ST-0356,ADVERSE_EVENT.adverse_event_start_date 타입(date),Conformance,error,ADVERSE_EVENT,adverse_event_start_date,400003,400020,adverse_event_start_date='2026-13-45' 은 date 아님
 ST-0358,ADVERSE_EVENT.severity_concept_id 타입(integer),Conformance,error,ADVERSE_EVENT,severity_concept_id,400007,400035,severity_concept_id='NOT_A_NUMBER' 은 integer 아님
-ST-0359,ADVERSE_EVENT.severity_concept_id 코드표,Conformance,warning,ADVERSE_EVENT,severity_concept_id,400007,400035,severity_concept_id=NOT_A_NUMBER 코드표(OMOP.severity_concept_id) 밖
+ST-0359,ADVERSE_EVENT.severity_concept_id 코드표,Conformance,warning,ADVERSE_EVENT,severity_concept_id,400007,400035,severity_concept_id=NOT_A_NUMBER 코드표(AE.severity) 밖
 ST-0360,ADVERSE_EVENT.causality_concept_id 타입(integer),Conformance,error,ADVERSE_EVENT,causality_concept_id,400009,400050,causality_concept_id='NOT_A_NUMBER' 은 integer 아님
-ST-0361,ADVERSE_EVENT.causality_concept_id 코드표,Conformance,warning,ADVERSE_EVENT,causality_concept_id,400009,400050,causality_concept_id=NOT_A_NUMBER 코드표(OMOP.causality_concept_id) 밖
+ST-0361,ADVERSE_EVENT.causality_concept_id 코드표,Conformance,warning,ADVERSE_EVENT,causality_concept_id,400009,400050,causality_concept_id=NOT_A_NUMBER 코드표(AE.causality) 밖
 ST-0362,ADVERSE_EVENT.is_serious_yn 타입(integer),Conformance,error,ADVERSE_EVENT,is_serious_yn,400005,400032,is_serious_yn='NOT_A_NUMBER' 은 integer 아님
 ST-0365,ADVERSE_EVENT.outcome_concept_id 타입(integer),Conformance,error,ADVERSE_EVENT,outcome_concept_id,400002,400008,outcome_concept_id='NOT_A_NUMBER' 은 integer 아님
-ST-0366,ADVERSE_EVENT.outcome_concept_id 코드표,Conformance,warning,ADVERSE_EVENT,outcome_concept_id,400002,400008,outcome_concept_id=NOT_A_NUMBER 코드표(OMOP.outcome_concept_id) 밖
+ST-0366,ADVERSE_EVENT.outcome_concept_id 코드표,Conformance,warning,ADVERSE_EVENT,outcome_concept_id,400002,400008,outcome_concept_id=NOT_A_NUMBER 코드표(AE.outcome) 밖
 SEM-COM-001,방문 종료일 >= 시작일,Plausibility,error,VISIT_OCCURRENCE,,400440,400024,visit_end_date 2022-03-05 < visit_start_date 2099-01-01
 SEM-COM-001,방문 종료일 >= 시작일,Plausibility,error,VISIT_OCCURRENCE,,401637,400085,visit_end_date 2024-08-12 < visit_start_date 2024-08-13
 SEM-COM-001,방문 종료일 >= 시작일,Plausibility,error,VISIT_OCCURRENCE,,401654,400086,visit_end_date 2025-05-14 < visit_start_date 2025-05-15

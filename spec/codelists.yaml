@@ -131,34 +131,35 @@ omop:
     '3030624': Outpatient Note
     '3032377': Oncology Note
     '0': No matching concept (표준 분류가 없는 노트, 예 약물 구조식 SMILES)
-  OMOP.severity_concept_id:
+ae:
+  AE.severity:
     '1': CTCAE Grade 1
     '2': CTCAE Grade 2
     '3': CTCAE Grade 3
     '4': CTCAE Grade 4
     '5': CTCAE Grade 5
-  OMOP.causality_concept_id:
+  AE.causality:
     '1': Certain
     '2': Probable
     '3': Possible
     '4': Unlikely
     '5': Unrelated
     '6': Unassessable
-  OMOP.seriousness_concept_id:
+  AE.seriousness:
     '1': Death
     '2': Life-threatening
     '3': Hospitalization
     '4': Disability
     '5': Congenital anomaly
     '6': Other medically important
-  OMOP.outcome_concept_id:
+  AE.outcome:
     '1': Recovered
     '2': Recovering
     '3': Not recovered
     '4': Recovered with sequelae
     '5': Fatal
     '6': Unknown
-  OMOP.action_taken_concept_id:
+  AE.action_taken:
     '1': None
     '2': Dose reduced
     '3': Interrupted

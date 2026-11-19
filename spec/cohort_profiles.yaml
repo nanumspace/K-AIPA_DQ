@@ -13,6 +13,9 @@ cohorts:
     - LUNG_CANCER
     - ADVERSE_EVENT
     - SACT
+    optional_tables:
+    - CONCEPT
+    - VOCABULARY
   BREAST_CANCER:
     kor: 유방암
     tables:
@@ -27,6 +30,9 @@ cohorts:
     - BREAST_CANCER
     - ADVERSE_EVENT
     - SACT
+    optional_tables:
+    - CONCEPT
+    - VOCABULARY
   COLORECTAL_CANCER:
     kor: 대장암
     tables:
@@ -41,6 +47,9 @@ cohorts:
     - COLORECTAL_CANCER
     - ADVERSE_EVENT
     - SACT
+    optional_tables:
+    - CONCEPT
+    - VOCABULARY
   MASLD:
     kor: 대사이상지방간
     tables:
@@ -54,6 +63,9 @@ cohorts:
     - NOTE
     - MASLD
     - ADVERSE_EVENT
+    optional_tables:
+    - CONCEPT
+    - VOCABULARY
   DIABETES:
     kor: 당뇨병
     tables:
@@ -67,6 +79,9 @@ cohorts:
     - NOTE
     - DIABETES
     - ADVERSE_EVENT
+    optional_tables:
+    - CONCEPT
+    - VOCABULARY
   LYMPHOMA:
     kor: 림프종
     tables:
@@ -81,3 +96,6 @@ cohorts:
     - LYMPHOMA
     - ADVERSE_EVENT
     - SACT
+    optional_tables:
+    - CONCEPT
+    - VOCABULARY

@@ -1130,7 +1130,7 @@ class Ctx:
     def write(self, out_dir):
         os.makedirs(out_dir, exist_ok=True)
         for t in self.tables:
-            cols = [f["name"] for f in SPEC[t]["fields"]]
+            cols = [f["name"] for f in SPEC[t]["fields"] if not f.get("optional")]   # 선택 컬럼은 견본에 넣지 않는다
             rows = self.rows[t]
             df = pd.DataFrame(rows, columns=cols) if rows else pd.DataFrame(columns=cols)
             for c in cols:

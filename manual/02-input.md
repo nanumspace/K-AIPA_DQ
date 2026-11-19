@@ -11,18 +11,43 @@
 | PERSON | 환자 | **없으면 실행이 막힙니다** |
 | 질환 본표 (`LUNG_CANCER` · `BREAST_CANCER` · `COLORECTAL_CANCER` · `MASLD` · `DIABETES` · `LYMPHOMA`) | 질환별 진단·병기·병리·바이오마커·검사·평가 | **없으면 실행이 막힙니다** |
 | VISIT_OCCURRENCE | 방문 | |
-| PROCEDURE_OCCURRENCE | 처치 | |
-| DRUG_EXPOSURE | 약물 | `sact_id`, `note_id` 는 선택 |
-| CONDITION_OCCURRENCE | 진단 | |
+| PROCEDURE_OCCURRENCE | 처치 | 원천 코드 `procedure_source_value`·`procedure_source_concept_id` 는 선택 |
+| DRUG_EXPOSURE | 약물 | `sact_id`, `note_id` 는 선택. 원천 코드 `drug_source_value`·`drug_source_concept_id` 도 선택 |
+| CONDITION_OCCURRENCE | 진단 | 원천 코드 `condition_source_value`·`condition_source_concept_id` 는 선택(아래) |
 | MEASUREMENT | 검사 | |
 | OBSERVATION | 관찰 | |
 | NOTE | 기록 | 필수는 `note_id`, `note_type_concept_id`, `note_class_concept_id` 세 개 |
-| ADVERSE_EVENT | 이상사례 | |
+| ADVERSE_EVENT | 이상사례 | `severity`·`causality`·`seriousness`·`outcome`·`action_taken` `_concept_id` 는 이름과 달리 **매뉴얼 자체 코드값**(1~6)입니다. OMOP 개념 ID 를 넣지 마세요 |
 | SACT | 항암요법 (키 `sact_id`) | 폐암·유방암·대장암·림프종만. 대사이상지방간·당뇨병은 없음 |
+| CONCEPT | 표준 용어 일부 | **선택**(매뉴얼 보완). 낸 데이터에 쓴 개념만 담습니다(아래) |
+| VOCABULARY | 어휘 배포판 | **선택**(매뉴얼 보완). 어휘 버전을 확인합니다 |
 
-표는 폐암·유방암·대장암·림프종이 11개, 대사이상지방간·당뇨병이 10개입니다(SACT 없음). 표가 빠지면 "테이블 없음"으로 보고되고 그 표에 관한 규칙은 건너뜁니다. **해당 사례가 없더라도 헤더만 있는 빈 파일을 넣는** 편이 좋습니다. 그래야 "없어서 못 본 것"과 "있는데 비어 있는 것"이 구분됩니다.
+표는 폐암·유방암·대장암·림프종이 11개, 대사이상지방간·당뇨병이 10개입니다(SACT 없음). 선택 표 CONCEPT·VOCABULARY 는 이 수에 넣지 않습니다. 표가 빠지면 "테이블 없음"으로 보고되고 그 표에 관한 규칙은 건너뜁니다. **해당 사례가 없더라도 헤더만 있는 빈 파일을 넣는** 편이 좋습니다. 그래야 "없어서 못 본 것"과 "있는데 비어 있는 것"이 구분됩니다. 선택 표와 선택 컬럼은 없어도 "테이블 없음"·"컬럼 누락"이 아니며, 사전 점검이 안내만 합니다.
 
-코호트별 적용 규칙 수는 폐암 285 · 유방암 294 · 대장암 277 · 대사이상지방간 257 · 당뇨병 253 · 림프종 286개입니다.
+코호트별 적용 규칙 수는 폐암 328 · 유방암 337 · 대장암 320 · 대사이상지방간 299 · 당뇨병 295 · 림프종 329개입니다. 이 가운데 42개(SACT 가 있는 코호트는 43개)는 선택 표·선택 컬럼 규칙이라 내지 않으면 "건너뜀"이 됩니다.
+
+### 선택 컬럼과 선택 표 (매뉴얼 보완, 1.0.3)
+
+매뉴얼에는 없지만 사업 방침([표준 용어 방침](../docs/vocabulary.md))으로 더한 항목입니다. 내지 않아도 오류가 아니고, 내면 경고 수준으로 검사합니다.
+
+- **원천 코드 컬럼.** 매뉴얼 1.2 ⑦ "원본 코드 유지"를 위해 진단·처치·약물 표 끝에 `*_source_value`(병원 원천 코드 그대로, 예 KCD-8 `C34.1`, EDI 코드)와 `*_source_concept_id`(그 원천 코드의 OMOP 개념 ID, 예 KCD7·EDI 어휘. 없으면 `0`)를 넣을 수 있습니다.
+- **CONCEPT.** 낸 표의 `*_concept_id` 값(이상사례 코드값 5개 제외)과 `*_source_concept_id` 값이 가리키는 개념만 OMOP CONCEPT 테이블에서 뽑아 냅니다. 컬럼은 OMOP CONCEPT 와 같은 10개입니다. 앱은 개념마다 CONCEPT 에 있는지, 표준(`standard_concept = S`)·유효한지, 필드에 맞는 영역·어휘인지 봅니다([표준 용어 방침](../docs/vocabulary.md) 2절). 원천 개념은 있는지만 봅니다.
+- **VOCABULARY.** OMOP VOCABULARY 테이블 전체(수십 행)를 냅니다. `vocabulary_id = 'None'` 행의 버전이 기준 배포판 `v5.0 29-AUG-26`(v20260829)이 아니면 경고합니다.
+
+병원 OMOP DB 에서 CONCEPT 일부를 뽑는 예(PostgreSQL, 스키마 이름은 기관에 맞게):
+
+```sql
+WITH used AS (
+  SELECT condition_concept_id AS id FROM cdm.condition_occurrence
+  UNION SELECT condition_type_concept_id FROM cdm.condition_occurrence
+  UNION SELECT condition_source_concept_id FROM cdm.condition_occurrence
+  UNION SELECT drug_concept_id FROM cdm.drug_exposure
+  -- … 제출하는 표의 나머지 *_concept_id 컬럼도 같은 식으로 (ADVERSE_EVENT 의 코드값 5개 제외)
+)
+SELECT c.* FROM cdm.concept c JOIN used u ON c.concept_id = u.id;
+```
+
+DB 에서 표준 CSV(쉼표 구분, 따옴표 처리)로 내보내 주세요. `valid_start_date`·`valid_end_date` 는 `YYYY-MM-DD` 와 Athena 의 `YYYYMMDD` 를 모두 받습니다. Athena 에서 받은 원본 CONCEPT.csv 를 잘라 쓰면 개념 이름 속 따옴표(`"`) 때문에 읽기 오류가 날 수 있습니다. 전체 CONCEPT(수백만 행)를 내면 느려지므로 쓴 개념만 냅니다.
 
 ### 매뉴얼의 이 부분은 이렇게 채웁니다
 
@@ -37,7 +62,7 @@
 
 ### 알려진 한계
 
-- concept 코드(`*_concept_id`)가 OMOP Athena 어휘에 있는지, 표준 개념인지는 검증하지 못합니다(Athena 어휘가 앱에 없습니다). OMOP 코드 목록 대조는 경고 수준입니다.
+- 선택 표 CONCEPT 를 내지 않으면 concept 코드(`*_concept_id`)가 OMOP 어휘에 있는지, 표준 개념인지는 검증하지 못합니다(어휘가 앱에 없습니다). 이때는 OMOP 대표 코드 목록 대조(경고)만 합니다. CONCEPT 를 내더라도 그 내용이 실제 Athena 배포판과 같은지는 확인하지 못합니다.
 - 항종양제 판정은 앱에 내장된 항암제 목록을 씁니다. 목록 밖 약은 `sact_id` 연결 확인에서 잡히지 않습니다.
 - 림프종 아형 열이 없어 DLBCL 의 `NA` 오기입은 검출하지 못합니다.
 

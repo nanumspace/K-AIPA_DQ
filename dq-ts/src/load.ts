@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { parse, parseDocument, isMap, isSeq, isScalar } from "yaml";
-import type { Spec, StructuralRule, SemanticRule, Concepts } from "./types.js";
+import type { Spec, StructuralRule, SemanticRule, Concepts, CohortProfile } from "./types.js";
 
 let rootOverride: string | undefined;
 
@@ -54,8 +54,8 @@ export function loadConcepts(): Concepts {
   return loadYaml<Concepts>("spec/concepts.yaml");
 }
 
-export function loadProfiles(): Record<string, { kor: string; tables: string[] }> {
-  return loadYaml<{ cohorts: Record<string, { kor: string; tables: string[] }> }>("spec/cohort_profiles.yaml").cohorts;
+export function loadProfiles(): Record<string, CohortProfile> {
+  return loadYaml<{ cohorts: Record<string, CohortProfile> }>("spec/cohort_profiles.yaml").cohorts;
 }
 
 /**
