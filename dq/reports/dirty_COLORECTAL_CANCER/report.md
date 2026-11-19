@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: COLORECTAL_CANCER (대장암)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 320개 (실패 236, 건너뜀 43, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 320개 (실패 237, 건너뜀 44, 오류 0)
 
-위반 1570건 (error 1482, warning 88)
+위반 1537건 (error 1451, warning 86)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
-| Conformance | 211 | 145 | 1073 |
+| Conformance | 211 | 146 | 986 |
 | Completeness | 66 | 49 | 60 |
-| Plausibility | 43 | 42 | 437 |
+| Plausibility | 43 | 42 | 491 |
 
 ## 테이블 행수
 
@@ -17,7 +17,7 @@
 - PROCEDURE_OCCURRENCE: 1879
 - DRUG_EXPOSURE: 3177
 - CONDITION_OCCURRENCE: 557
-- MEASUREMENT: 9776
+- MEASUREMENT: 9944
 - OBSERVATION: 126
 - NOTE: 2296
 - COLORECTAL_CANCER: 99
@@ -54,7 +54,7 @@
 | ST-0029 VISIT_OCCURRENCE.visit_occurrence_id 타입(integer) | Conformance | error | VISIT_OCCURRENCE | 1 |
 | ST-0030 VISIT_OCCURRENCE.person_id 필수 | Completeness | error | VISIT_OCCURRENCE | 1 |
 | ST-0031 VISIT_OCCURRENCE.person_id 타입(integer) | Conformance | error | VISIT_OCCURRENCE | 1 |
-| ST-0032 VISIT_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | VISIT_OCCURRENCE | 98 |
+| ST-0032 VISIT_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | VISIT_OCCURRENCE | 88 |
 | ST-0033 VISIT_OCCURRENCE.visit_concept_id 필수 | Completeness | error | VISIT_OCCURRENCE | 1 |
 | ST-0034 VISIT_OCCURRENCE.visit_concept_id 타입(integer) | Conformance | error | VISIT_OCCURRENCE | 1 |
 | ST-0035 VISIT_OCCURRENCE.visit_concept_id 코드표 | Conformance | warning | VISIT_OCCURRENCE | 2 |
@@ -74,7 +74,7 @@
 | ST-0051 PROCEDURE_OCCURRENCE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | PROCEDURE_OCCURRENCE | 5 |
 | ST-0052 PROCEDURE_OCCURRENCE.person_id 필수 | Completeness | error | PROCEDURE_OCCURRENCE | 1 |
 | ST-0053 PROCEDURE_OCCURRENCE.person_id 타입(integer) | Conformance | error | PROCEDURE_OCCURRENCE | 1 |
-| ST-0054 PROCEDURE_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | PROCEDURE_OCCURRENCE | 64 |
+| ST-0054 PROCEDURE_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | PROCEDURE_OCCURRENCE | 69 |
 | ST-0055 PROCEDURE_OCCURRENCE.procedure_concept_id 필수 | Completeness | error | PROCEDURE_OCCURRENCE | 1 |
 | ST-0056 PROCEDURE_OCCURRENCE.procedure_concept_id 타입(integer) | Conformance | error | PROCEDURE_OCCURRENCE | 1 |
 | ST-0057 PROCEDURE_OCCURRENCE.procedure_date 필수 | Completeness | error | PROCEDURE_OCCURRENCE | 1 |
@@ -90,9 +90,9 @@
 | ST-0070 DRUG_EXPOSURE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 5 |
 | ST-0071 DRUG_EXPOSURE.person_id 필수 | Completeness | error | DRUG_EXPOSURE | 1 |
 | ST-0072 DRUG_EXPOSURE.person_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 |
-| ST-0073 DRUG_EXPOSURE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 93 |
+| ST-0073 DRUG_EXPOSURE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 65 |
 | ST-0074 DRUG_EXPOSURE.sact_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 |
-| ST-0075 DRUG_EXPOSURE.sact_id -> SACT.sact_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 89 |
+| ST-0075 DRUG_EXPOSURE.sact_id -> SACT.sact_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 94 |
 | ST-0076 DRUG_EXPOSURE.note_id 타입(integer) | Conformance | error | DRUG_EXPOSURE | 1 |
 | ST-0077 DRUG_EXPOSURE.note_id -> NOTE.note_id 참조무결성 | Conformance | error | DRUG_EXPOSURE | 1 |
 | ST-0078 DRUG_EXPOSURE.drug_concept_id 필수 | Completeness | error | DRUG_EXPOSURE | 1 |
@@ -121,7 +121,7 @@
 | ST-0113 CONDITION_OCCURRENCE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | CONDITION_OCCURRENCE | 1 |
 | ST-0114 CONDITION_OCCURRENCE.person_id 필수 | Completeness | error | CONDITION_OCCURRENCE | 1 |
 | ST-0115 CONDITION_OCCURRENCE.person_id 타입(integer) | Conformance | error | CONDITION_OCCURRENCE | 1 |
-| ST-0116 CONDITION_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | CONDITION_OCCURRENCE | 20 |
+| ST-0116 CONDITION_OCCURRENCE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | CONDITION_OCCURRENCE | 17 |
 | ST-0117 CONDITION_OCCURRENCE.condition_concept_id 필수 | Completeness | error | CONDITION_OCCURRENCE | 1 |
 | ST-0118 CONDITION_OCCURRENCE.condition_concept_id 타입(integer) | Conformance | error | CONDITION_OCCURRENCE | 1 |
 | ST-0119 CONDITION_OCCURRENCE.condition_start_date 필수 | Completeness | error | CONDITION_OCCURRENCE | 1 |
@@ -137,7 +137,7 @@
 | ST-0131 MEASUREMENT.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | MEASUREMENT | 11 |
 | ST-0132 MEASUREMENT.person_id 필수 | Completeness | error | MEASUREMENT | 1 |
 | ST-0133 MEASUREMENT.person_id 타입(integer) | Conformance | error | MEASUREMENT | 1 |
-| ST-0134 MEASUREMENT.person_id -> PERSON.person_id 참조무결성 | Conformance | error | MEASUREMENT | 330 |
+| ST-0134 MEASUREMENT.person_id -> PERSON.person_id 참조무결성 | Conformance | error | MEASUREMENT | 309 |
 | ST-0135 MEASUREMENT.measurement_concept_id 필수 | Completeness | error | MEASUREMENT | 1 |
 | ST-0136 MEASUREMENT.measurement_concept_id 타입(integer) | Conformance | error | MEASUREMENT | 1 |
 | ST-0137 MEASUREMENT.measurement_date 타입(date) | Conformance | error | MEASUREMENT | 1 |
@@ -146,6 +146,7 @@
 | ST-0140 MEASUREMENT.measurement_type_concept_id 코드표 | Conformance | warning | MEASUREMENT | 2 |
 | ST-0141 MEASUREMENT.value_as_number 타입(float) | Conformance | error | MEASUREMENT | 1 |
 | ST-0142 MEASUREMENT.value_as_number 범위 | Plausibility | warning | MEASUREMENT | 1 |
+| ST-0143 MEASUREMENT.value_as_concept_id 타입(integer) | Conformance | error | MEASUREMENT | 1 |
 | ST-0144 MEASUREMENT.unit_concept_id 타입(integer) | Conformance | error | MEASUREMENT | 1 |
 | ST-0145 MEASUREMENT.unit_concept_id 코드표 | Conformance | warning | MEASUREMENT | 2 |
 | ST-0146 MEASUREMENT.range_low 타입(float) | Conformance | error | MEASUREMENT | 1 |
@@ -159,7 +160,7 @@
 | ST-0157 OBSERVATION.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | OBSERVATION | 1 |
 | ST-0158 OBSERVATION.person_id 필수 | Completeness | error | OBSERVATION | 1 |
 | ST-0159 OBSERVATION.person_id 타입(integer) | Conformance | error | OBSERVATION | 1 |
-| ST-0160 OBSERVATION.person_id -> PERSON.person_id 참조무결성 | Conformance | error | OBSERVATION | 5 |
+| ST-0160 OBSERVATION.person_id -> PERSON.person_id 참조무결성 | Conformance | error | OBSERVATION | 4 |
 | ST-0161 OBSERVATION.observation_concept_id 필수 | Completeness | error | OBSERVATION | 1 |
 | ST-0162 OBSERVATION.observation_concept_id 타입(integer) | Conformance | error | OBSERVATION | 1 |
 | ST-0163 OBSERVATION.observation_date 필수 | Completeness | error | OBSERVATION | 1 |
@@ -170,12 +171,13 @@
 | ST-0168 OBSERVATION.observation_type_concept_id 코드표 | Conformance | warning | OBSERVATION | 2 |
 | ST-0169 OBSERVATION.value_as_number 타입(float) | Conformance | error | OBSERVATION | 1 |
 | ST-0170 OBSERVATION.value_as_number 범위 | Plausibility | warning | OBSERVATION | 1 |
+| ST-0174 NOTE 컬럼 구성 | Conformance | error | NOTE | 1 |
 | ST-0176 NOTE.note_id PK 유일성 | Conformance | error | NOTE | 3 |
 | ST-0177 NOTE.note_id 타입(integer) | Conformance | error | NOTE | 1 |
 | ST-0178 NOTE.visit_occurrence_id 타입(integer) | Conformance | error | NOTE | 1 |
 | ST-0179 NOTE.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | NOTE | 4 |
 | ST-0180 NOTE.person_id 타입(integer) | Conformance | error | NOTE | 1 |
-| ST-0181 NOTE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | NOTE | 82 |
+| ST-0181 NOTE.person_id -> PERSON.person_id 참조무결성 | Conformance | error | NOTE | 80 |
 | ST-0182 NOTE.note_date 타입(date) | Conformance | error | NOTE | 1 |
 | ST-0183 NOTE.note_date 미래 날짜 금지 | Plausibility | error | NOTE | 1 |
 | ST-0184 NOTE.note_type_concept_id 필수 | Completeness | error | NOTE | 1 |
@@ -188,19 +190,18 @@
 | ST-0247 COLORECTAL_CANCER.colorectal_cancer_id 타입(integer) | Conformance | error | COLORECTAL_CANCER | 1 |
 | ST-0248 COLORECTAL_CANCER.person_id 필수 | Completeness | error | COLORECTAL_CANCER | 1 |
 | ST-0249 COLORECTAL_CANCER.person_id 타입(integer) | Conformance | error | COLORECTAL_CANCER | 1 |
-| ST-0250 COLORECTAL_CANCER.person_id -> PERSON.person_id 참조무결성 | Conformance | error | COLORECTAL_CANCER | 4 |
+| ST-0250 COLORECTAL_CANCER.person_id -> PERSON.person_id 참조무결성 | Conformance | error | COLORECTAL_CANCER | 3 |
 | ST-0251 COLORECTAL_CANCER.visit_occurrence_id 필수 | Completeness | error | COLORECTAL_CANCER | 1 |
 | ST-0252 COLORECTAL_CANCER.visit_occurrence_id 타입(integer) | Conformance | error | COLORECTAL_CANCER | 1 |
 | ST-0253 COLORECTAL_CANCER.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | COLORECTAL_CANCER | 1 |
 | ST-0254 COLORECTAL_CANCER.diag_rgst_ymd 필수 | Completeness | error | COLORECTAL_CANCER | 1 |
 | ST-0255 COLORECTAL_CANCER.diag_rgst_ymd 타입(date) | Conformance | error | COLORECTAL_CANCER | 1 |
 | ST-0256 COLORECTAL_CANCER.diag_rgst_ymd 미래 날짜 금지 | Plausibility | error | COLORECTAL_CANCER | 1 |
-| ST-0316 SACT 컬럼 구성 | Conformance | error | SACT | 1 |
 | ST-0318 SACT.sact_id PK 유일성 | Conformance | error | SACT | 3 |
 | ST-0319 SACT.sact_id 타입(integer) | Conformance | error | SACT | 1 |
 | ST-0320 SACT.person_id 필수 | Completeness | error | SACT | 1 |
 | ST-0321 SACT.person_id 타입(integer) | Conformance | error | SACT | 1 |
-| ST-0322 SACT.person_id -> PERSON.person_id 참조무결성 | Conformance | error | SACT | 6 |
+| ST-0322 SACT.person_id -> PERSON.person_id 참조무결성 | Conformance | error | SACT | 4 |
 | ST-0323 SACT.regimen_concept_id 필수 | Completeness | error | SACT | 1 |
 | ST-0324 SACT.regimen_concept_id 타입(integer) | Conformance | error | SACT | 1 |
 | ST-0325 SACT.regimen_source_value 필수 | Completeness | error | SACT | 1 |
@@ -224,7 +225,7 @@
 | ST-0346 ADVERSE_EVENT.adverse_event_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 |
 | ST-0347 ADVERSE_EVENT.person_id 필수 | Completeness | error | ADVERSE_EVENT | 1 |
 | ST-0348 ADVERSE_EVENT.person_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 |
-| ST-0349 ADVERSE_EVENT.person_id -> PERSON.person_id 참조무결성 | Conformance | error | ADVERSE_EVENT | 16 |
+| ST-0349 ADVERSE_EVENT.person_id -> PERSON.person_id 참조무결성 | Conformance | error | ADVERSE_EVENT | 11 |
 | ST-0350 ADVERSE_EVENT.visit_occurrence_id 필수 | Completeness | error | ADVERSE_EVENT | 1 |
 | ST-0351 ADVERSE_EVENT.visit_occurrence_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 |
 | ST-0352 ADVERSE_EVENT.visit_occurrence_id -> VISIT_OCCURRENCE.visit_occurrence_id 참조무결성 | Conformance | error | ADVERSE_EVENT | 1 |
@@ -245,22 +246,37 @@
 | ST-0367 ADVERSE_EVENT.action_taken_concept_id 타입(integer) | Conformance | error | ADVERSE_EVENT | 1 |
 | ST-0368 ADVERSE_EVENT.action_taken_concept_id 코드표 | Conformance | warning | ADVERSE_EVENT | 2 |
 | SEM-COM-001 방문 종료일 >= 시작일 | Plausibility | error | VISIT_OCCURRENCE | 3 |
-| SEM-COM-002 방문일 >= 출생연도 | Plausibility | error | PERSON,VISIT_OCCURRENCE | 15 |
-| SEM-COM-003 사망 이후 임상 이벤트 금지 | Plausibility | error | CONDITION_OCCURRENCE,DRUG_EXPOSURE,MEASUREMENT,NOTE,OBSERVATION,PERSON,PROCEDURE_OCCURRENCE,VISIT_OCCURRENCE | 342 |
-| SEM-COM-004 이벤트-방문 환자 일치 | Conformance | error | ADVERSE_EVENT,CONDITION_OCCURRENCE,DRUG_EXPOSURE,MEASUREMENT,NOTE,OBSERVATION,PROCEDURE_OCCURRENCE,VISIT_OCCURRENCE | 17 |
+| SEM-COM-002 방문일 >= 출생연도 | Plausibility | error | PERSON,VISIT_OCCURRENCE | 24 |
+| SEM-COM-003 사망 이후 임상 이벤트 금지 | Plausibility | error | CONDITION_OCCURRENCE,DRUG_EXPOSURE,MEASUREMENT,NOTE,OBSERVATION,PERSON,PROCEDURE_OCCURRENCE,VISIT_OCCURRENCE | 388 |
+| SEM-COM-004 이벤트-방문 환자 일치 | Conformance | error | ADVERSE_EVENT,CONDITION_OCCURRENCE,DRUG_EXPOSURE,MEASUREMENT,NOTE,OBSERVATION,PROCEDURE_OCCURRENCE,VISIT_OCCURRENCE | 26 |
 | SEM-COM-005 약물 종료일 >= 시작일, days_supply 일치 | Plausibility | error | DRUG_EXPOSURE | 6 |
 | SEM-COM-006 매일 투여면 days_supply 필수 | Completeness | error | DRUG_EXPOSURE | 1 |
 | SEM-COM-007 투여 간격이 1일 초과면 dosing_number 필수 | Completeness | error | DRUG_EXPOSURE | 2 |
 | SEM-COM-008 정상범위 하한 <= 상한 | Plausibility | error | MEASUREMENT | 3 |
-| SEM-COM-009 특화 테이블 누락 환자 | Completeness | warning | PERSON | 6 |
+| SEM-COM-009 특화 테이블 누락 환자 | Completeness | warning | PERSON | 5 |
 | SEM-COM-010 특화 테이블 방문 환자 일치 | Conformance | error | VISIT_OCCURRENCE | 2 |
-| SEM-COM-011 이상사례 발생일 사망 이후 금지 | Plausibility | error | ADVERSE_EVENT,PERSON | 9 |
+| SEM-COM-011 이상사례 발생일 사망 이후 금지 | Plausibility | error | ADVERSE_EVENT,PERSON | 10 |
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
-| SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
+| SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 4 |
 | SEM-SACT-001 항암요법 종료일 >= 시작일 | Plausibility | error | SACT | 2 |
-| SEM-SACT-006 항암요법 line 번호와 시작일 순서 확인 | Plausibility | warning | SACT | 15 |
+| SEM-SACT-006 항암요법 line 번호와 시작일 순서 확인 | Plausibility | warning | SACT | 13 |
 | SEM-SACT-002 항암요법 기간이 연결 약물 기간과 일치 | Plausibility | warning | DRUG_EXPOSURE,SACT | 8 |
 | SEM-SACT-003 진행일 >= 항암 시작일 | Plausibility | error | SACT | 1 |
-| SEM-SACT-004 약물-항암요법 환자 일치 | Conformance | error | DRUG_EXPOSURE,SACT | 56 |
+| SEM-SACT-004 약물-항암요법 환자 일치 | Conformance | error | DRUG_EXPOSURE,SACT | 22 |
 | SEM-SACT-005 항종양제 투여의 항암요법 연결 확인 | Completeness | warning | DRUG_EXPOSURE,SACT | 2 |
+
+## 데이터 충실도
+
+있어야 할 기록이 있는 비율이다(규칙 위반과 별개, 충족 판정·목표치 없음). 미충족 단위는 sufficiency.csv(기관 내부용)에 있다.
+
+| 항목 | 단위 | 대상 | 충족 | 비율 | 1인·1년당 중앙값 | <50 | 50-64 | 65+ | 미상 |
+|---|---|---|---|---|---|---|---|---|---|
+| EXP-COM-01 키 | 환자 | 97 | 91 | 93.8% | - | 5/5 | 40/41 | 44/49 | 2/2 |
+| EXP-COM-02 체중 | 환자 | 97 | 91 | 93.8% | - | 5/5 | 40/41 | 44/49 | 2/2 |
+| EXP-COM-03 항암 요법 시작 전 키·체중 | 요법 | 114 | 18 | 15.8% | - | 0/5 | 11/49 | 6/53 | 1/7 |
+| EXP-COM-04 요법별 수행 상태(ECOG) | 요법 | 114 | 113 | 99.1% | - | 5/5 | 48/49 | 53/53 | 7/7 |
+| EXP-COM-05 항암 요법 시작 전 혈구검사 | 요법 | 114 | 109 | 95.6% | - | 5/5 | 49/49 | 50/53 | 5/7 |
+| EXP-CRC-01 MMR 또는 MSI 검사 결과 | 환자 | 97 | 97 | 100.0% | - | 5/5 | 41/41 | 49/49 | 2/2 |
+| EXP-CRC-02 진단 시 CEA | 환자 | 97 | 90 | 92.8% | - | 5/5 | 39/41 | 44/49 | 2/2 |
+| EXP-CRC-03 전이성 대장암의 RAS 검사 결과 | 환자 | 31 | 31 | 100.0% | - | 1/1 | 12/12 | 16/16 | 2/2 |
