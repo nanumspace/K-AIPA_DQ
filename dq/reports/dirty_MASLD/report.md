@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: MASLD (대사이상지방간)
 
-검증일 2026-09-07 / 테이블 10개 / 규칙 299개 (실패 199, 건너뜀 51, 오류 0)
+검증일 2026-09-07 / 테이블 10개 / 규칙 301개 (실패 200, 건너뜀 51, 오류 0)
 
-위반 1403건 (error 1348, warning 55)
+위반 1404건 (error 1348, warning 56)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 200 | 125 | 737 |
-| Completeness | 59 | 42 | 53 |
-| Plausibility | 40 | 32 | 613 |
+| Completeness | 60 | 43 | 54 |
+| Plausibility | 41 | 32 | 613 |
 
 ## 테이블 행수
 
@@ -226,6 +226,7 @@
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
+| SEM-MEAS-004 HbA1c·UACR·크레아티닌 단위 없음 | Completeness | warning | MEASUREMENT | 1 |
 
 ## 데이터 충실도
 
@@ -236,6 +237,7 @@
 | EXP-COM-01 키 | 환자 | 97 | 89 | 91.8% | - | 37/42 | 38/41 | 12/12 | 2/2 |
 | EXP-COM-02 체중 | 환자 | 97 | 90 | 92.8% | - | 37/42 | 39/41 | 12/12 | 2/2 |
 | EXP-MASLD-01 FIB-4 구성 검사 (AST·ALT·혈소판 같은 날) | 환자 | 97 | 90 | 92.8% | - | 37/42 | 39/41 | 12/12 | 2/2 |
+| EXP-MASLD-04 FIB-4 계산 가능 (같은 날 수치·단위가 유효한 AST·ALT·혈소판 + 나이) | 환자 | 97 | 88 | 90.7% | - | 37/42 | 39/41 | 12/12 | 0/2 |
 | EXP-MASLD-02 FIB-4 반복 평가 (당뇨 동반) | 환자 | 83 | 82 | 98.8% | 2.1 | 34/35 | 35/35 | 11/11 | 2/2 |
 | EXP-MASLD-03 연 1회 체중 또는 BMI | 환자 | 84 | 83 | 98.8% | 2.1 | 34/35 | 36/36 | 11/11 | 2/2 |
 

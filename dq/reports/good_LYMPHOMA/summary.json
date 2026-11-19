@@ -14,7 +14,7 @@
   "ADVERSE_EVENT": 3,
   "SACT": 1
  },
- "rules_total": 329,
+ "rules_total": 331,
  "rules_failed": 0,
  "rules_skipped": 43,
  "rules_error": 0,
@@ -24,7 +24,7 @@
  "violations_warning": 0,
  "by_category": {
   "Completeness": {
-   "rules": 67,
+   "rules": 68,
    "failed": 0,
    "violations": 0
   },
@@ -34,7 +34,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 46,
+   "rules": 47,
    "failed": 0,
    "violations": 0
   }
@@ -4856,6 +4856,36 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-MEAS-003",
+   "name": "HbA1c·UACR·크레아티닌 단위 부적합",
+   "category": "Plausibility",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-004",
+   "name": "HbA1c·UACR·크레아티닌 단위 없음",
+   "category": "Completeness",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-SACT-001",
    "name": "항암요법 종료일 >= 시작일",
    "category": "Plausibility",
@@ -5110,6 +5140,23 @@
      "band": "50-64",
      "eligible": 1,
      "met": 1
+    }
+   ]
+  },
+  {
+   "id": "EXP-LY-04",
+   "title": "진단 시 림프종 병기 기록",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 1,
+   "met": 0,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "50-64",
+     "eligible": 1,
+     "met": 0
     }
    ]
   }

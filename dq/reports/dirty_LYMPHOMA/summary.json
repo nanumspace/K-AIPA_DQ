@@ -14,9 +14,9 @@
   "ADVERSE_EVENT": 248,
   "SACT": 121
  },
- "rules_total": 329,
+ "rules_total": 331,
  "rules_failed": 245,
- "rules_skipped": 45,
+ "rules_skipped": 43,
  "rules_error": 0,
  "rules_disabled": 0,
  "violations_total": 1175,
@@ -24,7 +24,7 @@
  "violations_warning": 89,
  "by_category": {
   "Completeness": {
-   "rules": 67,
+   "rules": 68,
    "failed": 50,
    "violations": 62
   },
@@ -34,7 +34,7 @@
    "violations": 725
   },
   "Plausibility": {
-   "rules": 46,
+   "rules": 47,
    "failed": 45,
    "violations": 388
   }
@@ -2585,10 +2585,10 @@
    "fields": "unit_concept_id",
    "check": "type",
    "origin": "standard",
-   "status": "skipped",
+   "status": "pass",
    "violations": 0,
    "rows_checked": 100,
-   "note": "컬럼 없음: ['unit_concept_id']"
+   "note": ""
   },
   {
    "rule_id": "ST-0172",
@@ -2600,10 +2600,10 @@
    "fields": "unit_concept_id",
    "check": "codelist",
    "origin": "standard",
-   "status": "skipped",
+   "status": "pass",
    "violations": 0,
    "rows_checked": 100,
-   "note": "컬럼 없음: ['unit_concept_id']"
+   "note": ""
   },
   {
    "rule_id": "ST-0173",
@@ -4583,7 +4583,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 100,
-   "note": "컬럼 없음: ['unit_concept_id']"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0407",
@@ -4852,6 +4852,36 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-003",
+   "name": "HbA1c·UACR·크레아티닌 단위 부적합",
+   "category": "Plausibility",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-004",
+   "name": "HbA1c·UACR·크레아티닌 단위 없음",
+   "category": "Completeness",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
    "rows_checked": 0,
    "note": ""
   },
@@ -5232,6 +5262,38 @@
      "met": 2
     }
    ]
+  },
+  {
+   "id": "EXP-LY-04",
+   "title": "진단 시 림프종 병기 기록",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 97,
+   "met": 0,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 21,
+     "met": 0
+    },
+    {
+     "band": "50-64",
+     "eligible": 39,
+     "met": 0
+    },
+    {
+     "band": "65+",
+     "eligible": 35,
+     "met": 0
+    },
+    {
+     "band": "미상",
+     "eligible": 2,
+     "met": 0
+    }
+   ]
   }
  ],
  "mapping_rates": [
@@ -5403,6 +5465,16 @@
    "invalid": 1,
    "eligible": 98,
    "mapped": 98,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "unit_concept_id",
+   "rows": 100,
+   "blank": 100,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
    "unmapped": 0
   },
   {

@@ -260,7 +260,7 @@ F258,L01_WITHOUT_SACT,Completeness,DRUG_EXPOSURE,602329,600083,sact_id,600098,,S
 F259,COO_NA_FORMAT,Conformance,LYMPHOMA,600033,600033,cell_of_origin,NA,N/A,SEM-LY-001,NA 를 N/A 로 적음
 F260,COO_VALUE_INVALID,Conformance,LYMPHOMA,600067,600067,cell_of_origin,ABC/non-GCB,ABC,SEM-LY-001,ABC/non-GCB 를 ABC 로 적음
 F261,PERSON_WITHOUT_DISEASE_ROW,Completeness,LYMPHOMA,600019,600019,person_id,600019,(행 삭제),SEM-COM-009,
-F262,COLUMN_MISSING,Conformance,OBSERVATION,,,unit_concept_id,,(컬럼 삭제),ST-0151,
+F262,COLUMN_MISSING,Conformance,OBSERVATION,,,value_as_string,,(컬럼 삭제),ST-0151,
 F263,COLUMN_MISSING,Conformance,SACT,,,recurrence_anatomic_site,,(컬럼 삭제),ST-0316,
 F264,EXTRA_COLUMN,Conformance,MEASUREMENT,,,extra_memo,,(명세에 없는 컬럼 추가),ST-0127,
 F265,EXTRA_COLUMN,Conformance,PROCEDURE_OCCURRENCE,,,extra_memo,,(명세에 없는 컬럼 추가),ST-0047,

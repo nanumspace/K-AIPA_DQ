@@ -14,17 +14,17 @@
   "ADVERSE_EVENT": 362,
   "SACT": 181
  },
- "rules_total": 337,
- "rules_failed": 253,
+ "rules_total": 339,
+ "rules_failed": 254,
  "rules_skipped": 44,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 1153,
+ "violations_total": 1154,
  "violations_error": 1080,
- "violations_warning": 73,
+ "violations_warning": 74,
  "by_category": {
   "Completeness": {
-   "rules": 71,
+   "rules": 72,
    "failed": 54,
    "violations": 65
   },
@@ -34,9 +34,9 @@
    "violations": 839
   },
   "Plausibility": {
-   "rules": 43,
-   "failed": 42,
-   "violations": 249
+   "rules": 44,
+   "failed": 43,
+   "violations": 250
   }
  },
  "rules": [
@@ -4987,6 +4987,36 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-003",
+   "name": "HbA1c·UACR·크레아티닌 단위 부적합",
+   "category": "Plausibility",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-004",
+   "name": "HbA1c·UACR·크레아티닌 단위 없음",
+   "category": "Completeness",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
    "rows_checked": 0,
    "note": ""
   },

@@ -216,6 +216,60 @@ rules:
     SELECT person_id, CAST(measurement_id AS VARCHAR) AS row_key, 'value_as_number, value_as_concept_id 모두 없음' AS detail
     FROM MEASUREMENT WHERE value_as_number IS NULL AND value_as_concept_id IS NULL
 
+# 아래 두 규칙의 (개념, 단위) 허용 쌍은 로컬 Athena v20260829(raw/vocab/v20260829/CONCEPT.csv)에서
+# 개념 이름·LOINC 코드와 UCUM 단위 개념(8554 %, 9579 mmol/mol, 8840 mg/dL, 8749 umol/L,
+# 8723 mg/g, 9017 mg/g{creat}, 8838 ug/mg, 44777612 mg/mmol)을 확인한 것만 둔다.
+# 허용 목록에 없는 코드(정성·시험지·검출한계·몰비 등)는 검사하지 않는다.
+- id: SEM-MEAS-003
+  name: HbA1c·UACR·크레아티닌 단위 부적합
+  category: Plausibility
+  subcategory: unit
+  severity: warning
+  scope: all
+  requires: [MEASUREMENT]
+  desc: 정량 HbA1c(%, mmol/mol), 혈청·혈장 크레아티닌(질량농도 mg/dL, 몰농도 umol/L), 소변 알부민/크레아티닌 질량비(mg/g, mg/g{creat}, ug/mg, mg/mmol)의 단위가 해당 개념의 보수적 허용 목록에 없다. 단위가 비어 있으면 SEM-MEAS-004 가 따로 안내한다. 허용 목록 밖의 개념은 대상이 아니다.
+  sql: |
+    WITH allow(code_id, unit_id) AS (
+      SELECT c, u FROM (VALUES
+        (3003309, 8554), (3004410, 8554), (3005673, 8554), (3007263, 8554), (40765129, 8554), (42869630, 8554),
+        (3003309, 9579), (3004410, 9579), (3005673, 9579), (3007263, 9579), (40765129, 9579), (42869630, 9579),
+        (3016723, 8840), (3045369, 8840),
+        (3020564, 8749), (1260102, 8749),
+        (3034485, 8723), (3001802, 8723), (3000819, 8723), (3002827, 8723), (3043209, 8723), (3020682, 8723), (3022826, 8723),
+        (3034485, 9017), (3001802, 9017), (3000819, 9017), (3002827, 9017), (3043209, 9017), (3020682, 9017), (3022826, 9017),
+        (3034485, 8838), (3001802, 8838), (3000819, 8838), (3002827, 8838), (3043209, 8838), (3020682, 8838), (3022826, 8838),
+        (3034485, 44777612), (3001802, 44777612), (3000819, 44777612), (3002827, 44777612), (3043209, 44777612), (3020682, 44777612), (3022826, 44777612)
+      ) AS t(c, u)
+    )
+    SELECT m.person_id, CAST(m.measurement_id AS VARCHAR) AS row_key,
+           'measurement_concept_id ' || m.measurement_concept_id || ' 의 unit_concept_id ' || CAST(m.unit_concept_id AS VARCHAR) || ' 는 허용 단위 목록에 없음' AS detail
+    FROM MEASUREMENT m
+    WHERE TRY_CAST(m.measurement_concept_id AS BIGINT) IN (SELECT code_id FROM allow)
+      AND m.value_as_number IS NOT NULL
+      AND m.unit_concept_id IS NOT NULL
+      AND NOT EXISTS (SELECT 1 FROM allow a
+                      WHERE a.code_id = TRY_CAST(m.measurement_concept_id AS BIGINT)
+                        AND a.unit_id = TRY_CAST(m.unit_concept_id AS BIGINT))
+
+- id: SEM-MEAS-004
+  name: HbA1c·UACR·크레아티닌 단위 없음
+  category: Completeness
+  subcategory: unit
+  severity: warning
+  scope: all
+  requires: [MEASUREMENT]
+  desc: 숫자 결과가 있는 HbA1c·크레아티닌·UACR(SEM-MEAS-003 과 같은 개념 목록) 검사에 unit_concept_id 가 없다. 단위 불일치(SEM-MEAS-003)와 분리한 안내다.
+  sql: |
+    SELECT m.person_id, CAST(m.measurement_id AS VARCHAR) AS row_key,
+           'measurement_concept_id ' || m.measurement_concept_id || ' 에 숫자 결과는 있으나 unit_concept_id 없음' AS detail
+    FROM MEASUREMENT m
+    WHERE TRY_CAST(m.measurement_concept_id AS BIGINT) IN (
+            3003309, 3004410, 3005673, 3007263, 40765129, 42869630,
+            3016723, 3045369, 3020564, 1260102,
+            3034485, 3001802, 3000819, 3002827, 3043209, 3020682, 3022826)
+      AND m.value_as_number IS NOT NULL
+      AND m.unit_concept_id IS NULL
+
 # ---------------------------------------------------------------------------
 # 항암요법 (SACT)
 # ---------------------------------------------------------------------------

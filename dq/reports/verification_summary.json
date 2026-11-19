@@ -2,13 +2,13 @@
  {
   "cohort": "LUNG_CANCER",
   "clean": {
-   "rules": 328,
+   "rules": 330,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 328,
+   "rules": 330,
    "violations": 1474,
    "failed_rules": 244
   },
@@ -239,15 +239,15 @@
  {
   "cohort": "BREAST_CANCER",
   "clean": {
-   "rules": 337,
+   "rules": 339,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 337,
-   "violations": 1153,
-   "failed_rules": 253
+   "rules": 339,
+   "violations": 1154,
+   "failed_rules": 254
   },
   "faults_total": 270,
   "faults_detected": 270,
@@ -464,6 +464,7 @@
    }
   ],
   "collateral_rules": [
+   "SEM-MEAS-003",
    "ST-0242",
    "ST-0333"
   ]
@@ -471,13 +472,13 @@
  {
   "cohort": "COLORECTAL_CANCER",
   "clean": {
-   "rules": 320,
+   "rules": 322,
    "violations": 14,
    "failed_rules": 1,
    "false_positive_rate": null
   },
   "dirty": {
-   "rules": 320,
+   "rules": 322,
    "violations": 1537,
    "failed_rules": 237
   },
@@ -700,15 +701,15 @@
  {
   "cohort": "MASLD",
   "clean": {
-   "rules": 299,
+   "rules": 301,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 299,
-   "violations": 1403,
-   "failed_rules": 199
+   "rules": 301,
+   "violations": 1404,
+   "failed_rules": 200
   },
   "faults_total": 213,
   "faults_detected": 213,
@@ -895,6 +896,7 @@
    }
   ],
   "collateral_rules": [
+   "SEM-MEAS-004",
    "ST-0359",
    "ST-0361",
    "ST-0366"
@@ -903,15 +905,15 @@
  {
   "cohort": "DIABETES",
   "clean": {
-   "rules": 296,
+   "rules": 298,
    "violations": 0,
    "failed_rules": 0,
    "false_positive_rate": 0.0
   },
   "dirty": {
-   "rules": 296,
-   "violations": 1104,
-   "failed_rules": 187
+   "rules": 298,
+   "violations": 1105,
+   "failed_rules": 188
   },
   "faults_total": 202,
   "faults_detected": 202,
@@ -1091,18 +1093,20 @@
     "recall": 1.0
    }
   ],
-  "collateral_rules": []
+  "collateral_rules": [
+   "SEM-MEAS-003"
+  ]
  },
  {
   "cohort": "LYMPHOMA",
   "clean": {
-   "rules": 329,
+   "rules": 331,
    "violations": 7,
    "failed_rules": 1,
    "false_positive_rate": null
   },
   "dirty": {
-   "rules": 329,
+   "rules": 331,
    "violations": 1175,
    "failed_rules": 245
   },

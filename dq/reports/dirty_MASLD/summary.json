@@ -13,19 +13,19 @@
   "MASLD": 99,
   "ADVERSE_EVENT": 13
  },
- "rules_total": 299,
- "rules_failed": 199,
+ "rules_total": 301,
+ "rules_failed": 200,
  "rules_skipped": 51,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 1403,
+ "violations_total": 1404,
  "violations_error": 1348,
- "violations_warning": 55,
+ "violations_warning": 56,
  "by_category": {
   "Completeness": {
-   "rules": 59,
-   "failed": 42,
-   "violations": 53
+   "rules": 60,
+   "failed": 43,
+   "violations": 54
   },
   "Conformance": {
    "rules": 200,
@@ -33,7 +33,7 @@
    "violations": 737
   },
   "Plausibility": {
-   "rules": 40,
+   "rules": 41,
    "failed": 32,
    "violations": 613
   }
@@ -4420,6 +4420,36 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-MEAS-003",
+   "name": "HbA1c·UACR·크레아티닌 단위 부적합",
+   "category": "Plausibility",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-004",
+   "name": "HbA1c·UACR·크레아티닌 단위 없음",
+   "category": "Completeness",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-SACT-001",
    "name": "항암요법 종료일 >= 시작일",
    "category": "Plausibility",
@@ -4619,6 +4649,38 @@
      "band": "미상",
      "eligible": 2,
      "met": 2
+    }
+   ]
+  },
+  {
+   "id": "EXP-MASLD-04",
+   "title": "FIB-4 계산 가능 (같은 날 수치·단위가 유효한 AST·ALT·혈소판 + 나이)",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 97,
+   "met": 88,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 42,
+     "met": 37
+    },
+    {
+     "band": "50-64",
+     "eligible": 41,
+     "met": 39
+    },
+    {
+     "band": "65+",
+     "eligible": 12,
+     "met": 12
+    },
+    {
+     "band": "미상",
+     "eligible": 2,
+     "met": 0
     }
    ]
   },

@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: LUNG_CANCER (폐암)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 328개 (실패 244, 건너뜀 46, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 330개 (실패 244, 건너뜀 44, 오류 0)
 
 위반 1474건 (error 1396, warning 78)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 215 | 149 | 933 |
-| Completeness | 69 | 52 | 65 |
-| Plausibility | 44 | 43 | 476 |
+| Completeness | 70 | 52 | 65 |
+| Plausibility | 45 | 43 | 476 |
 
 ## 테이블 행수
 
@@ -310,6 +310,7 @@
 | MEASUREMENT | unit_concept_id | 12680 | 12523 | 12523 | 0 | 0.0% | 156·1 |
 | OBSERVATION | observation_concept_id | 200 | 198 | 198 | 0 | 0.0% | 1·1 |
 | OBSERVATION | observation_type_concept_id | 200 | 198 | 198 | 0 | 0.0% | 1·1 |
+| OBSERVATION | unit_concept_id | 200 | 0 | 0 | 0 | - | 200·0 |
 | NOTE | note_type_concept_id | 1993 | 1991 | 1991 | 0 | 0.0% | 1·1 |
 | NOTE | note_class_concept_id | 1993 | 1991 | 1981 | 10 | 0.5% | 1·1 |
 | ADVERSE_EVENT | adverse_event_concept_id | 311 | 309 | 309 | 0 | 0.0% | 1·1 |

@@ -259,7 +259,7 @@ F257,STAGE_NOT_AJCC,Conformance,LUNG_CANCER,100080,100080,clinical_stage,IVB,ED,
 F258,STAGE_NOT_AJCC,Conformance,LUNG_CANCER,100091,100091,clinical_stage,IVB,LD,SEM-LC-001,제한기 표기
 F259,STAGE_NOT_AJCC,Conformance,LUNG_CANCER,100026,100026,clinical_stage,IA3,III,SEM-LC-001,하위 병기 없는 III
 F260,PERSON_WITHOUT_DISEASE_ROW,Completeness,LUNG_CANCER,100074,100074,person_id,100074,(행 삭제),SEM-COM-009,
-F261,COLUMN_MISSING,Conformance,OBSERVATION,,,unit_concept_id,,(컬럼 삭제),ST-0151,
+F261,COLUMN_MISSING,Conformance,OBSERVATION,,,value_as_string,,(컬럼 삭제),ST-0151,
 F262,COLUMN_MISSING,Conformance,NOTE,,,file_id,,(컬럼 삭제),ST-0174,
 F263,EXTRA_COLUMN,Conformance,PROCEDURE_OCCURRENCE,,,extra_memo,,(명세에 없는 컬럼 추가),ST-0047,
 F264,EXTRA_COLUMN,Conformance,NOTE,,,extra_memo,,(명세에 없는 컬럼 추가),ST-0175,

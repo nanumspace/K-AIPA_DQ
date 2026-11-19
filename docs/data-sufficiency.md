@@ -1,6 +1,6 @@
 # 데이터 충실도: 선행 근거와 질환별 기대 데이터
 
-> **상태: 결정·구현 (2026-11-19, 앱 1.0.4).** 방침 결정권자가 5절의 질문을 정했고, 3절의 27개 항목(당뇨 DM-04~08 추가 포함)을 앱에 넣었습니다(`spec/expected_data.yaml`). 의뢰사 매뉴얼(2026-11-16)은 이 항목들을 요구하지 않으므로 매뉴얼 위반(오류)과 섞지 않고 **별도 축으로 비율만** 보고합니다. 구현 방식은 6절에 있습니다.
+현재 소스에는 데이터 충실도 29개 항목이 정의되어 있습니다(`spec/expected_data.yaml`). 의뢰사 매뉴얼 위반과 분리해 비율만 보고합니다. 구현 기준은 6절에 있습니다.
 
 ## 1. 무엇을 평가하려는가
 
@@ -102,6 +102,7 @@
 |---|---|---|---|---|---|
 | EXP-MASLD-01 | FIB-4 구성 검사: AST(`3013721`)·ALT(`3006923`)·혈소판(`3024929`) | 전 환자 | 기준일 전후 같은 날 또는 같은 방문에 세 검사 모두 (구간 `제안`) | [AASLD 2023 진료 지침](https://pmc.ncbi.nlm.nih.gov/articles/PMC10735173/): 지방간·의심 환자는 FIB-4로 1차 위험 평가. 실제 계산 가능 비율 36%·52% 결손 보고(2.2절) | 가능 |
 | EXP-MASLD-02 | FIB-4 반복 평가 | 당뇨·전당뇨 또는 대사 위험인자 2개 이상 | **1~2년마다** 위 세 검사 | AASLD 2023: "primary risk assessment with FIB-4 should be repeated every 1–2 years" | 부분: 당뇨는 `CONDITION_OCCURRENCE` 로 판정 가능, 위험인자 개수 정의는 확인 필요 |
+| EXP-MASLD-04 | FIB-4 **계산 가능성**: 같은 날 AST·ALT·혈소판 측정이 모두 0 초과 수치(`value_as_number`)이고 단위가 유효, 환자 나이(`PERSON.age_at_index` > 0) | 전 환자 | 기준일 전 365일 ~ 후 90일 (MASLD-01 과 같은 구간, 같은 날 요건 동일) | FIB-4 = 나이×AST/(혈소판×√ALT) (AASLD 2023). 계산 가능 36% 보고(2.2절). MASLD-01 은 검사 **기록 유무**, 이 항목은 **계산 가능성**이라 따로 둡니다 | 가능 |
 | EXP-MASLD-03 | 키·체중 또는 BMI(`3038553`) | 전 환자 | 연 1회 이상 (`제안`) | 대사 위험인자 판정에 필요 | 가능 |
 
 ### 3.6 당뇨병
@@ -120,6 +121,7 @@
 |---|---|---|---|---|---|
 | EXP-LY-01 | 진단 시 LDH (`3022250`) | 전 환자 | 기준일 전후 1회 이상 (구간 `제안`) | [IPI (NEJM 1993)](https://pubmed.ncbi.nlm.nih.gov/8141877): 나이·병기·LDH·수행 상태·결절외 침범 수로 예후 분류 | 가능 |
 | EXP-LY-02 | IPI 구성요소 전부 | 공격성 림프종(DLBCL 등) | 진단 시 | 위와 같음 | 부분: 나이(PERSON)·LDH·ECOG(`SACT`)만 있음. **병기·결절외 침범 수 필드 없음** |
+| EXP-LY-04 | 진단 시 림프종 병기 기록 (SNOMED `4299327` Lymphoma stage) | 전 환자. 기준일(`diagnosis_date`)이 없으면 미충족 | 기준일 전후 90일에 병기 측정 1회 이상, 결과가 `value_as_concept_id`(>0)·`value_source_value`(비어 있지 않음)·`value_as_number` 중 하나로 있어야 함 | Ann Arbor/Lugano 병기는 예후·치료 계획의 기본 변수 (**지침 조항 확인 필요**) | **구현(MEASUREMENT)** |
 | EXP-LY-03 | 진단 시 PET-CT (`42872445`) 또는 골수 생검 (`4119553`) | 전 환자 | 기준일 전후 1회 이상 | 병기 결정 검사. **지침 조항 확인 필요** | 가능 |
 
 ### 3.8 요약
@@ -155,7 +157,7 @@
 
 ## 6. 구현 (앱 1.0.4)
 
-**개념 집합.** `python spec/build_concept_sets.py` 가 `spec/expected_data.yaml` 의 `concept_sets` 31개를 기준 어휘(`raw/vocab/v20260829/`, 저장소에 없음)로 펼쳐 `spec/concept_sets.yaml` 에 ID 만 씁니다. 검사는 LOINC 구성요소(`Has component`)와 검체(`Has system`)가 같은 모든 표준 검사(예: HbA1c 6개, 혈소판 10개), 시술·진단은 CONCEPT_ANCESTOR 의 표준 하위 개념(예: 흉부 CT 257개)입니다. 이름이나 ID 가 어휘에 없거나 집합이 비면 멈춥니다.
+**개념 집합.** `python spec/build_concept_sets.py` 가 `spec/expected_data.yaml` 의 `concept_sets` 33개를 기준 어휘(`raw/vocab/v20260829/`, 저장소에 없음)로 펼쳐 `spec/concept_sets.yaml` 에 ID 만 씁니다. 검사는 LOINC 구성요소(`Has component`)와 검체(`Has system`)가 같은 모든 표준 검사(예: HbA1c 6개, 혈소판 10개), 시술·진단은 CONCEPT_ANCESTOR 의 표준 하위 개념(예: 흉부 CT 257개)입니다. 이름이나 ID 가 어휘에 없거나 집합이 비면 멈춥니다.
 
 **계산.** 두 엔진(Python 참조 구현, 앱의 TypeScript)이 교차 규칙을 돈 DuckDB 연결에서 같은 SQL 을 실행합니다. 기록(`_EVENTS`)은 MEASUREMENT·PROCEDURE_OCCURRENCE·OBSERVATION·CONDITION_OCCURRENCE 에서 개념 집합에 든 날짜 있는 행입니다. 항목 SQL 은 대상 단위(환자 또는 요법)마다 충족 여부와 사유를 냅니다. 회귀 시험이 두 엔진의 `sufficiency.csv`·`report.md`·`summary.json` 을 글자 단위로 대조합니다.
 
@@ -169,10 +171,14 @@
 | EXP-CRC-03 대상 | `inap_dsnt_mtst_site_etc_cont` 기재 또는 `therapy_intent=3`(고식적) 요법. 기준 어휘에 전이 진단의 표준 SNOMED 개념이 거의 없어 진단으로는 보지 않음 |
 | EXP-MASLD-01 | 기준일 전 365일 ~ 후 90일에 AST·ALT·혈소판을 같은 날 (같은 방문의 다른 날은 세지 않음) |
 | EXP-MASLD-02 | 당뇨병 진단(201820 하위)이 있고 관찰 2년 이상. 기준일부터 2년 구간마다 FIB-4 구성 검사 |
+| EXP-MASLD-04 | 기준일 전 365일 ~ 후 90일. 같은 날 한 행씩 AST·ALT·혈소판(각 개념 집합)이 있고 `value_as_number` > 0, `unit_concept_id` 가 AST·ALT 는 `8645`(`[U]/L`)·`8923`(`[iU]/L`), 혈소판은 `8848`(`10*3/uL`)·`8961`(`10*3/mm3`)·`9444`(`10*9/L`). 세 단위 모두 같은 수치 크기라 환산 없이 쓴다. 단위가 비었거나 이 목록 밖(예 `8931` 백만/mm3)이면 미충족. 나이는 `PERSON.age_at_index` > 0. 같은 날 여러 행이면 유효한 조합이 하나라도 있으면 충족. FIB-4 값 자체와 연령별 해석 구간(35~65세)은 판정하지 않음 |
+| EXP-LY-04 | 분모: 림프종 코호트 전 환자. 창: 기준일 ± 90일. 병기 개념은 `LYMPHOMA_STAGE`(4299327 하나, 어휘 v20260829 에서 하위 개념 없음)만 인정. **범용 병기군(`STAGE`: AJCC 파생 병기군·Tumor stage 계열)과 Ann Arbor 병기 체계 개념(`4115000` 등 척도 이름)은 림프종 병기로 추론하지 않음**. 병기를 다른 기록(PET-CT·골수 생검, IPI)에서 유추하지 않음 |
 | EXP-MASLD-03 | 관찰 1년 이상. 1년 구간마다 BMI, 또는 체중(키는 관찰 중 1회) |
 | EXP-DM-02 | 관찰 182일 이상. 182일 구간마다 HbA1c |
 | EXP-DM-03 | 관찰 1년 이상. 1년 구간마다 혈압(수축기·이완기)·크레아티닌 또는 eGFR·총콜레스테롤 또는 LDL·체중 또는 BMI |
 | EXP-DM-04~08 | DM-03 과 같은 대상(관찰 1년 이상)·1년 구간 분모. DM-04 는 UACR, DM-05~08 은 혈압·신기능·지질·체중 각각. DM-03 은 네 요소 합성 그대로 두며 UACR 은 넣지 않음 |
 | EXP-LY-02 | DLBCL(`cell_of_origin` 이 GCB·ABC/non-GCB·unclassifiable). 나이, 진단 시 LDH, SACT ECOG 또는 진단 전후 90일 ECOG 관찰 |
 
+
+**EXP-MASLD-04·LY-04 근거 확인 (로컬 어휘 v20260829).** 단위: `8645` unit per liter, `8923` international unit per liter, `8848` thousand per microliter, `8961` thousand per cubic millimeter, `9444` billion per liter 가 CONCEPT.csv 에서 표준·유효로 확인됨(코드 `[U]/L`, `[iU]/L`, `10*3/uL`, `10*3/mm3`, `10*9/L`). 림프종 병기: `4299327` Lymphoma stage(SNOMED 385388004, Observable Entity, 표준·유효, CONCEPT_ANCESTOR 상 하위 개념 없음, 상위 `4161178` Tumor stage). `python spec/build_concept_sets.py` 로 `LYMPHOMA_STAGE` 1개를 `spec/concept_sets.yaml` 에 추가함(집합 33개). 기존 항목(MASLD-01~03, LY-01~03 등)은 그대로 유지.
 **가상데이터.** 견본은 폐암 EGFR·ALK, 유방암 ER·PR·HER2·병기군, 대장암 MSI·KRAS·NRAS 를 MEASUREMENT 행으로 담습니다(판독 NOTE 와 같은 값). 견본의 충실도 비율은 생성기의 진료 흐름을 반영할 뿐 실제 병원의 기대치가 아닙니다. 예를 들어 생성기는 키를 진단 때 한 번 재므로 EXP-COM-03(요법 시작 전 30일의 키)이 낮게 나옵니다.

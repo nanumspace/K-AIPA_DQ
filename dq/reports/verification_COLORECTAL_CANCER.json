@@ -1,13 +1,13 @@
 {
  "cohort": "COLORECTAL_CANCER",
  "clean": {
-  "rules": 320,
+  "rules": 322,
   "violations": 14,
   "failed_rules": 1,
   "false_positive_rate": null
  },
  "dirty": {
-  "rules": 320,
+  "rules": 322,
   "violations": 1537,
   "failed_rules": 237
  },

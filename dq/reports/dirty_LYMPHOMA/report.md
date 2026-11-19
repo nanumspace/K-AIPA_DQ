@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: LYMPHOMA (림프종)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 329개 (실패 245, 건너뜀 45, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 331개 (실패 245, 건너뜀 43, 오류 0)
 
 위반 1175건 (error 1086, warning 89)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 216 | 150 | 725 |
-| Completeness | 67 | 50 | 62 |
-| Plausibility | 46 | 45 | 388 |
+| Completeness | 68 | 50 | 62 |
+| Plausibility | 47 | 45 | 388 |
 
 ## 테이블 행수
 
@@ -288,6 +288,7 @@
 | EXP-LY-01 진단 시 LDH | 환자 | 97 | 90 | 92.8% | - | 21/21 | 36/39 | 31/35 | 2/2 |
 | EXP-LY-02 IPI 구성요소 (셀 수 있는 것만) | 환자 | 40 | 37 | 92.5% | - | 1/1 | 20/21 | 16/17 | 0/1 |
 | EXP-LY-03 진단 시 PET-CT 또는 골수 생검 | 환자 | 97 | 90 | 92.8% | - | 21/21 | 36/39 | 31/35 | 2/2 |
+| EXP-LY-04 진단 시 림프종 병기 기록 | 환자 | 97 | 0 | 0.0% | - | 0/21 | 0/39 | 0/35 | 0/2 |
 
 ## 표준 용어 매핑률
 
@@ -312,6 +313,7 @@
 | MEASUREMENT | unit_concept_id | 8105 | 8104 | 8104 | 0 | 0.0% | 0·1 |
 | OBSERVATION | observation_concept_id | 100 | 98 | 98 | 0 | 0.0% | 1·1 |
 | OBSERVATION | observation_type_concept_id | 100 | 98 | 98 | 0 | 0.0% | 1·1 |
+| OBSERVATION | unit_concept_id | 100 | 0 | 0 | 0 | - | 100·0 |
 | NOTE | note_type_concept_id | 1457 | 1455 | 1455 | 0 | 0.0% | 1·1 |
 | NOTE | note_class_concept_id | 1457 | 1455 | 1445 | 10 | 0.7% | 1·1 |
 | ADVERSE_EVENT | adverse_event_concept_id | 248 | 246 | 246 | 0 | 0.0% | 1·1 |

@@ -14,7 +14,7 @@ python dq/engine.py --cohort <COHORT> --data <csv 디렉터리> --out <보고서
 4. **데이터 충실도**는 같은 DuckDB 연결에서 교차 테이블 규칙 뒤에 계산합니다(아래 문단).
 5. 출력: `findings.csv`(위반 행 단위), `sufficiency.csv`(데이터 충실도 미충족 환자·요법, 환자 단위), `summary.json`(규칙 단위 상태와 위반 수, `sufficiency` 집계), `report.md`(사람용 요약, `## 데이터 충실도` 절 포함).
 
-**데이터 충실도.** 규칙 위반과 별개로 "있어야 할 기록이 실제로 있는가"를 27개 기대 데이터 항목(EXP-*)으로 셉니다. 항목의 SQL 은 `spec/expected_data.yaml` 에 있고, 개념 집합(32개)은 `spec/concept_sets.yaml` 의 개념 ID 를 씁니다. Python 참조 구현과 TypeScript 엔진이 모두 같은 DuckDB 연결에서 교차 테이블 규칙 뒤에 계산하며, 동등성 시험이 `sufficiency.csv` 까지 바이트 단위로 대조합니다. 합격·불합격 판정 없이 비율만 냅니다. 정의와 해석은 [데이터 충실도](data-sufficiency.md)에 있습니다.
+**데이터 충실도.** 규칙 위반과 별개로 29개 기대 데이터 항목(EXP-*)을 셉니다. SQL은 `spec/expected_data.yaml`, Athena 기반 개념 집합 33개는 `spec/concept_sets.yaml`에 있습니다. Python과 TypeScript는 교차 규칙 뒤에 같은 정의를 실행하며 동등성 시험은 `sufficiency.csv`까지 대조합니다.
 
 규칙 통계 항목의 키는 `rule_id, name, category, subcategory, severity, table, fields, check, origin, status, violations, rows_checked, note` 순서이고, `status` 는 `pass | fail | skipped | error | disabled` 입니다. 표준 실행에서 `origin` 은 모두 `standard`, `summary.json` 의 `rules_disabled` 는 0 입니다.
 

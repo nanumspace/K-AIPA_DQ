@@ -13,7 +13,7 @@
   "DIABETES": 1,
   "ADVERSE_EVENT": 3
  },
- "rules_total": 296,
+ "rules_total": 298,
  "rules_failed": 0,
  "rules_skipped": 49,
  "rules_error": 0,
@@ -23,7 +23,7 @@
  "violations_warning": 0,
  "by_category": {
   "Completeness": {
-   "rules": 60,
+   "rules": 61,
    "failed": 0,
    "violations": 0
   },
@@ -33,7 +33,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 39,
+   "rules": 40,
    "failed": 0,
    "violations": 0
   }
@@ -4349,6 +4349,36 @@
    "name": "검사 결과값 없음",
    "category": "Completeness",
    "subcategory": "value",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-003",
+   "name": "HbA1c·UACR·크레아티닌 단위 부적합",
+   "category": "Plausibility",
+   "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-004",
+   "name": "HbA1c·UACR·크레아티닌 단위 없음",
+   "category": "Completeness",
+   "subcategory": "unit",
    "severity": "warning",
    "table": "MEASUREMENT",
    "fields": "",

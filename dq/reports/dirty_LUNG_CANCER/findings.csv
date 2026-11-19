@@ -778,7 +778,7 @@ ST-0146,MEASUREMENT.range_low 타입(float),Conformance,error,MEASUREMENT,range_
 ST-0147,MEASUREMENT.range_low 범위,Plausibility,warning,MEASUREMENT,range_low,100649,100006,"range_low=10001000 범위 [-1000000,1000000] 밖"
 ST-0148,MEASUREMENT.range_high 타입(float),Conformance,error,MEASUREMENT,range_high,105199,100041,range_high='NOT_A_NUMBER' 은 float 아님
 ST-0149,MEASUREMENT.range_high 범위,Plausibility,warning,MEASUREMENT,range_high,111428,100093,"range_high=10001000 범위 [-1000000,1000000] 밖"
-ST-0151,OBSERVATION 컬럼 구성,Conformance,error,OBSERVATION,unit_concept_id,,,컬럼 누락: unit_concept_id
+ST-0151,OBSERVATION 컬럼 구성,Conformance,error,OBSERVATION,value_as_string,,,컬럼 누락: value_as_string
 ST-0153,OBSERVATION.observation_id PK 유일성,Conformance,error,OBSERVATION,observation_id,,100003,PK NULL
 ST-0153,OBSERVATION.observation_id PK 유일성,Conformance,error,OBSERVATION,observation_id,100143,100009,PK 중복: 100143
 ST-0153,OBSERVATION.observation_id PK 유일성,Conformance,error,OBSERVATION,observation_id,100143,100072,PK 중복: 100143
