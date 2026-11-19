@@ -34,6 +34,7 @@ concept_sets:
   LDL:         {name: LDL 콜레스테롤, loinc_components: [Cholesterol in LDL], systems: [Serum or Plasma]}
   SBP:         {name: 수축기 혈압, loinc_components: [Intravascular systolic], systems: [Arterial system]}
   DBP:         {name: 이완기 혈압, loinc_components: [Intravascular diastolic], systems: [Arterial system]}
+  UACR:        {name: 소변 알부민/크레아티닌비, loinc_components: [Albumin/Creatinine], systems: [Urine]}
   # 바이오마커·병기: MEASUREMENT 에 LOINC 로 적는다(결정 2026-11-19). 결과는 value_as_concept_id 또는 value_source_value
   EGFR_MUT:    {name: EGFR 유전자 검사, loinc_components: ['EGFR gene%']}
   ALK:         {name: ALK 유전자 검사, loinc_components: ['ALK gene%']}
@@ -412,7 +413,7 @@ items:
   unit: 환자
   target: 관찰 기간 1년 이상인 환자
   expect: 기준일부터 1년 구간마다 혈압(수축기·이완기), 크레아티닌 또는 eGFR, 총콜레스테롤 또는 LDL, 체중 또는 BMI
-  basis: 영국 NDA 진료 과정 (국내 지침과의 차이 확인 필요). 소변 알부민/크레아티닌비·발 검사는 개념 합의 전이라 제외
+  basis: 영국 NDA 진료 과정 (국내 지침과의 차이 확인 필요). 네 요소 합성으로 유지하며 UACR 은 합성에 넣지 않고 EXP-DM-04, 요소별은 EXP-DM-05~08 에서 따로 센다. 발 검사는 개념 합의 전이라 제외
   requires: [MEASUREMENT]
   sql: |
     WITH b AS (
@@ -433,6 +434,116 @@ items:
           FROM c GROUP BY person_id)
     SELECT person_id, 'PERSON:' || person_id AS unit_key, miss = 0 AS met,
            '1년 구간 ' || n || '개 중 미충족 ' || miss || '개 (혈압 ' || m_bp || ', 신기능 ' || m_renal || ', 지질 ' || m_lipid || ', 체중 ' || m_wt || ')' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM g ORDER BY person_id
+
+- id: EXP-DM-04
+  title: 연 1회 소변 알부민/크레아티닌비(UACR)
+  scope: [DIABETES]
+  unit: 환자
+  target: 관찰 기간 1년 이상인 환자
+  expect: 기준일부터 1년 구간마다 소변 알부민/크레아티닌비 1회 이상
+  basis: 'ADA Standards of Care 2026, 11장: 당뇨병 환자는 UACR 과 eGFR 을 연 1회 이상 평가 (EXP-DM-03 합성에는 넣지 않음)'
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 365),
+    w AS (SELECT person_id, a + CAST(i * 365 AS INTEGER) AS d0, a + CAST(i * 365 + 364 AS INTEGER) AS d1
+          FROM (SELECT person_id, a, unnest(range(0, span // 365)) AS i FROM b)),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN _has(person_id, 'UACR', d0, d1) THEN 0 ELSE 1 END) AS miss
+          FROM w GROUP BY person_id)
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, miss = 0 AS met,
+           '1년 구간 ' || n || '개 중 ' || miss || '개에 UACR 없음' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM g ORDER BY person_id
+
+- id: EXP-DM-05
+  title: 연 1회 혈압 (수축기·이완기)
+  scope: [DIABETES]
+  unit: 환자
+  target: 관찰 기간 1년 이상인 환자
+  expect: 기준일부터 1년 구간마다 수축기·이완기 혈압 모두 1회 이상
+  basis: EXP-DM-03 의 혈압 요소를 따로 센 것
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 365),
+    w AS (SELECT person_id, a + CAST(i * 365 AS INTEGER) AS d0, a + CAST(i * 365 + 364 AS INTEGER) AS d1
+          FROM (SELECT person_id, a, unnest(range(0, span // 365)) AS i FROM b)),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN _has(person_id, 'SBP', d0, d1) AND _has(person_id, 'DBP', d0, d1) THEN 0 ELSE 1 END) AS miss
+          FROM w GROUP BY person_id)
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, miss = 0 AS met,
+           '1년 구간 ' || n || '개 중 ' || miss || '개에 혈압 없음' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM g ORDER BY person_id
+
+- id: EXP-DM-06
+  title: 연 1회 신기능 (크레아티닌 또는 eGFR)
+  scope: [DIABETES]
+  unit: 환자
+  target: 관찰 기간 1년 이상인 환자
+  expect: 기준일부터 1년 구간마다 크레아티닌 또는 eGFR 1회 이상
+  basis: EXP-DM-03 의 신기능 요소를 따로 센 것
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 365),
+    w AS (SELECT person_id, a + CAST(i * 365 AS INTEGER) AS d0, a + CAST(i * 365 + 364 AS INTEGER) AS d1
+          FROM (SELECT person_id, a, unnest(range(0, span // 365)) AS i FROM b)),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN _has(person_id, 'CREATININE', d0, d1) OR _has(person_id, 'EGFR_RATE', d0, d1) THEN 0 ELSE 1 END) AS miss
+          FROM w GROUP BY person_id)
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, miss = 0 AS met,
+           '1년 구간 ' || n || '개 중 ' || miss || '개에 신기능 검사 없음' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM g ORDER BY person_id
+
+- id: EXP-DM-07
+  title: 연 1회 지질 (총콜레스테롤 또는 LDL)
+  scope: [DIABETES]
+  unit: 환자
+  target: 관찰 기간 1년 이상인 환자
+  expect: 기준일부터 1년 구간마다 총콜레스테롤 또는 LDL 1회 이상
+  basis: EXP-DM-03 의 지질 요소를 따로 센 것
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 365),
+    w AS (SELECT person_id, a + CAST(i * 365 AS INTEGER) AS d0, a + CAST(i * 365 + 364 AS INTEGER) AS d1
+          FROM (SELECT person_id, a, unnest(range(0, span // 365)) AS i FROM b)),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN _has(person_id, 'CHOLESTEROL', d0, d1) OR _has(person_id, 'LDL', d0, d1) THEN 0 ELSE 1 END) AS miss
+          FROM w GROUP BY person_id)
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, miss = 0 AS met,
+           '1년 구간 ' || n || '개 중 ' || miss || '개에 지질 검사 없음' AS detail,
+           CAST(NULL AS DOUBLE) AS per_year
+    FROM g ORDER BY person_id
+
+- id: EXP-DM-08
+  title: 연 1회 체중 또는 BMI
+  scope: [DIABETES]
+  unit: 환자
+  target: 관찰 기간 1년 이상인 환자
+  expect: 기준일부터 1년 구간마다 체중 또는 BMI 1회 이상
+  basis: EXP-DM-03 의 체중 요소를 따로 센 것
+  requires: [MEASUREMENT]
+  sql: |
+    WITH b AS (
+      SELECT person_id, anchor_date AS a, date_diff('day', anchor_date, obs_end) AS span FROM _BASE
+      WHERE anchor_date IS NOT NULL AND obs_end IS NOT NULL AND date_diff('day', anchor_date, obs_end) >= 365),
+    w AS (SELECT person_id, a + CAST(i * 365 AS INTEGER) AS d0, a + CAST(i * 365 + 364 AS INTEGER) AS d1
+          FROM (SELECT person_id, a, unnest(range(0, span // 365)) AS i FROM b)),
+    g AS (SELECT person_id, COUNT(*) AS n,
+                 SUM(CASE WHEN _has(person_id, 'WEIGHT', d0, d1) OR _has(person_id, 'BMI', d0, d1) THEN 0 ELSE 1 END) AS miss
+          FROM w GROUP BY person_id)
+    SELECT person_id, 'PERSON:' || person_id AS unit_key, miss = 0 AS met,
+           '1년 구간 ' || n || '개 중 ' || miss || '개에 체중·BMI 없음' AS detail,
            CAST(NULL AS DOUBLE) AS per_year
     FROM g ORDER BY person_id
 

@@ -5,9 +5,10 @@ import { loadSpec, loadCodelists, loadConcepts, loadProfiles, loadExpectedData, 
 import { readCsv, writeCsv } from "./csv.js";
 import { runStructural } from "./structural.js";
 import { runSemantic } from "./semantic.js";
+import { runMapping, mappingMd } from "./mapping.js";
 import { runSufficiency, sufficiencyMd, SUFF_PUBLIC_ERROR } from "./sufficiency.js";
 import { effectiveRules, ruleSetHash, describeOverrides, isEmptyOverrides } from "./rules.js";
-import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides, CohortProfile, SufficiencyResult, SufficiencyRow } from "./types.js";
+import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides, CohortProfile, SufficiencyResult, SufficiencyRow, MappingRate } from "./types.js";
 
 /** 외부용 요약에는 DB 오류 원문(입력값·SQL을 포함할 수 있음)을 싣지 않는다.
  * 앱 내부 진단은 원본 Summary 를 사용한다.
@@ -57,6 +58,7 @@ export class Engine {
   readonly ruleStats = new Map<string, RuleStat>();
   sufficiency: SufficiencyResult[] = [];
   sufficiencyRows: SufficiencyRow[] = [];
+  mappingRates: MappingRate[] = [];
   private readonly progress?: ProgressFn;
 
   constructor(opt: EngineOptions) {
@@ -132,6 +134,7 @@ export class Engine {
           expected: loadExpectedData(), conceptSets: loadConceptSets() });
         this.sufficiency = r.items; this.sufficiencyRows = r.rows;
       });
+    this.mappingRates = runMapping(this.spec, this.tablesInCohort, this.raw);
   }
 
   summary(): Summary {
@@ -154,7 +157,7 @@ export class Engine {
       violations_total: sum(() => true),
       violations_error: sum((s) => s.severity === "error"),
       violations_warning: sum((s) => s.severity === "warning"),
-      by_category: byCat, rules: stats, sufficiency: this.sufficiency,
+      by_category: byCat, rules: stats, sufficiency: this.sufficiency, mapping_rates: this.mappingRates,
     };
   }
 
@@ -203,6 +206,7 @@ export class Engine {
     const errs = s.rules.filter((r) => r.status === "error");
     if (errs.length) L.push("", "## 규칙 실행 오류", "", ...errs.map((r) => `- ${r.rule_id}: 규칙 실행 오류: 상세는 내부 실행 기록에서 확인하세요.`));
     L.push(...sufficiencyMd(s.sufficiency));
+    L.push(...mappingMd(s.mapping_rates));
     return L.join("\n") + "\n";
   }
 }

@@ -1,6 +1,6 @@
 # 데이터 품질 검증 보고서: DIABETES (당뇨병)
 
-검증일 2026-09-07 / 테이블 9개 / 규칙 295개 (실패 187, 건너뜀 75, 오류 0)
+검증일 2026-09-07 / 테이블 9개 / 규칙 296개 (실패 187, 건너뜀 75, 오류 0)
 
 위반 1104건 (error 1049, warning 55)
 
@@ -8,7 +8,7 @@
 |---|---|---|---|
 | Conformance | 197 | 118 | 999 |
 | Completeness | 60 | 39 | 50 |
-| Plausibility | 38 | 30 | 55 |
+| Plausibility | 39 | 30 | 55 |
 
 ## 테이블 행수
 
@@ -225,3 +225,33 @@
 | EXP-DM-01 진단 시 HbA1c | 환자 | 97 | 90 | 92.8% | - | 18/19 | 39/43 | 31/33 | 2/2 |
 | EXP-DM-02 추적 중 HbA1c (6개월마다) | 환자 | 90 | 89 | 98.9% | 4.3 | 18/18 | 39/39 | 30/31 | 2/2 |
 | EXP-DM-03 연 1회 혈압·신기능·지질·체중 | 환자 | 90 | 65 | 72.2% | - | 13/18 | 31/39 | 20/31 | 1/2 |
+| EXP-DM-04 연 1회 소변 알부민/크레아티닌비(UACR) | 환자 | 90 | 0 | 0.0% | - | 0/18 | 0/39 | 0/31 | 0/2 |
+| EXP-DM-05 연 1회 혈압 (수축기·이완기) | 환자 | 90 | 89 | 98.9% | - | 18/18 | 39/39 | 30/31 | 2/2 |
+| EXP-DM-06 연 1회 신기능 (크레아티닌 또는 eGFR) | 환자 | 90 | 65 | 72.2% | - | 13/18 | 31/39 | 20/31 | 1/2 |
+| EXP-DM-07 연 1회 지질 (총콜레스테롤 또는 LDL) | 환자 | 90 | 65 | 72.2% | - | 13/18 | 31/39 | 20/31 | 1/2 |
+| EXP-DM-08 연 1회 체중 또는 BMI | 환자 | 90 | 89 | 98.9% | - | 18/18 | 39/39 | 30/31 | 2/2 |
+
+## 표준 용어 매핑률
+
+표준 개념 필드에서 매핑하지 못해 `0` 으로 적재한 비율이다(위반 아님, 규칙 집계와 별개). 대상은 정수로 읽히는 값이고, 빈 값과 정수가 아닌 값은 대상에서 빼고 제외 칸에 따로 센다. `0` 이 맞는 경우(예: 구조식 노트의 분류)도 미매핑에 들어간다.
+
+| 테이블 | 필드 | 행 | 대상 | 매핑 | 미매핑(0) | 미매핑률 | 제외(빈 값·형식 오류) |
+|---|---|---|---|---|---|---|---|
+| PERSON | gender_concept_id | 100 | 98 | 98 | 0 | 0.0% | 1·1 |
+| VISIT_OCCURRENCE | visit_concept_id | 1726 | 1724 | 1724 | 0 | 0.0% | 1·1 |
+| VISIT_OCCURRENCE | visit_type_concept_id | 1726 | 1724 | 1724 | 0 | 0.0% | 1·1 |
+| PROCEDURE_OCCURRENCE | procedure_concept_id | 462 | 460 | 460 | 0 | 0.0% | 1·1 |
+| PROCEDURE_OCCURRENCE | procedure_type_concept_id | 462 | 460 | 460 | 0 | 0.0% | 1·1 |
+| DRUG_EXPOSURE | drug_concept_id | 4816 | 4814 | 4814 | 0 | 0.0% | 1·1 |
+| DRUG_EXPOSURE | amount_unit_concept_id | 4816 | 4815 | 4815 | 0 | 0.0% | 0·1 |
+| DRUG_EXPOSURE | numerator_unit_concept_id | 4816 | 0 | 0 | 0 | - | 4816·0 |
+| DRUG_EXPOSURE | denominator_unit_concept_id | 4816 | 0 | 0 | 0 | - | 4816·0 |
+| CONDITION_OCCURRENCE | condition_concept_id | 337 | 335 | 335 | 0 | 0.0% | 1·1 |
+| CONDITION_OCCURRENCE | condition_type_concept_id | 337 | 335 | 335 | 0 | 0.0% | 1·1 |
+| MEASUREMENT | measurement_concept_id | 13538 | 13536 | 13536 | 0 | 0.0% | 1·1 |
+| MEASUREMENT | measurement_type_concept_id | 13538 | 13537 | 13537 | 0 | 0.0% | 0·1 |
+| MEASUREMENT | value_as_concept_id | 13538 | 0 | 0 | 0 | - | 13538·0 |
+| MEASUREMENT | unit_concept_id | 13538 | 13537 | 13537 | 0 | 0.0% | 0·1 |
+| NOTE | note_type_concept_id | 1721 | 1719 | 1719 | 0 | 0.0% | 1·1 |
+| NOTE | note_class_concept_id | 1721 | 1719 | 1712 | 7 | 0.4% | 1·1 |
+| ADVERSE_EVENT | adverse_event_concept_id | 39 | 37 | 37 | 0 | 0.0% | 1·1 |

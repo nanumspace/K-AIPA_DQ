@@ -114,6 +114,17 @@ export function ReportPage({ nav }: { nav: Nav }) {
               </table></div>
             </Card>
           )}
+          {(d?.mappingRates.length ?? 0) > 0 && (
+            <Card title="표준 용어 매핑률" sub="표준 개념 필드에서 매핑하지 못해 0 으로 적재한 비율입니다. 위반이 아니며 규칙 위반·통과율과 별개입니다. 대상은 정수로 읽히는 값이고, 빈 값과 정수가 아닌 값은 대상에서 빼고 제외 칸에 따로 셉니다. 0 이 맞는 경우(예: 구조식 노트의 분류)도 미매핑에 들어갑니다.">
+              <div className="table-scroll"><table className="tbl">
+                <thead><tr><th>테이블</th><th>필드</th><th className="num">행</th><th className="num">대상</th><th className="num">매핑</th><th className="num">미매핑(0)</th><th className="num">미매핑률</th><th className="num">제외(빈 값·형식 오류)</th></tr></thead>
+                <tbody>{d!.mappingRates.map((m) => (
+                  <tr key={`${m.table}.${m.field}`}><td className="mono">{m.table}</td><td className="mono">{m.field}</td><td className="num">{fmt(m.rows)}</td><td className="num">{fmt(m.eligible)}</td>
+                    <td className="num">{fmt(m.mapped)}</td><td className="num">{fmt(m.unmapped)}</td><td className="num">{m.eligible ? pct(m.unmapped / m.eligible * 100, 1) : "-"}</td><td className="num">{fmt(m.blank)}·{fmt(m.invalid)}</td></tr>
+                ))}</tbody>
+              </table></div>
+            </Card>
+          )}
           <Card title="실행 당시 적용 기준" sub="이 실행을 시작할 때 보관한 명세와 규칙입니다. 이후 기준이 바뀌어도 이 화면은 바뀌지 않으며 현재 기준을 대신 보여 주지 않습니다.">
             {criteriaErr ? <div className="callout err" role="alert">당시 기준을 불러오지 못했습니다: {criteriaErr} <button className="btn" onClick={() => setRetry((n) => n + 1)}>다시 시도</button></div>
               : criteria === undefined ? <div role="status">당시 기준 확인 중…</div>

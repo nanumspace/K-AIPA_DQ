@@ -1,6 +1,6 @@
 # 데이터 충실도: 선행 근거와 질환별 기대 데이터
 
-> **상태: 결정·구현 (2026-11-19, 앱 1.0.4).** 방침 결정권자가 5절의 질문을 정했고, 3절의 22개 항목을 앱에 넣었습니다(`spec/expected_data.yaml`). 의뢰사 매뉴얼(2026-11-16)은 이 항목들을 요구하지 않으므로 매뉴얼 위반(오류)과 섞지 않고 **별도 축으로 비율만** 보고합니다. 구현 방식은 6절에 있습니다.
+> **상태: 결정·구현 (2026-11-19, 앱 1.0.4).** 방침 결정권자가 5절의 질문을 정했고, 3절의 27개 항목(당뇨 DM-04~08 추가 포함)을 앱에 넣었습니다(`spec/expected_data.yaml`). 의뢰사 매뉴얼(2026-11-16)은 이 항목들을 요구하지 않으므로 매뉴얼 위반(오류)과 섞지 않고 **별도 축으로 비율만** 보고합니다. 구현 방식은 6절에 있습니다.
 
 ## 1. 무엇을 평가하려는가
 
@@ -110,7 +110,9 @@
 |---|---|---|---|---|---|
 | EXP-DM-01 | 진단 시 HbA1c (`3004410`) | 전 환자 | 기준일 전후 1회 이상 | [ADA Standards of Care 2026, 6장](https://pmc.ncbi.nlm.nih.gov/articles/PMC12690178/): "A1C testing should be performed routinely in all people with diabetes at initial assessment and as part of continuing care" | 가능 |
 | EXP-DM-02 | 추적 중 HbA1c | 관찰 기간 6개월 이상 환자 | **6개월마다 1회 이상** (연 2회) | ADA 권고 6.2: "at least two times a year" (목표 미달·치료 변경 시 3개월마다) | 가능 (관찰 종료일 정의 필요) |
-| EXP-DM-03 | 혈압(`3004249`·`3012888`), 크레아티닌(`3016723`)·eGFR(`3049187`), 지질(`3027114`·`3028437`), 체중 또는 BMI | 관찰 기간 1년 이상 환자 | 연 1회 이상 | [영국 NDA 진료 과정](https://digital.nhs.uk/data-and-information/publications/statistical/national-diabetes-audit/report-1-cp-and-tt-data-release-2024-25/nda-report-1-cp-and-tt-data-release-2024-25). **국내 지침과의 차이 확인 필요** | 가능 (소변 알부민/크레아티닌비·발 검사는 개념 없음) |
+| EXP-DM-03 | 혈압(`3004249`·`3012888`), 크레아티닌(`3016723`)·eGFR(`3049187`), 지질(`3027114`·`3028437`), 체중 또는 BMI | 관찰 기간 1년 이상 환자 | 연 1회 이상 | [영국 NDA 진료 과정](https://digital.nhs.uk/data-and-information/publications/statistical/national-diabetes-audit/report-1-cp-and-tt-data-release-2024-25/nda-report-1-cp-and-tt-data-release-2024-25). **국내 지침과의 차이 확인 필요** | 가능 (네 요소 합성. UACR 은 합성에 넣지 않고 DM-04 로 분리, 요소별은 DM-05~08. 발 검사는 개념 없음) |
+| EXP-DM-04 | 소변 알부민/크레아티닌비(UACR, 개념 집합 `UACR` 17개: LOINC 구성요소 Albumin/Creatinine·검체 Urine, 기준 어휘 v20260829 에서 확인) | 관찰 기간 1년 이상 환자 | 연 1회 이상 | ADA Standards of Care 2026, 11장: UACR·eGFR 연 1회 평가 | 가능 |
+| EXP-DM-05~08 | DM-03 의 요소별: 혈압(수축기·이완기) / 크레아티닌 또는 eGFR / 총콜레스테롤 또는 LDL / 체중 또는 BMI | DM-03 과 같음 | 연 1회 이상 | DM-03 과 같음 | 가능 |
 
 ### 3.7 림프종
 
@@ -140,11 +142,11 @@
 - 보고서(`report.md`)에 **"데이터 충실도"** 절, 앱의 결과 보고서 화면에 같은 카드가 있습니다. 오류·경고 건수와 규칙 통과율에는 넣지 않습니다.
 - 기대 항목 정의(`spec/expected_data.yaml`)와 개념 집합(`spec/concept_sets.yaml`)은 검증 기준 패키지에 들어가 해시와 실행 스냅샷에 보관됩니다.
 - 중앙 집계 도구(`pilot/aggregate.py`)가 기관·코호트별 `sufficiency_by_site.csv` 와 `summary.md` 의 항목별 합계를 만듭니다.
-- 매핑 문제를 구분할 단서는 아직 보이지 않습니다. 매뉴얼의 MEASUREMENT 에는 검사 항목의 원천 코드 컬럼이 없어, `concept_id = 0` 비율 지표([vocabulary.md](vocabulary.md) 3절 3)를 따로 만들 때 함께 다룹니다.
+- 표준 개념 필드의 `concept_id = 0` 비율은 별도 미매핑 지표다([vocabulary.md](vocabulary.md)). MEASUREMENT 에는 검사 항목의 원천 코드 컬럼이 없어 `0`인 행이 어느 기대 검사에 해당하는지는 판별할 수 없다.
 
 ## 5. 결정 (2026-11-19)
 
-1. **채택 범위**: 3절의 22개 전부(가능 14 + 부분 2 + 바이오마커·병기 6). 부분 2건은 셀 수 있는 구성요소만 셉니다. 국내 지침으로 근거를 바꿀 항목은 파일럿 뒤에 봅니다.
+1. **채택 범위**: 최초 22개(가능 14 + 부분 2 + 바이오마커·병기 6)에 당뇨 5개(DM-04~08)를 추가했습니다. 부분 2건은 셀 수 있는 구성요소만 셉니다. UACR은 당뇨병 유형과 유병 기간을 구분하지 못하는 현 명세에서 연간 기록 충실도 지표로만 해석합니다.
 2. **바이오마커·병기 표현**: MEASUREMENT 의 LOINC 검사로 적습니다(매뉴얼 필드 추가 없음). 결과는 `value_as_concept_id` 나 `value_as_number` 에 둡니다.
 3. **개념 집합**: 대표 개념을 기준 어휘 v20260829 로 펼친 표준 개념 ID 목록을 검증 기준 패키지에 넣습니다. 병원이 따로 낼 것은 없습니다.
 4. **기간과 분모**: 제안 구간을 그대로 씁니다. 관찰 종료일은 마지막 방문일(종료일이 없으면 시작일)과 사망일 중 이른 날, 최소 관찰 기간은 항목 정의대로(6개월·1년·2년)입니다.
@@ -170,6 +172,7 @@
 | EXP-MASLD-03 | 관찰 1년 이상. 1년 구간마다 BMI, 또는 체중(키는 관찰 중 1회) |
 | EXP-DM-02 | 관찰 182일 이상. 182일 구간마다 HbA1c |
 | EXP-DM-03 | 관찰 1년 이상. 1년 구간마다 혈압(수축기·이완기)·크레아티닌 또는 eGFR·총콜레스테롤 또는 LDL·체중 또는 BMI |
+| EXP-DM-04~08 | DM-03 과 같은 대상(관찰 1년 이상)·1년 구간 분모. DM-04 는 UACR, DM-05~08 은 혈압·신기능·지질·체중 각각. DM-03 은 네 요소 합성 그대로 두며 UACR 은 넣지 않음 |
 | EXP-LY-02 | DLBCL(`cell_of_origin` 이 GCB·ABC/non-GCB·unclassifiable). 나이, 진단 시 LDH, SACT ECOG 또는 진단 전후 90일 ECOG 관찰 |
 
 **가상데이터.** 견본은 폐암 EGFR·ALK, 유방암 ER·PR·HER2·병기군, 대장암 MSI·KRAS·NRAS 를 MEASUREMENT 행으로 담습니다(판독 NOTE 와 같은 값). 견본의 충실도 비율은 생성기의 진료 흐름을 반영할 뿐 실제 병원의 기대치가 아닙니다. 예를 들어 생성기는 키를 진단 때 한 번 재므로 EXP-COM-03(요법 시작 전 30일의 키)이 낮게 나옵니다.

@@ -358,3 +358,17 @@ rules:
     UNION ALL
     SELECT NULL, 'None', 'VOCABULARY 에 vocabulary_id=None 행(배포판 버전)이 없음'
     WHERE NOT EXISTS (SELECT 1 FROM VOCABULARY WHERE vocabulary_id = 'None')
+
+- id: SEM-DM-001
+  name: 당뇨병 진단 기간 순서
+  category: Plausibility
+  subcategory: temporal
+  severity: error
+  scope: [DIABETES]
+  requires: [DIABETES]
+  desc: 당뇨병 진단 종료일을 제출한 경우 진단 시작일보다 앞설 수 없다.
+  sql: |
+    SELECT person_id, 'DIABETES:' || dm_id AS row_key,
+           'condition_end_date ' || condition_end_date || ' < condition_start_date ' || condition_start_date AS detail
+    FROM DIABETES
+    WHERE condition_end_date < condition_start_date

@@ -238,3 +238,31 @@
 | EXP-MASLD-01 FIB-4 구성 검사 (AST·ALT·혈소판 같은 날) | 환자 | 97 | 90 | 92.8% | - | 37/42 | 39/41 | 12/12 | 2/2 |
 | EXP-MASLD-02 FIB-4 반복 평가 (당뇨 동반) | 환자 | 83 | 82 | 98.8% | 2.1 | 34/35 | 35/35 | 11/11 | 2/2 |
 | EXP-MASLD-03 연 1회 체중 또는 BMI | 환자 | 84 | 83 | 98.8% | 2.1 | 34/35 | 36/36 | 11/11 | 2/2 |
+
+## 표준 용어 매핑률
+
+표준 개념 필드에서 매핑하지 못해 `0` 으로 적재한 비율이다(위반 아님, 규칙 집계와 별개). 대상은 정수로 읽히는 값이고, 빈 값과 정수가 아닌 값은 대상에서 빼고 제외 칸에 따로 센다. `0` 이 맞는 경우(예: 구조식 노트의 분류)도 미매핑에 들어간다.
+
+| 테이블 | 필드 | 행 | 대상 | 매핑 | 미매핑(0) | 미매핑률 | 제외(빈 값·형식 오류) |
+|---|---|---|---|---|---|---|---|
+| PERSON | gender_concept_id | 100 | 98 | 98 | 0 | 0.0% | 1·1 |
+| VISIT_OCCURRENCE | visit_concept_id | 1950 | 1948 | 1948 | 0 | 0.0% | 1·1 |
+| VISIT_OCCURRENCE | visit_type_concept_id | 1950 | 1948 | 1948 | 0 | 0.0% | 1·1 |
+| PROCEDURE_OCCURRENCE | procedure_concept_id | 340 | 338 | 338 | 0 | 0.0% | 1·1 |
+| PROCEDURE_OCCURRENCE | procedure_type_concept_id | 340 | 338 | 338 | 0 | 0.0% | 1·1 |
+| DRUG_EXPOSURE | drug_concept_id | 3146 | 3144 | 3144 | 0 | 0.0% | 1·1 |
+| DRUG_EXPOSURE | amount_unit_concept_id | 3146 | 3145 | 3145 | 0 | 0.0% | 0·1 |
+| DRUG_EXPOSURE | numerator_unit_concept_id | 3146 | 0 | 0 | 0 | - | 3146·0 |
+| DRUG_EXPOSURE | denominator_unit_concept_id | 3146 | 0 | 0 | 0 | - | 3146·0 |
+| CONDITION_OCCURRENCE | condition_concept_id | 335 | 333 | 333 | 0 | 0.0% | 1·1 |
+| CONDITION_OCCURRENCE | condition_type_concept_id | 335 | 333 | 333 | 0 | 0.0% | 1·1 |
+| MEASUREMENT | measurement_concept_id | 10312 | 10310 | 10310 | 0 | 0.0% | 1·1 |
+| MEASUREMENT | measurement_type_concept_id | 10312 | 10311 | 10311 | 0 | 0.0% | 0·1 |
+| MEASUREMENT | value_as_concept_id | 10312 | 0 | 0 | 0 | - | 10312·0 |
+| MEASUREMENT | unit_concept_id | 10312 | 10311 | 10311 | 0 | 0.0% | 0·1 |
+| OBSERVATION | observation_concept_id | 904 | 902 | 902 | 0 | 0.0% | 1·1 |
+| OBSERVATION | observation_type_concept_id | 904 | 902 | 902 | 0 | 0.0% | 1·1 |
+| OBSERVATION | unit_concept_id | 904 | 0 | 0 | 0 | - | 904·0 |
+| NOTE | note_type_concept_id | 1111 | 1109 | 1109 | 0 | 0.0% | 1·1 |
+| NOTE | note_class_concept_id | 1111 | 1109 | 1104 | 5 | 0.5% | 1·1 |
+| ADVERSE_EVENT | adverse_event_concept_id | 13 | 11 | 11 | 0 | 0.0% | 1·1 |

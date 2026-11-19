@@ -1,7 +1,7 @@
 // 메인 · preload · 렌더러가 공유하는 타입과 IPC 계약
-import type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule, SufficiencyResult } from "@engine/types.js";
+import type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule, SufficiencyResult, MappingRate } from "@engine/types.js";
 
-export type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule, SufficiencyResult };
+export type { RuleOrigin, Severity, RuleOverrides, RuleParamsOverride, CustomRule, CustomSqlRule, SufficiencyResult, MappingRate };
 import type { CriteriaInfo, CriteriaPreview, CriteriaSnapshot } from "./criteria";
 
 export interface AppConfig {
@@ -193,8 +193,8 @@ export interface FindingsPage { total: number; rows: FindingRow[] }
 /** 조건에 맞는 위반 행을 CSV 로 저장한 결과 */
 export interface FindingsExportResult { path: string; rows: number }
 
-/** sufficiency: 데이터 충실도 항목별 집계 (summary.json). 충실도 이전에 만든 실행은 빈 배열 */
-export interface RunDetail { run: RunRecord; rules: RuleResultRow[]; report: string; sufficiency: SufficiencyResult[] }
+/** sufficiency: 데이터 충실도 항목별 집계 (summary.json). 충실도 이전에 만든 실행은 빈 배열. mappingRates: 표준 개념 필드별 매핑률(summary.json), 이전 실행은 빈 배열 */
+export interface RunDetail { run: RunRecord; rules: RuleResultRow[]; report: string; sufficiency: SufficiencyResult[]; mappingRates: MappingRate[] }
 
 // ------------------------------------------------------------------ 출력
 export interface OutputFile {

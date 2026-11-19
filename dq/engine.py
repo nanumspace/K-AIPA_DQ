@@ -340,7 +340,29 @@ class Engine:
             self._run_one_sem(con, rule, subst)
         self.run_sufficiency(con)
         con.close()
+        self.run_mapping()
         return self
+
+    # ------------------------------------------------------ mapping rate
+    def run_mapping(self):
+        """표준 개념 필드(명세 concept.standard)마다 매핑률을 센다. 위반이 아니며 규칙 집계와 별개다.
+        대상 = 정수로 읽히는 값, 매핑 = 0 이 아닌 값, 미매핑 = 0(매뉴얼 2.9.1). 빈 값·정수 아님은 대상에서 빼고 따로 센다.
+        환자 단위 값은 만들지 않는다."""
+        self.mapping_rates = []
+        for t in self.tables_in_cohort:
+            if t not in self.raw:
+                continue
+            df = self.raw[t]
+            for f in self.spec[t]["fields"]:
+                if not (f.get("concept") or {}).get("standard") or f["name"] not in df.columns:
+                    continue
+                s = df[f["name"]].str.strip()
+                blank = int((s == "").sum())
+                ints = s[s.str.fullmatch(r"[+-]?[0-9]+")]
+                zero = int((ints.map(int) == 0).sum()) if len(ints) else 0
+                self.mapping_rates.append(OrderedDict(
+                    table=t, field=f["name"], rows=len(df), blank=blank, invalid=len(df) - blank - len(ints),
+                    eligible=len(ints), mapped=len(ints) - zero, unmapped=zero))
 
     # ------------------------------------------------- data sufficiency
     def run_sufficiency(self, con):
@@ -441,7 +463,8 @@ class Engine:
             violations_total=sum(s["violations"] for s in stats),
             violations_error=sum(s["violations"] for s in stats if s["severity"] == "error"),
             violations_warning=sum(s["violations"] for s in stats if s["severity"] == "warning"),
-            by_category=dict(by_cat), rules=stats, sufficiency=getattr(self, "sufficiency", []))
+            by_category=dict(by_cat), rules=stats, sufficiency=getattr(self, "sufficiency", []),
+            mapping_rates=getattr(self, "mapping_rates", []))
 
     def write(self, out_dir):
         os.makedirs(out_dir, exist_ok=True)
@@ -488,6 +511,14 @@ class Engine:
                     cells = [f"{band[b]['met']}/{band[b]['eligible']}" if b in band else "-" for b in AGE_BANDS]
                     fh.write(f"| {x['id']} {x['title']} | {x['unit']} | {x['eligible']} | {x['met']} | {pct(x['met'], x['eligible'])} | "
                              f"{x['per_year_median'] or '-'} | " + " | ".join(cells) + " |\n")
+            if s["mapping_rates"]:
+                fh.write("\n## 표준 용어 매핑률\n\n표준 개념 필드에서 매핑하지 못해 `0` 으로 적재한 비율이다(위반 아님, 규칙 집계와 별개). "
+                         "대상은 정수로 읽히는 값이고, 빈 값과 정수가 아닌 값은 대상에서 빼고 제외 칸에 따로 센다. "
+                         "`0` 이 맞는 경우(예: 구조식 노트의 분류)도 미매핑에 들어간다.\n\n"
+                         "| 테이블 | 필드 | 행 | 대상 | 매핑 | 미매핑(0) | 미매핑률 | 제외(빈 값·형식 오류) |\n|---|---|---|---|---|---|---|---|\n")
+                for m in s["mapping_rates"]:
+                    fh.write(f"| {m['table']} | {m['field']} | {m['rows']} | {m['eligible']} | {m['mapped']} | {m['unmapped']} | "
+                             f"{pct(m['unmapped'], m['eligible'])} | {m['blank']}·{m['invalid']} |\n")
         return s
 
 

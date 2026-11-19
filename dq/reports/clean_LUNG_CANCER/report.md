@@ -42,3 +42,32 @@
 | EXP-COM-05 항암 요법 시작 전 혈구검사 | 요법 | 142 | 142 | 100.0% | - | 5/5 | 53/53 | 84/84 | - |
 | EXP-LC-01 EGFR·ALK 검사 결과 | 환자 | 23 | 23 | 100.0% | - | 1/1 | 9/9 | 13/13 | - |
 | EXP-LC-02 진단 시 흉부 CT | 환자 | 100 | 100 | 100.0% | - | 2/2 | 44/44 | 54/54 | - |
+
+## 표준 용어 매핑률
+
+표준 개념 필드에서 매핑하지 못해 `0` 으로 적재한 비율이다(위반 아님, 규칙 집계와 별개). 대상은 정수로 읽히는 값이고, 빈 값과 정수가 아닌 값은 대상에서 빼고 제외 칸에 따로 센다. `0` 이 맞는 경우(예: 구조식 노트의 분류)도 미매핑에 들어간다.
+
+| 테이블 | 필드 | 행 | 대상 | 매핑 | 미매핑(0) | 미매핑률 | 제외(빈 값·형식 오류) |
+|---|---|---|---|---|---|---|---|
+| PERSON | gender_concept_id | 100 | 100 | 100 | 0 | 0.0% | 0·0 |
+| VISIT_OCCURRENCE | visit_concept_id | 2627 | 2627 | 2627 | 0 | 0.0% | 0·0 |
+| VISIT_OCCURRENCE | visit_type_concept_id | 2627 | 2627 | 2627 | 0 | 0.0% | 0·0 |
+| PROCEDURE_OCCURRENCE | procedure_concept_id | 1182 | 1182 | 1182 | 0 | 0.0% | 0·0 |
+| PROCEDURE_OCCURRENCE | procedure_type_concept_id | 1182 | 1182 | 1182 | 0 | 0.0% | 0·0 |
+| DRUG_EXPOSURE | drug_concept_id | 2671 | 2671 | 2671 | 0 | 0.0% | 0·0 |
+| DRUG_EXPOSURE | amount_unit_concept_id | 2671 | 2671 | 2671 | 0 | 0.0% | 0·0 |
+| DRUG_EXPOSURE | numerator_unit_concept_id | 2671 | 0 | 0 | 0 | - | 2671·0 |
+| DRUG_EXPOSURE | denominator_unit_concept_id | 2671 | 0 | 0 | 0 | - | 2671·0 |
+| CONDITION_OCCURRENCE | condition_concept_id | 574 | 574 | 574 | 0 | 0.0% | 0·0 |
+| CONDITION_OCCURRENCE | condition_type_concept_id | 574 | 574 | 574 | 0 | 0.0% | 0·0 |
+| MEASUREMENT | measurement_concept_id | 12680 | 12680 | 12680 | 0 | 0.0% | 0·0 |
+| MEASUREMENT | measurement_type_concept_id | 12680 | 12680 | 12680 | 0 | 0.0% | 0·0 |
+| MEASUREMENT | value_as_concept_id | 12680 | 156 | 156 | 0 | 0.0% | 12524·0 |
+| MEASUREMENT | unit_concept_id | 12680 | 12524 | 12524 | 0 | 0.0% | 156·0 |
+| OBSERVATION | observation_concept_id | 200 | 200 | 200 | 0 | 0.0% | 0·0 |
+| OBSERVATION | observation_type_concept_id | 200 | 200 | 200 | 0 | 0.0% | 0·0 |
+| OBSERVATION | unit_concept_id | 200 | 0 | 0 | 0 | - | 200·0 |
+| NOTE | note_type_concept_id | 1993 | 1993 | 1993 | 0 | 0.0% | 0·0 |
+| NOTE | note_class_concept_id | 1993 | 1993 | 1983 | 10 | 0.5% | 0·0 |
+| ADVERSE_EVENT | adverse_event_concept_id | 311 | 311 | 311 | 0 | 0.0% | 0·0 |
+| SACT | regimen_concept_id | 142 | 142 | 121 | 21 | 14.8% | 0·0 |

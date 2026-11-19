@@ -5313,5 +5313,227 @@
     }
    ]
   }
+ ],
+ "mapping_rates": [
+  {
+   "table": "PERSON",
+   "field": "gender_concept_id",
+   "rows": 100,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 100,
+   "mapped": 100,
+   "unmapped": 0
+  },
+  {
+   "table": "VISIT_OCCURRENCE",
+   "field": "visit_concept_id",
+   "rows": 3547,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 3547,
+   "mapped": 3547,
+   "unmapped": 0
+  },
+  {
+   "table": "VISIT_OCCURRENCE",
+   "field": "visit_type_concept_id",
+   "rows": 3547,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 3547,
+   "mapped": 3547,
+   "unmapped": 0
+  },
+  {
+   "table": "PROCEDURE_OCCURRENCE",
+   "field": "procedure_concept_id",
+   "rows": 894,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 894,
+   "mapped": 894,
+   "unmapped": 0
+  },
+  {
+   "table": "PROCEDURE_OCCURRENCE",
+   "field": "procedure_type_concept_id",
+   "rows": 894,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 894,
+   "mapped": 894,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "drug_concept_id",
+   "rows": 3308,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 3308,
+   "mapped": 3308,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "amount_unit_concept_id",
+   "rows": 3308,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 3308,
+   "mapped": 3308,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "numerator_unit_concept_id",
+   "rows": 3308,
+   "blank": 3308,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "denominator_unit_concept_id",
+   "rows": 3308,
+   "blank": 3308,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "CONDITION_OCCURRENCE",
+   "field": "condition_concept_id",
+   "rows": 506,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 506,
+   "mapped": 506,
+   "unmapped": 0
+  },
+  {
+   "table": "CONDITION_OCCURRENCE",
+   "field": "condition_type_concept_id",
+   "rows": 506,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 506,
+   "mapped": 506,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "measurement_concept_id",
+   "rows": 10707,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 10707,
+   "mapped": 10707,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "measurement_type_concept_id",
+   "rows": 10707,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 10707,
+   "mapped": 10707,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "value_as_concept_id",
+   "rows": 10707,
+   "blank": 10307,
+   "invalid": 0,
+   "eligible": 400,
+   "mapped": 400,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "unit_concept_id",
+   "rows": 10707,
+   "blank": 200,
+   "invalid": 0,
+   "eligible": 10507,
+   "mapped": 10507,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "observation_concept_id",
+   "rows": 100,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 100,
+   "mapped": 100,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "observation_type_concept_id",
+   "rows": 100,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 100,
+   "mapped": 100,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "unit_concept_id",
+   "rows": 100,
+   "blank": 100,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "NOTE",
+   "field": "note_type_concept_id",
+   "rows": 1472,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1472,
+   "mapped": 1472,
+   "unmapped": 0
+  },
+  {
+   "table": "NOTE",
+   "field": "note_class_concept_id",
+   "rows": 1472,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1472,
+   "mapped": 1460,
+   "unmapped": 12
+  },
+  {
+   "table": "ADVERSE_EVENT",
+   "field": "adverse_event_concept_id",
+   "rows": 362,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 362,
+   "mapped": 362,
+   "unmapped": 0
+  },
+  {
+   "table": "SACT",
+   "field": "regimen_concept_id",
+   "rows": 181,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 181,
+   "mapped": 173,
+   "unmapped": 8
+  }
  ]
 }

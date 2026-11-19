@@ -4972,5 +4972,227 @@
    "per_year_median": null,
    "by_age": []
   }
+ ],
+ "mapping_rates": [
+  {
+   "table": "PERSON",
+   "field": "gender_concept_id",
+   "rows": 1,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1,
+   "mapped": 1,
+   "unmapped": 0
+  },
+  {
+   "table": "VISIT_OCCURRENCE",
+   "field": "visit_concept_id",
+   "rows": 23,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 23,
+   "mapped": 23,
+   "unmapped": 0
+  },
+  {
+   "table": "VISIT_OCCURRENCE",
+   "field": "visit_type_concept_id",
+   "rows": 23,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 23,
+   "mapped": 23,
+   "unmapped": 0
+  },
+  {
+   "table": "PROCEDURE_OCCURRENCE",
+   "field": "procedure_concept_id",
+   "rows": 19,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 19,
+   "mapped": 19,
+   "unmapped": 0
+  },
+  {
+   "table": "PROCEDURE_OCCURRENCE",
+   "field": "procedure_type_concept_id",
+   "rows": 19,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 19,
+   "mapped": 19,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "drug_concept_id",
+   "rows": 8,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 8,
+   "mapped": 8,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "amount_unit_concept_id",
+   "rows": 8,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 8,
+   "mapped": 8,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "numerator_unit_concept_id",
+   "rows": 8,
+   "blank": 8,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "denominator_unit_concept_id",
+   "rows": 8,
+   "blank": 8,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "CONDITION_OCCURRENCE",
+   "field": "condition_concept_id",
+   "rows": 7,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 7,
+   "mapped": 7,
+   "unmapped": 0
+  },
+  {
+   "table": "CONDITION_OCCURRENCE",
+   "field": "condition_type_concept_id",
+   "rows": 7,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 7,
+   "mapped": 7,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "measurement_concept_id",
+   "rows": 90,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 90,
+   "mapped": 90,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "measurement_type_concept_id",
+   "rows": 90,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 90,
+   "mapped": 90,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "value_as_concept_id",
+   "rows": 90,
+   "blank": 89,
+   "invalid": 0,
+   "eligible": 1,
+   "mapped": 1,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "unit_concept_id",
+   "rows": 90,
+   "blank": 1,
+   "invalid": 0,
+   "eligible": 89,
+   "mapped": 89,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "observation_concept_id",
+   "rows": 1,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1,
+   "mapped": 1,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "observation_type_concept_id",
+   "rows": 1,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1,
+   "mapped": 1,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "unit_concept_id",
+   "rows": 1,
+   "blank": 1,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "NOTE",
+   "field": "note_type_concept_id",
+   "rows": 22,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 22,
+   "mapped": 22,
+   "unmapped": 0
+  },
+  {
+   "table": "NOTE",
+   "field": "note_class_concept_id",
+   "rows": 22,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 22,
+   "mapped": 21,
+   "unmapped": 1
+  },
+  {
+   "table": "ADVERSE_EVENT",
+   "field": "adverse_event_concept_id",
+   "rows": 4,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 4,
+   "mapped": 4,
+   "unmapped": 0
+  },
+  {
+   "table": "SACT",
+   "field": "regimen_concept_id",
+   "rows": 1,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1,
+   "mapped": 1,
+   "unmapped": 0
+  }
  ]
 }

@@ -13,7 +13,7 @@
   "DIABETES": 100,
   "ADVERSE_EVENT": 39
  },
- "rules_total": 295,
+ "rules_total": 296,
  "rules_failed": 0,
  "rules_skipped": 49,
  "rules_error": 0,
@@ -33,7 +33,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 38,
+   "rules": 39,
    "failed": 0,
    "violations": 0
   }
@@ -4463,6 +4463,21 @@
    "violations": 0,
    "rows_checked": 0,
    "note": "선택 항목 미제출: ['VOCABULARY']"
+  },
+  {
+   "rule_id": "SEM-DM-001",
+   "name": "당뇨병 진단 기간 순서",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "error",
+   "table": "DIABETES",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
   }
  ],
  "sufficiency": [
@@ -4600,6 +4615,353 @@
      "met": 22
     }
    ]
+  },
+  {
+   "id": "EXP-DM-04",
+   "title": "연 1회 소변 알부민/크레아티닌비(UACR)",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 0,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 0
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 0
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 0
+    }
+   ]
+  },
+  {
+   "id": "EXP-DM-05",
+   "title": "연 1회 혈압 (수축기·이완기)",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 22
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 46
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 32
+    }
+   ]
+  },
+  {
+   "id": "EXP-DM-06",
+   "title": "연 1회 신기능 (크레아티닌 또는 eGFR)",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 75,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 16
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 37
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 22
+    }
+   ]
+  },
+  {
+   "id": "EXP-DM-07",
+   "title": "연 1회 지질 (총콜레스테롤 또는 LDL)",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 75,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 16
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 37
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 22
+    }
+   ]
+  },
+  {
+   "id": "EXP-DM-08",
+   "title": "연 1회 체중 또는 BMI",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 22
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 46
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 32
+    }
+   ]
+  }
+ ],
+ "mapping_rates": [
+  {
+   "table": "PERSON",
+   "field": "gender_concept_id",
+   "rows": 100,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 100,
+   "mapped": 100,
+   "unmapped": 0
+  },
+  {
+   "table": "VISIT_OCCURRENCE",
+   "field": "visit_concept_id",
+   "rows": 1726,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1726,
+   "mapped": 1726,
+   "unmapped": 0
+  },
+  {
+   "table": "VISIT_OCCURRENCE",
+   "field": "visit_type_concept_id",
+   "rows": 1726,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1726,
+   "mapped": 1726,
+   "unmapped": 0
+  },
+  {
+   "table": "PROCEDURE_OCCURRENCE",
+   "field": "procedure_concept_id",
+   "rows": 462,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 462,
+   "mapped": 462,
+   "unmapped": 0
+  },
+  {
+   "table": "PROCEDURE_OCCURRENCE",
+   "field": "procedure_type_concept_id",
+   "rows": 462,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 462,
+   "mapped": 462,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "drug_concept_id",
+   "rows": 4816,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 4816,
+   "mapped": 4816,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "amount_unit_concept_id",
+   "rows": 4816,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 4816,
+   "mapped": 4816,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "numerator_unit_concept_id",
+   "rows": 4816,
+   "blank": 4816,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "DRUG_EXPOSURE",
+   "field": "denominator_unit_concept_id",
+   "rows": 4816,
+   "blank": 4816,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "CONDITION_OCCURRENCE",
+   "field": "condition_concept_id",
+   "rows": 337,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 337,
+   "mapped": 337,
+   "unmapped": 0
+  },
+  {
+   "table": "CONDITION_OCCURRENCE",
+   "field": "condition_type_concept_id",
+   "rows": 337,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 337,
+   "mapped": 337,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "measurement_concept_id",
+   "rows": 13538,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 13538,
+   "mapped": 13538,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "measurement_type_concept_id",
+   "rows": 13538,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 13538,
+   "mapped": 13538,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "value_as_concept_id",
+   "rows": 13538,
+   "blank": 13538,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "MEASUREMENT",
+   "field": "unit_concept_id",
+   "rows": 13538,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 13538,
+   "mapped": 13538,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "observation_concept_id",
+   "rows": 100,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 100,
+   "mapped": 100,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "observation_type_concept_id",
+   "rows": 100,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 100,
+   "mapped": 100,
+   "unmapped": 0
+  },
+  {
+   "table": "OBSERVATION",
+   "field": "unit_concept_id",
+   "rows": 100,
+   "blank": 100,
+   "invalid": 0,
+   "eligible": 0,
+   "mapped": 0,
+   "unmapped": 0
+  },
+  {
+   "table": "NOTE",
+   "field": "note_type_concept_id",
+   "rows": 1721,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1721,
+   "mapped": 1721,
+   "unmapped": 0
+  },
+  {
+   "table": "NOTE",
+   "field": "note_class_concept_id",
+   "rows": 1721,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 1721,
+   "mapped": 1714,
+   "unmapped": 7
+  },
+  {
+   "table": "ADVERSE_EVENT",
+   "field": "adverse_event_concept_id",
+   "rows": 39,
+   "blank": 0,
+   "invalid": 0,
+   "eligible": 39,
+   "mapped": 39,
+   "unmapped": 0
   }
  ]
 }

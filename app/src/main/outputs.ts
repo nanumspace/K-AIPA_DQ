@@ -60,6 +60,8 @@ export function writeExtraOutputs(runDir: string, summary: Summary, meta: { coho
     by_rule: rules.map((r) => ({ rule_id: r.rule_id, name: r.name, category: r.category, severity: r.severity, check: r.check, origin: r.origin, table: r.table, status: r.status, violations: r.violations, rows_checked: r.rows_checked })),
     // 데이터 충실도: 항목별 대상·충족 수와 연령대별 수 (규칙 집계와 별개, 환자 단위 값 없음)
     sufficiency: (summary.sufficiency ?? []).map((x) => ({ id: x.id, title: x.title, unit: x.unit, status: x.status, eligible: x.eligible, met: x.met, per_year_median: x.per_year_median, by_age: x.by_age })),
+    // 표준 용어 매핑률: 필드별 행·대상·매핑·미매핑·제외 건수 (위반 아님, 환자 단위 값 없음)
+    mapping_rates: summary.mapping_rates ?? [],
     note: "환자 단위 정보(person_id, row_key, detail)는 포함하지 않습니다.",
   };
   fs.writeFileSync(path.join(runDir, "submission.json"), JSON.stringify(submission, null, 1), "utf-8");

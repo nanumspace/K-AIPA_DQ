@@ -132,6 +132,14 @@ export interface Summary {
   rules: RuleStat[];
   /** 데이터 충실도 (spec/expected_data.yaml). 규칙 집계와 별개 */
   sufficiency: SufficiencyResult[];
+  /** 표준 개념 필드별 매핑률 (위반 아님, 규칙 집계와 별개) */
+  mapping_rates: MappingRate[];
+}
+
+/** 매핑률 한 필드. 대상 = 정수로 읽히는 값, 미매핑 = 0, 빈 값·정수 아님은 대상에서 빠진다. 환자 단위 값 없음 */
+export interface MappingRate {
+  table: string; field: string; rows: number; blank: number; invalid: number;
+  eligible: number; mapped: number; unmapped: number;
 }
 
 export interface SufficiencyResult {
