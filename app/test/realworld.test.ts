@@ -71,13 +71,13 @@ const issuesOf = (plan: ReturnType<typeof buildPlan>, table: string) => plan.tab
 
 // ---------------------------------------------------------------- 기준: 원본은 위반 0
 describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
-  it("원본 그대로: 위반 0 (이 시험의 기준)", async () => {
+  it("원본 그대로: 중복 후보 경고만 있음", async () => {
     const d = copyClean("pristine");
     const { plan, staged } = stage([d], "pristine");
     expect(plan.ok).toBe(true);
     expect(Object.keys(plan.mapping)).toHaveLength(tables.length);
     const { summary } = await validate(staged, "pristine");
-    expect(summary.violations_total).toBe(0);
+    expect(summary.rules.filter((r) => r.violations > 0).map((r) => [r.rule_id, r.severity, r.violations])).toEqual([["SEM-MEAS-006", "warning", 9]]);
   });
 
   // -------------------------------------------------------------- 내보내기 흔적: 조용히 바로잡고 말한다
@@ -86,7 +86,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     for (const t of tables) write(d, t, "\uFEFF" + read(d, t).replace(/\r?\n/g, "\r\n"));
     const { plan, staged } = stage([d], "bom-crlf");
     expect(plan.ok).toBe(true);
-    expect((await validate(staged, "bom-crlf")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "bom-crlf")).summary.violations_total).toBe(9);
   });
 
   it("EUC-KR 인코딩 (한글 노트 포함): 변환되어 원본과 같다", async () => {
@@ -105,7 +105,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     expect(plan.candidates.find((c) => c.name === "NOTE.csv")?.encoding).toContain("EUC-KR");
     const stagedNotes = parse(read(staged, "NOTE")) as string[][];
     expect(stagedNotes[1][stagedNotes[0].indexOf("note_text")]).toBe(koreanNote);
-    expect((await validate(staged, "euckr")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "euckr")).summary.violations_total).toBe(9);
   });
 
   it("대문자 헤더 (Oracle · SQL Server 내보내기): 소문자로 맞추고 알린다", async () => {
@@ -118,7 +118,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const { plan, staged } = stage([d], "upper");
     expect(plan.ok).toBe(true);
     expect(issuesOf(plan, "PERSON").some((s) => s.includes("대소문자"))).toBe(true);
-    expect((await validate(staged, "upper")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "upper")).summary.violations_total).toBe(9);
   });
 
   it("헤더와 값의 앞뒤 공백: 걷어 내고 원본과 같다", async () => {
@@ -131,7 +131,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const { plan, staged, norm } = stage([d], "spaces");
     expect(plan.ok).toBe(true);
     expect(norm[t]?.trimmed ?? 0).toBeGreaterThan(0);
-    expect((await validate(staged, "spaces")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "spaces")).summary.violations_total).toBe(9);
   });
 
   it("'NULL' · 'NA' · 'N/A' 글자: 빈 값으로 바꾸고 몇 개인지 말한다", async () => {
@@ -159,7 +159,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     expect(plan.ok).toBe(true);
     expect(issuesOf(plan, t).some((s) => s.includes("NULL"))).toBe(true);
     expect(norm[t]?.nullStrings ?? 0).toBeGreaterThan(0);
-    expect((await validate(staged, "nulls")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "nulls")).summary.violations_total).toBe(9);
   });
 
   it("정수에 붙은 .0 (pandas · 엑셀): 정수 컬럼에서만 걷어 내고 원본과 같다", async () => {
@@ -180,7 +180,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     expect(plan.ok).toBe(true);
     expect(norm["PERSON"]?.intFloats ?? 0).toBeGreaterThan(0);
     // 참조무결성이 유지되어야 한다: PERSON 의 100001.0 과 VISIT 의 100001.0 이 같은 사람으로 남는다
-    expect((await validate(staged, "float-ids")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "float-ids")).summary.violations_total).toBe(9);
   });
 
   it("날짜에 붙은 00:00:00 (SQL 내보내기): 날짜 컬럼에서만 걷어 내고 원본과 같다", async () => {
@@ -199,7 +199,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const { plan, staged, norm } = stage([d], "zero-time");
     expect(plan.ok).toBe(true);
     expect(norm[t]?.zeroTimes ?? 0).toBeGreaterThan(0);
-    expect((await validate(staged, "zero-time")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "zero-time")).summary.violations_total).toBe(9);
   });
 
   it("세미콜론 구분자 (유럽식 엑셀 CSV): 구분자를 알아채고 원본과 같다", async () => {
@@ -210,7 +210,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const { plan, staged } = stage([d], "semicolon");
     expect(plan.ok).toBe(true);
     expect(plan.tables.find((x) => x.table === t)?.missingColumns).toEqual([]);
-    expect((await validate(staged, "semicolon")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "semicolon")).summary.violations_total).toBe(9);
   });
 
   it("끝에 붙은 빈 컬럼 (엑셀 저장 흔적 ',,,'): 버리고 원본과 같다", async () => {
@@ -220,7 +220,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const { plan, staged } = stage([d], "trailing");
     expect(plan.ok).toBe(true);
     expect(plan.tables.find((x) => x.table === t)?.extraColumns).toEqual([]);
-    expect((await validate(staged, "trailing")).summary.violations_total).toBe(0);
+    expect((await validate(staged, "trailing")).summary.violations_total).toBe(9);
   });
 
   it("파일 이름이 다름 (person_20260901.csv · 소문자): 자동 대응된다", async () => {
@@ -248,7 +248,7 @@ describe.skipIf(!hasData)("실데이터 흉내 입력", () => {
     const { plan, staged } = stage([d], "quoted");
     expect(plan.ok).toBe(true);
     const r = await validate(staged, "quoted");
-    expect(r.summary.violations_total).toBe(0);
+    expect(r.summary.violations_total).toBe(9);
   });
 
   // -------------------------------------------------------------- 진짜 문제: 규칙이 울려야 한다
