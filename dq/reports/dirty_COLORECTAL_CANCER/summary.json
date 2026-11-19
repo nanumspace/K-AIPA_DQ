@@ -7,7 +7,7 @@
   "PROCEDURE_OCCURRENCE": 1879,
   "DRUG_EXPOSURE": 3177,
   "CONDITION_OCCURRENCE": 557,
-  "MEASUREMENT": 9776,
+  "MEASUREMENT": 9944,
   "OBSERVATION": 126,
   "NOTE": 2296,
   "COLORECTAL_CANCER": 99,
@@ -15,13 +15,13 @@
   "SACT": 116
  },
  "rules_total": 320,
- "rules_failed": 236,
- "rules_skipped": 43,
+ "rules_failed": 237,
+ "rules_skipped": 44,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 1570,
- "violations_error": 1482,
- "violations_warning": 88,
+ "violations_total": 1537,
+ "violations_error": 1451,
+ "violations_warning": 86,
  "by_category": {
   "Completeness": {
    "rules": 66,
@@ -30,13 +30,13 @@
   },
   "Conformance": {
    "rules": 211,
-   "failed": 145,
-   "violations": 1073
+   "failed": 146,
+   "violations": 986
   },
   "Plausibility": {
    "rules": 43,
    "failed": 42,
-   "violations": 437
+   "violations": 491
   }
  },
  "rules": [
@@ -516,7 +516,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 98,
+   "violations": 88,
    "rows_checked": 2749,
    "note": ""
   },
@@ -846,7 +846,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 64,
+   "violations": 69,
    "rows_checked": 1879,
    "note": ""
   },
@@ -1131,7 +1131,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 93,
+   "violations": 65,
    "rows_checked": 3177,
    "note": ""
   },
@@ -1161,7 +1161,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 89,
+   "violations": 94,
    "rows_checked": 3177,
    "note": ""
   },
@@ -1761,7 +1761,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 20,
+   "violations": 17,
    "rows_checked": 557,
    "note": ""
   },
@@ -1912,7 +1912,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -1927,7 +1927,7 @@
    "origin": "standard",
    "status": "pass",
    "violations": 0,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -1942,7 +1942,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 3,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -1957,7 +1957,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -1972,7 +1972,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -1987,7 +1987,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 11,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2002,7 +2002,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2017,7 +2017,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2031,8 +2031,8 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 330,
-   "rows_checked": 9776,
+   "violations": 309,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2047,7 +2047,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2062,7 +2062,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2077,7 +2077,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2092,7 +2092,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2107,7 +2107,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2122,7 +2122,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2137,7 +2137,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2152,7 +2152,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2165,9 +2165,9 @@
    "fields": "value_as_concept_id",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
-   "rows_checked": 9776,
+   "status": "fail",
+   "violations": 1,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2182,7 +2182,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2197,7 +2197,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 2,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2212,7 +2212,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2227,7 +2227,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2242,7 +2242,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2257,7 +2257,7 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
-   "rows_checked": 9776,
+   "rows_checked": 9944,
    "note": ""
   },
   {
@@ -2421,7 +2421,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 5,
+   "violations": 4,
    "rows_checked": 126,
    "note": ""
   },
@@ -2630,8 +2630,8 @@
    "fields": "",
    "check": "columns",
    "origin": "standard",
-   "status": "pass",
-   "violations": 0,
+   "status": "fail",
+   "violations": 1,
    "rows_checked": 2296,
    "note": ""
   },
@@ -2736,7 +2736,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 82,
+   "violations": 80,
    "rows_checked": 2296,
    "note": ""
   },
@@ -2870,10 +2870,10 @@
    "fields": "file_id",
    "check": "type",
    "origin": "standard",
-   "status": "pass",
+   "status": "skipped",
    "violations": 0,
    "rows_checked": 2296,
-   "note": ""
+   "note": "컬럼 없음: ['file_id']"
   },
   {
    "rule_id": "ST-0243",
@@ -2991,7 +2991,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 4,
+   "violations": 3,
    "rows_checked": 99,
    "note": ""
   },
@@ -3110,8 +3110,8 @@
    "fields": "",
    "check": "columns",
    "origin": "standard",
-   "status": "fail",
-   "violations": 1,
+   "status": "pass",
+   "violations": 0,
    "rows_checked": 116,
    "note": ""
   },
@@ -3201,7 +3201,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 6,
+   "violations": 4,
    "rows_checked": 116,
    "note": ""
   },
@@ -3606,7 +3606,7 @@
    "check": "fk",
    "origin": "standard",
    "status": "fail",
-   "violations": 16,
+   "violations": 11,
    "rows_checked": 392,
    "note": ""
   },
@@ -3908,7 +3908,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 1879,
-   "note": "컬럼 없음: ['procedure_source_concept_id']"
+   "note": "선택 항목 미제출: ['procedure_source_concept_id']"
   },
   {
    "rule_id": "ST-0370",
@@ -3923,7 +3923,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 3177,
-   "note": "컬럼 없음: ['drug_source_concept_id']"
+   "note": "선택 항목 미제출: ['drug_source_concept_id']"
   },
   {
    "rule_id": "ST-0371",
@@ -3938,7 +3938,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 557,
-   "note": "컬럼 없음: ['condition_source_concept_id']"
+   "note": "선택 항목 미제출: ['condition_source_concept_id']"
   },
   {
    "rule_id": "ST-0372",
@@ -3953,7 +3953,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0373",
@@ -3968,7 +3968,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0374",
@@ -3983,7 +3983,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0375",
@@ -3998,7 +3998,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0376",
@@ -4013,7 +4013,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0377",
@@ -4028,7 +4028,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0378",
@@ -4043,7 +4043,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0379",
@@ -4058,7 +4058,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0380",
@@ -4073,7 +4073,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0381",
@@ -4088,7 +4088,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0382",
@@ -4103,7 +4103,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0383",
@@ -4118,7 +4118,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0384",
@@ -4133,7 +4133,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0385",
@@ -4148,7 +4148,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0386",
@@ -4163,7 +4163,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 100,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0387",
@@ -4178,7 +4178,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 2749,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0388",
@@ -4193,7 +4193,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 2749,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0389",
@@ -4208,7 +4208,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 1879,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0390",
@@ -4223,7 +4223,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 1879,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0391",
@@ -4238,7 +4238,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 1879,
-   "note": "컬럼 없음: ['procedure_source_concept_id']"
+   "note": "선택 항목 미제출: ['procedure_source_concept_id']"
   },
   {
    "rule_id": "ST-0392",
@@ -4253,7 +4253,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 3177,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0393",
@@ -4268,7 +4268,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 3177,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0394",
@@ -4283,7 +4283,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 3177,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0395",
@@ -4298,7 +4298,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 3177,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0396",
@@ -4313,7 +4313,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 3177,
-   "note": "컬럼 없음: ['drug_source_concept_id']"
+   "note": "선택 항목 미제출: ['drug_source_concept_id']"
   },
   {
    "rule_id": "ST-0397",
@@ -4328,7 +4328,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 557,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0398",
@@ -4343,7 +4343,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 557,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0399",
@@ -4358,7 +4358,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 557,
-   "note": "컬럼 없음: ['condition_source_concept_id']"
+   "note": "선택 항목 미제출: ['condition_source_concept_id']"
   },
   {
    "rule_id": "ST-0400",
@@ -4372,8 +4372,8 @@
    "origin": "standard",
    "status": "skipped",
    "violations": 0,
-   "rows_checked": 9776,
-   "note": "CONCEPT 미제출"
+   "rows_checked": 9944,
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0401",
@@ -4387,8 +4387,8 @@
    "origin": "standard",
    "status": "skipped",
    "violations": 0,
-   "rows_checked": 9776,
-   "note": "CONCEPT 미제출"
+   "rows_checked": 9944,
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0402",
@@ -4402,8 +4402,8 @@
    "origin": "standard",
    "status": "skipped",
    "violations": 0,
-   "rows_checked": 9776,
-   "note": "CONCEPT 미제출"
+   "rows_checked": 9944,
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0403",
@@ -4417,8 +4417,8 @@
    "origin": "standard",
    "status": "skipped",
    "violations": 0,
-   "rows_checked": 9776,
-   "note": "CONCEPT 미제출"
+   "rows_checked": 9944,
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0404",
@@ -4433,7 +4433,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 126,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0405",
@@ -4448,7 +4448,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 126,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0406",
@@ -4463,7 +4463,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 126,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0407",
@@ -4478,7 +4478,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 2296,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0408",
@@ -4493,7 +4493,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 2296,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0409",
@@ -4508,7 +4508,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 116,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0410",
@@ -4523,7 +4523,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 392,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "SEM-COM-001",
@@ -4551,7 +4551,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 15,
+   "violations": 24,
    "rows_checked": 0,
    "note": ""
   },
@@ -4566,7 +4566,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 342,
+   "violations": 388,
    "rows_checked": 0,
    "note": ""
   },
@@ -4581,7 +4581,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 17,
+   "violations": 26,
    "rows_checked": 0,
    "note": ""
   },
@@ -4656,7 +4656,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 6,
+   "violations": 5,
    "rows_checked": 0,
    "note": ""
   },
@@ -4686,7 +4686,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 9,
+   "violations": 10,
    "rows_checked": 0,
    "note": ""
   },
@@ -4731,7 +4731,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 3,
+   "violations": 4,
    "rows_checked": 0,
    "note": ""
   },
@@ -4761,7 +4761,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 15,
+   "violations": 13,
    "rows_checked": 0,
    "note": ""
   },
@@ -4806,7 +4806,7 @@
    "check": "sql",
    "origin": "standard",
    "status": "fail",
-   "violations": 56,
+   "violations": 22,
    "rows_checked": 0,
    "note": ""
   },
@@ -4838,7 +4838,265 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "필요 테이블 없음: ['VOCABULARY']"
+   "note": "선택 항목 미제출: ['VOCABULARY']"
+  }
+ ],
+ "sufficiency": [
+  {
+   "id": "EXP-COM-01",
+   "title": "키",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 97,
+   "met": 91,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 5,
+     "met": 5
+    },
+    {
+     "band": "50-64",
+     "eligible": 41,
+     "met": 40
+    },
+    {
+     "band": "65+",
+     "eligible": 49,
+     "met": 44
+    },
+    {
+     "band": "미상",
+     "eligible": 2,
+     "met": 2
+    }
+   ]
+  },
+  {
+   "id": "EXP-COM-02",
+   "title": "체중",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 97,
+   "met": 91,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 5,
+     "met": 5
+    },
+    {
+     "band": "50-64",
+     "eligible": 41,
+     "met": 40
+    },
+    {
+     "band": "65+",
+     "eligible": 49,
+     "met": 44
+    },
+    {
+     "band": "미상",
+     "eligible": 2,
+     "met": 2
+    }
+   ]
+  },
+  {
+   "id": "EXP-COM-03",
+   "title": "항암 요법 시작 전 키·체중",
+   "unit": "요법",
+   "status": "ok",
+   "note": "",
+   "eligible": 114,
+   "met": 18,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 5,
+     "met": 0
+    },
+    {
+     "band": "50-64",
+     "eligible": 49,
+     "met": 11
+    },
+    {
+     "band": "65+",
+     "eligible": 53,
+     "met": 6
+    },
+    {
+     "band": "미상",
+     "eligible": 7,
+     "met": 1
+    }
+   ]
+  },
+  {
+   "id": "EXP-COM-04",
+   "title": "요법별 수행 상태(ECOG)",
+   "unit": "요법",
+   "status": "ok",
+   "note": "",
+   "eligible": 114,
+   "met": 113,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 5,
+     "met": 5
+    },
+    {
+     "band": "50-64",
+     "eligible": 49,
+     "met": 48
+    },
+    {
+     "band": "65+",
+     "eligible": 53,
+     "met": 53
+    },
+    {
+     "band": "미상",
+     "eligible": 7,
+     "met": 7
+    }
+   ]
+  },
+  {
+   "id": "EXP-COM-05",
+   "title": "항암 요법 시작 전 혈구검사",
+   "unit": "요법",
+   "status": "ok",
+   "note": "",
+   "eligible": 114,
+   "met": 109,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 5,
+     "met": 5
+    },
+    {
+     "band": "50-64",
+     "eligible": 49,
+     "met": 49
+    },
+    {
+     "band": "65+",
+     "eligible": 53,
+     "met": 50
+    },
+    {
+     "band": "미상",
+     "eligible": 7,
+     "met": 5
+    }
+   ]
+  },
+  {
+   "id": "EXP-CRC-01",
+   "title": "MMR 또는 MSI 검사 결과",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 97,
+   "met": 97,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 5,
+     "met": 5
+    },
+    {
+     "band": "50-64",
+     "eligible": 41,
+     "met": 41
+    },
+    {
+     "band": "65+",
+     "eligible": 49,
+     "met": 49
+    },
+    {
+     "band": "미상",
+     "eligible": 2,
+     "met": 2
+    }
+   ]
+  },
+  {
+   "id": "EXP-CRC-02",
+   "title": "진단 시 CEA",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 97,
+   "met": 90,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 5,
+     "met": 5
+    },
+    {
+     "band": "50-64",
+     "eligible": 41,
+     "met": 39
+    },
+    {
+     "band": "65+",
+     "eligible": 49,
+     "met": 44
+    },
+    {
+     "band": "미상",
+     "eligible": 2,
+     "met": 2
+    }
+   ]
+  },
+  {
+   "id": "EXP-CRC-03",
+   "title": "전이성 대장암의 RAS 검사 결과",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 31,
+   "met": 31,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 1,
+     "met": 1
+    },
+    {
+     "band": "50-64",
+     "eligible": 12,
+     "met": 12
+    },
+    {
+     "band": "65+",
+     "eligible": 16,
+     "met": 16
+    },
+    {
+     "band": "미상",
+     "eligible": 2,
+     "met": 2
+    }
+   ]
   }
  ]
 }

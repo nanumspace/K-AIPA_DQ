@@ -3547,7 +3547,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 462,
-   "note": "컬럼 없음: ['procedure_source_concept_id']"
+   "note": "선택 항목 미제출: ['procedure_source_concept_id']"
   },
   {
    "rule_id": "ST-0370",
@@ -3562,7 +3562,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 4816,
-   "note": "컬럼 없음: ['drug_source_concept_id']"
+   "note": "선택 항목 미제출: ['drug_source_concept_id']"
   },
   {
    "rule_id": "ST-0371",
@@ -3577,7 +3577,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 337,
-   "note": "컬럼 없음: ['condition_source_concept_id']"
+   "note": "선택 항목 미제출: ['condition_source_concept_id']"
   },
   {
    "rule_id": "ST-0372",
@@ -3592,7 +3592,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0373",
@@ -3607,7 +3607,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0374",
@@ -3622,7 +3622,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0375",
@@ -3637,7 +3637,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0376",
@@ -3652,7 +3652,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0377",
@@ -3667,7 +3667,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0378",
@@ -3682,7 +3682,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0379",
@@ -3697,7 +3697,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0380",
@@ -3712,7 +3712,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0381",
@@ -3727,7 +3727,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0382",
@@ -3742,7 +3742,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0383",
@@ -3757,7 +3757,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0384",
@@ -3772,7 +3772,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0385",
@@ -3787,7 +3787,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "테이블 없음"
+   "note": "선택 항목 미제출: VOCABULARY"
   },
   {
    "rule_id": "ST-0386",
@@ -3802,7 +3802,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 100,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0387",
@@ -3817,7 +3817,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 1726,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0388",
@@ -3832,7 +3832,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 1726,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0389",
@@ -3847,7 +3847,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 462,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0390",
@@ -3862,7 +3862,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 462,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0391",
@@ -3877,7 +3877,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 462,
-   "note": "컬럼 없음: ['procedure_source_concept_id']"
+   "note": "선택 항목 미제출: ['procedure_source_concept_id']"
   },
   {
    "rule_id": "ST-0392",
@@ -3892,7 +3892,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 4816,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0393",
@@ -3907,7 +3907,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 4816,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0394",
@@ -3922,7 +3922,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 4816,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0395",
@@ -3937,7 +3937,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 4816,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0396",
@@ -3952,7 +3952,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 4816,
-   "note": "컬럼 없음: ['drug_source_concept_id']"
+   "note": "선택 항목 미제출: ['drug_source_concept_id']"
   },
   {
    "rule_id": "ST-0397",
@@ -3967,7 +3967,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 337,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0398",
@@ -3982,7 +3982,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 337,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0399",
@@ -3997,7 +3997,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 337,
-   "note": "컬럼 없음: ['condition_source_concept_id']"
+   "note": "선택 항목 미제출: ['condition_source_concept_id']"
   },
   {
    "rule_id": "ST-0400",
@@ -4012,7 +4012,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 13538,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0401",
@@ -4027,7 +4027,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 13538,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0402",
@@ -4042,7 +4042,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 13538,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0403",
@@ -4057,7 +4057,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 13538,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0404",
@@ -4072,7 +4072,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 100,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0405",
@@ -4087,7 +4087,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 100,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0406",
@@ -4102,7 +4102,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 100,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0407",
@@ -4117,7 +4117,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 1721,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0408",
@@ -4132,7 +4132,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 1721,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "ST-0410",
@@ -4147,7 +4147,7 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 39,
-   "note": "CONCEPT 미제출"
+   "note": "선택 항목 미제출: CONCEPT"
   },
   {
    "rule_id": "SEM-COM-001",
@@ -4462,7 +4462,144 @@
    "status": "skipped",
    "violations": 0,
    "rows_checked": 0,
-   "note": "필요 테이블 없음: ['VOCABULARY']"
+   "note": "선택 항목 미제출: ['VOCABULARY']"
+  }
+ ],
+ "sufficiency": [
+  {
+   "id": "EXP-COM-01",
+   "title": "키",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 22
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 46
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 32
+    }
+   ]
+  },
+  {
+   "id": "EXP-COM-02",
+   "title": "체중",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 22
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 46
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 32
+    }
+   ]
+  },
+  {
+   "id": "EXP-DM-01",
+   "title": "진단 시 HbA1c",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 22
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 46
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 32
+    }
+   ]
+  },
+  {
+   "id": "EXP-DM-02",
+   "title": "추적 중 HbA1c (6개월마다)",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 100,
+   "per_year_median": "4.3",
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 22
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 46
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 32
+    }
+   ]
+  },
+  {
+   "id": "EXP-DM-03",
+   "title": "연 1회 혈압·신기능·지질·체중",
+   "unit": "환자",
+   "status": "ok",
+   "note": "",
+   "eligible": 100,
+   "met": 75,
+   "per_year_median": null,
+   "by_age": [
+    {
+     "band": "<50",
+     "eligible": 22,
+     "met": 16
+    },
+    {
+     "band": "50-64",
+     "eligible": 46,
+     "met": 37
+    },
+    {
+     "band": "65+",
+     "eligible": 32,
+     "met": 22
+    }
+   ]
   }
  ]
 }
