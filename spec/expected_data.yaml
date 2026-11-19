@@ -102,7 +102,7 @@ setup:
           JOIN _EVENTS t ON t.person_id = a.person_id AND t.event_date = a.event_date AND t.set_id = 'PLATELETS'
           WHERE a.person_id = pid AND a.set_id = 'AST' AND a.event_date BETWEEN d0 AND d1)
 - >-
-  CREATE TEMP MACRO _fib4_calc(pid, d0, d1) AS
+  CREATE TEMP MACRO _fib4_vals(pid, d0, d1) AS
   EXISTS (SELECT 1 FROM MEASUREMENT a
           JOIN _CONCEPT_SET sa ON sa.concept_id = a.measurement_concept_id AND sa.set_id = 'AST'
           JOIN MEASUREMENT l ON l.person_id = a.person_id AND l.measurement_date = a.measurement_date
@@ -112,8 +112,13 @@ setup:
           WHERE a.person_id = pid AND a.measurement_date BETWEEN d0 AND d1
             AND TRY_CAST(a.value_as_number AS DOUBLE) > 0 AND CAST(a.unit_concept_id AS BIGINT) IN (8645, 8923)
             AND TRY_CAST(l.value_as_number AS DOUBLE) > 0 AND CAST(l.unit_concept_id AS BIGINT) IN (8645, 8923)
-            AND TRY_CAST(t.value_as_number AS DOUBLE) > 0 AND CAST(t.unit_concept_id AS BIGINT) IN (8848, 8961, 9444)
-            AND EXISTS (SELECT 1 FROM PERSON p WHERE p.person_id = pid AND TRY_CAST(p.age_at_index AS DOUBLE) > 0))
+            AND TRY_CAST(t.value_as_number AS DOUBLE) > 0 AND CAST(t.unit_concept_id AS BIGINT) IN (8848, 8961, 9444))
+- >-
+  CREATE TEMP MACRO _fib4_age(pid) AS
+  EXISTS (SELECT 1 FROM PERSON p WHERE p.person_id = pid AND TRY_CAST(p.age_at_index AS DOUBLE) > 0)
+- >-
+  CREATE TEMP MACRO _fib4_calc(pid, d0, d1) AS
+  _fib4_vals(pid, d0, d1) AND _fib4_age(pid)
 
 items:
 # ---------------------------------------------------------------- 공통
@@ -526,7 +531,18 @@ items:
     SELECT person_id, 'PERSON:' || person_id AS unit_key,
            anchor_date IS NOT NULL AND _fib4_calc(person_id, anchor_date - 365, anchor_date + 90) AS met,
            CASE WHEN anchor_date IS NULL THEN '기준일 없음'
-                ELSE '기준일 전후 구간에 같은 날 수치·단위가 유효한 AST·ALT·혈소판과 나이가 갖춰진 기록 없음' END AS detail,
+                WHEN NOT (_has(person_id, 'AST', anchor_date - 365, anchor_date + 90)
+                          AND _has(person_id, 'ALT', anchor_date - 365, anchor_date + 90)
+                          AND _has(person_id, 'PLATELETS', anchor_date - 365, anchor_date + 90))
+                  THEN '기준일 전후 구간에 구성 검사 누락: ' || concat_ws(', ',
+                         CASE WHEN NOT _has(person_id, 'AST', anchor_date - 365, anchor_date + 90) THEN 'AST' END,
+                         CASE WHEN NOT _has(person_id, 'ALT', anchor_date - 365, anchor_date + 90) THEN 'ALT' END,
+                         CASE WHEN NOT _has(person_id, 'PLATELETS', anchor_date - 365, anchor_date + 90) THEN '혈소판' END)
+                WHEN NOT _fib4(person_id, anchor_date - 365, anchor_date + 90)
+                  THEN '기준일 전후 구간에 AST·ALT·혈소판을 같은 날 잰 조합 없음'
+                WHEN NOT _fib4_vals(person_id, anchor_date - 365, anchor_date + 90)
+                  THEN '같은 날 조합은 있으나 값이 0 이하·없음이거나 단위가 유효하지 않음'
+                ELSE '나이(PERSON.age_at_index) 없음 또는 0 이하' END AS detail,
            CAST(NULL AS DOUBLE) AS per_year
     FROM _BASE ORDER BY person_id
 

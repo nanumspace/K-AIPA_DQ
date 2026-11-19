@@ -1,15 +1,15 @@
 {
  "cohort": "DIABETES",
  "clean": {
-  "rules": 300,
+  "rules": 302,
   "violations": 0,
   "failed_rules": 0,
   "false_positive_rate": 0.0
  },
  "dirty": {
-  "rules": 300,
-  "violations": 1106,
-  "failed_rules": 189
+  "rules": 302,
+  "violations": 1259,
+  "failed_rules": 190
  },
  "faults_total": 202,
  "faults_detected": 202,
@@ -190,6 +190,7 @@
   }
  ],
  "collateral_rules": [
+  "SEM-COM-013",
   "SEM-MEAS-003",
   "SEM-MEAS-005"
  ]

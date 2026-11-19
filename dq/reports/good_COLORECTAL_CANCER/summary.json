@@ -14,7 +14,7 @@
   "ADVERSE_EVENT": 4,
   "SACT": 1
  },
- "rules_total": 324,
+ "rules_total": 326,
  "rules_failed": 0,
  "rules_skipped": 43,
  "rules_error": 0,
@@ -34,7 +34,7 @@
    "violations": 0
   },
   "Plausibility": {
-   "rules": 46,
+   "rules": 48,
    "failed": 0,
    "violations": 0
   }
@@ -4706,6 +4706,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-COM-013",
+   "name": "검사·시술·약물 날짜의 연도 >= 출생연도",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "error",
+   "table": "DRUG_EXPOSURE,MEASUREMENT,PERSON,PROCEDURE_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-001",
    "name": "검사일 없음",
    "category": "Completeness",
@@ -4785,6 +4800,21 @@
    "name": "HbA1c·UACR·크레아티닌 단위 없음",
    "category": "Completeness",
    "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-007",
+   "name": "ER·PR 비율 검사 결과 0~100 범위",
+   "category": "Plausibility",
+   "subcategory": "value",
    "severity": "warning",
    "table": "MEASUREMENT",
    "fields": "",

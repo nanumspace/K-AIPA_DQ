@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: BREAST_CANCER (유방암)
 
-검증일 2026-09-07 / 테이블 11개 / 규칙 341개 (실패 256, 건너뜀 44, 오류 0)
+검증일 2026-09-07 / 테이블 11개 / 규칙 343개 (실패 257, 건너뜀 44, 오류 0)
 
-위반 1162건 (error 1080, warning 82)
+위반 1391건 (error 1309, warning 82)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 223 | 157 | 839 |
 | Completeness | 72 | 54 | 65 |
-| Plausibility | 46 | 45 | 258 |
+| Plausibility | 48 | 46 | 487 |
 
 ## 테이블 행수
 
@@ -273,6 +273,7 @@
 | SEM-COM-010 특화 테이블 방문 환자 일치 | Conformance | error | VISIT_OCCURRENCE | 2 |
 | SEM-COM-011 이상사례 발생일 사망 이후 금지 | Plausibility | error | ADVERSE_EVENT,PERSON | 3 |
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
+| SEM-COM-013 검사·시술·약물 날짜의 연도 >= 출생연도 | Plausibility | error | DRUG_EXPOSURE,MEASUREMENT,PERSON,PROCEDURE_OCCURRENCE | 229 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |

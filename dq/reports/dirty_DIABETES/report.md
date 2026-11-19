@@ -1,14 +1,14 @@
 # 데이터 품질 검증 보고서: DIABETES (당뇨병)
 
-검증일 2026-09-07 / 테이블 9개 / 규칙 300개 (실패 189, 건너뜀 75, 오류 0)
+검증일 2026-09-07 / 테이블 9개 / 규칙 302개 (실패 190, 건너뜀 75, 오류 0)
 
-위반 1106건 (error 1049, warning 57)
+위반 1259건 (error 1202, warning 57)
 
 | 분류 | 규칙 수 | 실패 규칙 | 위반 건수 |
 |---|---|---|---|
 | Conformance | 197 | 118 | 999 |
 | Completeness | 61 | 39 | 50 |
-| Plausibility | 42 | 32 | 57 |
+| Plausibility | 44 | 33 | 210 |
 
 ## 테이블 행수
 
@@ -211,6 +211,7 @@
 | SEM-COM-010 특화 테이블 방문 환자 일치 | Conformance | error | VISIT_OCCURRENCE | 2 |
 | SEM-COM-011 이상사례 발생일 사망 이후 금지 | Plausibility | error | ADVERSE_EVENT,PERSON | 2 |
 | SEM-COM-012 노트-환자 일치 | Conformance | error | DRUG_EXPOSURE,NOTE | 1 |
+| SEM-COM-013 검사·시술·약물 날짜의 연도 >= 출생연도 | Plausibility | error | DRUG_EXPOSURE,MEASUREMENT,PERSON,PROCEDURE_OCCURRENCE | 153 |
 | SEM-MEAS-001 검사일 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-002 검사 결과값 없음 | Completeness | warning | MEASUREMENT | 3 |
 | SEM-MEAS-005 검사일이 연결된 방문 기간 밖 | Plausibility | warning | MEASUREMENT,VISIT_OCCURRENCE | 1 |

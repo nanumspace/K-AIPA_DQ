@@ -192,6 +192,25 @@ rules:
     SELECT d.person_id, CAST(d.drug_exposure_id AS VARCHAR) AS row_key, 'note ' || d.note_id || ' 의 person_id=' || n.person_id AS detail
     FROM DRUG_EXPOSURE d JOIN NOTE n USING (note_id) WHERE n.person_id IS NOT NULL AND d.person_id <> n.person_id
 
+- id: SEM-COM-013
+  name: 검사·시술·약물 날짜의 연도 >= 출생연도
+  category: Plausibility
+  subcategory: temporal
+  severity: error
+  scope: all
+  requires: [PERSON, PROCEDURE_OCCURRENCE, DRUG_EXPOSURE, MEASUREMENT]
+  desc: 검사일·시술일·약물 노출 시작일의 연도가 출생연도보다 앞서면 오류. 같은 해의 날짜 순서는 판정하지 않는다.
+  sql: |
+    WITH ev AS (
+      SELECT person_id, 'MEASUREMENT:' || measurement_id AS row_key, 'measurement_date' AS fld, measurement_date AS d FROM MEASUREMENT
+      UNION ALL SELECT person_id, 'PROCEDURE_OCCURRENCE:' || procedure_occurrence_id, 'procedure_date', procedure_date FROM PROCEDURE_OCCURRENCE
+      UNION ALL SELECT person_id, 'DRUG_EXPOSURE:' || drug_exposure_id, 'drug_exposure_start_date', drug_exposure_start_date FROM DRUG_EXPOSURE
+    )
+    SELECT ev.person_id, ev.row_key, ev.fld || ' ' || ev.d || ' < 출생연도 ' || p.year_of_birth AS detail
+    FROM ev JOIN PERSON p USING (person_id)
+    WHERE EXTRACT(year FROM ev.d) < p.year_of_birth
+    ORDER BY ev.row_key, ev.person_id, detail
+
 - id: SEM-MEAS-001
   name: 검사일 없음
   category: Completeness
@@ -312,6 +331,28 @@ rules:
             3034485, 3001802, 3000819, 3002827, 3043209, 3020682, 3022826)
       AND m.value_as_number IS NOT NULL
       AND m.unit_concept_id IS NULL
+
+# ER/PR 개념은 로컬 Athena v20260829(raw/vocab/v20260829/CONCEPT.csv)에서 확인했다. 모두 표준(S) LOINC Lab Test 이며
+# 결과가 비율(%)인 것은 이름이 "Cells.<수용체>/cells ... by Immune stain" 인 네 개뿐이다:
+#   ER 3016794 (14228-1, Tissue), 36203160 (85329-1, Breast cancer specimen)
+#   PR 3022156 (14230-7, Tissue), 36203156 (85325-9, Breast cancer specimen)
+# 같은 수용체의 Interpretation·Presence(3004390, 3003289, 3041343, 3041608), Mass/mass·Moles/mass(3002307, 3021994, 3015210)
+# 개념은 비율이 아니므로 이 규칙에서 제외한다.
+- id: SEM-MEAS-007
+  name: ER·PR 비율 검사 결과 0~100 범위
+  category: Plausibility
+  subcategory: value
+  severity: warning
+  scope: all
+  requires: [MEASUREMENT]
+  desc: 에스트로겐·프로게스테론 수용체 양성 세포 비율(%) 개념(ER 3016794·36203160, PR 3022156·36203156)의 value_as_number 는 0 이상 100 이하여야 한다. 비율이 아닌 ER/PR 개념(판독·양성 여부·질량·몰 농도)은 대상이 아니며 value_as_number 가 비어 있으면 검사하지 않는다(SEM-MEAS-002 가 안내).
+  sql: |
+    SELECT m.person_id, CAST(m.measurement_id AS VARCHAR) AS row_key,
+           'measurement_concept_id ' || m.measurement_concept_id || ' 의 value_as_number ' || m.value_as_number || ' 가 0~100(%) 범위 밖' AS detail
+    FROM MEASUREMENT m
+    WHERE TRY_CAST(m.measurement_concept_id AS BIGINT) IN (3016794, 36203160, 3022156, 36203156)
+      AND m.value_as_number IS NOT NULL
+      AND (m.value_as_number < 0 OR m.value_as_number > 100)
 
 # ---------------------------------------------------------------------------
 # 항암요법 (SACT)

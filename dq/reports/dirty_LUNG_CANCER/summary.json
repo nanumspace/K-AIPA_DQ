@@ -14,13 +14,13 @@
   "ADVERSE_EVENT": 311,
   "SACT": 142
  },
- "rules_total": 332,
- "rules_failed": 246,
+ "rules_total": 334,
+ "rules_failed": 247,
  "rules_skipped": 44,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 1484,
- "violations_error": 1396,
+ "violations_total": 1529,
+ "violations_error": 1441,
  "violations_warning": 88,
  "by_category": {
   "Completeness": {
@@ -34,9 +34,9 @@
    "violations": 933
   },
   "Plausibility": {
-   "rules": 47,
-   "failed": 45,
-   "violations": 486
+   "rules": 49,
+   "failed": 46,
+   "violations": 531
   }
  },
  "rules": [
@@ -4811,6 +4811,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-COM-013",
+   "name": "검사·시술·약물 날짜의 연도 >= 출생연도",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "error",
+   "table": "DRUG_EXPOSURE,MEASUREMENT,PERSON,PROCEDURE_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 45,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-001",
    "name": "검사일 없음",
    "category": "Completeness",
@@ -4890,6 +4905,21 @@
    "name": "HbA1c·UACR·크레아티닌 단위 없음",
    "category": "Completeness",
    "subcategory": "unit",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-007",
+   "name": "ER·PR 비율 검사 결과 0~100 범위",
+   "category": "Plausibility",
+   "subcategory": "value",
    "severity": "warning",
    "table": "MEASUREMENT",
    "fields": "",

@@ -13,13 +13,13 @@
   "MASLD": 99,
   "ADVERSE_EVENT": 13
  },
- "rules_total": 303,
- "rules_failed": 201,
+ "rules_total": 305,
+ "rules_failed": 202,
  "rules_skipped": 51,
  "rules_error": 0,
  "rules_disabled": 0,
- "violations_total": 1405,
- "violations_error": 1348,
+ "violations_total": 1549,
+ "violations_error": 1492,
  "violations_warning": 57,
  "by_category": {
   "Completeness": {
@@ -33,9 +33,9 @@
    "violations": 737
   },
   "Plausibility": {
-   "rules": 43,
-   "failed": 33,
-   "violations": 614
+   "rules": 45,
+   "failed": 34,
+   "violations": 758
   }
  },
  "rules": [
@@ -4390,6 +4390,21 @@
    "note": ""
   },
   {
+   "rule_id": "SEM-COM-013",
+   "name": "검사·시술·약물 날짜의 연도 >= 출생연도",
+   "category": "Plausibility",
+   "subcategory": "temporal",
+   "severity": "error",
+   "table": "DRUG_EXPOSURE,MEASUREMENT,PERSON,PROCEDURE_OCCURRENCE",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "fail",
+   "violations": 144,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
    "rule_id": "SEM-MEAS-001",
    "name": "검사일 없음",
    "category": "Completeness",
@@ -4476,6 +4491,21 @@
    "origin": "standard",
    "status": "fail",
    "violations": 1,
+   "rows_checked": 0,
+   "note": ""
+  },
+  {
+   "rule_id": "SEM-MEAS-007",
+   "name": "ER·PR 비율 검사 결과 0~100 범위",
+   "category": "Plausibility",
+   "subcategory": "value",
+   "severity": "warning",
+   "table": "MEASUREMENT",
+   "fields": "",
+   "check": "sql",
+   "origin": "standard",
+   "status": "pass",
+   "violations": 0,
    "rows_checked": 0,
    "note": ""
   },

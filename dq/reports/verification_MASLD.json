@@ -1,15 +1,15 @@
 {
  "cohort": "MASLD",
  "clean": {
-  "rules": 303,
+  "rules": 305,
   "violations": 0,
   "failed_rules": 0,
   "false_positive_rate": 0.0
  },
  "dirty": {
-  "rules": 303,
-  "violations": 1405,
-  "failed_rules": 201
+  "rules": 305,
+  "violations": 1549,
+  "failed_rules": 202
  },
  "faults_total": 213,
  "faults_detected": 213,
@@ -196,6 +196,7 @@
   }
  ],
  "collateral_rules": [
+  "SEM-COM-013",
   "SEM-MEAS-004",
   "SEM-MEAS-005",
   "ST-0359",

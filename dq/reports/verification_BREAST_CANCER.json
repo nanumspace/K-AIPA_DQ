@@ -1,15 +1,15 @@
 {
  "cohort": "BREAST_CANCER",
  "clean": {
-  "rules": 341,
+  "rules": 343,
   "violations": 7,
   "failed_rules": 1,
   "false_positive_rate": null
  },
  "dirty": {
-  "rules": 341,
-  "violations": 1162,
-  "failed_rules": 256
+  "rules": 343,
+  "violations": 1391,
+  "failed_rules": 257
  },
  "faults_total": 270,
  "faults_detected": 270,
@@ -226,6 +226,7 @@
   }
  ],
  "collateral_rules": [
+  "SEM-COM-013",
   "SEM-MEAS-003",
   "SEM-MEAS-005",
   "SEM-MEAS-006",
