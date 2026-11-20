@@ -31,7 +31,7 @@ python dq/run_all.py                         # 생성·검증(clean/dirty/good)�
 
 `spec/build_spec.py` 는 `raw/매뉴얼_질환별 데이터 테이블_20261116.xlsx` 를 읽습니다. 매뉴얼이 정하지 않는 값 제약(범위, 정규식, OMOP 대표 코드)은 `spec/constraints.yaml` 에서 옵니다. 매뉴얼에 없는 필드가 `constraints.yaml` 에 있으면 멈춥니다.
 
-`spec/build_concept_sets.py` 는 `spec/expected_data.yaml` 의 개념 집합(31개)을 OHDSI 용어집(LOINC 성분 + `CONCEPT_ANCESTOR`)에서 펼쳐 개념 ID 만 `spec/concept_sets.yaml` 에 씁니다. 용어집 `raw/vocab/v20260829` 가 필요한데 저장소에 없으므로, 없는 환경에서는 이 단계를 건너뜁니다. 결과 `spec/concept_sets.yaml` 은 저장소에 들어 있어 나머지 단계와 앱 빌드에는 필요하지 않습니다.
+`spec/build_concept_sets.py`는 `spec/expected_data.yaml`의 33개 개념 집합을 OHDSI 어휘에서 펼쳐 `spec/concept_sets.yaml`에 개념 ID를 기록합니다. 원본 어휘는 `raw/vocab/v20260829`에 두며 저장소에 포함하지 않습니다. 원본이 없는 환경에서는 저장소에 포함된 생성 결과를 사용합니다.
 
 ### 개별 실행
 
@@ -80,7 +80,9 @@ npm run dist:win                 # Windows 설치 파일 (Windows 에서)
 
 ## 소개 페이지와 자료실 (GitHub Pages)
 
-`docs/index.html` 한 파일(인라인 CSS·JS, 한/영 전환, 라이트/다크)과 `docs/img/` 캡처가 소개 페이지입니다. 주소는 https://nanumspace.github.io/K-AIPA_DQ/ 입니다. 소개 페이지·자료실은 설치본과 같은 기준을 보여야 하므로 **main 에 push 해도 배포되지 않고**, `.github/workflows/deploy-pages.yml` 이 공개된(정식, 초안·사전 릴리스 제외) GitHub Release 의 태그를 체크아웃해 배포합니다. 릴리스가 게시될 때 자동으로 실행되며, 수동 실행(`workflow_dispatch`)은 배포할 공개 릴리스 태그(예: `v1.0.0`)를 입력합니다. 배포 단계에서 `python docs/build_resources.py` 가 자료실(`resources.html`)이 읽는 `docs/resources/`(코호트별 양식, 컬럼 명세서, 규칙 목록, `data.json`)를 그 태그의 명세·규칙·`dq/reports/*/summary.json` 에서 만듭니다. 다운로드 단추는 GitHub 의 최신 Release 를 읽어 파일 이름과 링크를 스스로 갱신하며(읽지 못할 때를 위한 대체 링크는 v1.0.0), 문서의 설명은 릴리스된 v1.0.0 자산을 기준으로 합니다. 캡처는 `internal/presentations/img/` 원본을 1600px JPEG 로 줄인 것입니다. 이전 저장소(`nanumspace/KAI_DQ_App`)와 그 페이지·릴리스는 그대로 남아 있으며, 이 저장소가 이전 주소를 대신하거나 이전 주소로 연결해 준다고 약속하지 않습니다.
+소개 페이지는 [`docs/index.html`](index.html)이며, 공개 주소는 https://nanumspace.github.io/K-AIPA_DQ/ 입니다. 공개 릴리스가 게시되면 `.github/workflows/deploy-pages.yml`이 릴리스 태그에서 소개 페이지와 자료실을 배포합니다. `main`에 push하는 것만으로는 배포되지 않습니다.
+
+소개 문구만 갱신하려면 공개 태그(예: `v1.0.9`)와 `refresh_intro=true`로 워크플로를 수동 실행합니다. 실행 커밋의 `docs/index.html`만 반영하고, `python docs/build_resources.py`가 만드는 자료실 양식·규칙·견본 요약은 릴리스 태그의 기준을 유지합니다. 설치 파일이나 릴리스 태그는 바뀌지 않습니다.
 
 ## 릴리스 (`release.sh`)
 

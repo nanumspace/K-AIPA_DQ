@@ -1,10 +1,10 @@
 # 데이터 충실도: 선행 근거와 질환별 기대 데이터
 
-현재 소스에는 데이터 충실도 29개 항목이 정의되어 있습니다(`spec/expected_data.yaml`). 의뢰사 매뉴얼 위반과 분리해 비율만 보고합니다. 구현 기준은 6절에 있습니다.
+현재 소스에는 데이터 충실도 41개 항목이 정의되어 있습니다(`spec/expected_data.yaml`): 공통 5, 폐암 6, 유방암 6, 대장암 4, MASLD 4, 당뇨병 8, 림프종 8. 의뢰사 매뉴얼 위반과 분리해 비율만 보고합니다. 구현 기준은 6절에 있습니다.
 
 ## 1. 무엇을 평가하려는가
 
-현재 규칙 433개는 **있는 행이 맞게 적혔는가**를 봅니다(적합성·완전성·타당성). 예를 들어 `SEM-MEAS-002` 는 검사 행이 있는데 결과값이 비었는지를 보지만, 어떤 환자에게 체중 기록이 **아예 없는** 경우는 위반 0건으로 지나갑니다. `SEM-COM-009` 도 환자가 질환 특화 테이블에 1행 이상 있는지만 확인합니다.
+현재 규칙 440개는 **있는 행이 맞게 적혔는가**를 봅니다(적합성·완전성·타당성). 예를 들어 `SEM-MEAS-002` 는 검사 행이 있는데 결과값이 비었는지를 보지만, 어떤 환자에게 체중 기록이 **아예 없는** 경우는 위반 0건으로 지나갑니다. `SEM-COM-009` 도 환자가 질환 특화 테이블에 1행 이상 있는지만 확인합니다.
 
 이 문서가 다루는 것은 **있어야 할 기록이 실제로 있는가**입니다.
 
@@ -90,7 +90,7 @@
 |---|---|---|---|---|---|
 | EXP-BC-01 | HER2 검사 결과 | 침습성 유방암 (침습성 여부 필드가 없어 앱은 전 환자) | 1회 이상 | [ASCO-CAP HER2 검사 지침 2023 (2018 권고 재확인)](https://pubmed.ncbi.nlm.nih.gov/37284804) | **구현(MEASUREMENT)**: HER2 LOINC 검사(혈청 제외) |
 | EXP-BC-02 | ER·PR 검사 결과 | 침습성 유방암 (앱은 전 환자) | 1회 이상 | ASCO-CAP ER/PgR 지침. **원문 확인 필요** | **구현(MEASUREMENT)** |
-| EXP-BC-04·05·06 | HER2·ER·PR 표준 결과 coverage | BC-01·BC-02 와 같음 | 기간 제한 없음 | 비교 가능성 (아래 6절) | **구현(MEASUREMENT)**: structured / raw only / absent |
+| EXP-BC-04, EXP-BC-05, EXP-BC-06 | HER2, ER, PR 각각의 구조화 결과 | BC-01·BC-02와 같음 | 기간 제한 없음 | 비교 가능성(6절) | **구현(MEASUREMENT)**: 구조화 결과 / 원문만 있음 / 결과 없음 |
 | EXP-BC-03 | 병기 | 전 환자 | 1회 | 유방암 특화 표에 병기 필드 없음 | **구현(MEASUREMENT)**: LOINC 병기군·SNOMED Tumor stage |
 
 ### 3.4 대장암
@@ -119,7 +119,7 @@
 | EXP-DM-02 | 추적 중 HbA1c | 관찰 기간 6개월 이상 환자 | **6개월마다 1회 이상** (연 2회) | ADA 권고 6.2: "at least two times a year" (목표 미달·치료 변경 시 3개월마다) | 가능 (관찰 종료일 정의 필요) |
 | EXP-DM-03 | 혈압(`3004249`·`3012888`), 크레아티닌(`3016723`)·eGFR(`3049187`), 지질(`3027114`·`3028437`), 체중 또는 BMI | 관찰 기간 1년 이상 환자 | 연 1회 이상 | [영국 NDA 진료 과정](https://digital.nhs.uk/data-and-information/publications/statistical/national-diabetes-audit/report-1-cp-and-tt-data-release-2024-25/nda-report-1-cp-and-tt-data-release-2024-25). **국내 지침과의 차이 확인 필요** | 가능 (네 요소 합성. UACR 은 합성에 넣지 않고 DM-04 로 분리, 요소별은 DM-05~08. 발 검사는 개념 없음) |
 | EXP-DM-04 | 소변 알부민/크레아티닌비(UACR, 개념 집합 `UACR` 17개: LOINC 구성요소 Albumin/Creatinine·검체 Urine, 기준 어휘 v20260829 에서 확인) | 관찰 기간 1년 이상 환자 | 연 1회 이상 | ADA Standards of Care 2026, 11장: UACR·eGFR 연 1회 평가 | 가능 |
-| EXP-DM-05~08 | DM-03 의 요소별: 혈압(수축기·이완기) / 크레아티닌 또는 eGFR / 총콜레스테롤 또는 LDL / 체중 또는 BMI | DM-03 과 같음 | 연 1회 이상 | DM-03 과 같음 | 가능 |
+| EXP-DM-05, EXP-DM-06, EXP-DM-07, EXP-DM-08 | 각각 혈압(수축기·이완기), 신장기능(크레아티닌 또는 eGFR), 지질(총콜레스테롤 또는 LDL), 체중 또는 BMI | DM-03과 같음 | 연 1회 이상 | DM-03과 같음 | 가능 |
 
 ### 3.7 림프종
 
@@ -127,7 +127,7 @@
 |---|---|---|---|---|---|
 | EXP-LY-01 | 진단 시 LDH (`3022250`) | 전 환자 | 기준일 전후 1회 이상 (구간 `제안`) | [IPI (NEJM 1993)](https://pubmed.ncbi.nlm.nih.gov/8141877): 나이·병기·LDH·수행 상태·결절외 침범 수로 예후 분류 | 가능 |
 | EXP-LY-02 | IPI 구성요소 전부 | 공격성 림프종(DLBCL 등) | 진단 시 | 위와 같음 | 부분: 나이(PERSON)·LDH·ECOG(`SACT`)만 있음. **병기·결절외 침범 수 필드 없음** |
-| EXP-LY-05~08 | IPI 구성요소별: 나이 / LDH / ECOG / 병기 | EXP-LY-02 와 같은 DLBCL | LY-02 와 같음 (병기는 LY-04 와 같은 개념·값 조건) | 위와 같음 | 가능. LY-02 부분 합성은 그대로 둠. 결절외 침범 수는 필드가 없어 추정하지 않음 |
+| EXP-LY-05, EXP-LY-06, EXP-LY-07, EXP-LY-08 | IPI 구성요소별 나이, LDH, ECOG, 병기 | LY-02와 같은 DLBCL 대상 | LDH·관찰 ECOG·병기: 진단일 ±90일. ECOG는 SACT 기록도 인정 | 위와 같음 | LY-02 부분 합성은 유지. 결절외 침범 수는 추정하지 않음 |
 | EXP-LY-04 | 진단 시 림프종 병기 기록 (SNOMED `4299327` Lymphoma stage) | 전 환자. 기준일(`diagnosis_date`)이 없으면 미충족 | 기준일 전후 90일에 병기 측정 1회 이상, 결과가 `value_as_concept_id`(>0)·`value_source_value`(비어 있지 않음)·`value_as_number` 중 하나로 있어야 함 | Ann Arbor/Lugano 병기는 예후·치료 계획의 기본 변수 (**지침 조항 확인 필요**) | **구현(MEASUREMENT)** |
 | EXP-LY-03 | 진단 시 PET-CT (`42872445`) 또는 골수 생검 (`4119553`) | 전 환자 | 기준일 전후 1회 이상 | 병기 결정 검사. **지침 조항 확인 필요** | 가능 |
 
@@ -135,9 +135,11 @@
 
 | 판정 | 항목 수 | 예 |
 |---|---|---|
-| 가능 | 14 | 키·체중, 항암 전 키·체중, HbA1c, FIB-4 구성 검사, LDH |
+| 가능 | 26 | 키·체중, 항암 전 키·체중, 첫 요법 전 EGFR·ALK(LC-03·04), HbA1c·당뇨 연간 검사(DM-01~08), FIB-4 구성·계산 가능성, LDH, IPI 요소별(LY-05~08) |
 | 부분 | 2 | FIB-4 반복(당뇨 동반만, 위험인자 개수 기준 제외), IPI(나이·LDH·ECOG 만) |
-| 구현(MEASUREMENT) | 12 | EGFR·ALK, HER2, ER·PR, 유방암 병기, MMR/MSI, RAS, 그리고 표준 결과 coverage(EGFR·ALK·HER2·ER·PR·MMR/MSI 각 1) |
+| 구현(MEASUREMENT) | 13 | EGFR·ALK, HER2, ER·PR, 유방암 병기, MMR/MSI, RAS, 림프종 병기(LY-04), 그리고 표준 결과 coverage(EGFR·ALK·HER2·ER·PR·MMR/MSI 각 1, 6건) |
+
+합계 41 = 공통 5 + 폐암 6 + 유방암 6 + 대장암 4 + MASLD 4 + 당뇨병 8 + 림프종 8. 가능으로 분류된 LY-08 은 LY-04 와 같은 MEASUREMENT 병기 개념에 의존합니다. 이 표의 분류는 2026-11-17 초안의 판정 용어를 이어 쓴 것이며, 2.절의 근거 문헌은 당시 그대로 둡니다.
 
 초안에서 `불가`였던 6건은 모두 종양 바이오마커와 병기입니다. 문헌(2.2절)에서도 이 변수들이 가장 잘 빠지고 AI 모델 개발에서 중요도가 높습니다. 매뉴얼에 담을 필드가 없어, MEASUREMENT 에 LOINC 검사로 적는 것으로 정했습니다(5절 2). 병원 ETL 은 이 결과를 `measurement_concept_id`(LOINC 검사)와 `value_as_concept_id`(양성·음성, 검출·미검출, MSI-H·Stable, Stage 답변 등) 또는 `value_as_number`(ER·PR %)로 적재합니다. [manual/02-input.md](../manual/02-input.md) 참고.
 
@@ -155,14 +157,14 @@
 
 ## 5. 결정 (2026-11-19)
 
-1. **채택 범위**: 최초 22개(가능 14 + 부분 2 + 바이오마커·병기 6)에 당뇨 5개(DM-04~08)를 추가했습니다. 부분 2건은 셀 수 있는 구성요소만 셉니다. UACR은 당뇨병 유형과 유병 기간을 구분하지 못하는 현 명세에서 연간 기록 충실도 지표로만 해석합니다.
+1. **채택 범위**: 최초 22개(가능 14 + 부분 2 + 바이오마커·병기 6)에 당뇨 5개(DM-04~08)를 추가했습니다(27개). 이후 MASLD-04·LY-04(29개), 그리고 LC-03·04, 표준 결과 coverage 6건, LY-05~08(41개)을 더했습니다. 부분 2건은 셀 수 있는 구성요소만 셉니다. UACR은 당뇨병 유형과 유병 기간을 구분하지 못하는 현 명세에서 연간 기록 충실도 지표로만 해석합니다.
 2. **바이오마커·병기 표현**: MEASUREMENT 의 LOINC 검사로 적습니다(매뉴얼 필드 추가 없음). 결과는 `value_as_concept_id` 나 `value_as_number` 에 둡니다.
 3. **개념 집합**: 대표 개념을 기준 어휘 v20260829 로 펼친 표준 개념 ID 목록을 검증 기준 패키지에 넣습니다. 병원이 따로 낼 것은 없습니다.
 4. **기간과 분모**: 제안 구간을 그대로 씁니다. 관찰 종료일은 마지막 방문일(종료일이 없으면 시작일)과 사망일 중 이른 날, 최소 관찰 기간은 항목 정의대로(6개월·1년·2년)입니다.
 5. **목표치**: 두지 않습니다. 비율만 보이고 충족 판정은 하지 않으며, 목표는 파일럿 결과를 본 뒤 정합니다.
 6. **공유**: 보고서 절 + `submission.json` 코호트 집계. 환자 목록(`sufficiency.csv`)은 기관 내부 전용입니다.
 
-## 6. 구현 (앱 1.0.4)
+## 6. 구현 (앱 1.0.9)
 
 **개념 집합.** `python spec/build_concept_sets.py` 가 `spec/expected_data.yaml` 의 `concept_sets` 33개를 기준 어휘(`raw/vocab/v20260829/`, 저장소에 없음)로 펼쳐 `spec/concept_sets.yaml` 에 ID 만 씁니다. 검사는 LOINC 구성요소(`Has component`)와 검체(`Has system`)가 같은 모든 표준 검사(예: HbA1c 6개, 혈소판 10개), 시술·진단은 CONCEPT_ANCESTOR 의 표준 하위 개념(예: 흉부 CT 257개)입니다. 이름이나 ID 가 어휘에 없거나 집합이 비면 멈춥니다.
 
@@ -189,6 +191,9 @@
 | EXP-LY-05~08 | 분모: LY-02 와 같은 DLBCL. 나이(`age_at_index`) / LDH(기준일 ±90일) / ECOG(SACT 기록 또는 ±90일 관찰) / 병기(LY-04 와 같은 조건). 결절외 침범 수는 추정하지 않음. LY-02 는 그대로 둠 |
 | EXP-LY-02 | DLBCL(`cell_of_origin` 이 GCB·ABC/non-GCB·unclassifiable). 나이, 진단 시 LDH, SACT ECOG 또는 진단 전후 90일 ECOG 관찰 |
 
+**한계.** (1) 모든 항목은 MEASUREMENT·PROCEDURE_OCCURRENCE·OBSERVATION·CONDITION_OCCURRENCE 의 날짜 있는 기록 유무로만 셉니다. 기록이 없는 원인(미시행·외부 시행·미매핑·자유 텍스트)은 구분하지 못하며, 미충족은 임상 결손이 아니라 데이터 결손 후보입니다. (2) 표의 구간·횟수 중 `제안`은 파일럿 전 임시 값이고 임상 기준이 아닙니다. 임상 확인 필요 표시가 있는 항목은 확정된 권고가 아닙니다. (3) 표준 결과 coverage 는 EGFR·ALK·HER2·ER·PR·MMR/MSI 6개만 있고 RAS·병기·검사 수치 자체(FIB-4 값 등)의 표준화는 보지 않습니다. (4) LY-04·08 은 `value_as_number` 가 NULL 이 아니면 결과로 보고(유한성 확인 안 함), coverage 항목은 유한한 수치만 structured 로 봅니다. (5) 요법·구간 단위 항목은 관찰 종료일(마지막 방문·사망 중 이른 날)에 좌우되어 방문 기록이 짧은 기관에서는 대상이 줄어듭니다.
+
+**비교 가능성.** 같은 항목의 충족률은 같은 분모 정의·같은 구간·같은 개념 집합 버전(v20260829)일 때만 기관·코호트 간에 견줄 수 있습니다. 분모가 다른 항목(예: DM-03 합성 대 DM-05~08 요소별, LC-01 대 LC-03)의 비율은 서로 비교하지 않습니다. 가상데이터 견본의 비율도 실제 병원의 기대치와 비교하지 않습니다. 목표치와 충족 판정은 두지 않습니다(5절 5).
 
 **EXP-MASLD-04·LY-04 근거 확인 (로컬 어휘 v20260829).** 단위: `8645` unit per liter, `8923` international unit per liter, `8848` thousand per microliter, `8961` thousand per cubic millimeter, `9444` billion per liter 가 CONCEPT.csv 에서 표준·유효로 확인됨(코드 `[U]/L`, `[iU]/L`, `10*3/uL`, `10*3/mm3`, `10*9/L`). 림프종 병기: `4299327` Lymphoma stage(SNOMED 385388004, Observable Entity, 표준·유효, CONCEPT_ANCESTOR 상 하위 개념 없음, 상위 `4161178` Tumor stage). `python spec/build_concept_sets.py` 로 `LYMPHOMA_STAGE` 1개를 `spec/concept_sets.yaml` 에 추가함(집합 33개). 기존 항목(MASLD-01~03, LY-01~03 등)은 그대로 유지.
 **가상데이터.** 견본은 폐암 EGFR·ALK, 유방암 ER·PR·HER2·병기군, 대장암 MSI·KRAS·NRAS 를 MEASUREMENT 행으로 담습니다(판독 NOTE 와 같은 값). 견본의 충실도 비율은 생성기의 진료 흐름을 반영할 뿐 실제 병원의 기대치가 아닙니다. 예를 들어 생성기는 키를 진단 때 한 번 재므로 EXP-COM-03(요법 시작 전 30일의 키)이 낮게 나옵니다.
