@@ -59,39 +59,24 @@ const TS_RE = /^\d{4}-\d{2}-\d{2}([ T]\d{2}:\d{2}(:\d{2}(\.\d+)?)?)?$/;
 // ------------------------------------------------------------------ 인코딩
 export interface Encoding { name: "utf-8" | "euc-kr"; bom: boolean; label: string }
 
-/** UTF-8 이면 그대로, 아니면 EUC-KR(CP949) 로 시도한다. 둘 다 아니면 예외. */
-export function detectEncoding(buf: Buffer): Encoding {
+/** 파일 전체를 엄격한 UTF-8 로 읽고, 실패하면 엄격한 EUC-KR(CP949) 로 읽는다. 둘 다 아니면 예외. 대체 문자로 바꾸지 않는다. */
+export function decodeText(buf: Buffer): { text: string; encoding: Encoding } {
   const bom = buf.length >= 3 && buf[0] === 0xef && buf[1] === 0xbb && buf[2] === 0xbf;
-  const head = buf.subarray(0, Math.min(buf.length, 512 * 1024));
   try {
-    new TextDecoder("utf-8", { fatal: true }).decode(head, { stream: true });
-    return { name: "utf-8", bom, label: bom ? "UTF-8 (BOM)" : "UTF-8" };
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(bom ? buf.subarray(3) : buf);
+    return { text, encoding: { name: "utf-8", bom, label: bom ? "UTF-8 (BOM)" : "UTF-8" } };
   } catch { /* 다음 후보 */ }
+  if (bom) throw new Error("UTF-8 BOM 이 있지만 본문이 올바른 UTF-8 이 아닙니다");
   try {
-    new TextDecoder("euc-kr", { fatal: true }).decode(head, { stream: true });
-    return { name: "euc-kr", bom: false, label: "EUC-KR (CP949) → UTF-8 로 변환" };
+    const text = new TextDecoder("euc-kr", { fatal: true }).decode(buf);
+    return { text, encoding: { name: "euc-kr", bom: false, label: "EUC-KR (CP949) → UTF-8 로 변환" } };
   } catch {
     throw new Error("문자 인코딩을 알 수 없습니다 (UTF-8 또는 EUC-KR 이어야 합니다)");
   }
 }
 
 export function readText(p: string): { text: string; encoding: Encoding } {
-  const buf = fs.readFileSync(p);
-  const encoding = detectEncoding(buf);
-  const text = new TextDecoder(encoding.name).decode(encoding.bom ? buf.subarray(3) : buf);
-  return { text, encoding };
-}
-
-/** 따옴표 밖의 줄바꿈만 세어 데이터 행 수를 구한다 (헤더 제외) */
-function countCsvRows(text: string): number {
-  let n = 0, q = false, lastNl = -1;
-  for (let i = 0; i < text.length; i++) {
-    const ch = text.charCodeAt(i);
-    if (ch === 34) q = !q; // "
-    else if (ch === 10 && !q) { n++; lastNl = i; }
-  }
-  if (lastNl < text.length - 1 && text.slice(lastNl + 1).trim() !== "") n++;
-  return Math.max(0, n - 1);
+  return decodeText(fs.readFileSync(p));
 }
 
 // ------------------------------------------------------------------ 파일 인식
@@ -188,7 +173,7 @@ function inspectCsv(p: string): SourceCandidate {
     const sample = head.slice(1).map((r) => keep.map((k) => (r[k] ?? "").trim()));
     const shape = rowShapeError(all.rows.slice(1), keep.length, true, csvRowNo(all.lines));
     if (shape) return { ...base, rows: Math.max(0, all.rows.length - 1), columns, sample, encoding: encoding.label, delimiter: delimiter === "," ? undefined : delimiter, error: shape };
-    return { ...base, rows: countCsvRows(text), columns, sample, encoding: encoding.label, delimiter: delimiter === "," ? undefined : delimiter };
+    return { ...base, rows: Math.max(0, all.rows.length - 1), columns, sample, encoding: encoding.label, delimiter: delimiter === "," ? undefined : delimiter };
   } catch (e) {
     return { ...base, rows: 0, columns: [], sample: [], encoding: "?", error: (e as Error).message };
   }

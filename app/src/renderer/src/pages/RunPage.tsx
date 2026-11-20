@@ -1,5 +1,6 @@
 // 검증 실행: ① 코호트와 파일 → ② 테이블 대응과 사전 점검 → ③ 실행 → ④ 결과와 출력물
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
+import { seoulToday } from "@engine/date.js";
 import type { CohortInfo, InputPlan, PreviewData, RunProgress, RunRecord, RunOutputs, SourceCandidate, TableCheck, TemplateKind } from "@shared/types";
 import { api, fmt } from "../api";
 import { Card, RunSummary, Empty } from "../components/ui";
@@ -46,7 +47,7 @@ export function RunPage({ nav, onActivity }: { nav: Nav; onActivity: (activity: 
 
   useEffect(() => {
     api.listCohorts().then((cs) => { setCohorts(cs); if (cs.length) setCohort((c) => c || cs[0].id); }).catch((e) => setErr(String(e)));
-    api.getConfig().then((c) => { setToday(c.defaultToday ?? new Date().toISOString().slice(0, 10)); }).catch((e) => setErr(String(e)));
+    api.getConfig().then((c) => { setToday(c.defaultToday ?? seoulToday()); }).catch((e) => setErr(String(e)));
     const off1 = api.onProgress((p) => setProgress(p));
     const off2 = api.onSmokePlan((p) => { setCohort(p.cohort); setPlan(p); });
     return () => { off1(); off2(); };

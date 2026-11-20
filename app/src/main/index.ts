@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { app, BrowserWindow, ipcMain, dialog, shell, utilityProcess } from "electron";
 import * as XLSX from "xlsx";
-import { setRoot, loadSpec, loadProfiles, loadStructuralRules, loadSemanticRules, ruleSetHash, describeOverrides, readCsv } from "@engine/index.js";
+import { setRoot, loadSpec, loadProfiles, loadStructuralRules, loadSemanticRules, ruleSetHash, describeOverrides, readCsv, seoulToday } from "@engine/index.js";
 import type { Summary, Spec } from "@engine/types.js";
 import type {
   AppConfig, CohortInfo, RuleInfo, RunRequest, RunRecord, RunDetail, FindingsQuery, FindingsFilter, FindingsExportResult, Dashboard, InputPlan, SourceCandidate, TemplateKind, OutputFile,
@@ -251,7 +251,7 @@ async function runValidation(req: RunRequest): Promise<RunRecord> {
   for (let k = 2; fs.existsSync(path.join(runsDir(), runId)); k++) runId = `${req.cohort}_${stamp}_${k}`;
   const outDir = path.join(runsDir(), runId);
   const inputDir = path.join(outDir, "input");
-  const today = req.today || config.defaultToday || now.toISOString().slice(0, 10);
+  const today = req.today || config.defaultToday || seoulToday(now);
   const firstPath = req.candidates.find((c) => c.id === Object.values(req.mapping)[0]?.[0])?.path ?? "";
   const label = req.label?.trim() || path.basename(path.dirname(firstPath) || firstPath) || req.cohort;
   // 실행하는 동안 설정이 바뀌어도 이 실행은 시작할 때의 설정으로 끝까지 간다 (결과에 적힌 해시와 어긋나지 않도록)

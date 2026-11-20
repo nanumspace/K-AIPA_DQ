@@ -98,11 +98,12 @@ describe.skipIf(!haveData)("규칙 조정 실행 (합성 데이터)", () => {
     const rules = loadStructuralRules().filter((r) => r.check === "range" && base.ruleStats.get(r.id)?.rows_checked);
     let changed = 0;
     for (const r of rules) {
+      // 범위 밖으로 밀어낸 효과만 보도록, 바꾸기 전 이 규칙의 위반이 0건이어야 한다 (다른 규칙의 경고와 무관)
+      expect(base.ruleStats.get(r.id)!.violations).toBe(0);
       const e = await run(CLEAN, { params: { [r.id]: { min: 1e9, max: 1e9 } } });
       if (e.ruleStats.get(r.id)!.violations > 0) { changed += 1; expect(e.ruleStats.get(r.id)!.origin).toBe("modified"); break; }
     }
     expect(changed).toBe(1);
-    expect(base.summary().violations_total).toBe(0);
   });
 
   it("codelist extraCodes 는 허용 코드로 받아들여진다", async () => {

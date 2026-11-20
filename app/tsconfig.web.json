@@ -12,5 +12,5 @@
     "baseUrl": ".",
     "paths": { "@shared/*": ["src/shared/*"], "@engine/*": ["../dq-ts/src/*"] }
   },
-  "include": ["src/renderer/src/**/*", "src/shared/**/*", "src/renderer/env.d.ts", "../dq-ts/src/types.ts"]
+  "include": ["src/renderer/src/**/*", "src/shared/**/*", "src/renderer/env.d.ts", "../dq-ts/src/types.ts", "../dq-ts/src/date.ts"]
 }

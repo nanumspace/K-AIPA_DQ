@@ -5,6 +5,7 @@ export { getRoot, setRoot, loadSpec, loadCodelists, loadConcepts, loadProfiles, 
 export { effectiveRules, ruleSetHash, describeOverrides } from "./rules.js";
 export type { EffectiveRules } from "./rules.js";
 export { readCsv, writeCsv, csvCell } from "./csv.js";
+export { seoulToday } from "./date.js";
 export { verify, writeVerificationSummary, COHORTS } from "./verify.js";
 export type { Verification } from "./verify.js";
 export { compareRun, compareAll } from "./compare.js";

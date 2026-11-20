@@ -8,6 +8,7 @@ import { runSemantic } from "./semantic.js";
 import { runMapping, mappingMd } from "./mapping.js";
 import { runSufficiency, sufficiencyMd, SUFF_PUBLIC_ERROR } from "./sufficiency.js";
 import { effectiveRules, ruleSetHash, describeOverrides, isEmptyOverrides } from "./rules.js";
+import { seoulToday } from "./date.js";
 import type { Finding, RawTable, RuleStat, Summary, Spec, Concepts, StructuralRule, SemanticRule, RuleOverrides, CohortProfile, SufficiencyResult, SufficiencyRow, MappingRate } from "./types.js";
 
 /** 외부용 요약에는 DB 오류 원문(입력값·SQL을 포함할 수 있음)을 싣지 않는다.
@@ -64,7 +65,7 @@ export class Engine {
   constructor(opt: EngineOptions) {
     this.cohort = opt.cohort;
     this.progress = opt.onProgress;
-    this.todayIso = opt.today ?? new Date().toISOString().slice(0, 10);
+    this.todayIso = opt.today ?? seoulToday();
     this.adminMode = opt.adminMode === true;
     this.overrides = isEmptyOverrides(opt.overrides) ? undefined : opt.overrides;
     this.concepts = loadConcepts();
