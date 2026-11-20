@@ -278,6 +278,7 @@
         <div class="nav-links">
           <a href="#features" data-i18n="nav.features">기능</a>
           <a href="#flow" data-i18n="nav.flow">사용 흐름</a>
+          <a href="#sufficiency" data-i18n="nav.suf">충실도</a>
           <a href="#download" data-i18n="nav.download">다운로드</a>
           <a href="#docs" data-i18n="nav.docs">문서</a>
           <a href="resources.html" data-i18n="nav.res">자료실</a>
@@ -553,6 +554,42 @@
       </div>
     </section>
 
+    <section id="sufficiency" class="section" style="padding-top:0">
+      <div class="wrap">
+        <div class="sec-head center reveal">
+          <p class="sec-eyebrow" data-i18n="suf.eyebrow">데이터 충실도</p>
+          <h2 class="sec-title" data-i18n="suf.title">있어야 할 기록이 있는지 봅니다.</h2>
+          <p class="sec-lede" data-i18n="suf.lede">규칙 440개는 있는 행이 맞게 적혔는지 확인합니다. 충실도 41개 항목은 질환별로 있어야 할 기록이 실제로 있는지를 비율로 보고합니다.</p>
+        </div>
+        <div class="features">
+          <article class="card reveal">
+            <h3 data-i18n="suf.c1h">항목 41개: 공통 5 · 질환별 36</h3>
+            <p data-i18n="suf.c1p">공통 5개(키, 체중, 항암 전 키·체중, ECOG, 항암 전 혈구검사), 폐암 6 · 유방암 6 · 대장암 4 · MASLD 4 · 당뇨병 8 · 림프종 8. 모두 spec/expected_data.yaml 에 정의되어 검증 기준 패키지에 포함됩니다.</p>
+          </article>
+          <article class="card reveal">
+            <h3 data-i18n="suf.c2h">분모: 항목마다 대상 단위</h3>
+            <p data-i18n="suf.c2p">충족률은 충족 수 ÷ 대상 수입니다. 대부분 환자를 세지만, 항암 전 키·체중은 요법을 셉니다. 당뇨병 HbA1c 추적은 관찰 6개월 이상, 연간 UACR은 1년 이상인 환자가 대상입니다. 대상이 없거나 계산을 건너뛴 경우는 0%와 다릅니다.</p>
+          </article>
+          <article class="card reveal">
+            <h3 data-i18n="suf.c3h">예: 있어야 할 기록이 있는가</h3>
+            <p data-i18n="suf.c3p">첫 항암 전 EGFR·ALK는 결과가 있는 검사 행을 검사일로 평가합니다. 검사일은 결과 보고일이 아닙니다. 구조화 결과 지표에서는 원문만 있으면 미충족입니다. FIB-4 계산 가능성은 같은 날 AST·ALT·혈소판뿐 아니라 수치·단위·나이까지 확인합니다.</p>
+          </article>
+          <article class="card reveal">
+            <h3 data-i18n="suf.c4h">한계: 판정이 아닌 비율</h3>
+            <p data-i18n="suf.c4p">목표 충족률이나 합격·불합격 판정은 없습니다. 기록이 없으면 검사 미시행으로 단정하지 말고 추출 누락, 코드 매핑, 외부 기록을 확인하세요. 기관 간 비교에는 같은 지표 정의와 분모를 써야 합니다. 일부 기간은 임상 확인이 필요한 제안입니다.</p>
+          </article>
+          <article class="card reveal">
+            <h3 data-i18n="suf.c5h">출력물과 공유 범위</h3>
+            <p data-i18n="suf.c5p">결과 보고서의 데이터 충실도 절과 화면 카드, 환자·요법별 미충족 목록 sufficiency.csv(기관 내부 전용), 연령대(<50·50-64·65+·미상)별 충족/대상을 담은 submission.json 집계. 오류·경고 건수와 규칙 통과율에는 넣지 않습니다.</p>
+          </article>
+          <a class="card reveal" href="https://github.com/nanumspace/K-AIPA_DQ/blob/main/docs/data-sufficiency.md">
+            <h3 data-i18n="suf.c6h">근거와 항목 정의 (v1.0.9)</h3>
+            <p data-i18n="suf.c6p">선행 근거, 질환별 기대 데이터, 구간과 분모의 정의. 한국어 문서입니다.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <section id="docs" class="section" style="padding-top:0">
       <div class="wrap">
         <div class="sec-head center reveal">
@@ -599,6 +636,14 @@
       var I18N = {
         'brand.sub': { ko: '· 임상 데이터 품질검증', en: '· Clinical Data Quality Validator' },
         'nav.features': { ko: '기능', en: 'Features' }, 'nav.flow': { ko: '사용 흐름', en: 'How it works' }, 'nav.download': { ko: '다운로드', en: 'Download' }, 'nav.docs': { ko: '문서', en: 'Docs' }, 'nav.dlbtn': { ko: '다운로드', en: 'Download' },
+        'nav.suf': { ko: '충실도', en: 'Sufficiency' },
+        'suf.eyebrow': { ko: '데이터 충실도', en: 'Data sufficiency' }, 'suf.title': { ko: '있어야 할 기록이 있는지 봅니다.', en: 'Checking that expected records exist.' }, 'suf.lede': { ko: '규칙 440개는 있는 행이 맞게 적혔는지 확인합니다. 충실도 41개 항목은 질환별로 있어야 할 기록이 실제로 있는지를 비율로 보고합니다.', en: 'The 440 rules check that existing rows are correct. The 41 sufficiency items report, as ratios, whether the records expected for each disease are actually present.' },
+        'suf.c1h': { ko: '항목 41개: 공통 5 · 질환별 36', en: '41 items: 5 common, 36 disease-specific' }, 'suf.c1p': { ko: '공통 5개(키, 체중, 항암 전 키·체중, ECOG, 항암 전 혈구검사), 폐암 6 · 유방암 6 · 대장암 4 · MASLD 4 · 당뇨병 8 · 림프종 8. 모두 spec/expected_data.yaml 에 정의되어 검증 기준 패키지에 포함됩니다.', en: '5 common (height, weight, pre-chemotherapy height/weight, ECOG, pre-chemotherapy blood counts), lung 6, breast 6, colorectal 4, MASLD 4, diabetes 8, lymphoma 8. All are defined in spec/expected_data.yaml and ship in the validation package.' },
+        'suf.c2h': { ko: '분모: 항목마다 대상 단위', en: 'Who counts in the denominator?' }, 'suf.c2p': { ko: '충족률은 충족 수 ÷ 대상 수입니다. 대부분 환자를 세지만, 항암 전 키·체중은 요법을 셉니다. 당뇨병 HbA1c 추적은 관찰 6개월 이상, 연간 UACR은 1년 이상인 환자가 대상입니다. 대상이 없거나 계산을 건너뛴 경우는 0%와 다릅니다.', en: 'The rate is the number meeting the item divided by the eligible count. Most items count patients; pre-treatment height and weight count regimens. Diabetes follow-up HbA1c requires at least six months of observation, annual UACR at least one year. No eligible records or a skipped calculation is not 0%.' },
+        'suf.c3h': { ko: '예: 있어야 할 기록이 있는가', en: 'Examples: from records to usable data' }, 'suf.c3p': { ko: '첫 항암 전 EGFR·ALK는 결과가 있는 검사 행을 검사일로 평가합니다. 검사일은 결과 보고일이 아닙니다. 구조화 결과 지표에서는 원문만 있으면 미충족입니다. FIB-4 계산 가능성은 같은 날 AST·ALT·혈소판뿐 아니라 수치·단위·나이까지 확인합니다.', en: 'Pre-treatment EGFR and ALK count test records with results based on the measurement date, not the result reporting date. Free text alone does not meet a structured-result item. FIB-4 calculability requires same-day AST, ALT and platelet records with numeric values, supported units and patient age.' },
+        'suf.c4h': { ko: '한계: 판정이 아닌 비율', en: 'Limits: ratios, not verdicts' }, 'suf.c4p': { ko: '목표 충족률이나 합격·불합격 판정은 없습니다. 기록이 없으면 검사 미시행으로 단정하지 말고 추출 누락, 코드 매핑, 외부 기록을 확인하세요. 기관 간 비교에는 같은 지표 정의와 분모를 써야 합니다. 일부 기간은 임상 확인이 필요한 제안입니다.', en: 'There is no target rate or pass/fail verdict. Missing data do not prove that a test was not done; review extraction, mapping and external records. Compare sites only when they use the same metric definition and denominator. Some windows are proposals pending clinical review.' },
+        'suf.c5h': { ko: '출력물과 공유 범위', en: 'Outputs and sharing' }, 'suf.c5p': { ko: '결과 보고서의 데이터 충실도 절과 화면 카드, 환자·요법별 미충족 목록 sufficiency.csv(기관 내부 전용), 연령대(<50·50-64·65+·미상)별 충족/대상을 담은 submission.json 집계. 오류·경고 건수와 규칙 통과율에는 넣지 않습니다.', en: 'A Data sufficiency section in the report and a card in the app, sufficiency.csv with unmet patients or regimens (internal only), and aggregates in submission.json with met/target by age band (<50, 50-64, 65+, unknown). Not counted in errors, warnings or the rule pass rate.' },
+        'suf.c6h': { ko: '근거와 항목 정의 (v1.0.9)', en: 'Evidence and item definitions (v1.0.9)' }, 'suf.c6p': { ko: '선행 근거, 질환별 기대 데이터, 구간과 분모의 정의. 한국어 문서입니다.', en: 'Prior evidence, expected data per disease, windows and denominators. The document is in Korean.' },
         'nav.res': { ko: '자료실', en: 'Resources' },
         'docs.d0b': { ko: '자료실 · 양식과 규칙', en: 'Resources · templates and rules' }, 'docs.d0': { ko: '코호트별 입력 양식(엑셀·CSV), 컬럼 명세서, 검증 규칙 440개 검색, 견본 데이터 기대 결과. 앱 명세에서 자동 생성.', en: 'Input templates per cohort (Excel, CSV), column specification, searchable list of the 440 rules, expected results of the sample data. Generated from the app spec (Korean).' },
         'hero.eyebrow': { ko: 'Windows · macOS · 오프라인 · Apache-2.0', en: 'Windows · macOS · Offline · Apache-2.0' },
