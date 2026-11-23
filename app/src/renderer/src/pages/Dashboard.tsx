@@ -42,7 +42,7 @@ export function Dashboard({ nav }: { nav: Nav }) {
 
       {d.latestByCohort.length === 0 && (
         <div className="callout warn" style={{ marginBottom: 14 }}>
-          아직 검증 실행 기록이 없습니다. <a href="#" onClick={(e) => { e.preventDefault(); nav.go("run"); }}>검증 실행</a>에서 코호트 CSV 디렉터리를 선택해 실행하면 이 화면이 채워집니다.
+          아직 검증 실행 기록이 없습니다. 좌측 메뉴의 검증 실행에서 코호트 파일을 넣고 실행하면 이 화면이 채워집니다.
         </div>
       )}
 
@@ -105,8 +105,7 @@ export function Dashboard({ nav }: { nav: Nav }) {
         </Card>
 
         {/* ③ 적용 검증 규칙 */}
-        <Card num={3} title="적용 검증 규칙" sub={`구조 규칙 ${fmt(d.rulesCount.structural)}개 · 교차 규칙 ${fmt(d.rulesCount.semantic)}개`}
-          right={<button className="btn sm" onClick={() => nav.go("rules")}>전체 보기</button>}>
+        <Card num={3} title="적용 검증 규칙" sub={`구조 규칙 ${fmt(d.rulesCount.structural)}개 · 교차 규칙 ${fmt(d.rulesCount.semantic)}개`}>
           {rulesErr && <div className="callout err" role="alert">규칙을 불러오지 못했습니다. <button className="btn sm" onClick={() => setRetry((n) => n + 1)}>다시 시도</button></div>}
           <div className="tblwrap short">
             <table className="tbl">
@@ -182,7 +181,6 @@ export function Dashboard({ nav }: { nav: Nav }) {
                 <div className={`callout ${latestRun ? "" : "warn"}`} style={{ flex: 1 }}>
                   {latestRun ? <>✓ 최근 검증 완료: {latestRun.cohort_kor} · {latestRun.label} · {fmtTime(latestRun.created_at)}</> : "검증 실행 기록이 없습니다."}
                 </div>
-                <button className="btn primary" disabled={!latestRun} onClick={() => latestRun && nav.go("report", latestRun.run_id)}>상세 보고서</button>
               </div>
             </div>
           </div>

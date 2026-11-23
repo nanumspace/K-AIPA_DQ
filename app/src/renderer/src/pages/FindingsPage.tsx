@@ -234,7 +234,7 @@ export function FindingsPage({ nav }: { nav: Nav }) {
   if (runsLoad.status === "error") return <div className="findings-page">{title}<ErrorBox text={`실행 기록을 불러오지 못했습니다. ${runsLoad.error}`} onRetry={() => setRunsTick((t) => t + 1)} retryLabel="실행 기록 다시 불러오기" /></div>;
   if (!runs.length) return (
     <div className="findings-page">{title}
-      <Empty>실행 기록이 없습니다. 먼저 검증을 실행하세요.<div style={{ marginTop: 10 }}><button type="button" className="btn primary" onClick={() => nav.go("run")}>검증 실행으로 이동</button></div></Empty>
+      <Empty>실행 기록이 없습니다. 좌측 메뉴의 검증 실행에서 먼저 검증하세요.</Empty>
     </div>
   );
 
@@ -253,7 +253,7 @@ export function FindingsPage({ nav }: { nav: Nav }) {
       )}
       <form className="toolbar fnd-filters" role="search" aria-label="위반 행 조회 조건" onSubmit={(e) => e.preventDefault()}>
         <Field id="fnd-run" label="실행 기록">
-          <select id="fnd-run" className="fnd-run-select" value={runId} onChange={(e) => resetTo(e.target.value)}>
+          <select id="fnd-run" className="fnd-run-select" value={runId} onChange={(e) => nav.go("findings", e.target.value)}>
             {runs.map((r) => <option key={r.run_id} value={r.run_id}>{fmtTime(r.created_at)} · {r.cohort_kor} · {r.label} · 위반 {fmt(r.violations_total)}건</option>)}
           </select>
         </Field>
@@ -279,8 +279,6 @@ export function FindingsPage({ nav }: { nav: Nav }) {
             onKeyDown={(e) => { if (e.key === "Enter") { const v = searchInput.trim(); if (v !== search) { setSearch(v); setPage(0); setSelectedSeq(null); } } }} />
         </Field>
         <button type="button" className="btn" onClick={clearFilters} disabled={!filtersActive}>필터 지우기</button>
-        <span className="spacer" />
-        <button type="button" className="btn" onClick={() => nav.go("report", runId)}>결과 보고서</button>
       </form>
 
       <div className="fnd-export">

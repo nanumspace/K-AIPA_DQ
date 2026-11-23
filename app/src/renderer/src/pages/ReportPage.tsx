@@ -18,6 +18,8 @@ export function ReportPage({ nav }: { nav: Nav }) {
   const [criteria, setCriteria] = useState<CriteriaSnapshot | null | undefined>(undefined);
   const [criteriaErr, setCriteriaErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pdfBusy, setPdfBusy] = useState(false);
+  const [pdfMsg, setPdfMsg] = useState<string | null>(null);
   const [listing, setListing] = useState(true);
   const [retry, setRetry] = useState(0);
 
@@ -62,17 +64,18 @@ export function ReportPage({ nav }: { nav: Nav }) {
       <div className="page-title"><h1>결과 보고서</h1>{run && <span className="sub">검증 기준일 {run.run_date} · 실제 실행 시각 {fmtTime(run.created_at)}</span>}</div>
       <div className="toolbar">
         <label className="field-label">실행 기록
-          <select value={runId} onChange={(e) => setRunId(e.target.value)} disabled={listing || !runs.length}>
+          <select value={runId} onChange={(e) => nav.go("report", e.target.value)} disabled={listing || !runs.length}>
             {!runs.length && <option value="">실행 기록 없음</option>}
             {runs.map((r) => <option key={r.run_id} value={r.run_id}>{fmtTime(r.created_at)} · {r.cohort_kor} · {r.label}</option>)}
           </select>
         </label>
         <span className="spacer" />
-        <button className="btn" disabled={!run || loading} onClick={() => nav.go("findings", runId)}>위반 상세</button>
+        <button className="btn" disabled={!run || loading || pdfBusy} onClick={() => { setPdfBusy(true); setPdfMsg(null); api.exportFile(runId, "reportPdf").then((p) => setPdfMsg(p ? `PDF 를 저장했습니다: ${p}` : null)).catch((e) => setErr(String(e))).finally(() => setPdfBusy(false)); }}>{pdfBusy ? "PDF 만드는 중…" : "PDF 저장"}</button>
       </div>
+      {pdfMsg && <div className="callout" role="status">{pdfMsg}</div>}
       {err && <div className="callout err error-actions" role="alert"><span>{err}</span><button className="btn" onClick={() => setRetry((n) => n + 1)}>다시 시도</button></div>}
       {(listing || loading) && <div className="loading" role="status">검증 결과를 불러오는 중…</div>}
-      {!listing && !loading && !err && !runs.length && <Empty>실행 기록이 없습니다. <button className="btn" onClick={() => nav.go("run")}>검증 시작하기</button></Empty>}
+      {!listing && !loading && !err && !runs.length && <Empty>실행 기록이 없습니다. 좌측 메뉴의 검증 실행에서 먼저 검증하세요.</Empty>}
       {!loading && run && (
         <>
           <h2 className="run-title">{run.cohort_kor} · {run.label}</h2>

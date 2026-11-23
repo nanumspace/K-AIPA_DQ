@@ -22,7 +22,7 @@
 | 무엇 | 어디에 |
 |---|---|
 | 실행 요약, 규칙별 결과, 위반 행 목록 | `history.duckdb` (DuckDB 파일 하나) |
-| 정규화된 입력 사본, 기본 출력 6종, 기준 ZIP·스냅샷, 정규화 기록 | `runs/<실행 ID>/` 폴더 |
+| 정규화된 입력 사본, 기본 출력 7종, 기준 ZIP·스냅샷, 정규화 기록 | `runs/<실행 ID>/` 폴더 |
 | 내장 기준의 규칙 설정과 공통 변경 이력 | `rule-overrides.json`, `rule-history.jsonl` |
 | 가져온 기준과 기준별 기관 조정 | `criteria-packages/`, `criteria-settings/` |
 | 앱 설정(적용 기준, 검증 기준일 기본값 등) | `config.json` |

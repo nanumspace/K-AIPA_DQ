@@ -14,6 +14,7 @@ import { readConfig, writeConfig, adminAcknowledged, setAdminAcknowledged } from
 import * as db from "./db";
 import * as input from "./input";
 import { writeExtraOutputs, runOutputs, exportBundle, APP_VERSION } from "./outputs";
+import { ensureReportPdf } from "./reportPdf";
 import * as rs from "./ruleset";
 import { createHash } from "node:crypto";
 import { loadCodelists } from "@engine/load.js";
@@ -276,6 +277,8 @@ async function runValidation(req: RunRequest): Promise<RunRecord> {
     const used = usedOverrides ?? {};
     const ruleSetInfo = rs.buildRuleSetInfo(used, usedAdminMode, { standard: ruleSet.standardHash, effective: ruleSet.effectiveHash }, ruleSet.changes);
     writeExtraOutputs(outDir, summary, { cohortKor: info.kor, label, runId, ruleSet: ruleSetInfo, criteria: readCriteriaSnapshot(outDir)!.criteria }, norm);
+    // PDF 를 만들지 못해도 검증 결과는 남긴다. 출력물 목록을 열 때 다시 만든다.
+    await ensureReportPdf(outDir).catch((e) => console.error("report.pdf:", e));
     const findings = readCsv(path.join(outDir, "findings.csv"));
     const rec = await db.insertRun({
       runId, cohort: req.cohort, cohortKor: info.kor, label, dataDir: firstPath ? path.dirname(firstPath) : inputDir, createdAt: now.toISOString(),
@@ -443,7 +446,11 @@ function registerIpc(): void {
     const sum = fs.existsSync(sp) ? (JSON.parse(fs.readFileSync(sp, "utf-8")) as Partial<Summary>) : {};
     return { run, rules: await db.getRuleResults(runId), report: fs.existsSync(rp) ? fs.readFileSync(rp, "utf-8") : "", sufficiency: sum.sufficiency ?? [], mappingRates: sum.mapping_rates ?? [] };
   });
-  ipcMain.handle("runs:outputs", (_e, runId: string) => runOutputs(path.join(runsDir(), runId)));
+  ipcMain.handle("runs:outputs", async (_e, runId: string) => {
+    const dir = path.join(runsDir(), runId);
+    await ensureReportPdf(dir).catch((e) => console.error("report.pdf:", e)); // 이전 실행은 처음 열 때 만든다
+    return runOutputs(dir);
+  });
   ipcMain.handle("findings:query", (_e, q: FindingsQuery) => db.getFindings(q));
   // 조건에 맞는 위반 행 전체(쪽 나누기 없음)를 저장한다. 조건 검증과 검색 의미는 findings:query 와 같은 db 함수를 쓴다.
   ipcMain.handle("findings:export", async (_e, q: FindingsFilter): Promise<FindingsExportResult | null> => {
@@ -460,7 +467,9 @@ function registerIpc(): void {
     }
   });
   ipcMain.handle("runs:exportFile", async (_e, runId: string, key: OutputFile["key"]) => {
-    const f = runOutputs(path.join(runsDir(), runId)).files.find((x) => x.key === key);
+    const dir = path.join(runsDir(), runId);
+    if (key === "reportPdf") await ensureReportPdf(dir);
+    const f = runOutputs(dir).files.find((x) => x.key === key);
     if (!f || !f.size) throw new Error("파일이 없습니다");
     const r = await dialog.showSaveDialog(win!, { defaultPath: `${runId}_${f.name}` });
     if (r.canceled || !r.filePath) return null;
@@ -470,7 +479,9 @@ function registerIpc(): void {
   ipcMain.handle("runs:exportBundle", async (_e, runId: string) => {
     const r = await dialog.showOpenDialog(win!, { title: "결과를 저장할 폴더 선택", properties: ["openDirectory", "createDirectory"] });
     if (r.canceled) return null;
-    return exportBundle(path.join(runsDir(), runId), runId, r.filePaths[0]);
+    const dir = path.join(runsDir(), runId);
+    await ensureReportPdf(dir).catch((e) => console.error("report.pdf:", e));
+    return exportBundle(dir, runId, r.filePaths[0]);
   });
   ipcMain.handle("runs:delete", async (_e, runId: string) => {
     await db.deleteRun(runId);
@@ -513,11 +524,15 @@ async function smoke(): Promise<void> {
     }
     // 표준 실행: clean 은 오류 0·허용된 치료 차수 경고만, good 은 위반 0, dirty 는 위반 발생.
     let dirtyRun: RunRecord | null = null;
+    let lungCleanViolations = -1; // 폴더를 나눠 넣어도 같은 결과여야 하는 기준
     for (const [cohort, kind, label] of [["LUNG_CANCER", "clean", "clean 견본"], ["LUNG_CANCER", "good", "good 견본"], ["DIABETES", "dirty", "dirty 견본"], ["LYMPHOMA", "clean", "림프종 clean 견본"]] as const) {
       const dir = sampleDir(cohort, kind);
       if (!dir) { failures++; log(`FAIL ${cohort} ${kind} 견본 데이터가 없습니다 (${path.join(config.root, "synth/output", kind, cohort)})`); continue; }
       const rec = await runFromDir(cohort, dir, SAMPLE_TODAY, label);
       if (kind === "dirty") dirtyRun = rec;
+      if (cohort === "LUNG_CANCER" && kind === "clean") lungCleanViolations = rec.violations_total;
+      const pdf = path.join(runsDir(), rec.run_id, "report.pdf");
+      expect(fs.existsSync(pdf) && fs.readFileSync(pdf).subarray(0, 5).toString() === "%PDF-", `${cohort} ${kind}: report.pdf 가 만들어지지 않음`);
       log(`run ${rec.run_id}: rules=${rec.rules_total} violations=${rec.violations_total}`);
       expect(rec.rules_error === 0, `${cohort} ${kind}: 규칙 실행 오류 ${rec.rules_error}`);
       const summary: Summary = JSON.parse(fs.readFileSync(path.join(runsDir(), rec.run_id, "summary.json"), "utf-8"));
@@ -575,7 +590,7 @@ async function smoke(): Promise<void> {
         log(`폴더 2곳: 후보 ${plan2.candidates.length}개, 대응 ${Object.keys(plan2.mapping).length}/${tables.length}, 오류 ${plan2.errors} 주의 ${plan2.warnings} · MEASUREMENT ${mt.candidateIds.length}개 파일 ${mt.rows}행`);
         const rec2 = await runValidation({ cohort: "LUNG_CANCER", candidates: plan2.candidates, mapping: plan2.mapping, today: SAMPLE_TODAY, label: "폴더 2곳 입력" });
         log(`run ${rec2.run_id}: rules=${rec2.rules_total} violations=${rec2.violations_total} (폴더 2곳)`);
-        expect(rec2.violations_total === 0, "폴더 2곳 합쳐 읽기: 위반 0 이어야 함");
+        expect(rec2.violations_error === 0 && rec2.violations_total === lungCleanViolations, `폴더 2곳 합쳐 읽기: 한 폴더 clean 과 같은 위반 ${lungCleanViolations}건이어야 함`);
         const planP = inspect("LUNG_CANCER", [path.join(out, "split")]);
         log(`상위 폴더 1곳: 후보 ${planP.candidates.length}개, 대응 ${Object.keys(planP.mapping).length}/${tables.length}`);
         // 같은 이름이 두 폴더에 있으면 합쳐 읽는다. PERSON 을 두 벌 넣으면 행이 두 배가 되고 PK 중복이 나와야 한다.

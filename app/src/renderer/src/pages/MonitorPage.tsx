@@ -79,12 +79,10 @@ export function MonitorPage({ nav }: { nav: Nav }) {
               <tbody>{list.map((r) => {
                 return (
                   <tr key={r.run_id}>
-                    <td>{fmtTime(r.created_at)}</td><td>{r.cohort_kor}</td><td>{r.label}</td><td>{r.run_date}</td>
+                    <td>{fmtTime(r.created_at)}</td><td><button className="btn-link" title="이 실행의 결과 보고서" onClick={() => nav.go("report", r.run_id)}>{r.cohort_kor}</button></td><td>{r.label}</td><td>{r.run_date}</td>
                     <td className="num">{fmt(r.rows_total)}</td><td className="num">{fmt(r.rules_total)}</td><td className="num">{fmt(r.rules_failed)}</td>
                     <td className="num">{fmt(r.violations_error)}</td><td className="num">{fmt(r.violations_warning)}</td><td><RunOutcome run={r} /></td>
                     <td style={{ whiteSpace: "nowrap" }}>
-                      <button className="btn sm" onClick={() => nav.go("findings", r.run_id)}>위반 상세</button>{" "}
-                      <button className="btn sm" onClick={() => nav.go("report", r.run_id)}>보고서</button>{" "}
                       <button className="btn sm danger" onClick={() => del(r)}>삭제</button>
                     </td>
                   </tr>

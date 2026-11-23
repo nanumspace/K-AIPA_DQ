@@ -198,7 +198,7 @@ export interface RunDetail { run: RunRecord; rules: RuleResultRow[]; report: str
 
 // ------------------------------------------------------------------ 출력
 export interface OutputFile {
-  key: "report" | "findings" | "sufficiency" | "rules" | "submission" | "summary" | "criteria" | "criteriaSnapshot";
+  key: "report" | "reportPdf" | "findings" | "sufficiency" | "rules" | "submission" | "summary" | "criteria" | "criteriaSnapshot";
   name: string;
   label: string;
   desc: string;

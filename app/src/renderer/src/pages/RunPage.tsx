@@ -289,7 +289,7 @@ export function RunPage({ nav, onActivity }: { nav: Nav; onActivity: (activity: 
       {result && (
         <div id="run-result" className="workflow-section" style={{ marginTop: 14 }} ref={resultRef}>
           <Card num={4} title="검증 결과" sub={`${result.cohort_kor} · ${result.label} · 기준일 ${result.run_date}`}
-            right={<div className="actions"><button className="btn primary" onClick={() => nav.go("report", result.run_id)}>결과 보고서</button><button className="btn" onClick={() => nav.go("findings", result.run_id)}>위반 상세</button></div>}>
+            right={<button className="btn primary" onClick={() => nav.go("report", result.run_id)}>결과 보고서 열기</button>}>
             <RunSummary run={result} />
             <p className="hint">위반이 있는 경우 보고서에서 규칙을 선택해 원인을 확인하고, 원천 데이터를 수정한 뒤 다시 검증하세요.</p>
             {result.rule_set_modified && (
@@ -297,7 +297,7 @@ export function RunPage({ nav, onActivity }: { nav: Nav; onActivity: (activity: 
                 {result.admin_modified ? "관리자가 바꾼 SQL 규칙이 포함된 실행입니다." : "표준과 다른 규칙 설정으로 실행했습니다."} 이 사실은 보고서와 제출용 집계(submission.json)에 기록됩니다. 앱이 자동으로 전송하지는 않으며, 파일을 직접 제출할 때 함께 전달됩니다.
               </div>
             )}
-            {outputs ? <OutputList key={result.run_id} outputs={outputs} runId={result.run_id} /> : <div className="callout warn">출력물 목록을 불러오지 못했습니다. <button className="btn" onClick={() => nav.go("report", result.run_id)}>보고서에서 다시 확인</button></div>}
+            {outputs ? <OutputList key={result.run_id} outputs={outputs} runId={result.run_id} /> : <div className="callout warn">출력물 목록을 불러오지 못했습니다. 결과 보고서 화면에서 다시 확인하세요.</div>}
           </Card>
         </div>
       )}

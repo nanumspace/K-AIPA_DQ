@@ -85,12 +85,6 @@ export function App() {
               <button className="btn sm" onClick={() => go("run")}>검증 화면으로 돌아가기</button>
             </div>
           )}
-          {page !== "run" && !activity.busy && activity.result && (
-            <div className="run-banner">
-              <span>최근 검증 완료 · {activity.result.cohort_kor} · {activity.result.label}</span>
-              <button className="btn sm" onClick={() => go("report", activity.result!.run_id)}>결과 보기</button>
-            </div>
-          )}
           {page === "dashboard" && <Dashboard key={version} nav={nav} />}
           <div hidden={page !== "run"}><RunPage nav={nav} onActivity={setActivity} /></div>
           {page === "rules" && <RulesPage />}

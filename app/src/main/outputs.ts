@@ -16,6 +16,7 @@ export const APP_VERSION = app.getVersion();
 
 const FILES: Omit<OutputFile, "path" | "size">[] = [
   { key: "report", name: "report.md", label: "검증 보고서", desc: "요약, 분류별 집계와 실패 규칙별 건수. 입력 원문과 DB 오류 원문은 포함하지 않습니다.", shareable: true },
+  { key: "reportPdf", name: "report.pdf", label: "검증 보고서 (PDF)", desc: "report.md 와 같은 내용을 A4 로 인쇄한 문서. 결재·회의 자료로 씁니다.", shareable: true },
   { key: "findings", name: "findings.csv", label: "위반 행 목록 (CSV)", desc: "규칙, 테이블, 행 키, 환자 ID, 상세. 병원 내부에서 데이터를 고칠 때 씁니다.", shareable: false },
   { key: "sufficiency", name: "sufficiency.csv", label: "데이터 충실도 미충족 목록 (CSV)", desc: "있어야 할 기록이 없는 환자·요법과 사유. 병원 내부에서 누락을 찾을 때 씁니다.", shareable: false },
   { key: "rules", name: "rule_results.csv", label: "규칙별 결과 (CSV)", desc: "규칙 전체의 통과·실패·건너뜀·꺼짐과 위반 수, 검사 행 수, 규칙의 출처(표준·변경·사용자·관리자).", shareable: true },
@@ -75,7 +76,7 @@ export function runOutputs(runDir: string): RunOutputs {
   return { dir: runDir, inputDir: path.join(runDir, "input"), files };
 }
 
-/** 출력물(결과 6종과 실행 당시 기준 2종)을 대상 폴더 아래 <실행 ID>/ 로 복사한다. 없는 파일은 건너뛴다. */
+/** 출력물(결과 7종과 실행 당시 기준 2종)을 대상 폴더 아래 <실행 ID>/ 로 복사한다. 없는 파일은 건너뛴다. */
 export function exportBundle(runDir: string, runId: string, destRoot: string): string {
   const dest = path.join(destRoot, runId);
   fs.mkdirSync(dest, { recursive: true });
