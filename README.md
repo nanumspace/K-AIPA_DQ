@@ -1,6 +1,6 @@
 # K-AIPA DQ · K-AIPA 임상 데이터 품질검증
 
-**K-AIPA Clinical Data Quality Validator** (앱 이름 K-AIPA DQ, 버전 1.0.10)
+**K-AIPA Clinical Data Quality Validator** (앱 이름 K-AIPA DQ, 버전 1.0.11)
 
 폐암, 유방암, 대장암, 대사이상지방간(MASLD), 당뇨병, 림프종 **6개 질환 임상 코호트 테이블**을 점검하는 데스크톱 프로그램입니다. 현재 소스는 440개 규칙(코호트마다 302~343개)을 적용합니다. 입력 데이터는 외부로 전송하지 않습니다. 중앙 제출용 집계 파일(`submission.json`)은 사용자가 직접 보냅니다.
 
@@ -50,7 +50,7 @@
 
 ### 데이터 충실도
 
-v1.0.10는 DQ 규칙과 별도로 **충실도 41개 항목**(공통 5개·질환별 36개)을 보고합니다. 항목별 대상 환자 또는 항암요법과 관찰 기간을 정한 뒤, 필요한 기록이 있는 비율을 계산합니다. 합격 기준이나 목표값은 없습니다.
+v1.0.11는 DQ 규칙과 별도로 **충실도 41개 항목**(공통 5개·질환별 36개)을 보고합니다. 항목별 대상 환자 또는 항암요법과 관찰 기간을 정한 뒤, 필요한 기록이 있는 비율을 계산합니다. 합격 기준이나 목표값은 없습니다.
 
 첫 항암 전 EGFR·ALK 결과, 바이오마커 구조화 결과, FIB-4 계산 가능성처럼 **기록 유무와 분석에 쓸 수 있는지**를 구분합니다. 환자·요법별 미충족 사유는 기관 내부 `sufficiency.csv`에 남기고, 중앙 제출 파일에는 집계만 넣습니다. → [항목별 분모·관찰 기간·한계](docs/data-sufficiency.md) · [보고서 읽는 법](manual/04-output.md#데이터-충실도)
 
@@ -76,11 +76,11 @@ v1.0.10는 DQ 규칙과 별도로 **충실도 41개 항목**(공통 5개·질환
 
 | 파일 | 대상 |
 |---|---|
-| `K-AIPA-DQ-1.0.10-mac-arm64.dmg` | macOS (Apple Silicon) |
-| `K-AIPA-DQ-1.0.10-win-x64.exe` | Windows 10/11 64비트 (x64) |
-| `K-AIPA-DQ-1.0.10-win-arm64.exe` | Windows 11 ARM64 |
-| `SampleData-1.0.10-all.zip` 및 코호트별 `SampleData-1.0.10-<COHORT>-clean.zip`·`-dirty.zip`·`-good.zip` | 견본 데이터(가상데이터) |
-| `K-AIPA-DQ-Criteria-1.0.10.zip` | 명세·규칙 전체 기준 패키지. 기관 조정과 환자 데이터 제외 |
+| `K-AIPA-DQ-1.0.11-mac-arm64.dmg` | macOS (Apple Silicon) |
+| `K-AIPA-DQ-1.0.11-win-x64.exe` | Windows 10/11 64비트 (x64) |
+| `K-AIPA-DQ-1.0.11-win-arm64.exe` | Windows 11 ARM64 |
+| `SampleData-1.0.11-all.zip` 및 코호트별 `SampleData-1.0.11-<COHORT>-clean.zip`·`-dirty.zip`·`-good.zip` | 견본 데이터(가상데이터) |
+| `K-AIPA-DQ-Criteria-1.0.11.zip` | 명세·규칙 전체 기준 패키지. 기관 조정과 환자 데이터 제외 |
 | `SHA256SUMS.txt` | 위 파일의 SHA-256 |
 
 같은 페이지의 견본 데이터 zip으로 앱 동작을 먼저 확인할 수 있습니다. 소개 페이지·자료실은 공개 릴리스 기준으로 배포되며, `main` 브랜치에서 개발 중인 내용과 다를 수 있습니다. 이전 이름(Quality Validator)의 v0.x 릴리스는 [기존 저장소](https://github.com/nanumspace/KAI_DQ_App/releases)에 보존됩니다. 새 앱에서 이전 명세를 선택하는 기능은 없습니다.
@@ -112,7 +112,7 @@ Good Sample은 "좋은 임상 표준"이 아니라, 공개 임상 근거를 참�
 
 ## 릴리스
 
-서명에 USB 토큰과 키체인이 필요해, 릴리스는 개발자의 macOS에서 저장소 루트의 `release.sh`로 합니다. 설치 파일 이름은 `K-AIPA-DQ-<버전>-<os>-<arch>.<확장자>`입니다. 준비물, 명령, 단계별 동작과 `--publish-only` 의 조건은 [docs/reproduce.md](docs/reproduce.md#릴리스-releasesh)에 있습니다. 버전별 변경 사항은 `docs/release-notes/<태그>.md`이며 Release 설명 맨 앞에 실립니다. 현재 노트: [v1.0.10](docs/release-notes/v1.0.10.md).
+서명에 USB 토큰과 키체인이 필요해, 릴리스는 개발자의 macOS에서 저장소 루트의 `release.sh`로 합니다. 설치 파일 이름은 `K-AIPA-DQ-<버전>-<os>-<arch>.<확장자>`입니다. 준비물, 명령, 단계별 동작과 `--publish-only` 의 조건은 [docs/reproduce.md](docs/reproduce.md#릴리스-releasesh)에 있습니다. 버전별 변경 사항은 `docs/release-notes/<태그>.md`이며 Release 설명 맨 앞에 실립니다. 현재 노트: [v1.0.11](docs/release-notes/v1.0.11.md).
 
 ## 문서
 
@@ -122,7 +122,7 @@ Good Sample은 "좋은 임상 표준"이 아니라, 공개 임상 근거를 참�
 - [docs/engine.md](docs/engine.md) 엔진 세 층, 검출 성능과 해석의 한계, 앱 구조
 - [docs/reproduce.md](docs/reproduce.md) 환경, 파이프라인 재현, 앱 빌드와 릴리스
 - [docs/release-notes/v1.0.4.md](docs/release-notes/v1.0.4.md) 1.0.4 릴리스 노트
-- [docs/release-notes/v1.0.10.md](docs/release-notes/v1.0.10.md) 1.0.10 릴리스 노트
+- [docs/release-notes/v1.0.11.md](docs/release-notes/v1.0.11.md) 1.0.11 릴리스 노트
 - [manual/README.md](manual/README.md) 사용자 설명서 ([규칙 편집](manual/06-rules.md) 포함)
 - [pilot/README.md](pilot/README.md) 파일럿 키트
 - [CONTRIBUTING.md](CONTRIBUTING.md) 규칙 추가와 시험 방법
